@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="iconTitle iconDesc">
+  <title id="iconTitle">Full Body Metrics icon</title>
+  <desc id="iconDesc">Icon for Full Body Metrics app showing a simplified body graph.</desc>
+  <defs>
+    <linearGradient id="iconGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="28" fill="url(#iconGrad)" />
+  <circle cx="60" cy="46" r="16" fill="#ffffff" opacity="0.9" />
+  <rect x="46" y="64" width="28" height="36" rx="12" fill="#ffffff" opacity="0.9" />
+  <rect x="20" y="76" width="24" height="12" rx="6" fill="#ffffff" />
+  <rect x="76" y="76" width="24" height="12" rx="6" fill="#ffffff" />
+  <path d="M30 42 C42 10, 78 10, 90 42" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.85" />
+</svg>

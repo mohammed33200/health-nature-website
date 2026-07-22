@@ -1,0 +1,162 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Support Us | SHYM356.ORG">
+	<section class="support-page">
+	<div class="page-head">
+		<p class="eyebrow" data-i18n data-en="Support Us" data-ar="شجعنا">شجعنا</p>
+		<h1 data-i18n data-en="Together we can grow healthier lives" data-ar="معًا يمكننا نشر حياة أكثر صحة">معًا يمكننا نشر حياة أكثر صحة</h1>
+		<p data-i18n data-en="Your support helps SHYM356.ORG share more medical apps, articles, and wellness tools." data-ar="دعمك يساعد SHYM356.ORG على مشاركة المزيد من التطبيقات الطبية والمقالات وأدوات العافية.">دعمك يساعد SHYM356.ORG على مشاركة المزيد من التطبيقات الطبية والمقالات وأدوات العافية.</p>
+	</div>
+
+	<div class="support-card">
+		<h2 data-i18n data-en="How you can help" data-ar="كيف يمكنك المساعدة">كيف يمكنك المساعدة</h2>
+		<ul>
+			<li data-i18n data-en="Share the website with friends and family." data-ar="شارك الموقع مع الأصدقاء والعائلة.">شارك الموقع مع الأصدقاء والعائلة.</li>
+			<li data-i18n data-en="Send us feedback to improve our health content." data-ar="أرسل لنا ملاحظات لتحسين المحتوى الصحي.">أرسل لنا ملاحظات لتحسين المحتوى الصحي.</li>
+			<li data-i18n data-en="Contact us on WhatsApp for partnerships and support." data-ar="تواصل معنا عبر واتساب للشراكات والدعم.">تواصل معنا عبر واتساب للشراكات والدعم.</li>
+		</ul>
+
+		<a class="support-button" href="https://wa.me/966590007809" target="_blank" rel="noopener noreferrer" data-i18n data-en="Contact on WhatsApp" data-ar="التواصل عبر واتساب">التواصل عبر واتساب</a>
+	</div>
+
+	<div class="coffee-card">
+		<h2 data-i18n data-en="Buy the developer a coffee" data-ar="اشترِ للمبرمج قهوة">اشترِ للمبرمج قهوة</h2>
+		<p data-i18n data-en="If you'd like to show your appreciation for the work we do, you can buy the developer a coffee. Your kind gesture helps keep the project running and motivates us to create more free health tools for everyone." data-ar="إذا كنت ترغب في إظهار تقديرك للعمل الذي نقوم به، يمكنك شراء قهوة للمبرمج. لفتتك الكريمة تساعد في استمرار المشروع وتحفزنا على إنشاء المزيد من الأدوات الصحية المجانية للجميع.">إذا كنت ترغب في إظهار تقديرك للعمل الذي نقوم به، يمكنك شراء قهوة للمبرمج. لفتتك الكريمة تساعد في استمرار المشروع وتحفزنا على إنشاء المزيد من الأدوات الصحية المجانية للجميع.</p>
+		<a class="paypal-button" href="https://paypal.me/exodent" target="_blank" rel="noopener noreferrer">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.886a.781.781 0 0 1 .771-.644h6.912c2.298 0 3.97.488 4.99 1.453.996.942 1.485 2.335 1.462 4.148-.027 2.071-.866 3.743-2.5 4.993-1.606 1.227-3.796 1.85-6.57 1.85H8.25l-.966 5.351a.641.641 0 0 1-.633.542l-1.575.001zm3.824-9.527h1.5c1.5 0 2.6-.25 3.3-.75.7-.5 1.1-1.25 1.2-2.25.1-1-.1-1.75-.6-2.25-.5-.5-1.5-.75-3-.75h-1.5l-.9 5.5zm6.5 9.527h-4.606a.641.641 0 0 1-.633-.74l2.107-11.711a.781.781 0 0 1 .771-.644h3.5c2.298 0 3.97.488 4.99 1.453.996.942 1.485 2.335 1.462 4.148-.027 2.071-.866 3.743-2.5 4.993-1.606 1.227-3.796 1.85-6.57 1.85h-1.65l-.966 5.351a.641.641 0 0 1-.633.542l-1.575.001zm3.824-9.527h1.5c1.5 0 2.6-.25 3.3-.75.7-.5 1.1-1.25 1.2-2.25.1-1-.1-1.75-.6-2.25-.5-.5-1.5-.75-3-.75h-1.5l-.9 5.5z"/>
+			</svg>
+			<span data-i18n data-en="Donate via PayPal" data-ar="تبرع عبر PayPal">تبرع عبر PayPal</span>
+		</a>
+	</div>
+	</section>
+</Layout>
+
+<style>
+	.support-page {
+		padding: 48px 32px;
+		max-width: 980px;
+		margin: 0 auto;
+	}
+
+	.page-head {
+		text-align: center;
+		margin-bottom: 42px;
+	}
+
+	.eyebrow {
+		margin: 0 0 12px;
+		font-size: 0.85rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #16603f;
+	}
+
+	h1 {
+		margin: 0;
+		font-size: clamp(2rem, 3vw, 3.8rem);
+		line-height: 1.05;
+	}
+
+	.page-head p {
+		margin: 18px auto 0;
+		max-width: 680px;
+		color: #475569;
+		font-size: 1.05rem;
+		line-height: 1.8;
+	}
+
+	.support-card {
+		padding: 32px;
+		border-radius: 32px;
+		background: rgba(255, 255, 255, 0.95);
+		box-shadow: 0 32px 80px rgba(15, 23, 42, 0.08);
+	}
+
+	.support-card h2 {
+		margin: 0 0 18px;
+		font-size: 1.9rem;
+	}
+
+	.support-card ul {
+		margin: 0 0 28px;
+		padding-left: 20px;
+		color: #334155;
+	}
+
+	.support-card li {
+		margin-bottom: 14px;
+		font-size: 1rem;
+		line-height: 1.8;
+	}
+
+	.support-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 15px 26px;
+		border-radius: 999px;
+		background: linear-gradient(135deg, #2b6e4a, #60a472);
+		color: white;
+		font-weight: 700;
+		text-decoration: none;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.support-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 14px 32px rgba(15, 23, 42, 0.18);
+	}
+
+	.coffee-card {
+		margin-top: 24px;
+		padding: 32px;
+		border-radius: 32px;
+		background: linear-gradient(135deg, rgba(232, 247, 236, 0.95), rgba(255, 255, 255, 0.98));
+		box-shadow: 0 32px 80px rgba(15, 23, 42, 0.08);
+		border: 1px solid rgba(56, 132, 81, 0.12);
+	}
+
+	.coffee-card h2 {
+		margin: 0 0 16px;
+		font-size: 1.9rem;
+		color: #134e39;
+	}
+
+	.coffee-card p {
+		margin: 0 0 24px;
+		color: #475569;
+		line-height: 1.8;
+	}
+
+	.paypal-button {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		padding: 15px 28px;
+		border-radius: 999px;
+		background: linear-gradient(135deg, #003087, #009cde);
+		color: white;
+		font-weight: 700;
+		text-decoration: none;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.paypal-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 14px 32px rgba(0, 48, 135, 0.3);
+	}
+
+	@media (max-width: 760px) {
+		.support-page {
+			padding: 32px 18px;
+		}
+
+		.support-card {
+			padding: 24px;
+		}
+	}
+</style>
