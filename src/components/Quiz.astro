@@ -1,0 +1,41 @@
+---
+export interface Props {
+	config: any;
+}
+
+const { config } = Astro.props;
+---
+
+<div id="intro-section">
+    <slot name="intro" />
+</div>
+
+<div id="quiz-section" class="card">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label"><span class="t-ar">تمت الإجابة على 0 سؤال</span><span class="t-en">Answered 0 questions</span></div>
+    </div>
+    <div class="questions-list"></div>
+    <button class="submit-btn" onclick="submitQuiz()"><span class="t-ar">عرض النتيجة</span><span class="t-en">Show my result</span></button>
+</div>
+
+<div id="result-section" class="card">
+    <h2 class="section-title"><span class="t-ar">نتيجتك</span><span class="t-en">Your result</span></h2>
+    <div class="result-content"></div>
+    <div class="disclaimer">
+        <b><span class="t-ar">تنبيه:</span><span class="t-en">Note:</span></b>
+        <slot name="disclaimer-text">
+            <span class="t-ar">هذا الاختبار مبني على مقاييس متعارف عليها عالميًا لأغراض التوعية الذاتية فقط، وليس بديلاً عن الفحص أو التشخيص الطبي. إذا كانت النتيجة تشير إلى وجود مشكلة، يُرجى استشارة طبيب مختص (طب ذكورة/نساء أو معالج جنسي) قبل اتخاذ أي قرار.</span>
+            <span class="t-en">This test is based on internationally recognized scales for self-awareness purposes only, and is not a substitute for medical examination or diagnosis. If your result suggests a possible problem, please consult a qualified physician (urologist/gynecologist or a sex therapist) before making any decisions.</span>
+        </slot>
+    </div>
+    <button class="reset-btn" onclick="resetQuiz()"><span class="t-ar">إعادة الاختبار</span><span class="t-en">Retake the test</span></button>
+</div>
+
+<script define:vars={{ config }}>
+    import { initQuiz } from '../scripts/quiz-logic.js';
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        initQuiz(config);
+    });
+</script>

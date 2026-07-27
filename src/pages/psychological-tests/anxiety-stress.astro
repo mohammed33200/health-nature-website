@@ -1,0 +1,500 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Anxiety & Stress Scale | SHYM356.ORG">
+	<div class="arch">
+		<button class="lang-toggle" id="lang-toggle-btn" onclick="toggleLang()">English</button>
+		<div class="eyebrow"><span class="t-ar">نفسي</span><span class="t-en">Psychological</span> · <span class="t-ar">اختبارات نفسية وسلوكية للمتزوجين</span><span class="t-en">Psychological & Behavioral Tests for Married Couples</span></div>
+		<h1><span class="t-ar">اختبار القلق والتوتر</span><span class="t-en">Anxiety & Stress Scale</span></h1>
+		<p class="en">Anxiety & Stress Scale</p>
+		<a href="/psychological-tests" class="backlink"><span class="t-ar">↩ العودة لكل الاختبارات</span><span class="t-en">↩ Back to all tests</span></a>
+	</div>
+
+	<div class="wrap">
+		<div id="intro-section">
+			<div class="card">
+				<h2 class="section-title"><span class="t-ar">ما الهدف من هذا الاختبار؟</span><span class="t-en">What is the goal of this test?</span></h2>
+				<p><span class="t-ar">القلق مثل الملح في الطعام: قليل منه يحفّزك ويجعلك منتبهًا، لكن إذا زاد عن الحد يتحول لشيء يفسد كل الطعم.</span><span class="t-en">Anxiety is like salt in food — a little sharpens and alerts you, but too much ruins the whole taste.</span></p>
+				<p><span class="t-ar">هذا الاختبار يساعدك تفهم: هل قلقك طبيعي ومحفّز؟ أم أنه تجاوز الحد وأصبح يعيق راحتك وحياتك اليومية والزوجية؟</span><span class="t-en">This test helps you understand: is your anxiety normal and motivating? Or has it crossed the line and started to disrupt your comfort, your daily life, and your marriage?</span></p>
+			</div>
+			<div class="card">
+				<h2 class="section-title"><span class="t-ar">الفائدة المرجوة</span><span class="t-en">Expected benefit</span></h2>
+				<ul class="benefits">
+					<li><span class="t-ar">يعطيك صورة واضحة عن مستوى التوتر الذي تعيشه فعليًا وليس كما تتخيله.</span><span class="t-en">Gives you a clear picture of your actual stress level, not just how you imagine it.</span></li>
+					<li><span class="t-ar">يساعدك على ملاحظة أثر القلق على جسدك ونومك وعلاقتك بمن حولك.</span><span class="t-en">Helps you notice the effect of anxiety on your body, sleep, and relationships.</span></li>
+					<li><span class="t-ar">يفتح الباب لخطوات عملية للتخفيف من التوتر قبل أن يتفاقم.</span><span class="t-en">Opens the door to practical steps to reduce stress before it builds up further.</span></li>
+				</ul>
+			</div>
+			<div class="card">
+				<h2 class="section-title"><span class="t-ar">طريقة الإجابة</span><span class="t-en">How to answer</span></h2>
+				<p style="font-size:14.5px"><span class="t-ar">أجب عن الأسئلة بصدق، ولا تفكر كثيرًا في "المثالية"، اختر الأقرب لما تعيشه فعلاً.</span><span class="t-en">Answer honestly, and don't overthink "the ideal answer" — pick what's closest to your real experience.</span></p>
+				<div class="disclaimer"><b><span class="t-ar">تنبيه:</span><span class="t-en">Note:</span></b> <span class="t-ar">هذا الاختبار أداة توعية مبسطة لفتح الحوار بينك وبين شريك حياتك، وليس أداة تشخيص طبي أو نفسي. النتيجة انطباع أولي فقط، ولا تُغني عن استشارة مختص نفسي أو أسري أو طبي عند الحاجة.</span><span class="t-en">This test is a simplified awareness tool meant to open a conversation between you and your partner. It is not a medical or psychological diagnostic instrument. The result is only an initial impression and does not replace consulting a psychologist, family counselor, or physician when needed.</span></div>
+				<button class="start-btn" onclick="startQuiz()"><span class="t-ar">ابدأ الاختبار (15 سؤالاً)</span><span class="t-en">Start the test (15 questions)</span></button>
+			</div>
+		</div>
+
+		<div id="quiz-section" class="card">
+			<div class="progress-wrap">
+				<div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+				<div class="progress-label" id="progress-label"><span class="t-ar">تمت الإجابة على 0 سؤال</span><span class="t-en">Answered 0 questions</span></div>
+			</div>
+			<div class="questions-list"></div>
+			<button class="submit-btn" onclick="submitQuiz()"><span class="t-ar">عرض النتيجة</span><span class="t-en">Show my result</span></button>
+		</div>
+
+		<div id="result-section" class="card">
+			<h2 class="section-title"><span class="t-ar">نتيجتك</span><span class="t-en">Your result</span></h2>
+			<div class="result-content"></div>
+			<div class="disclaimer"><b><span class="t-ar">تنبيه:</span><span class="t-en">Note:</span></b> <span class="t-ar">هذا الاختبار أداة توعية مبسطة لفتح الحوار بينك وبين شريك حياتك، وليس أداة تشخيص طبي أو نفسي. النتيجة انطباع أولي فقط، ولا تُغني عن استشارة مختص نفسي أو أسري أو طبي عند الحاجة.</span><span class="t-en">This test is a simplified awareness tool meant to open a conversation between you and your partner. It is not a medical or psychological diagnostic instrument. The result is only an initial impression and does not replace consulting a psychologist, family counselor, or physician when needed.</span></div>
+			<button class="reset-btn" onclick="resetQuiz()"><span class="t-ar">إعادة الاختبار</span><span class="t-en">Retake the test</span></button>
+		</div>
+
+		<footer class="site-footer">
+			<p><span class="t-ar">من سلسلة "التدريبات العملية لتحسين العلاقة الزوجية"</span><span class="t-en">From the "Practical Exercises to Improve Your Marital Relationship" series</span></p>
+			<p><a href="/psychological-tests/marital-balance"><span class="t-ar">الاختبار السابق</span><span class="t-en">Previous test</span></a> · <a href="/psychological-tests"><span class="t-ar">كل الاختبارات</span><span class="t-en">All tests</span></a> · <a href="/psychological-tests/body-image-confidence"><span class="t-ar">الاختبار التالي</span><span class="t-en">Next test</span></a></p>
+		</footer>
+	</div>
+</Layout>
+
+<script>
+// Language is handled by Header.astro via 'siteLang' key.
+// This page listens for changes and re-renders questions accordingly.
+
+function bi(ar, en){
+  return '<span class="t-ar">'+ar+'</span><span class="t-en">'+(en||ar)+'</span>';
+}
+
+function setLang(lang){
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', lang==='en' ? 'ltr' : 'rtl');
+  try{ localStorage.setItem('site_lang', lang); }catch(e){}
+  var btn = document.getElementById('lang-toggle-btn');
+  if(btn){ btn.textContent = (lang==='en') ? 'العربية' : 'English'; }
+}
+
+function toggleLang(){
+  var cur = document.documentElement.getAttribute('lang') || 'ar';
+  setLang(cur === 'en' ? 'ar' : 'en');
+}
+
+(function initLangOnLoad(){
+  var saved = null;
+  try{ saved = localStorage.getItem('site_lang'); }catch(e){}
+  var initialLang = (saved === 'en' || saved === 'ar') ? saved : 'ar';
+  document.addEventListener('DOMContentLoaded', function(){ setLang(initialLang); });
+})();
+
+function initQuiz(CONFIG){
+  var answers = {};
+  var qSection = document.getElementById('quiz-section');
+  var introSection = document.getElementById('intro-section');
+  var resultSection = document.getElementById('result-section');
+  var progressFill = document.getElementById('progress-fill');
+  var progressLabel = document.getElementById('progress-label');
+  var total = CONFIG.questions.length;
+
+  // Ensure language is set before rendering
+  var currentLang = document.documentElement.getAttribute('lang') || 'ar';
+  document.documentElement.setAttribute('lang', currentLang);
+  document.documentElement.setAttribute('dir', currentLang==='en' ? 'ltr' : 'rtl');
+
+  function progressText(n){
+    return bi('تمت الإجابة على '+n+' من '+total+' سؤال', 'Answered '+n+' of '+total+' questions');
+  }
+
+  function renderQuestions(){
+    var html = '';
+    CONFIG.questions.forEach(function(q, i){
+      html += '<div class="question" id="q-wrap-'+i+'">';
+      html += '<div class="q-text"><span class="q-num">'+(i+1)+'</span><span>'+bi(q.text.ar, q.text.en)+'</span></div>';
+      html += '<div class="options">';
+      q.options.forEach(function(opt, oi){
+        var checked = answers[i] === opt.v ? 'checked' : '';
+        html += '<label class="opt" id="opt-'+i+'-'+oi+'">'+
+                '<input type="radio" name="q'+i+'" value="'+opt.v+'" onchange="quizAnswer('+i+','+oi+','+opt.v+')" '+checked+'>'+
+                '<span>'+bi(opt.label.ar, opt.label.en)+'</span></label>';
+      });
+      html += '</div></div>';
+    });
+    qSection.querySelector('.questions-list').innerHTML = html;
+
+    // Restore checked states
+    Object.keys(answers).forEach(function(qIndex){
+      var wrap = document.getElementById('q-wrap-'+qIndex);
+      if(wrap){
+        var opts = wrap.querySelectorAll('.opt');
+        opts.forEach(function(o){ o.classList.remove('checked'); });
+        var selectedOpt = wrap.querySelector('input[value="'+answers[qIndex]+'"]');
+        if(selectedOpt){
+          selectedOpt.parentElement.classList.add('checked');
+          wrap.classList.remove('missing');
+        }
+      }
+    });
+  }
+
+  (window as any).quizAnswer = function(qIndex: any, optIndex: any, value: any){
+    answers[qIndex] = value;
+    var wrap = document.getElementById('q-wrap-'+qIndex);
+    var opts = wrap.querySelectorAll('.opt');
+    opts.forEach(function(o){ o.classList.remove('checked'); });
+    document.getElementById('opt-'+qIndex+'-'+optIndex).classList.add('checked');
+    wrap.classList.remove('missing');
+    updateProgress();
+  };
+
+  function updateProgress(){
+    var answered = Object.keys(answers).length;
+    var pct = Math.round((answered/total)*100);
+    progressFill.style.width = pct+'%';
+    progressLabel.innerHTML = progressText(answered);
+  }
+
+  (window as any).startQuiz = function(){
+    introSection.style.display = 'none';
+    qSection.style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+
+  (window as any).submitQuiz = function(){
+    var missing = [];
+    for(var i=0;i<total;i++){
+      if(!(i in answers)) missing.push(i);
+    }
+    if(missing.length){
+      var first = document.getElementById('q-wrap-'+missing[0]);
+      missing.forEach(function(i){
+        document.getElementById('q-wrap-'+i).classList.add('missing');
+      });
+      first.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    computeAndShowResult();
+  };
+
+  function groupTotal(groupName){
+    var sum = 0;
+    CONFIG.questions.forEach(function(q,i){
+      if((q.group||'main') === groupName) sum += answers[i];
+    });
+    return sum;
+  }
+
+  function pickBand(score, bands){
+    for(var i=0;i<bands.length;i++){
+      var b = bands[i];
+      if(score >= b.min && score <= b.max) return b;
+    }
+    return bands[bands.length-1];
+  }
+
+  function computeAndShowResult(){
+    var html = '';
+    if(CONFIG.mode === 'category'){
+      var sums = {};
+      Object.keys(CONFIG.categories).forEach(function(k){ sums[k]=0; });
+      CONFIG.questions.forEach(function(q,i){ sums[q.group] += answers[i]; });
+      var winner = null, winnerScore = -1;
+      Object.keys(sums).forEach(function(k){
+        if(sums[k] > winnerScore){ winnerScore = sums[k]; winner = k; }
+      });
+      var cat = CONFIG.categories[winner];
+      html += '<div class="result-badge high"><span class="label">'+bi(cat.label.ar,cat.label.en)+'</span></div>';
+      html += '<div class="result-text">'+bi(cat.text.ar,cat.text.en)+'</div>';
+      html += '<div class="training-box"><b>'+bi('خطوة عملية مقترحة','Practical suggested step')+'</b>'+bi(cat.training.ar,cat.training.en)+'</div>';
+      if(CONFIG.showBreakdown){
+        html += '<div class="training-box"><b>'+bi('توزيع نقاطك على اللغات الخمس','Your score breakdown across the five languages')+'</b><ul style="margin:6px 0 0;padding-right:18px">';
+        Object.keys(CONFIG.categories).forEach(function(k){
+          html += '<li>'+bi(CONFIG.categories[k].label.ar, CONFIG.categories[k].label.en)+': '+sums[k]+'</li>';
+        });
+        html += '</ul></div>';
+      }
+    } else if(CONFIG.mode === 'grouped_sum'){
+      var overall = 0;
+      var breakdownHtml = '';
+      Object.keys(CONFIG.groups).forEach(function(g){
+        var raw = groupTotal(g);
+        var weight = CONFIG.groups[g].weight || 1;
+        var val = raw * weight;
+        overall += val;
+        if(CONFIG.groups[g].label){
+          breakdownHtml += '<li>'+bi(CONFIG.groups[g].label.ar, CONFIG.groups[g].label.en)+': '+ (Math.round(val*100)/100) +'</li>';
+        }
+      });
+      overall = Math.round(overall*100)/100;
+      var band = pickBand(overall, CONFIG.bands);
+      html += '<div class="result-badge '+band.cls+'"><span class="score">'+overall+'</span><span class="label">'+bi(band.label.ar,band.label.en)+'</span></div>';
+      html += '<div class="result-text">'+bi(band.text.ar,band.text.en)+'</div>';
+      if(band.training && (band.training.ar || band.training.en)){
+        html += '<div class="training-box"><b>'+bi('خطوة عملية مقترحة','Practical suggested step')+'</b>'+bi(band.training.ar,band.training.en)+'</div>';
+      }
+      if(CONFIG.showBreakdown && breakdownHtml){
+        html += '<div class="training-box"><b>'+bi('تفصيل حسب المحاور','Breakdown by domain')+'</b><ul style="margin:6px 0 0;padding-right:18px">'+breakdownHtml+'</ul></div>';
+      }
+      if(CONFIG.specialBand){
+        var sgRaw = groupTotal(CONFIG.specialBand.group);
+        var sband = pickBand(sgRaw, CONFIG.specialBand.bands);
+        html += '<div class="training-box"><b>'+bi(CONFIG.specialBand.label.ar,CONFIG.specialBand.label.en)+' ('+sgRaw+')</b>'+bi(sband.text.ar,sband.text.en)+'</div>';
+      }
+    } else {
+      var score = groupTotal('main');
+      var band = pickBand(score, CONFIG.bands);
+      html += '<div class="result-badge '+band.cls+'"><span class="score">'+score+'</span><span class="label">'+bi(band.label.ar,band.label.en)+'</span></div>';
+      html += '<div class="result-text">'+bi(band.text.ar,band.text.en)+'</div>';
+      if(band.training && (band.training.ar || band.training.en)){
+        html += '<div class="training-box"><b>'+bi('خطوة عملية مقترحة','Practical suggested step')+'</b>'+bi(band.training.ar,band.training.en)+'</div>';
+      }
+    }
+    resultSection.querySelector('.result-content').innerHTML = html;
+    qSection.style.display = 'none';
+    resultSection.style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  (window as any).resetQuiz = function(){
+    answers = {};
+    resultSection.style.display = 'none';
+    introSection.style.display = 'block';
+    renderQuestions();
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+
+  renderQuestions();
+  updateProgress();
+}
+
+var CONFIG = {"questions": [{"text": {"ar": "هل تجد نفسك تفكر كثيرًا في المستقبل حتى وأنت تعلم أن الأمر خارج يدك؟", "en": "Do you find yourself thinking a lot about the future even when you know it's out of your hands?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تشعر بسرعة ضربات قلب أو ضيق تنفس عند مواجهة موقف ضاغط؟", "en": "Do you feel a racing heartbeat or shortness of breath when facing a stressful situation?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل نومك يتأثر بسهولة بسبب أفكار لا تتوقف؟", "en": "Is your sleep easily disturbed by racing thoughts?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تجد صعوبة في التركيز لأن ذهنك مشغول بأمور جانبية؟", "en": "Do you find it hard to concentrate because your mind is busy with side worries?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تعيد نفس السيناريوهات السلبية في رأسك مرارًا؟", "en": "Do you replay the same negative scenarios in your head repeatedly?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل يتأثر جسدك (صداع، شد عضلي، آلام معدة) مع القلق؟", "en": "Does your body react to anxiety (headaches, muscle tension, stomach aches)?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تشعر أن أي نقد صغير يسبب لك قلقًا مبالغًا فيه؟", "en": "Does even small criticism cause you disproportionate anxiety?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تميل لتأجيل القرارات خوفًا من أن تكون خاطئة؟", "en": "Do you tend to delay decisions for fear they might be wrong?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل يصعب عليك الاسترخاء حتى في أوقات الراحة أو الإجازة؟", "en": "Do you find it hard to relax even during rest time or vacation?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تلاحظ أن توترك ينعكس على من حولك (عصبية، انفعال سريع)؟", "en": "Do you notice your stress spilling over onto those around you (irritability, quick reactions)?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تستخدم الطعام أو التدخين أو الكافيين أو الهاتف للهروب من التوتر؟", "en": "Do you use food, smoking, caffeine, or your phone to escape stress?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل يقلقك الماضي بنفس قدر المستقبل؟", "en": "Does the past worry you as much as the future?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل يزداد توترك في المواقف الاجتماعية (التحدث أمام الناس، مقابلة غرباء)؟", "en": "Does your stress increase in social situations (public speaking, meeting strangers)?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تحتاج لوقت طويل حتى تهدأ بعد موقف مزعج؟", "en": "Do you need a long time to calm down after an upsetting situation?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تشعر أحيانًا أن القلق يسرق منك متعة اللحظة الحالية؟", "en": "Do you sometimes feel that anxiety steals the joy of the present moment?"}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}], "mode": "sum", "bands": [{"min": 60, "max": 75, "cls": "high", "label": {"ar": "قلق مرتفع", "en": "High anxiety"}, "text": {"ar": "التوتر عندك مثل منبّه لا ينطفئ، ومن المهم جدًا أن تبدأ بخطوات عملية.", "en": "Your stress feels like an alarm that never turns off. It's important to start with practical steps."}, "training": {"ar": "ابدأ بتمارين تنفس بسيطة (شهيق 4 ثوانٍ، حبس 4، زفير 6) مرتين يوميًا، ونشاط بدني منتظم، وفكّر في استشارة مختص إذا كان القلق يؤثر على يومك.", "en": "Start with simple breathing exercises (inhale 4s, hold 4s, exhale 6s) twice a day, along with regular physical activity, and consider a specialist if anxiety is affecting your daily life."}}, {"min": 45, "max": 59, "cls": "mid", "label": {"ar": "قلق متوسط", "en": "Moderate anxiety"}, "text": {"ar": "القلق موجود لكنه ما زال تحت السيطرة، وتحتاج فقط إلى إدارة أفضل للضغوط.", "en": "Anxiety is present but still under control — you just need better stress management."}, "training": {"ar": "جرّب كتابة يومية لمدة 5 دقائق قبل النوم لتفريغ الأفكار، مع تنظيم وقتك بشكل أوضح.", "en": "Try 5 minutes of journaling before bed to unload your thoughts, and organize your schedule more clearly."}}, {"min": 15, "max": 44, "cls": "low", "label": {"ar": "قلق منخفض", "en": "Low anxiety"}, "text": {"ar": "مبروك، لديك القدرة على التعامل مع الضغوط بمرونة.", "en": "Well done — you have a flexible ability to handle pressure."}, "training": {"ar": "استمر في عاداتك الإيجابية وشاركها مع من حولك، فهي تحمي علاقتكما أيضًا.", "en": "Keep up your healthy habits and share them with those around you — they protect your relationship too."}}]};
+initQuiz(CONFIG);
+</script>
+
+<style is:global>
+	:root{
+		--bg:#FAF6F0;
+		--surface:#FFFFFF;
+		--ink:#2B2320;
+		--muted:#8A7A6E;
+		--primary:#8C3B4A;
+		--primary-dark:#6E2938;
+		--accent:#C99A4B;
+		--success:#4C7A5E;
+		--success-bg:#EEF4EF;
+		--warning:#A6741C;
+		--warning-bg:#FBF3E3;
+		--danger:#A23B3B;
+		--danger-bg:#FBEDEC;
+		--line:#EDE3D8;
+	}
+
+	*{box-sizing:border-box}
+	html{scroll-behavior:smooth}
+	body{
+		margin:0;
+		background:var(--bg);
+		color:var(--ink);
+		font-family:Tahoma,'Segoe UI',Arial,sans-serif;
+		line-height:1.9;
+		direction:rtl;
+	}
+
+	.wrap{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+
+	.arch{
+		background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%);
+		border-radius:0 0 120px 120px/0 0 60px 60px;
+		padding:38px 24px 46px;
+		text-align:center;
+		color:#fff;
+		position:relative;
+		overflow:hidden;
+	}
+
+	.arch::before{
+		content:"";
+		position:absolute;inset:0;
+		background:radial-gradient(circle at 50% 0%, rgba(255,255,255,.14), transparent 60%);
+	}
+
+	.arch .eyebrow{
+		font-size:13px;letter-spacing:.5px;color:#F1D9A8;font-weight:bold;
+		position:relative;
+	}
+
+	.arch h1{
+		font-size:26px;margin:10px 0 6px;position:relative;
+	}
+
+	.arch p.en{
+		font-size:13px;color:rgba(255,255,255,.75);margin:0;position:relative;
+		direction:ltr;
+	}
+
+	.backlink{
+		display:inline-block;margin-top:16px;color:rgba(255,255,255,.9);
+		font-size:13px;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,.5);
+		position:relative;
+	}
+
+	.card{
+		background:var(--surface);
+		border:1px solid var(--line);
+		border-radius:16px;
+		padding:22px 20px;
+		margin-top:-30px;
+		position:relative;
+		box-shadow:0 8px 24px rgba(43,35,32,.06);
+	}
+
+	.card + .card{margin-top:18px}
+
+	h2.section-title{
+		font-size:16px;color:var(--primary-dark);margin:0 0 12px;
+		display:flex;align-items:center;gap:8px;
+	}
+
+	h2.section-title::before{
+		content:"";width:8px;height:8px;border-radius:2px;
+		background:var(--accent);transform:rotate(45deg);flex:none;
+	}
+
+	.benefits{list-style:none;margin:0;padding:0}
+
+	.benefits li{
+		padding:8px 0 8px 0;border-bottom:1px dashed var(--line);
+		font-size:14.5px;color:#4a3f39;
+		position:relative;padding-right:22px;
+	}
+
+	.benefits li:last-child{border-bottom:none}
+
+	.benefits li::before{
+		content:"◆";position:absolute;right:0;top:9px;font-size:9px;color:var(--accent);
+	}
+
+	.disclaimer{
+		background:var(--warning-bg);border:1px solid #EFD9A8;color:#6b4d10;
+		border-radius:12px;padding:14px 16px;font-size:13px;margin-top:18px;
+	}
+
+	.disclaimer b{color:var(--warning)}
+
+	.start-btn,.submit-btn,.reset-btn{
+		display:block;width:100%;border:none;cursor:pointer;
+		background:var(--primary);color:#fff;font-size:16px;font-weight:bold;
+		padding:15px;border-radius:12px;margin-top:20px;font-family:inherit;
+		transition:background .15s;
+	}
+
+	.start-btn:hover,.submit-btn:hover,.reset-btn:hover{background:var(--primary-dark)}
+
+	#quiz-section{display:none}
+
+	#result-section{display:none}
+
+	.progress-wrap{
+		position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:5;
+		margin-bottom:6px;
+	}
+
+	.progress-track{background:var(--line);border-radius:20px;height:8px;overflow:hidden}
+
+	.progress-fill{background:var(--accent);height:100%;width:0%;transition:width .2s}
+
+	.progress-label{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
+
+	.question{
+		border-bottom:1px solid var(--line);padding:18px 0;
+	}
+
+	.question:last-child{border-bottom:none}
+
+	.question.missing{
+		animation:shake .3s;
+	}
+
+	@keyframes shake{
+		0%,100%{transform:translateX(0)}
+		25%{transform:translateX(4px)}
+		75%{transform:translateX(-4px)}
+	}
+
+	.q-num{
+		display:inline-flex;align-items:center;justify-content:center;
+		width:26px;height:26px;border-radius:50%;
+		border:1.5px solid var(--accent);color:var(--primary-dark);
+		font-size:12.5px;font-weight:bold;margin-left:8px;flex:none;
+	}
+
+	.q-text{font-size:15px;color:var(--ink);display:flex;align-items:flex-start;gap:2px;font-weight:bold}
+
+	.options{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+
+	.opt{
+		display:flex;align-items:center;gap:10px;
+		border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;
+		cursor:pointer;font-size:14px;color:#4a3f39;transition:.15s;
+	}
+
+	.opt:hover{border-color:var(--accent)}
+
+	.opt input{accent-color:var(--primary);width:17px;height:17px;flex:none}
+
+	.opt.checked{border-color:var(--primary);background:#FBF3F0}
+
+	.result-badge{
+		text-align:center;padding:22px 16px;border-radius:14px;margin-bottom:16px;
+	}
+
+	.result-badge.high{background:var(--success-bg);color:var(--success)}
+
+	.result-badge.mid{background:var(--warning-bg);color:var(--warning)}
+
+	.result-badge.low{background:var(--danger-bg);color:var(--danger)}
+
+	.result-badge .score{font-size:34px;font-weight:bold;display:block}
+
+	.result-badge .label{font-size:16px;font-weight:bold;margin-top:4px;display:block}
+
+	.result-text{font-size:14.5px;color:#4a3f39;margin-top:6px}
+
+	.training-box{
+		background:#F7F2EA;border-radius:12px;padding:16px;margin-top:14px;
+		border-right:4px solid var(--accent);
+	}
+
+	.training-box b{color:var(--primary-dark);display:block;margin-bottom:6px;font-size:14px}
+
+	footer.site-footer{
+		text-align:center;font-size:12px;color:var(--muted);margin-top:26px;line-height:1.8;
+	}
+
+	footer.site-footer a{color:var(--primary)}
+
+	@media(max-width:400px){
+		.arch h1{font-size:22px}
+	}
+
+	/* ---- bilingual toggle ---- */
+	html:not([lang="en"]) .t-en{display:none !important}
+	html[lang="en"] .t-ar{display:none !important}
+	html[lang="en"] body{direction:ltr}
+	html[lang="en"] .q-num{margin-left:0;margin-right:8px}
+	html[lang="en"] .benefits li{padding-right:0;padding-left:22px}
+	html[lang="en"] .benefits li::before{right:auto;left:0}
+	html[lang="en"] .training-box{border-right:none;border-left:4px solid var(--accent)}
+	html[lang="en"] .result-badge .score{direction:ltr}
+	html[lang="en"] .question .q-text .t-ar{display:none !important}
+	html[lang="en"] .question .q-text .t-en{display:inline !important}
+
+	.lang-toggle{
+		position:absolute; top:14px; left:14px;
+		background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.4);
+		color:#fff; font-size:12.5px; font-weight:bold; padding:7px 12px;
+		border-radius:20px; cursor:pointer; z-index:9;
+	}
+
+	html[lang="en"] .lang-toggle{left:auto; right:14px}
+	.lang-toggle:hover{background:rgba(255,255,255,.28)}
+</style>
+

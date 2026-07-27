@@ -1,0 +1,413 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const CONFIG = {"questions": [{"text": {"ar": "كم مرة تستطيع التحكم في القذف؟", "en": "How often are you able to control your ejaculation?"}, "group": "main", "options": [{"v": 0, "label": {"ar": "دائمًا", "en": "Always"}}, {"v": 1, "label": {"ar": "غالبًا", "en": "Most times"}}, {"v": 2, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 3, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 4, "label": {"ar": "أبدًا", "en": "Never"}}]}, {"text": {"ar": "هل يحدث القذف قبل أن ترغب أنت أو شريكتك؟", "en": "Does ejaculation happen before you or your partner want it to?"}, "group": "main", "options": [{"v": 0, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 1, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 2, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 3, "label": {"ar": "غالبًا", "en": "Most times"}}, {"v": 4, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تشعر بالانزعاج أو الإحباط بسبب سرعة القذف؟", "en": "Do you feel frustrated or upset because of premature ejaculation?"}, "group": "main", "options": [{"v": 0, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 1, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 2, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 3, "label": {"ar": "غالبًا", "en": "Most times"}}, {"v": 4, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تتجنب الجماع بسبب القلق من سرعة القذف؟", "en": "Do you avoid intercourse because of anxiety about premature ejaculation?"}, "group": "main", "options": [{"v": 0, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 1, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 2, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 3, "label": {"ar": "غالبًا", "en": "Most times"}}, {"v": 4, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "هل تؤثر سرعة القذف على علاقتك بشريكتك؟", "en": "Does premature ejaculation affect your relationship with your partner?"}, "group": "main", "options": [{"v": 0, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 1, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 2, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 3, "label": {"ar": "غالبًا", "en": "Most times"}}, {"v": 4, "label": {"ar": "دائمًا", "en": "Always"}}]}], "mode": "sum", "bands": [{"min": 0, "max": 8, "cls": "high", "label": {"ar": "طبيعي", "en": "Normal"}, "text": {"ar": "لا توجد مؤشرات على سرعة قذف.", "en": "There are no indications of premature ejaculation."}, "training": {"ar": "استمر في التواصل المفتوح مع شريكتك حول ما يرضي الطرفين.", "en": "Keep up open communication with your partner about what satisfies you both."}}, {"min": 9, "max": 10, "cls": "mid", "label": {"ar": "احتمال وجود سرعة قذف (منطقة حدّية)", "en": "Possible premature ejaculation (borderline)"}, "text": {"ar": "هناك مؤشرات محتملة، وقد يفيدك تمرين كيجل والتقنيات السلوكية.", "en": "There are possible indications, and Kegel exercises and behavioral techniques may help."}, "training": {"ar": "جرّب تمارين كيجل وتقنية \"التوقف والانتظار\" (Stop-Start)، وتابع التطور خلال 4 أسابيع.", "en": "Try Kegel exercises and the \"stop-start\" technique, and track progress over 4 weeks."}}, {"min": 11, "max": 20, "cls": "low", "label": {"ar": "سرعة قذف مرجّحة", "en": "Likely premature ejaculation"}, "text": {"ar": "النتيجة تشير لاحتمال وجود سرعة قذف يحتاج متابعة سريرية.", "en": "The result suggests a likely case of premature ejaculation that needs clinical follow-up."}, "training": {"ar": "يُنصح بمراجعة طبيب مختص لتقييم الحالة ومناقشة خيارات العلاج السلوكي أو الدوائي المناسبة.", "en": "We recommend seeing a specialist to assess the situation and discuss appropriate behavioral or medical treatment options."}}]};
+---
+
+<Layout title="Psychological Test | SHYM356.ORG">
+<div class="arch">
+	<div class="eyebrow"><span class="t-ar">جنسي</span><span class="t-en">Sexual Function</span> · <span class="t-ar">اختبارات نفسية وسلوكية للمتزوجين</span><span class="t-en">Psychological & Behavioral Tests for Married Couples</span></div>
+	
+<h1><span class="t-ar">مقياس سرعة القذف</span><span class="t-en">Premature Ejaculation Diagnostic Tool (PEDT)</span></h1>
+	<p class="en">Premature Ejaculation Diagnostic Tool (PEDT)</p>
+	<a href="/psychological-tests" class="backlink"><span class="t-ar">↩ العودة لكل الاختبارات</span><span class="t-en">↩ Back to all tests</span></a>
+</div>
+
+<div class="wrap">
+	<div id="intro-section">
+		<div class="card">
+			<h2 class="section-title"><span class="t-ar">ما الهدف من هذا الاختبار؟</span><span class="t-en">What is the goal of this test?</span></h2>
+			<p><span class="t-ar">هذا المقياس هو الأشهر عالميًا لتقييم سرعة القذف عند الرجال بشكل قصير ومباشر وعملي. طُوّر عام 2007 واعتمدته الجمعية الدولية للطب الجنسي (ISSM).</span><span class="t-en">This is the most well-known scale worldwide for assessing premature ejaculation in men, in a short, direct, and practical way. It was developed in 2007 and adopted by the International Society for Sexual Medicine (ISSM).</span></p><p><span class="t-ar">أداة تشخيصية مبنية على 5 أسئلة فقط، تقيس: التحكم بالقذف، التكرار، التوتر الشخصي، التأثير على العلاقة، ودرجة الإحباط.</span><span class="t-en">A diagnostic tool based on just 5 questions, measuring: control over ejaculation, frequency, personal distress, impact on the relationship, and level of frustration.</span></p>
+		</div>
+		<div class="card">
+			<h2 class="section-title"><span class="t-ar">الفائدة المرجوة</span><span class="t-en">Expected benefit</span></h2>
+			<ul class="benefits"><li><span class="t-ar">أداة معتمدة وسريعة (دقيقتان فقط).</span><span class="t-en">A validated and quick tool (two minutes only).</span></li><li><span class="t-ar">تساعد الطبيب على تشخيص سرعة القذف بدقة، بعيدًا عن الانطباعات الشخصية.</span><span class="t-en">Helps the physician diagnose premature ejaculation accurately, beyond personal impressions.</span></li><li><span class="t-ar">تقيّم الأثر النفسي والعاطفي بالإضافة إلى الجانب الجسدي.</span><span class="t-en">Assesses the psychological and emotional impact in addition to the physical aspect.</span></li></ul>
+		</div>
+		<div class="card">
+			<h2 class="section-title"><span class="t-ar">طريقة الإجابة</span><span class="t-en">How to answer</span></h2>
+			<p style="font-size:14.5px"><span class="t-ar">أجب عن الأسئلة وفق تجربتك خلال الأسابيع الأربعة الأخيرة.</span><span class="t-en">Answer based on your experience over the last 4 weeks.</span></p>
+			<div class="disclaimer"><b><span class="t-ar">تنبيه:</span><span class="t-en">Note:</span></b> <span class="t-ar">هذا الاختبار مبني على مقاييس متعارف عليها عالميًا لأغراض التوعية الذاتية فقط، وليس بديلاً عن الفحص أو التشخيص الطبي. إذا كانت النتيجة تشير إلى وجود مشكلة، يُرجى استشارة طبيب مختص (طب ذكورة/نساء أو معالج جنسي) قبل اتخاذ أي قرار.</span><span class="t-en">This test is based on internationally recognized scales for self-awareness purposes only, and is not a substitute for medical examination or diagnosis. If your result suggests a possible problem, please consult a qualified physician (urologist/gynecologist or a sex therapist) before making any decisions.</span></div>
+			<button class="start-btn" onclick="startQuiz()"><span class="t-ar">ابدأ الاختبار (5 سؤالاً)</span><span class="t-en">Start the test (5 questions)</span></button>
+		</div>
+	</div>
+
+	<div id="quiz-section" class="card">
+		<div class="progress-wrap">
+			<div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+			<div class="progress-label" id="progress-label"></div>
+		</div>
+		<div class="questions-list"></div>
+		<button class="submit-btn" onclick="submitQuiz()"><span class="t-ar">عرض النتيجة</span><span class="t-en">Show my result</span></button>
+	</div>
+
+	<div id="result-section" class="card">
+		<h2 class="section-title"><span class="t-ar">نتيجتك</span><span class="t-en">Your result</span></h2>
+		<div class="result-content"></div>
+		<div class="disclaimer"><b><span class="t-ar">تنبيه:</span><span class="t-en">Note:</span></b> <span class="t-ar">هذا الاختبار مبني على مقاييس متعارف عليها عالميًا لأغراض التوعية الذاتية فقط، وليس بديلاً عن الفحص أو التشخيص الطبي. إذا كانت النتيجة تشير إلى وجود مشكلة، يُرجى استشارة طبيب مختص (طب ذكورة/نساء أو معالج جنسي) قبل اتخاذ أي قرار.</span><span class="t-en">This test is based on internationally recognized scales for self-awareness purposes only, and is not a substitute for medical examination or diagnosis. If your result suggests a possible problem, please consult a qualified physician (urologist/gynecologist or a sex therapist) before making any decisions.</span></div>
+		<button class="reset-btn" onclick="resetQuiz()"><span class="t-ar">إعادة الاختبار</span><span class="t-en">Retake the test</span></button>
+	</div>
+
+	<footer class="site-footer">
+		 <p><span class="t-ar">من سلسلة "التدريبات العملية لتحسين العلاقة الزوجية"</span><span class="t-en">From the "Practical Exercises to Improve Your Marital Relationship" series</span></p>
+		 <p><a href="/psychological-tests/fsfi-female-sexual-function"><span class="t-ar">الاختبار السابق</span><span class="t-en">Previous test</span></a> · <a href="/psychological-tests"><span class="t-ar">كل الاختبارات</span><span class="t-en">All tests</span></a> · <a href="/psychological-tests/csbi-compulsive-sexual-behavior"><span class="t-ar">الاختبار التالي</span><span class="t-en">Next test</span></a></p>
+	</footer>
+
+</div>
+</Layout>
+
+<script define:vars={{ CONFIG }}>
+function bi(ar, en){
+  return '<span class="t-ar">'+ar+'</span><span class="t-en">'+(en||ar)+'</span>';
+}
+
+function setLang(lang){
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', lang==='en' ? 'ltr' : 'rtl');
+  try{ localStorage.setItem('siteLang', lang); }catch(e){}
+  var btn = document.getElementById('lang-toggle-btn');
+  if(btn){ btn.textContent = (lang==='en') ? 'العربية' : 'English'; }
+
+  if(typeof window.renderQuestionsGlobal === 'function'){
+    window.renderQuestionsGlobal();
+  }
+
+  window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: lang } }));
+}
+
+function toggleLang(){
+  var cur = document.documentElement.getAttribute('lang') || 'ar';
+  setLang(cur === 'en' ? 'ar' : 'en');
+}
+
+window.addEventListener('languageChanged', function(e) {
+  var newLang = e.detail && e.detail.lang;
+  if(newLang){
+    var btn = document.getElementById('lang-toggle-btn');
+    if(btn){ btn.textContent = (newLang==='en') ? 'العربية' : 'English'; }
+    if(typeof window.renderQuestionsGlobal === 'function'){
+      window.renderQuestionsGlobal();
+    }
+  }
+});
+
+(function initLangOnLoad(){
+  var saved = null;
+  try{ saved = localStorage.getItem('siteLang'); }catch(e){}
+  if(saved === 'en' || saved === 'ar'){
+    document.addEventListener('DOMContentLoaded', function(){ setLang(saved); });
+  }
+})();
+
+function initQuiz(CONFIG){
+  var answers = {};
+  var qSection = document.getElementById('quiz-section');
+  var introSection = document.getElementById('intro-section');
+  var resultSection = document.getElementById('result-section');
+  var progressFill = document.getElementById('progress-fill');
+  var progressLabel = document.getElementById('progress-label');
+  var total = CONFIG.questions.length;
+
+  var currentLang = document.documentElement.getAttribute('lang') || 'ar';
+  document.documentElement.setAttribute('lang', currentLang);
+  document.documentElement.setAttribute('dir', currentLang==='en' ? 'ltr' : 'rtl');
+
+  function progressText(n){
+    return bi('تمت الإجابة على '+n+' من '+total+' سؤال', 'Answered '+n+' of '+total+' questions');
+  }
+
+function renderQuestions(){
+    var html = '';
+    CONFIG.questions.forEach(function(q, i){
+      html += '<div class="question" id="q-wrap-'+i+'">';
+      html += '<div class="q-text"><span class="q-num">'+(i+1)+'</span><span>'+bi(q.text.ar, q.text.en)+'</span></div>';
+      html += '<div class="options">';
+      q.options.forEach(function(opt, oi){
+        var checked = answers[i] === opt.v ? 'checked' : '';
+        html += '<label class="opt" id="opt-'+i+'-'+oi+'">'+
+                '<input type="radio" name="q'+i+'" value="'+opt.v+'" onchange="quizAnswer('+i+','+oi+','+opt.v+')" '+checked+'>'+
+                '<span>'+bi(opt.label.ar, opt.label.en)+'</span></label>';
+      });
+      html += '</div></div>';
+    });
+    qSection.querySelector('.questions-list').innerHTML = html;
+
+    Object.keys(answers).forEach(function(qIndex){
+      var wrap = document.getElementById('q-wrap-'+qIndex);
+      if(wrap){
+        var opts = wrap.querySelectorAll('.opt');
+        opts.forEach(function(o){ o.classList.remove('checked'); });
+        var selectedOpt = wrap.querySelector('input[value="'+answers[qIndex]+'"]');
+        if(selectedOpt){
+          selectedOpt.parentElement.classList.add('checked');
+          wrap.classList.remove('missing');
+        }
+      }
+    });
+  }
+
+  window.renderQuestionsGlobal = renderQuestions;
+
+  window.quizAnswer = function(qIndex, optIndex, value){
+    answers[qIndex] = value;
+    var wrap = document.getElementById('q-wrap-'+qIndex);
+    var opts = wrap.querySelectorAll('.opt');
+    opts.forEach(function(o){ o.classList.remove('checked'); });
+    document.getElementById('opt-'+qIndex+'-'+optIndex).classList.add('checked');
+    wrap.classList.remove('missing');
+    updateProgress();
+  };
+
+  function updateProgress(){
+    var answered = Object.keys(answers).length;
+    var pct = Math.round((answered/total)*100);
+    progressFill.style.width = pct+'%';
+    progressLabel.innerHTML = progressText(answered);
+  }
+
+  window.startQuiz = function(){
+    introSection.style.display = 'none';
+    qSection.style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+
+  window.submitQuiz = function(){
+    var missing = [];
+    for(var i=0;i<total;i++){
+      if(!(i in answers)) missing.push(i);
+    }
+    if(missing.length){
+      var first = document.getElementById('q-wrap-'+missing[0]);
+      missing.forEach(function(i){
+        document.getElementById('q-wrap-'+i).classList.add('missing');
+      });
+      first.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    computeAndShowResult();
+  };
+
+  function groupTotal(groupName){
+    var sum = 0;
+    CONFIG.questions.forEach(function(q,i){
+      if((q.group||'main') === groupName) sum += answers[i];
+    });
+    return sum;
+  }
+
+  function pickBand(score, bands){
+    for(var i=0;i<bands.length;i++){
+      var b = bands[i];
+      if(score >= b.min && score <= b.max) return b;
+    }
+    return bands[bands.length-1];
+  }
+
+  function computeAndShowResult(){
+    var html = '';
+    var score = groupTotal('main');
+    var band = pickBand(score, CONFIG.bands);
+    html += '<div class="result-badge '+band.cls+'"><span class="score">'+score+'</span><span class="label">'+bi(band.label.ar,band.label.en)+'</span></div>';
+    html += '<div class="result-text">'+bi(band.text.ar,band.text.en)+'</div>';
+    if(band.training && (band.training.ar || band.training.en)){
+      html += '<div class="training-box"><b>'+bi('خطوة عملية مقترحة','Practical suggested step')+'</b>'+bi(band.training.ar,band.training.en)+'</div>';
+    }
+    resultSection.querySelector('.result-content').innerHTML = html;
+    qSection.style.display = 'none';
+    resultSection.style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  window.resetQuiz = function(){
+    answers = {};
+    resultSection.style.display = 'none';
+    introSection.style.display = 'block';
+    renderQuestions();
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+
+  renderQuestions();
+  updateProgress();
+}
+initQuiz(CONFIG);
+</script>
+
+<style is:global>
+:root{
+  --bg:#FAF6F0;
+  --surface:#FFFFFF;
+  --ink:#2B2320;
+  --muted:#8A7A6E;
+  --primary:#8C3B4A;
+  --primary-dark:#6E2938;
+  --accent:#C99A4B;
+  --success:#4C7A5E;
+  --success-bg:#EEF4EF;
+  --warning:#A6741C;
+  --warning-bg:#FBF3E3;
+  --danger:#A23B3B;
+  --danger-bg:#FBEDEC;
+  --line:#EDE3D8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Tahoma,'Segoe UI',Arial,sans-serif;
+  line-height:1.9;
+  direction:rtl;
+}
+.wrap{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+.arch{
+  background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%);
+  border-radius:0 0 120px 120px/0 0 60px 60px;
+  padding:38px 24px 46px;
+  text-align:center;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.arch::before{
+  content:"";
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%, rgba(255,255,255,.14), transparent 60%);
+}
+.arch .eyebrow{
+  font-size:13px;letter-spacing:.5px;color:#F1D9A8;font-weight:bold;
+  position:relative;
+}
+.arch h1{
+  font-size:26px;margin:10px 0 6px;position:relative;
+}
+.arch p.en{
+  font-size:13px;color:rgba(255,255,255,.75);margin:0;position:relative;
+  direction:ltr;
+}
+.backlink{
+  display:inline-block;margin-top:16px;color:rgba(255,255,255,.9);
+  font-size:13px;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,.5);
+  position:relative;
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:22px 20px;
+  margin-top:-30px;
+  position:relative;
+  box-shadow:0 8px 24px rgba(43,35,32,.06);
+}
+.card + .card{margin-top:18px}
+h2.section-title{
+  font-size:16px;color:var(--primary-dark);margin:0 0 12px;
+  display:flex;align-items:center;gap:8px;
+}
+h2.section-title::before{
+  content:"";width:8px;height:8px;border-radius:2px;
+  background:var(--accent);transform:rotate(45deg);flex:none;
+}
+.benefits{list-style:none;margin:0;padding:0}
+.benefits li{
+  padding:8px 0 8px 0;border-bottom:1px dashed var(--line);
+  font-size:14.5px;color:#4a3f39;
+  position:relative;padding-right:22px;
+}
+.benefits li:last-child{border-bottom:none}
+.benefits li::before{
+  content:"◆";position:absolute;right:0;top:9px;font-size:9px;color:var(--accent);
+}
+.disclaimer{
+  background:var(--warning-bg);border:1px solid #EFD9A8;color:#6b4d10;
+  border-radius:12px;padding:14px 16px;font-size:13px;margin-top:18px;
+}
+.disclaimer b{color:var(--warning)}
+.start-btn,.submit-btn,.reset-btn{
+  display:block;width:100%;border:none;cursor:pointer;
+  background:var(--primary);color:#fff;font-size:16px;font-weight:bold;
+  padding:15px;border-radius:12px;margin-top:20px;font-family:inherit;
+  transition:background .15s;
+}
+.start-btn:hover,.submit-btn:hover,.reset-btn:hover{background:var(--primary-dark)}
+#quiz-section{display:none}
+#result-section{display:none}
+.progress-wrap{
+  position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:5;
+  margin-bottom:6px;
+}
+.progress-track{background:var(--line);border-radius:20px;height:8px;overflow:hidden}
+.progress-fill{background:var(--accent);height:100%;width:0%;transition:width .2s}
+.progress-label{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
+.question{
+  border-bottom:1px solid var(--line);padding:18px 0;
+}
+.question:last-child{border-bottom:none}
+.question.missing{
+  animation:shake .3s;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(4px)}
+  75%{transform:translateX(-4px)}
+}
+.q-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:50%;
+  border:1.5px solid var(--accent);color:var(--primary-dark);
+  font-size:12.5px;font-weight:bold;margin-left:8px;flex:none;
+}
+.q-text{font-size:15px;color:var(--ink);display:flex;align-items:flex-start;gap:2px;font-weight:bold}
+.options{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.opt{
+  display:flex;align-items:center;gap:10px;
+  border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;
+  cursor:pointer;font-size:14px;color:#4a3f39;transition:.15s;
+}
+.opt:hover{border-color:var(--accent)}
+.opt input{accent-color:var(--primary);width:17px;height:17px;flex:none}
+.opt.checked{border-color:var(--primary);background:#FBF3F0}
+.result-badge{
+  text-align:center;padding:22px 16px;border-radius:14px;margin-bottom:16px;
+}
+.result-badge.high{background:var(--success-bg);color:var(--success)}
+.result-badge.mid{background:var(--warning-bg);color:var(--warning)}
+.result-badge.low{background:var(--danger-bg);color:var(--danger)}
+.result-badge .score{font-size:34px;font-weight:bold;display:block}
+.result-badge .label{font-size:16px;font-weight:bold;margin-top:4px;display:block}
+.result-text{font-size:14.5px;color:#4a3f39;margin-top:6px}
+.training-box{
+  background:#F7F2EA;border-radius:12px;padding:16px;margin-top:14px;
+  border-right:4px solid var(--accent);
+}
+.training-box b{color:var(--primary-dark);display:block;margin-bottom:6px;font-size:14px}
+footer.site-footer{
+  text-align:center;font-size:12px;color:var(--muted);margin-top:26px;line-height:1.8;
+}
+footer.site-footer a{color:var(--primary)}
+@media(max-width:400px){
+  .arch h1{font-size:22px}
+}
+
+/* ---- bilingual toggle ---- */
+html:not([lang="en"]) .t-en{display:none !important}
+html[lang="en"] .t-ar{display:none !important}
+html[lang="en"] body{direction:ltr}
+html[lang="en"] .q-num{margin-left:0;margin-right:8px}
+html[lang="en"] .benefits li{padding-right:0;padding-left:22px}
+html[lang="en"] .benefits li::before{right:auto;left:0}
+html[lang="en"] .training-box{border-right:none;border-left:4px solid var(--accent)}
+html[lang="en"] .result-badge .score{direction:ltr}
+.lang-toggle{
+  position:absolute; top:14px; left:14px;
+  background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.4);
+  color:#fff; font-size:12.5px; font-weight:bold; padding:7px 12px;
+  border-radius:20px; cursor:pointer; z-index:9;
+}
+html[lang="en"] .lang-toggle{left:auto; right:14px}
+.lang-toggle:hover{background:rgba(255,255,255,.28)}
+
+
+html[lang="en"] .question .q-text .t-ar{display:none !important}
+html[lang="en"] .question .q-text .t-en{display:inline !important}
+</style>

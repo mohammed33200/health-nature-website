@@ -1,8 +1,6 @@
----
----
 <header class="site-header">
 	<div class="brand">
-		<img src="/logo.svg" alt="WYDV GGL,RU logo" class="mark" />
+		<img src="/logo.svg" alt="SHYM356.ORG logo" class="mark" />
 		<div>
 			<p class="eyebrow" data-i18n data-en="SHYM356.ORG" data-ar="SHYM356.ORG">SHYM356.ORG</p>
 			<h1 data-i18n data-en="Health & Nature" data-ar="الصحة والطبيعة">Health & Nature</h1>
@@ -14,9 +12,6 @@
 			<li><a href="/" data-i18n data-en="Home" data-ar="الرئيسية">الرئيسية</a></li>
 			<li><a href="/published-apps" data-i18n data-en="Published Health Apps" data-ar="التطبيقات الصحية المنشورة">التطبيقات الصحية المنشورة</a></li>
 			<li><a href="/articles" data-i18n data-en="Medical Articles" data-ar="المقالات الطبية">المقالات الطبية</a></li>
-			<li><a href="/about" data-i18n data-en="About Us" data-ar="من نحن">من نحن</a></li>
-			<li><a href="/support" data-i18n data-en="Support Us" data-ar="شجعنا">شجعنا</a></li>
-			<li><a href="/contact" data-i18n data-en="Contact Us" data-ar="اتصل بنا">اتصل بنا</a></li>
 		</ul>
 	</nav>
 
@@ -24,13 +19,13 @@
 </header>
 
 <script>
-	const persistLang = (): 'en' | 'ar' => {
+	const getInitialLang = () => {
 		const saved = localStorage.getItem('siteLang');
 		return saved === 'ar' ? 'ar' : 'en';
 	};
 
-	const setLanguage = (lang: 'en' | 'ar') => {
-		document.documentElement.lang = lang === 'ar' ? 'ar' : 'en';
+	const setLanguage = (lang, suppressEvent = false) => {
+		document.documentElement.lang = lang;
 		document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 		document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((node) => {
 			const text = node.dataset[lang];
@@ -39,11 +34,14 @@
 		const toggle = document.getElementById('language-toggle');
 		if (toggle) toggle.textContent = lang === 'ar' ? 'EN' : 'عربي';
 		localStorage.setItem('siteLang', lang);
+		if (!suppressEvent) {
+			window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: lang } }));
+		}
 	};
 
 	window.addEventListener('DOMContentLoaded', () => {
-		const initialLang = persistLang();
-		setLanguage(initialLang);
+		const initialLang = getInitialLang();
+		setLanguage(initialLang); // Dispatch event on initial load
 		const toggle = document.getElementById('language-toggle');
 		if (toggle) {
 			toggle.addEventListener('click', () => {

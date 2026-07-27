@@ -1,0 +1,443 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Psychological Test | SHYM356.ORG">
+<div class="arch">
+	<button class="lang-toggle" id="lang-toggle-btn" onclick="toggleLang()">English</button>
+	<div class="eyebrow"><span class="t-ar">نفسي</span><span class="t-en">Psychological</span> · <span class="t-ar">اختبارات نفسية وسلوكية للمتزوجين</span><span class="t-en">Psychological & Behavioral Tests for Married Couples</span></div>
+	
+<h1><span class="t-ar">اختبار الذكاء العاطفي</span><span class="t-en">Emotional Intelligence (EQ)</span></h1>
+	<p class="en">Emotional Intelligence (EQ)</p>
+	<a href="/psychological-tests" class="backlink"><span class="t-ar">↩ العودة لكل الاختبارات</span><span class="t-en">↩ Back to all tests</span></a>
+</div>
+
+<div class="wrap">
+
+	<div id="intro-section">
+		 <div class="card">
+		   <h2 class="section-title"><span class="t-ar">ما الهدف من هذا الاختبار؟</span><span class="t-en">What is the goal of this test?</span></h2>
+		   <p><span class="t-ar">الذكاء العاطفي هو القدرة على التعرف على مشاعرك ومشاعر الآخرين، وإدارة الانفعالات بوعي، والتواصل بفعالية وحل النزاعات، وتوجيه السلوك نحو أهداف إيجابية سواء في العمل أو الحياة الزوجية.</span><span class="t-en">Emotional intelligence is the ability to recognize your own feelings and others', manage your emotions consciously, communicate effectively and resolve conflicts, and direct your behavior toward positive goals at work or in marriage.</span></p><p><span class="t-ar">في العلاقة الزوجية، الذكاء العاطفي عامل فارق لأنه يحسّن القدرة على التعامل مع الخلافات، ويزيد التفاهم والتقارب العاطفي، ويقلل من القلق والتوتر.</span><span class="t-en">In a marriage, emotional intelligence is a key differentiator because it improves how you handle disagreements, increases mutual understanding and closeness, and reduces anxiety and stress.</span></p>
+		 </div>
+		 <div class="card">
+		   <h2 class="section-title"><span class="t-ar">الفائدة المرجوة</span><span class="t-en">Expected benefit</span></h2>
+		   <ul class="benefits"><li><span class="t-ar">يزيد التفاهم والتواصل في العلاقة الزوجية.</span><span class="t-en">Increases understanding and communication in the marital relationship.</span></li><li><span class="t-ar">يحسّن القدرة على حل النزاعات وتقليل التوترات.</span><span class="t-en">Improves your ability to resolve conflicts and reduce tension.</span></li><li><span class="t-ar">يساعد على التطوير الشخصي وتحقيق الأهداف، وهو أداة أساسية لفهم النفس والشريك.</span><span class="t-en">Supports personal growth and achieving goals, and is a fundamental tool for understanding yourself and your partner.</span></li></ul>
+		 </div>
+		 <div class="card">
+		   <h2 class="section-title"><span class="t-ar">طريقة الإجابة</span><span class="t-en">How to answer</span></h2>
+		   <p style="font-size:14.5px"><span class="t-ar">أجب على كل سؤال وفق شعورك وتجربتك خلال آخر 6 أشهر.</span><span class="t-en">Answer each question based on your feelings and experience over the last 6 months.</span></p>
+		   <div class="disclaimer"><b><span class="t-ar">تنبيه:</span><span class="t-en">Note:</span></b> <span class="t-ar">هذا الاختبار أداة توعية مبسطة لفتح الحوار بينك وبين شريك حياتك، وليس أداة تشخيص طبي أو نفسي. النتيجة انطباع أولي فقط، ولا تُغني عن استشارة مختص نفسي أو أسري أو طبي عند الحاجة.</span><span class="t-en">This test is a simplified awareness tool meant to open a conversation between you and your partner. It is not a medical or psychological diagnostic instrument. The result is only an initial impression and does not replace consulting a psychologist, family counselor, or physician when needed.</span></div>
+		   <button class="start-btn" onclick="startQuiz()"><span class="t-ar">ابدأ الاختبار (15 سؤالاً)</span><span class="t-en">Start the test (15 questions)</span></button>
+		 </div>
+	</div>
+
+	<div id="quiz-section" class="card">
+		 <div class="progress-wrap">
+		   <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+		   <div class="progress-label" id="progress-label"><span class="t-ar">تمت الإجابة على 0 سؤال</span><span class="t-en">Answered 0 questions</span></div>
+		 </div>
+		 <div class="questions-list"></div>
+		 <button class="submit-btn" onclick="submitQuiz()"><span class="t-ar">عرض النتيجة</span><span class="t-en">Show my result</span></button>
+	</div>
+
+	<div id="result-section" class="card">
+		 <h2 class="section-title"><span class="t-ar">نتيجتك</span><span class="t-en">Your result</span></h2>
+		 <div class="result-content"></div>
+		 <div class="disclaimer"><b><span class="t-ar">تنبيه:</span><span class="t-en">Note:</span></b> <span class="t-ar">هذا الاختبار أداة توعية مبسطة لفتح الحوار بينك وبين شريك حياتك، وليس أداة تشخيص طبي أو نفسي. النتيجة انطباع أولي فقط، ولا تُغني عن استشارة مختص نفسي أو أسري أو طبي عند الحاجة.</span><span class="t-en">This test is a simplified awareness tool meant to open a conversation between you and your partner. It is not a medical or psychological diagnostic instrument. The result is only an initial impression and does not replace consulting a psychologist, family counselor, or physician when needed.</span></div>
+		 <button class="reset-btn" onclick="resetQuiz()"><span class="t-ar">إعادة الاختبار</span><span class="t-en">Retake the test</span></button>
+	</div>
+
+	<footer class="site-footer">
+		 <p><span class="t-ar">من سلسلة "التدريبات العملية لتحسين العلاقة الزوجية"</span><span class="t-en">From the "Practical Exercises to Improve Your Marital Relationship" series</span></p>
+		 <p><a href="/psychological-tests/sast-sex-addiction-screening"><span class="t-ar">الاختبار السابق</span><span class="t-en">Previous test</span></a> · <a href="/psychological-tests"><span class="t-ar">كل الاختبارات</span><span class="t-en">All tests</span></a> · <a href="/psychological-tests/impulsivity-test"><span class="t-ar">الاختبار التالي</span><span class="t-en">Next test</span></a></p>
+	</footer>
+
+</div>
+</Layout>
+
+<script>
+function bi(ar, en){
+  return '<span class="t-ar">'+ar+'</span><span class="t-en">'+(en||ar)+'</span>';
+}
+
+function setLang(lang){
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', lang==='en' ? 'ltr' : 'rtl');
+  try{ localStorage.setItem('site_lang', lang); }catch(e){}
+  var btn = document.getElementById('lang-toggle-btn');
+  if(btn){ btn.textContent = (lang==='en') ? 'العربية' : 'English'; }
+}
+
+function toggleLang(){
+  var cur = document.documentElement.getAttribute('lang') || 'ar';
+  setLang(cur === 'en' ? 'ar' : 'en');
+}
+
+(function initLangOnLoad(){
+  var saved = null;
+  try{ saved = localStorage.getItem('site_lang'); }catch(e){}
+  var initialLang = (saved === 'en' || saved === 'ar') ? saved : 'ar';
+  document.addEventListener('DOMContentLoaded', function(){ setLang(initialLang); });
+})();
+
+function initQuiz(CONFIG){
+  var answers = {};
+  var qSection = document.getElementById('quiz-section');
+  var introSection = document.getElementById('intro-section');
+  var resultSection = document.getElementById('result-section');
+  var progressFill = document.getElementById('progress-fill');
+  var progressLabel = document.getElementById('progress-label');
+  var total = CONFIG.questions.length;
+
+  var currentLang = document.documentElement.getAttribute('lang') || 'ar';
+  document.documentElement.setAttribute('lang', currentLang);
+  document.documentElement.setAttribute('dir', currentLang==='en' ? 'ltr' : 'rtl');
+
+  function progressText(n){
+    return bi('تمت الإجابة على '+n+' من '+total+' سؤال', 'Answered '+n+' of '+total+' questions');
+  }
+
+function renderQuestions(){
+    var html = '';
+    CONFIG.questions.forEach(function(q, i){
+      html += '<div class="question" id="q-wrap-'+i+'">';
+      html += '<div class="q-text"><span class="q-num">'+(i+1)+'</span><span>'+bi(q.text.ar, q.text.en)+'</span></div>';
+      html += '<div class="options">';
+      q.options.forEach(function(opt, oi){
+        var checked = answers[i] === opt.v ? 'checked' : '';
+        html += '<label class="opt" id="opt-'+i+'-'+oi+'">'+
+                '<input type="radio" name="q'+i+'" value="'+opt.v+'" onchange="quizAnswer('+i+','+oi+','+opt.v+')" '+checked+'>'+
+                '<span>'+bi(opt.label.ar, opt.label.en)+'</span></label>';
+      });
+      html += '</div></div>';
+    });
+    qSection.querySelector('.questions-list').innerHTML = html;
+
+    Object.keys(answers).forEach(function(qIndex){
+      var wrap = document.getElementById('q-wrap-'+qIndex);
+      if(wrap){
+        var opts = wrap.querySelectorAll('.opt');
+        opts.forEach(function(o){ o.classList.remove('checked'); });
+        var selectedOpt = wrap.querySelector('input[value="'+answers[qIndex]+'"]');
+        if(selectedOpt){
+          selectedOpt.parentElement.classList.add('checked');
+          wrap.classList.remove('missing');
+        }
+      }
+    });
+  }
+
+  (window as any).quizAnswer = function(qIndex: any, optIndex: any, value: any){
+    answers[qIndex] = value;
+    var wrap = document.getElementById('q-wrap-'+qIndex);
+    var opts = wrap.querySelectorAll('.opt');
+    opts.forEach(function(o){ o.classList.remove('checked'); });
+    document.getElementById('opt-'+qIndex+'-'+optIndex).classList.add('checked');
+    wrap.classList.remove('missing');
+    updateProgress();
+  };
+
+  function updateProgress(){
+    var answered = Object.keys(answers).length;
+    var pct = Math.round((answered/total)*100);
+    progressFill.style.width = pct+'%';
+    progressLabel.innerHTML = progressText(answered);
+  }
+
+  (window as any).startQuiz = function(){
+    introSection.style.display = 'none';
+    qSection.style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+
+  (window as any).submitQuiz = function(){
+    var missing = [];
+    for(var i=0;i<total;i++){
+      if(!(i in answers)) missing.push(i);
+    }
+    if(missing.length){
+      var first = document.getElementById('q-wrap-'+missing[0]);
+      missing.forEach(function(i){
+        document.getElementById('q-wrap-'+i).classList.add('missing');
+      });
+      first.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    computeAndShowResult();
+  };
+
+  function groupTotal(groupName){
+    var sum = 0;
+    CONFIG.questions.forEach(function(q,i){
+      if((q.group||'main') === groupName) sum += answers[i];
+    });
+    return sum;
+  }
+
+  function pickBand(score, bands){
+    for(var i=0;i<bands.length;i++){
+      var b = bands[i];
+      if(score >= b.min && score <= b.max) return b;
+    }
+    return bands[bands.length-1];
+  }
+
+  function computeAndShowResult(){
+    var html = '';
+    if(CONFIG.mode === 'category'){
+      var sums = {};
+      Object.keys(CONFIG.categories).forEach(function(k){ sums[k]=0; });
+      CONFIG.questions.forEach(function(q,i){ sums[q.group] += answers[i]; });
+      var winner = null, winnerScore = -1;
+      Object.keys(sums).forEach(function(k){
+        if(sums[k] > winnerScore){ winnerScore = sums[k]; winner = k; }
+      });
+      var cat = CONFIG.categories[winner];
+      html += '<div class="result-badge high"><span class="label">'+bi(cat.label.ar,cat.label.en)+'</span></div>';
+      html += '<div class="result-text">'+bi(cat.text.ar,cat.text.en)+'</div>';
+      html += '<div class="training-box"><b>'+bi('خطوة عملية مقترحة','Practical suggested step')+'</b>'+bi(cat.training.ar,cat.training.en)+'</div>';
+      if(CONFIG.showBreakdown){
+        html += '<div class="training-box"><b>'+bi('توزيع نقاطك على اللغات الخمس','Your score breakdown across the five languages')+'</b><ul style="margin:6px 0 0;padding-right:18px">';
+        Object.keys(CONFIG.categories).forEach(function(k){
+          html += '<li>'+bi(CONFIG.categories[k].label.ar, CONFIG.categories[k].label.en)+': '+sums[k]+'</li>';
+        });
+        html += '</ul></div>';
+      }
+    } else if(CONFIG.mode === 'grouped_sum'){
+      var overall = 0;
+      var breakdownHtml = '';
+      Object.keys(CONFIG.groups).forEach(function(g){
+        var raw = groupTotal(g);
+        var weight = CONFIG.groups[g].weight || 1;
+        var val = raw * weight;
+        overall += val;
+        if(CONFIG.groups[g].label){
+          breakdownHtml += '<li>'+bi(CONFIG.groups[g].label.ar, CONFIG.groups[g].label.en)+': '+ (Math.round(val*100)/100) +'</li>';
+        }
+      });
+      overall = Math.round(overall*100)/100;
+      var band = pickBand(overall, CONFIG.bands);
+      html += '<div class="result-badge '+band.cls+'"><span class="score">'+overall+'</span><span class="label">'+bi(band.label.ar,band.label.en)+'</span></div>';
+      html += '<div class="result-text">'+bi(band.text.ar,band.text.en)+'</div>';
+      if(band.training && (band.training.ar || band.training.en)){
+        html += '<div class="training-box"><b>'+bi('خطوة عملية مقترحة','Practical suggested step')+'</b>'+bi(band.training.ar,band.training.en)+'</div>';
+      }
+      if(CONFIG.showBreakdown && breakdownHtml){
+        html += '<div class="training-box"><b>'+bi('تفصيل حسب المحاور','Breakdown by domain')+'</b><ul style="margin:6px 0 0;padding-right:18px">'+breakdownHtml+'</ul></div>';
+      }
+      if(CONFIG.specialBand){
+        var sgRaw = groupTotal(CONFIG.specialBand.group);
+        var sband = pickBand(sgRaw, CONFIG.specialBand.bands);
+        html += '<div class="training-box"><b>'+bi(CONFIG.specialBand.label.ar,CONFIG.specialBand.label.en)+' ('+sgRaw+')</b>'+bi(sband.text.ar,sband.text.en)+'</div>';
+      }
+    } else {
+      var score = groupTotal('main');
+      var band = pickBand(score, CONFIG.bands);
+      html += '<div class="result-badge '+band.cls+'"><span class="score">'+score+'</span><span class="label">'+bi(band.label.ar,band.label.en)+'</span></div>';
+      html += '<div class="result-text">'+bi(band.text.ar,band.text.en)+'</div>';
+      if(band.training && (band.training.ar || band.training.en)){
+        html += '<div class="training-box"><b>'+bi('خطوة عملية مقترحة','Practical suggested step')+'</b>'+bi(band.training.ar,band.training.en)+'</div>';
+      }
+    }
+    resultSection.querySelector('.result-content').innerHTML = html;
+    qSection.style.display = 'none';
+    resultSection.style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  (window as any).resetQuiz = function(){
+    answers = {};
+    resultSection.style.display = 'none';
+    introSection.style.display = 'block';
+    renderQuestions();
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+
+  renderQuestions();
+  updateProgress();
+}
+
+var CONFIG = {"questions": [{"text": {"ar": "أدرك متى أشعر بالغضب أو الإحباط وأعرف سبب شعوري.", "en": "I recognize when I'm feeling angry or frustrated and know why."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أستطيع التمييز بين مشاعري المختلفة بسهولة.", "en": "I can easily tell my different feelings apart."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أفهم تأثير مشاعري على قراراتي وسلوكي.", "en": "I understand how my feelings affect my decisions and behavior."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أستطيع تهدئة نفسي عند التوتر أو الغضب.", "en": "I can calm myself down when stressed or angry."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "لا أتصرف بعاطفة قوية دون التفكير في النتائج.", "en": "I don't act on strong emotion without thinking about the consequences."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أتحكم في ردة فعلي أمام الانتقاد أو الاستفزاز.", "en": "I control my reaction to criticism or provocation."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "ألاحظ مشاعر شريكي، حتى لو لم يعبر عنها بالكلام.", "en": "I notice my partner's feelings, even if they don't put them into words."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أستمع للآخرين بانتباه دون مقاطعتهم.", "en": "I listen attentively to others without interrupting them."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أستطيع تقديم الدعم العاطفي المناسب للشريك أو الأصدقاء.", "en": "I can offer appropriate emotional support to my partner or friends."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أتعامل مع النزاعات بطريقة بنّاءة.", "en": "I handle conflicts constructively."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أستطيع التعبير عن مشاعري بوضوح وصراحة.", "en": "I can express my feelings clearly and openly."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أحافظ على علاقات صحية ومستقرة مع الآخرين.", "en": "I maintain healthy, stable relationships with others."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أضع أهدافًا شخصية واضحة وأسعى لتحقيقها.", "en": "I set clear personal goals and work to achieve them."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أستمر في تحسين نفسي رغم التحديات والصعوبات.", "en": "I keep improving myself despite challenges and difficulties."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}, {"text": {"ar": "أتعلم من الأخطاء بدلاً من الانغماس في لوم نفسي أو الآخرين.", "en": "I learn from mistakes instead of dwelling on self-blame or blaming others."}, "group": "main", "options": [{"v": 1, "label": {"ar": "أبدًا", "en": "Never"}}, {"v": 2, "label": {"ar": "نادرًا", "en": "Rarely"}}, {"v": 3, "label": {"ar": "أحيانًا", "en": "Sometimes"}}, {"v": 4, "label": {"ar": "غالبًا", "en": "Often"}}, {"v": 5, "label": {"ar": "دائمًا", "en": "Always"}}]}], "mode": "sum", "bands": [{"min": 60, "max": 75, "cls": "high", "label": {"ar": "ذكاء عاطفي مرتفع جدًا", "en": "Very high emotional intelligence"}, "text": {"ar": "أنت قادر على التعامل مع العواطف بمرونة ووعي.", "en": "You're able to handle emotions with flexibility and awareness."}, "training": {"ar": "واصل ممارسة الوعي الذاتي، وشارك شريكك ملاحظاتك عن مشاعرك بانتظام.", "en": "Keep practicing self-awareness, and regularly share your feelings with your partner."}}, {"min": 45, "max": 59, "cls": "mid", "label": {"ar": "متوسط", "en": "Moderate"}, "text": {"ar": "تحتاج تعزيز بعض المهارات العاطفية، خاصة التعاطف أو إدارة الغضب.", "en": "You need to strengthen some emotional skills, especially empathy or anger management."}, "training": {"ar": "جرّب تمرين \"وقفة قبل الرد\": عدّ حتى 5 قبل الرد في أي موقف يثير انفعالك.", "en": "Try the \"pause before responding\" exercise: count to 5 before replying in any situation that triggers you."}}, {"min": 30, "max": 44, "cls": "low", "label": {"ar": "منخفض نسبيًا", "en": "Relatively low"}, "text": {"ar": "هناك ضعف في التعرف على المشاعر أو التحكم فيها، وقد يسبب توترات في الزواج والعمل.", "en": "There's weakness in recognizing or controlling emotions, which may cause tension in your marriage and work."}, "training": {"ar": "ابدأ بتدوين مشاعرك يوميًا لمدة أسبوعين لتتعرف عليها بوضوح أكبر، وتدرّب على الاستماع دون مقاطعة.", "en": "Start journaling your feelings daily for two weeks to get to know them better, and practice listening without interrupting."}}, {"min": 15, "max": 29, "cls": "low", "label": {"ar": "ضعيف جدًا", "en": "Very weak"}, "text": {"ar": "توجد صعوبة كبيرة في التفاعل العاطفي الصحي.", "en": "There's significant difficulty with healthy emotional interaction."}, "training": {"ar": "ينصح بالبدء بتدريب أو استشارة متخصصة في الذكاء العاطفي أو العلاج السلوكي، فهذه مهارة قابلة للتعلم والتحسن بالتدريب.", "en": "We recommend starting specialized training or counseling in emotional intelligence or behavioral therapy — this is a learnable, improvable skill."}}]};
+initQuiz(CONFIG);
+</script>
+
+<style is:global>
+:root{
+  --bg:#FAF6F0;
+  --surface:#FFFFFF;
+  --ink:#2B2320;
+  --muted:#8A7A6E;
+  --primary:#8C3B4A;
+  --primary-dark:#6E2938;
+  --accent:#C99A4B;
+  --success:#4C7A5E;
+  --success-bg:#EEF4EF;
+  --warning:#A6741C;
+  --warning-bg:#FBF3E3;
+  --danger:#A23B3B;
+  --danger-bg:#FBEDEC;
+  --line:#EDE3D8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Tahoma,'Segoe UI',Arial,sans-serif;
+  line-height:1.9;
+  direction:rtl;
+}
+.wrap{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+.arch{
+  background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%);
+  border-radius:0 0 120px 120px/0 0 60px 60px;
+  padding:38px 24px 46px;
+  text-align:center;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.arch::before{
+  content:"";
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%, rgba(255,255,255,.14), transparent 60%);
+}
+.arch .eyebrow{
+  font-size:13px;letter-spacing:.5px;color:#F1D9A8;font-weight:bold;
+  position:relative;
+}
+.arch h1{
+  font-size:26px;margin:10px 0 6px;position:relative;
+}
+.arch p.en{
+  font-size:13px;color:rgba(255,255,255,.75);margin:0;position:relative;
+  direction:ltr;
+}
+.backlink{
+  display:inline-block;margin-top:16px;color:rgba(255,255,255,.9);
+  font-size:13px;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,.5);
+  position:relative;
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:22px 20px;
+  margin-top:-30px;
+  position:relative;
+  box-shadow:0 8px 24px rgba(43,35,32,.06);
+}
+.card + .card{margin-top:18px}
+h2.section-title{
+  font-size:16px;color:var(--primary-dark);margin:0 0 12px;
+  display:flex;align-items:center;gap:8px;
+}
+h2.section-title::before{
+  content:"";width:8px;height:8px;border-radius:2px;
+  background:var(--accent);transform:rotate(45deg);flex:none;
+}
+.benefits{list-style:none;margin:0;padding:0}
+.benefits li{
+  padding:8px 0 8px 0;border-bottom:1px dashed var(--line);
+  font-size:14.5px;color:#4a3f39;
+  position:relative;padding-right:22px;
+}
+.benefits li:last-child{border-bottom:none}
+.benefits li::before{
+  content:"◆";position:absolute;right:0;top:9px;font-size:9px;color:var(--accent);
+}
+.disclaimer{
+  background:var(--warning-bg);border:1px solid #EFD9A8;color:#6b4d10;
+  border-radius:12px;padding:14px 16px;font-size:13px;margin-top:18px;
+}
+.disclaimer b{color:var(--warning)}
+.start-btn,.submit-btn,.reset-btn{
+  display:block;width:100%;border:none;cursor:pointer;
+  background:var(--primary);color:#fff;font-size:16px;font-weight:bold;
+  padding:15px;border-radius:12px;margin-top:20px;font-family:inherit;
+  transition:background .15s;
+}
+.start-btn:hover,.submit-btn:hover,.reset-btn:hover{background:var(--primary-dark)}
+#quiz-section{display:none}
+#result-section{display:none}
+.progress-wrap{
+  position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:5;
+  margin-bottom:6px;
+}
+.progress-track{background:var(--line);border-radius:20px;height:8px;overflow:hidden}
+.progress-fill{background:var(--accent);height:100%;width:0%;transition:width .2s}
+.progress-label{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
+.question{
+  border-bottom:1px solid var(--line);padding:18px 0;
+}
+.question:last-child{border-bottom:none}
+.question.missing{
+  animation:shake .3s;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(4px)}
+  75%{transform:translateX(-4px)}
+}
+.q-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:50%;
+  border:1.5px solid var(--accent);color:var(--primary-dark);
+  font-size:12.5px;font-weight:bold;margin-left:8px;flex:none;
+}
+.q-text{font-size:15px;color:var(--ink);display:flex;align-items:flex-start;gap:2px;font-weight:bold}
+.options{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.opt{
+  display:flex;align-items:center;gap:10px;
+  border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;
+  cursor:pointer;font-size:14px;color:#4a3f39;transition:.15s;
+}
+.opt:hover{border-color:var(--accent)}
+.opt input{accent-color:var(--primary);width:17px;height:17px;flex:none}
+.opt.checked{border-color:var(--primary);background:#FBF3F0}
+.result-badge{
+  text-align:center;padding:22px 16px;border-radius:14px;margin-bottom:16px;
+}
+.result-badge.high{background:var(--success-bg);color:var(--success)}
+.result-badge.mid{background:var(--warning-bg);color:var(--warning)}
+.result-badge.low{background:var(--danger-bg);color:var(--danger)}
+.result-badge .score{font-size:34px;font-weight:bold;display:block}
+.result-badge .label{font-size:16px;font-weight:bold;margin-top:4px;display:block}
+.result-text{font-size:14.5px;color:#4a3f39;margin-top:6px}
+.training-box{
+  background:#F7F2EA;border-radius:12px;padding:16px;margin-top:14px;
+  border-right:4px solid var(--accent);
+}
+.training-box b{color:var(--primary-dark);display:block;margin-bottom:6px;font-size:14px}
+footer.site-footer{
+  text-align:center;font-size:12px;color:var(--muted);margin-top:26px;line-height:1.8;
+}
+footer.site-footer a{color:var(--primary)}
+@media(max-width:400px){
+  .arch h1{font-size:22px}
+}
+
+/* ---- bilingual toggle ---- */
+html:not([lang="en"]) .t-en{display:none !important}
+html[lang="en"] .t-ar{display:none !important}
+html[lang="en"] body{direction:ltr}
+html[lang="en"] .q-num{margin-left:0;margin-right:8px}
+html[lang="en"] .benefits li{padding-right:0;padding-left:22px}
+html[lang="en"] .benefits li::before{right:auto;left:0}
+html[lang="en"] .training-box{border-right:none;border-left:4px solid var(--accent)}
+html[lang="en"] .result-badge .score{direction:ltr}
+.lang-toggle{
+  position:absolute; top:14px; left:14px;
+  background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.4);
+  color:#fff; font-size:12.5px; font-weight:bold; padding:7px 12px;
+  border-radius:20px; cursor:pointer; z-index:9;
+}
+html[lang="en"] .lang-toggle{left:auto; right:14px}
+.lang-toggle:hover{background:rgba(255,255,255,.28)}
+
+
+html[lang="en"] .question .q-text .t-ar{display:none !important}
+html[lang="en"] .question .q-text .t-en{display:inline !important}
+</style>
