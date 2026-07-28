@@ -1,0 +1,1345 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+<Layout title="صانع الكيو آر كود الطبي المجاني">
+  <div class="qrgen-root">
+
+    <header class="tool-header" data-i18n>
+      <h1 class="heading-font">
+        <span class="lang-ar">صانع الكود الطبي <span>المجاني</span></span>
+        <span class="lang-en">Free Medical <span>QR</span> Code Generator</span>
+      </h1>
+      <p class="tagline" data-i18n data-en="Create a QR code with your essential medical information for emergencies" data-ar="أنشئ كيو آر كود يحتوي على معلوماتك الطبية الأساسية لحالات الطوارئ">أنشئ كيو آر كود يحتوي على معلوماتك الطبية الأساسية لحالات الطوارئ</p>
+      <div class="knot-divider" aria-hidden="true">
+        <span class="knot-line"></span>
+        <svg width="26" height="22" viewBox="0 0 26 22">
+          <g fill="none" stroke="#B4872B" stroke-width="1.3">
+            <path d="M13 1 L24 11 L13 21 L2 11 Z"></path>
+            <path d="M13 6 L19 11 L13 16 L7 11 Z"></path>
+          </g>
+        </svg>
+        <span class="knot-line"></span>
+      </div>
+      <div class="privacy-note" data-i18n data-en="Everything runs in your browser only — no uploads, no storage, no server calls" data-ar="كل شيء يعمل في متصفحك فقط — لا يتم رفع أو تخزين أي بيانات"></div>
+    </header>
+    
+    <main class="tool-main">
+      <section class="panel" aria-label="Controls">
+    
+        <div class="field">
+          <label for="urlInput" data-i18n data-en="Link or text" data-ar="الرابط أو النص">الرابط أو النص</label>
+          <input type="url" id="urlInput" placeholder="https://example.com" autocomplete="off" spellcheck="false">
+          <div class="hint" id="capacityHint" data-i18n data-en="Type a link to generate the code instantly" data-ar="اكتب الرابط لتوليد الكود فوراً">اكتب الرابط لتوليد الكود فوراً</div>
+        </div>
+    
+        <fieldset>
+          <legend data-i18n data-en="Logo or image in the center of the code (optional)" data-ar="شعار أو صورة في وسط الكود (اختياري)">شعار أو صورة في وسط الكود (اختياري)</legend>
+          <div class="upload-box" id="uploadBox">
+            <span data-i18n data-en="📎 Click to choose an image or drag it here" data-ar="📎 انقر لاختيار صورة أو اسحبها إلى هنا">📎 انقر لاختيار صورة أو اسحبها إلى هنا</span>
+            <input type="file" id="logoInput" accept="image/*">
+          </div>
+          <div class="upload-preview" id="logoPreview" style="display:none;">
+            <img id="logoImg" alt="">
+            <span id="logoName" style="font-size:12.5px;"></span>
+            <button id="removeLogo" type="button" data-i18n data-en="Remove" data-ar="إزالة">إزالة</button>
+          </div>
+          <div class="field" style="margin-top:14px; margin-bottom:0;">
+            <label data-i18n data-en="Logo size" data-ar="حجم الشعار">حجم الشعار</label>
+            <input type="range" id="logoSize" min="10" max="25" value="18">
+          </div>
+        </fieldset>
+    
+        <fieldset>
+          <legend data-i18n data-en="Colors" data-ar="الألوان">الألوان</legend>
+          <div class="row">
+            <div class="color-field">
+              <input type="color" id="colorDots" value="#123832">
+              <span class="swatch-name" data-i18n data-en="Dot color" data-ar="لون النقاط">لون النقاط</span>
+            </div>
+            <div class="color-field">
+              <input type="color" id="colorBg" value="#ffffff">
+              <span class="swatch-name" data-i18n data-en="Background" data-ar="الخلفية">الخلفية</span>
+            </div>
+          </div>
+        </fieldset>
+    
+        <fieldset>
+          <legend data-i18n data-en="Dot shape" data-ar="شكل النقاط">شكل النقاط</legend>
+          <div class="seg" id="dotShapeSeg">
+            <button data-val="square" class="active" data-i18n data-en="Square" data-ar="مربع">مربع</button>
+            <button data-val="rounded" data-i18n data-en="Soft" data-ar="ناعم">ناعم</button>
+            <button data-val="dot" data-i18n data-en="Round" data-ar="دائري">دائري</button>
+          </div>
+        </fieldset>
+    
+        <fieldset>
+          <legend data-i18n data-en="Outer frame" data-ar="الإطار الخارجي">الإطار الخارجي</legend>
+          <div class="seg" id="frameStyleSeg">
+            <button data-val="none" data-i18n data-en="None" data-ar="بدون">بدون</button>
+            <button data-val="line" class="active" data-i18n data-en="Simple line" data-ar="خط بسيط">خط بسيط</button>
+            <button data-val="double" data-i18n data-en="Double" data-ar="مزدوج">مزدوج</button>
+            <button data-val="ornate" data-i18n data-en="Ornate" data-ar="مزخرف">مزخرف</button>
+            <button data-val="dashed" data-i18n data-en="Dashed" data-ar="متقطع">متقطع</button>
+          </div>
+          <div class="row" style="margin-top:14px;">
+            <div class="color-field">
+              <input type="color" id="colorFrame" value="#B4872B">
+              <span class="swatch-name" data-i18n data-en="Frame color" data-ar="لون الإطار">لون الإطار</span>
+            </div>
+          </div>
+        </fieldset>
+    
+        <div class="field">
+          <label for="captionInput" data-i18n data-en="Caption inside the frame (optional)" data-ar="نص داخل الإطار (اختياري)">نص داخل الإطار (اختياري)</label>
+          <input type="text" id="captionInput" placeholder="امسح الكود لزيارة موقعنا" maxlength="60">
+        </div>
+    
+      </section>
+    
+      <section class="panel preview-panel" aria-label="Preview">
+        <div class="canvas-wrap">
+          <canvas id="qrCanvas" width="600" height="600"></canvas>
+        </div>
+        <div class="status" id="statusLine"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btnPng" data-i18n data-en="Download PNG" data-ar="تحميل PNG">تحميل PNG</button>
+          <button class="btn btn-gold" id="btnSvg" data-i18n data-en="Download SVG" data-ar="تحميل SVG">تحميل SVG</button>
+          <button class="btn btn-outline" id="btnCopy" data-i18n data-en="Copy image" data-ar="نسخ الصورة">نسخ الصورة</button>
+        </div>
+        <div class="meta-line" id="metaLine"></div>
+      </section>
+    </main>
+    
+    <footer class="tool-footer">
+      <p data-i18n data-en="Works fully offline once loaded — you can save this page and open it from your device anytime." data-ar="يعمل بدون انترنت بعد تحميله — يمكنك حفظ هذه الصفحة وفتحها من جهازك في أي وقت.">يعمل بدون انترنت بعد تحميله — يمكنك حفظ هذه الصفحة وفتحها من جهازك في أي وقت.</p>
+    </footer>
+    
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <article class="article-section">
+    <div class="article-content" data-i18n>
+      <div class="lang-ar">
+        <h2>دليل صانع الرموز الطبية والخدمية الذكي</h2>
+        <h3>صانع الرموز الطبية الذكي: حلول مجانية وسريعة للقطاع الصحي والممارسين</h3>
+        <p>في عصر التحول الرقمي والتكنولوجيا الصحية، أصبحت السرعة، الدقة، وبساطة التواصل هي أعمدة الرعاية الطبية الناجحة. يُعد صانع الرموز الطبية (Medical QR Code Generator) أحد أبرز الأدوات الرقمية الحديثة التي تسهل على الأطباء، الصيادلة، والمؤسسات الصحية ربط المرضى بالمعلومات والخدمات الطبية بلمسة واحدة ومن دون أي تعقيد.</p>
+        <p>سواء كنت تجري استشارة، أو تطبع ملصقاً توعوياً، أو تود مشاركة تعليمات استخدام الدواء مع المريض، فإن أداة إنشاء الرموز الطبية تتيح لك تحويل أي نص أو رابط إلى رمز استجابة سريعة (QR Code) آمن، سريع، ومجاني بالكامل.</p>
+        <h4>لماذا يحتاج القطاع الصحي إلى صانع الرموز الطبية؟</h4>
+        <p>تستدعي بيئة العمل في المستشفيات والعيادات التعامل مع مئات التفاصيل يومياً. استخدام الرموز الاستجابة السريعة يساهم في:</p>
+        <ul>
+          <li><b>تيسير الوصول للوصفات والتعليمات الطبية:</b> إرفاق رمز الاستجابة على ملف المريض أو الوصفة الطبية لفتح جدول الجرعات أو النصائح الغذائية.</li>
+          <li><b>الوصول السريع لملفات الطوارئ (Emergency Medical ID):</b> تمكين المرضى من طباعة رمز يحتوي على فصيلة الدم، الحساسيات الدوائية، وأرقام التواصل في حالات الطوارئ.</li>
+          <li><b>دعم المؤتمرات والأبحاث الطبية:</b> تمكين المحاضرين والأطباء من مشاركة العروض التقديمية والبحوث العلمية مع زملائهم بضغطة زر.</li>
+          <li><b>توفير الوقت والحد من الأخطاء البشرية:</b> تقليل الحاجة لكتابة الروابط الطبية الطويلة أو الاستشارات المفصلة يدوياً.</li>
+        </ul>
+        <h4>مميزات مخصصة للتميز والتصميم الاحترافي</h4>
+        <p>تتميز أداتنا المجانية بتقديم خيارات تخصيص تقدمية لتناسب الهوية البصرية لعيادتك أو مركزك الطبي:</p>
+        <ul>
+          <li><b>إضافة الشعار الخاص بك (Custom Logo):</b> يمكنك إدراج شعار العيادة، الصيدلية، أو رمز الهلال/الصليب الطبي في منتصف الكود لرفع مستوى الموثوقية والأمان لدى المريض.</li>
+          <li><b>اختيار الأشكال الفنية والحواف (Custom Shapes & Design):</b> تخصيص أشكال النقاط والزوايا الداخلية والخارجية لتمنح الرمز لمسة فنية حديثة تبتعد عن الشكل التقليدي الجاف.</li>
+          <li><b>إضافة الإطارات والعبارات التشجيعية (Custom Frames):</b> إضافة إطار خارجي يحمل عبارات توضيحية للمريض مثل: "امسح الكود لمعرفة الجرعات" أو "Scan for Medical Info" لزيادة نسبة تفاعل الزوار.</li>
+          <li><b>تغيير الألوان والتباين (Color Control):</b> التحكم الكامل بألوان خلفية ونقاط الرمز لتتماشى مع ألوان الهوية البصرية لمؤسستك الصحية.</li>
+        </ul>
+        <h4>الأمان والخصوصية: حماية بياناتك أولاً</h4>
+        <p>تعتمد أداتنا البرمجية على المعالجة الفورية المباشرة على متصفح المستخدم (Client-Side Processing). هذا يعني أن النصوص، البيانات، أو الروابط التي تحولها إلى رمز لا تُحفظ في أي قواعد بيانات خارجية أو سيرفرات، مما يضمن أعلى مستويات الخصوصية والامتثال لمعايير الأمان الطبي وتداول البيانات الحساسة.</p>
+        <h4>خدمة مجانية 100% وغير محدودة للأبد</h4>
+        <p>دعماً للكوادر الطبية والممارسين الصحيين في كل مكان، نتيح هذه الأداة بشكل مجاني بالكامل، دون الحاجة للتسجيل، ودون فرض أي حد أقصى لعدد مرات الإنشاء اليومي.</p>
+      </div>
+      <div class="lang-en">
+        <h2>Medical QR Code Generator Guide</h2>
+        <h3>Smart Medical QR Code Generator: Free & Secure Solutions for Healthcare Providers</h3>
+        <p>In the era of digital health transformation, speed, accuracy, and seamless communication form the backbone of effective medical care. The Medical QR Code Generator is a powerful utility designed to bridge the gap between healthcare professionals, patients, and vital medical information with a single scan.</p>
+        <p>Whether you are conducting a clinical consultation, designing a public health poster, or sharing medication guidelines with patients, our tool turns any text, URL, or instruction into an instant, highly secure QR code—completely free of charge.</p>
+        <h4>Why Healthcare Professionals Need a Medical QR Generator</h4>
+        <p>The fast-paced nature of medical environments requires tools that reduce friction and eliminate errors:</p>
+        <ul>
+          <li><b>Instant Patient Education:</b> Attach QR codes to prescription sheets or medical files leading to dosage guides, dietary advice, or workout routines.</li>
+          <li><b>Emergency Medical IDs:</b> Allow patients to create and carry printable QR codes containing crucial info such as blood type, drug allergies, and emergency contacts.</li>
+          <li><b>Medical Research & Conferences:</b> Enable doctors, professors, and researchers to instantly share scientific papers and presentation slides during medical conventions.</li>
+          <li><b>Streamlined Practice Management:</b> Direct patients effortlessly to online booking portals, clinic locations, or feedback forms.</li>
+        </ul>
+        <h4>Advanced Design & Customization Features</h4>
+        <p>Our generator offers full creative control to help your medical practice maintain a crisp, professional brand identity:</p>
+        <ul>
+          <li><b>Custom Logo Integration:</b> Insert your clinic, hospital, or pharmacy logo right at the center of the QR code to build patient trust and brand recognition.</li>
+          <li><b>Artistic Shapes & Patterns:</b> Choose from various dot patterns and corner styles to transform standard barcodes into modern, visually pleasing assets.</li>
+          <li><b>Interactive Custom Frames:</b> Enclose your QR codes with tailored call-to-action frames (e.g., "Scan for Prescription Info" or "Medical Contact ID").</li>
+          <li><b>Color & Contrast Customization:</b> Adjust background and foreground colors to seamlessly match your organization's official branding.</li>
+        </ul>
+        <h4>Privacy First: Client-Side Security</h4>
+        <p>We prioritize patient privacy above all else. Our tool runs entirely on Client-Side JavaScript Processing, meaning that the information or URLs you convert into QR codes are generated directly inside your browser. No medical data is ever stored, saved, or transmitted to external servers, making it fully compliant with healthcare privacy principles.</p>
+        <h4>Unrestricted & Free Forever for the Medical Community</h4>
+        <p>To support healthcare heroes, pharmacists, students, and practitioners worldwide, this service is provided 100% free of charge, with no account registration required and no daily generation limits. Create as many codes as you need, whenever you need them!</p>
+      </div>
+    </div>
+  </article>
+
+  <style>
+    .qrgen-root{
+      --ink:#123832;
+      --ink-2:#0c2925;
+      --paper:#F6F0DF;
+      --paper-2:#EFE6CC;
+      --gold:#B4872B;
+      --gold-light:#D8AE55;
+      --wine:#7C2D3B;
+      --charcoal:#211F1B;
+      --line: rgba(18,56,50,0.16);
+      --shadow: 0 18px 40px -22px rgba(12,41,37,0.45);
+      --radius: 18px;
+      font-size: 16px;
+      max-width: 1180px;
+      margin: 0 auto;
+      position: relative;
+      display: block;
+      box-sizing: border-box;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(180,135,43,0.10), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(124,45,59,0.08), transparent 55%),
+        var(--paper);
+      color: var(--charcoal);
+      font-family: "Tahoma","Segoe UI","Cairo",sans-serif;
+      line-height:1.6;
+      direction: rtl;
+    }
+    .qrgen-root, .qrgen-root *{ box-sizing: border-box; }
+    [lang="en"] .qrgen-root { direction: ltr; }
+    .qrgen-root .heading-font{
+      font-family:"Palatino Linotype","Book Antiqua",Georgia,"Times New Roman",serif;
+    }
+  
+    /* ---------- ornamental divider (signature element) ---------- */
+    .qrgen-root .knot-divider{
+      width:100%;
+      height:22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      opacity:0.85;
+    }
+    .qrgen-root .knot-divider svg{ display:block; }
+    .qrgen-root .knot-line{ flex:1; height:1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); max-width:220px; }
+  
+    .qrgen-root .tool-header{
+      padding: 38px 24px 18px;
+      text-align:center;
+    }
+    .qrgen-root header h1{
+      font-size: clamp(28px, 4vw, 42px);
+      margin: 0 0 6px;
+      color: var(--ink);
+      letter-spacing: 0.5px;
+    }
+    .qrgen-root header h1 span{ color: var(--gold); }
+    .qrgen-root header p.tagline{
+      margin: 6px 0 0;
+      color: rgba(33,31,27,0.65);
+      font-size: 15px;
+    }
+    .qrgen-root .privacy-note{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:14px;
+      padding: 7px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.5);
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .qrgen-root .privacy-note::before{ content:"●"; color:#3a8a5f; font-size:9px; }
+  
+    .qrgen-root .tool-main{
+      max-width: 1180px;
+      margin: 10px auto 60px;
+      padding: 0 20px;
+      display:grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 26px;
+    }
+    @media (max-width: 880px){
+      .qrgen-root .tool-main{ grid-template-columns: 1fr; }
+    }
+  
+    .qrgen-root .panel{
+      background: rgba(255,255,255,0.55);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px;
+      backdrop-filter: blur(2px);
+    }
+  
+    /* ---------- controls ---------- */
+    .qrgen-root .field{ margin-bottom: 20px; }
+    .qrgen-root .field label{
+      display:block;
+      font-size: 13.5px;
+      font-weight:700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .qrgen-root .field .hint{
+      font-size:12px;
+      color: rgba(33,31,27,0.55);
+      margin-top:6px;
+    }
+    .qrgen-root input[type="text"], .qrgen-root input[type="url"]{
+      width:100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--line);
+      background: #fff;
+      font-size: 15px;
+      color: var(--charcoal);
+      font-family: inherit;
+      transition: border-color .15s;
+    }
+    .qrgen-root input[type="text"]:focus, .qrgen-root input[type="url"]:focus{
+      outline:none;
+      border-color: var(--gold);
+    }
+    .qrgen-root .row{ display:flex; gap:14px; }
+    .qrgen-root .row > *{ flex:1; }
+  
+    .qrgen-root .color-field{ display:flex; align-items:center; gap:10px; }
+    .qrgen-root .color-field input[type="color"]{
+      width:44px; height:40px; border-radius:10px; border:1.5px solid var(--line);
+      padding:2px; background:#fff; cursor:pointer;
+    }
+    .qrgen-root .color-field .swatch-name{ font-size:13px; color:var(--charcoal); }
+  
+    .qrgen-root .seg{
+      display:flex;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .qrgen-root .seg button{
+      flex:1;
+      padding: 9px 6px;
+      border:none;
+      background: transparent;
+      font-family:inherit;
+      font-size:13px;
+      color: var(--charcoal);
+      cursor:pointer;
+      border-inline-start: 1px solid var(--line);
+      transition: background .15s, color .15s;
+    }
+    .qrgen-root .seg button:first-child{ border-inline-start:none; }
+    .qrgen-root .seg button.active{
+      background: var(--ink);
+      color: var(--paper);
+    }
+  
+    .qrgen-root .upload-box{
+      border: 1.5px dashed var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      text-align:center;
+      background:#fff;
+      cursor:pointer;
+      font-size: 13.5px;
+      color: rgba(33,31,27,0.7);
+      position:relative;
+    }
+    .qrgen-root .upload-box:hover{ border-color: var(--gold); }
+    .qrgen-root .upload-box.drag-over{ border-color: var(--gold); background: rgba(180,135,43,0.08); }
+    .qrgen-root .upload-box input[type="file"]{
+      position:absolute; inset:0; opacity:0; cursor:pointer;
+    }
+    .qrgen-root .upload-preview{
+      display:flex; align-items:center; gap:12px; margin-top:10px;
+    }
+    .qrgen-root .upload-preview img{
+      width:40px; height:40px; object-fit:cover; border-radius:8px; border:1px solid var(--line);
+    }
+    .qrgen-root .upload-preview button{
+      border:none; background:none; color:var(--wine); font-size:12.5px; cursor:pointer; text-decoration:underline;
+      font-family:inherit;
+    }
+  
+    .qrgen-root input[type="range"]{
+      width:100%; accent-color: var(--gold);
+    }
+  
+    .qrgen-root fieldset{ border:none; padding:0; margin:0 0 20px; }
+    .qrgen-root legend{
+      font-size: 13.5px; font-weight:700; color:var(--ink); margin-bottom:10px; padding:0;
+    }
+  
+    /* ---------- preview panel ---------- */
+    .qrgen-root .preview-panel{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      gap: 18px;
+    }
+    .qrgen-root .canvas-wrap{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      padding: 10px;
+      background:
+        linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)),
+        repeating-conic-gradient(#efe9d8 0% 25%, #f6f0df 0% 50%) 0 0/16px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+    }
+    .qrgen-root #qrCanvas{
+      max-width:100%;
+      height:auto;
+      border-radius: 6px;
+    }
+    .qrgen-root .status{
+      font-size: 13px;
+      min-height: 18px;
+      text-align:center;
+    }
+    .qrgen-root .status.error{ color: var(--wine); font-weight:700; }
+    .qrgen-root .status.ok{ color:#2f7a52; }
+  
+    .qrgen-root .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      width:100%;
+    }
+    .qrgen-root .btn{
+      flex:1;
+      min-width: 140px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight:700;
+      cursor:pointer;
+      transition: transform .12s, box-shadow .12s, opacity .12s;
+    }
+    .qrgen-root .btn:active{ transform: scale(0.97); }
+    .qrgen-root .btn-primary{ background: var(--ink); color: var(--paper); }
+    .qrgen-root .btn-primary:hover{ background: var(--ink-2); }
+    .qrgen-root .btn-gold{ background: var(--gold); color: #2a1c02; }
+    .qrgen-root .btn-gold:hover{ background: var(--gold-light); }
+    .qrgen-root .btn-outline{ background: transparent; color: var(--ink); border:1.5px solid var(--line); }
+    .qrgen-root .btn-outline:hover{ border-color: var(--gold); }
+    .qrgen-root .btn:disabled{ opacity:0.45; cursor:not-allowed; transform:none; }
+  
+    .qrgen-root .meta-line{
+      font-size:12px; color: rgba(33,31,27,0.55); text-align:center;
+    }
+  
+    .qrgen-root .tool-footer {
+      text-align:center;
+      padding: 10px 20px 40px;
+      font-size:12.5px;
+      color: rgba(33,31,27,0.5);
+    }
+    .qrgen-root .tool-footer a{ color: var(--ink); }
+  
+    .qrgen-root .toast{
+      position: absolute; bottom: 26px; left:50%; transform: translateX(-50%) translateY(20px);
+      background: var(--ink); color: var(--paper); padding: 12px 22px; border-radius: 999px;
+      font-size:13.5px; box-shadow: var(--shadow); opacity:0; pointer-events:none;
+      transition: opacity .25s, transform .25s;
+      z-index: 50;
+    }
+    .qrgen-root .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+    .article-section {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+    .article-content h2 {
+      font-size: 1.8rem;
+      color: #134e39;
+      margin-bottom: 1rem;
+    }
+    .article-content h3 {
+      font-size: 1.4rem;
+      color: #16603f;
+      margin-top: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+    .article-content h4 {
+      font-size: 1.15rem;
+      color: #16603f;
+      margin-top: 1.2rem;
+      margin-bottom: 0.6rem;
+    }
+    .article-content p, .article-content li {
+      line-height: 1.8;
+      color: #334155;
+    }
+    .article-content ul {
+      padding-right: 20px;
+    }
+    [lang="en"] .article-content ul {
+      padding-right: 0;
+      padding-left: 20px;
+    }
+    :root:not([lang="en"]) .article-content .lang-en { display: none; }
+    :root[lang="en"] .article-content .lang-ar { display: none; }
+    :root:not([lang="en"]) .tool-header .lang-en { display: none; }
+    :root[lang="en"] .tool-header .lang-ar { display: none; }
+  </style>
+  <script id="qr-engine" is:inline>
+    /* ============================================================
+       QR generation engine (built from scratch - GF(256) + Reed-Solomon)
+       Supports versions 1-10 and all error-correction levels L/M/Q/H
+       ============================================================ */
+    (function(){
+    'use strict';
+    
+    const GF_EXP = new Array(512);
+    const GF_LOG = new Array(256);
+    (function initGF(){
+      let x = 1;
+      for (let i = 0; i < 255; i++) {
+        GF_EXP[i] = x;
+        GF_LOG[x] = i;
+        x <<= 1;
+        if (x & 0x100) x ^= 0x11D;
+      }
+      for (let i = 255; i < 512; i++) GF_EXP[i] = GF_EXP[i-255];
+    })();
+    function gfMul(a,b){ if(a===0||b===0) return 0; return GF_EXP[GF_LOG[a]+GF_LOG[b]]; }
+    function polyMulSingle(p, factor){
+      const result = new Array(p.length + 1).fill(0);
+      for (let i = 0; i < p.length; i++){
+        result[i] ^= gfMul(p[i], factor[0]);
+        result[i+1] ^= gfMul(p[i], factor[1]);
+      }
+      return result;
+    }
+    function rsGeneratorPoly(degree){
+      let poly = [1];
+      for (let i = 0; i < degree; i++){
+        poly = polyMulSingle(poly, [1, GF_EXP[i]]);
+      }
+      return poly;
+    }
+    function rsEncode(dataCodewords, ecCount){
+      const gen = rsGeneratorPoly(ecCount);
+      const res = dataCodewords.concat(new Array(ecCount).fill(0));
+      for (let i = 0; i < dataCodewords.length; i++){
+        const coef = res[i];
+        if (coef !== 0){
+          for (let j = 0; j < gen.length; j++){
+            res[i+j] ^= gfMul(gen[j], coef);
+          }
+        }
+      }
+      return res.slice(dataCodewords.length);
+    }
+    
+    const TABLE = {
+    1:{L:[19,7,[[1,19]]], M:[16,10,[[1,16]]], Q:[13,13,[[1,13]]], H:[9,17,[[1,9]]]},
+    2:{L:[34,10,[[1,34]]], M:[28,16,[[1,28]]], Q:[22,22,[[1,22]]], H:[16,28,[[1,16]]]},
+    3:{L:[55,15,[[1,55]]], M:[44,26,[[1,44]]], Q:[34,18,[[2,17]]], H:[26,22,[[2,13]]]},
+    4:{L:[80,20,[[1,80]]], M:[64,18,[[2,32]]], Q:[48,26,[[2,24]]], H:[36,16,[[4,9]]]},
+    5:{L:[108,26,[[1,108]]], M:[86,24,[[2,43]]], Q:[62,18,[[2,15],[2,16]]], H:[46,22,[[2,11],[2,12]]]},
+    6:{L:[136,18,[[2,68]]], M:[108,16,[[4,27]]], Q:[76,24,[[4,19]]], H:[60,28,[[4,15]]]},
+    7:{L:[156,20,[[2,78]]], M:[124,18,[[4,31]]], Q:[88,18,[[2,14],[4,15]]], H:[66,26,[[4,13],[1,14]]]},
+    8:{L:[194,24,[[2,97]]], M:[154,22,[[2,38],[2,39]]], Q:[110,22,[[4,18],[2,19]]], H:[86,26,[[4,14],[2,15]]]},
+    9:{L:[232,30,[[2,116]]], M:[182,22,[[3,36],[2,37]]], Q:[132,20,[[4,16],[4,17]]], H:[100,24,[[4,12],[4,13]]]},
+    10:{L:[274,18,[[2,68],[2,69]]], M:[216,26,[[4,43],[1,44]]], Q:[154,24,[[6,19],[2,20]]], H:[122,28,[[6,15],[2,16]]]}
+    };
+    const ALIGN = {2:[6,18],3:[6,22],4:[6,26],5:[6,30],6:[6,34],7:[6,22,38],8:[6,24,42],9:[6,26,46],10:[6,28,50]};
+    const REMAINDER = {1:0,2:7,3:7,4:7,5:7,6:7,7:0,8:0,9:0,10:0};
+    const EC_BITS = {L:0b01, M:0b00, Q:0b11, H:0b10};
+    
+    function bestVersion(byteLen, level){
+      for (let v=1; v<=10; v++){
+        const totalData = TABLE[v][level][0];
+        const ccBits = v<=9?8:16;
+        const capacityBits = totalData*8;
+        const usedBits = 4 + ccBits + byteLen*8;
+        if (usedBits <= capacityBits) return v;
+      }
+      return null;
+    }
+    
+    function BitBuffer(){ this.bits=[]; }
+    BitBuffer.prototype.put = function(val,len){ for(let i=len-1;i>=0;i--) this.bits.push((val>>>i)&1); };
+    Object.defineProperty(BitBuffer.prototype, 'length', { get: function(){ return this.bits.length; } });
+    
+    function encodeDataCodewords(bytes, version, level){
+      const totalData = TABLE[version][level][0];
+      const ccBits = version<=9?8:16;
+      const bb = new BitBuffer();
+      bb.put(0b0100,4);
+      bb.put(bytes.length, ccBits);
+      for (let k=0;k<bytes.length;k++) bb.put(bytes[k],8);
+      const capacityBits = totalData*8;
+      let termLen = Math.min(4, capacityBits - bb.length);
+      if (termLen>0) bb.put(0, termLen);
+      while (bb.length % 8 !== 0) bb.bits.push(0);
+      const codewords=[];
+      for (let i=0;i<bb.length;i+=8){
+        let byte=0;
+        for(let j=0;j<8;j++) byte=(byte<<1)|bb.bits[i+j];
+        codewords.push(byte);
+      }
+      const PAD=[0xEC,0x11];
+      let p=0;
+      while (codewords.length < totalData){ codewords.push(PAD[p%2]); p++; }
+      return codewords;
+    }
+    
+    function blockify(dataCodewords, version, level){
+      const t = TABLE[version][level];
+      const ecPerBlock = t[1], groups = t[2];
+      const blocks=[]; let idx=0;
+      for (const g of groups){
+        const count=g[0], len=g[1];
+        for (let i=0;i<count;i++){
+          const d = dataCodewords.slice(idx, idx+len);
+          idx += len;
+          const ec = rsEncode(d, ecPerBlock);
+          blocks.push({d:d, ec:ec});
+        }
+      }
+      return blocks;
+    }
+    function interleave(blocks){
+      let maxD=0; for(const b of blocks) if (b.d.length>maxD) maxD=b.d.length;
+      const ecLen = blocks[0].ec.length;
+      const out=[];
+      for (let i=0;i<maxD;i++){ for (const b of blocks){ if (i<b.d.length) out.push(b.d[i]); } }
+      for (let i=0;i<ecLen;i++){ for (const b of blocks){ out.push(b.ec[i]); } }
+      return out;
+    }
+    function codewordsToBits(codewords, remainderBits){
+      const bits=[];
+      for (const c of codewords) for(let j=7;j>=0;j--) bits.push((c>>j)&1);
+      for (let i=0;i<remainderBits;i++) bits.push(0);
+      return bits;
+    }
+    
+    function makeMatrix(version){
+      const size = 17+4*version;
+      const m = [], reserved=[];
+      for (let i=0;i<size;i++){ m.push(new Array(size).fill(null)); reserved.push(new Array(size).fill(false)); }
+      return {size:size, m:m, reserved:reserved};
+    }
+    function setModule(ctx, r, c, val, isReserved){
+      ctx.m[r][c]=val;
+      if (isReserved) ctx.reserved[r][c]=true;
+    }
+    function placeFinder(ctx, r0, c0){
+      for (let r=-1;r<=7;r++){
+        for (let c=-1;c<=7;c++){
+          const rr=r0+r, cc=c0+c;
+          if (rr<0||cc<0||rr>=ctx.size||cc>=ctx.size) continue;
+          let val;
+          if (r>=0&&r<=6&&c>=0&&c<=6){
+            if (r===0||r===6||c===0||c===6) val=1;
+            else if (r>=2&&r<=4&&c>=2&&c<=4) val=1;
+            else val=0;
+          } else val=0;
+          setModule(ctx, rr, cc, val, true);
+        }
+      }
+    }
+    function placeTiming(ctx){
+      for (let i=8;i<ctx.size-8;i++){
+        const v = i%2===0?1:0;
+        if (ctx.m[6][i]===null) setModule(ctx,6,i,v,true);
+        if (ctx.m[i][6]===null) setModule(ctx,i,6,v,true);
+      }
+    }
+    function placeAlignment(ctx, version){
+      if (version===1) return;
+      const positions = ALIGN[version];
+      for (const r of positions){
+        for (const c of positions){
+          if ((r<=8&&c<=8)||(r<=8&&c>=ctx.size-9)||(r>=ctx.size-9&&c<=8)) continue;
+          for (let dr=-2; dr<=2; dr++){
+            for (let dc=-2; dc<=2; dc++){
+              const mx = Math.max(Math.abs(dr),Math.abs(dc));
+              const val = (mx===2||mx===0)?1:0;
+              setModule(ctx, r+dr, c+dc, val, true);
+            }
+          }
+        }
+      }
+    }
+    function placeDarkModule(ctx, version){ setModule(ctx, 4*version+9, 8, 1, true); }
+    function reserveFormatAreas(ctx){
+      for (let i=0;i<9;i++){
+        if (ctx.m[8][i]===null) setModule(ctx,8,i,0,true);
+        if (ctx.m[i][8]===null) setModule(ctx,i,8,0,true);
+      }
+      // row-strip (bottom copy of format info): row 8, columns (size-8)..(size-1) — 8 modules
+      for (let i=0;i<8;i++){
+        setModule(ctx, 8, ctx.size-8+i, 0, true);
+      }
+      // col-strip (right copy of format info): column 8, rows (size-7)..(size-1) — 7 modules.
+      // Row (size-8) is deliberately NOT part of this strip: that cell belongs to the
+      // dark module, and previously this loop over-reserved it, causing placeFormatInfo
+      // to later overwrite the dark module with a stray format-info bit.
+      for (let i=0;i<7;i++){
+        setModule(ctx, ctx.size-7+i, 8, 0, true);
+      }
+    }
+    function reserveVersionAreas(ctx, version){
+      if (version<7) return;
+      for (let r=0;r<6;r++) for (let c=0;c<3;c++){
+        setModule(ctx, r, ctx.size-11+c, 0, true);
+        setModule(ctx, ctx.size-11+c, r, 0, true);
+      }
+    }
+    function bchFormat(data5){
+      let g = 0b10100110111;
+      let val = data5 << 10;
+      let msbPos = 14;
+      while (msbPos >= 10){
+        if ((val >> msbPos) & 1){ val ^= (g << (msbPos-10)); }
+        msbPos--;
+      }
+      const bch = val & 0x3FF;
+      let full = (data5<<10) | bch;
+      full ^= 0b101010000010010;
+      return full;
+    }
+    function bchVersion(data6){
+      let g = 0b1111100100101;
+      let val = data6 << 12;
+      let msbPos = 17;
+      while (msbPos >= 12){
+        if ((val>>msbPos)&1){ val ^= (g << (msbPos-12)); }
+        msbPos--;
+      }
+      const bch = val & 0xFFF;
+      return (data6<<12)|bch;
+    }
+    function placeFormatInfo(ctx, level, mask){
+      const data5 = (EC_BITS[level]<<3) | mask;
+      const bits = bchFormat(data5);
+      const b = [];
+      for (let i=14;i>=0;i--) b.push((bits>>i)&1);
+      const posA = [ [8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8] ];
+      for (let i=0;i<15;i++){ setModule(ctx,posA[i][0],posA[i][1],b[i],true); }
+      const size = ctx.size;
+      // col-strip: 7 bits (b[0..6]) at column 8, rows (size-1) down to (size-7)
+      for (let i=0;i<7;i++){ setModule(ctx, size-1-i, 8, b[i], true); }
+      // row-strip: 8 bits (b[7..14]) at row 8, columns (size-8) to (size-1)
+      for (let i=0;i<8;i++){ setModule(ctx, 8, size-8+i, b[7+i], true); }
+    }
+    function placeVersionInfo(ctx, version){
+      if (version<7) return;
+      const bits = bchVersion(version);
+      // bit i (LSB-first, i=0..17) goes at row=floor(i/3), col=i%3 in the top-right
+      // 6x3 block, and the transposed position in the bottom-left 3x6 block.
+      // (Verified against a reference encoder — using an MSB-first array here,
+      // as an earlier version of this code did, silently corrupts version info
+      // for every symbol from version 7 upward.)
+      for (let i=0;i<18;i++){
+        const bit = (bits>>i)&1;
+        const r = Math.floor(i/3), c = i%3;
+        setModule(ctx, r, ctx.size-11+c, bit, true);
+        setModule(ctx, ctx.size-11+c, r, bit, true);
+      }
+    }
+    function placeData(ctx, bits){
+      let bitIdx=0;
+      const size = ctx.size;
+      let dir=-1, col = size-1;
+      while (col>0){
+        if (col===6) col--;
+        for (let i=0;i<size;i++){
+          const row = dir===-1 ? size-1-i : i;
+          for (const c of [col, col-1]){
+            if (!ctx.reserved[row][c]){
+              const bit = bitIdx<bits.length? bits[bitIdx]:0;
+              ctx.m[row][c]=bit;
+              bitIdx++;
+            }
+          }
+        }
+        dir=-dir; col-=2;
+      }
+    }
+    function applyMask(ctx, maskFn){
+      const out=[];
+      for (let r=0;r<ctx.size;r++) out.push(ctx.m[r].slice());
+      for (let r=0;r<ctx.size;r++){
+        for (let c=0;c<ctx.size;c++){
+          if (!ctx.reserved[r][c] && maskFn(r,c)) out[r][c] ^= 1;
+        }
+      }
+      return out;
+    }
+    const MASK_FNS = [
+      (r,c)=> (r+c)%2===0,
+      (r,c)=> r%2===0,
+      (r,c)=> c%3===0,
+      (r,c)=> (r+c)%3===0,
+      (r,c)=> (Math.floor(r/2)+Math.floor(c/3))%2===0,
+      (r,c)=> ((r*c)%2)+((r*c)%3)===0,
+      (r,c)=> (((r*c)%2)+((r*c)%3))%2===0,
+      (r,c)=> (((r+c)%2)+((r*c)%3))%2===0,
+    ];
+    function penalty(matrix){
+      const size = matrix.length;
+      let score=0;
+      for (let r=0;r<size;r++){
+        let run=1;
+        for (let c=1;c<size;c++){
+          if (matrix[r][c]===matrix[r][c-1]) run++;
+          else { if (run>=5) score += 3+(run-5); run=1; }
+        }
+        if (run>=5) score += 3+(run-5);
+      }
+      for (let c=0;c<size;c++){
+        let run=1;
+        for (let r=1;r<size;r++){
+          if (matrix[r][c]===matrix[r-1][c]) run++;
+          else { if (run>=5) score += 3+(run-5); run=1; }
+        }
+        if (run>=5) score += 3+(run-5);
+      }
+      for (let r=0;r<size-1;r++){
+        for (let c=0;c<size-1;c++){
+          const v = matrix[r][c];
+          if (v===matrix[r][c+1]&&v===matrix[r+1][c]&&v===matrix[r+1][c+1]) score+=3;
+        }
+      }
+      const pat1=[1,0,1,1,1,0,1,0,0,0,0];
+      const pat2=[0,0,0,0,1,0,1,1,1,0,1];
+      function matchAt(arr, idx, pat){
+        for (let k=0;k<pat.length;k++) if (arr[idx+k]!==pat[k]) return false;
+        return true;
+      }
+      for (let r=0;r<size;r++){
+        const row = matrix[r];
+        for (let c=0;c<=size-11;c++){ if (matchAt(row,c,pat1)||matchAt(row,c,pat2)) score+=40; }
+      }
+      for (let c=0;c<size;c++){
+        const col = matrix.map(row=>row[c]);
+        for (let r=0;r<=size-11;r++){ if (matchAt(col,r,pat1)||matchAt(col,r,pat2)) score+=40; }
+      }
+      let dark=0;
+      for (let r=0;r<size;r++) for (let c=0;c<size;c++) if (matrix[r][c]) dark++;
+      const total = size*size;
+      const percent = dark*100/total;
+      const prev = Math.floor(Math.abs(percent-50)/5)*5;
+      const next = prev+5;
+      score += Math.min(Math.abs(prev-50)/5, Math.abs(next-50)/5)*10;
+      return score;
+    }
+    
+    function utf8Bytes(str){
+      return Array.from(new TextEncoder().encode(str));
+    }
+    
+    function generateMatrix(text, level){
+      const bytes = utf8Bytes(text);
+      const version = bestVersion(bytes.length, level);
+      if (!version) return null;
+      const dataCodewords = encodeDataCodewords(bytes, version, level);
+      const blocks = blockify(dataCodewords, version, level);
+      const finalCodewords = interleave(blocks);
+      const bits = codewordsToBits(finalCodewords, REMAINDER[version]);
+    
+      const ctx = makeMatrix(version);
+      placeFinder(ctx,0,0); placeFinder(ctx,0,ctx.size-7); placeFinder(ctx,ctx.size-7,0);
+      placeTiming(ctx);
+      placeAlignment(ctx, version);
+      reserveFormatAreas(ctx);
+      placeDarkModule(ctx, version);
+      reserveVersionAreas(ctx, version);
+      placeData(ctx, bits);
+    
+      let best=null, bestScore=Infinity, bestMask=0;
+      for (let mi=0; mi<8; mi++){
+        const masked = applyMask(ctx, MASK_FNS[mi]);
+        const sc = penalty(masked);
+        if (sc<bestScore){ bestScore=sc; best=masked; bestMask=mi; }
+      }
+      const finalCtx = {size: ctx.size, m: best, reserved: ctx.reserved};
+      placeFormatInfo(finalCtx, level, bestMask);
+      placeVersionInfo(finalCtx, version);
+      return {size: ctx.size, matrix: best, version: version, level: level, mask: bestMask};
+    }
+    
+    window.QRGen = { generateMatrix: generateMatrix, TABLE: TABLE };
+    })();
+  </script>
+  <script is:inline>
+    /* ============================================================
+       App UI: rendering, customization, export
+       ============================================================ */
+    (function(){
+    'use strict';
+    
+    // Define constants for DOM elements with proper types
+    const urlInput = /** @type {HTMLInputElement} */ (document.getElementById('urlInput'));
+    const captionInput = /** @type {HTMLInputElement} */ (document.getElementById('captionInput'));
+    const uploadBox = /** @type {HTMLDivElement} */ (document.getElementById('uploadBox'));
+    const logoInput = /** @type {HTMLInputElement} */ (document.getElementById('logoInput'));
+    const logoPreview = /** @type {HTMLDivElement} */ (document.getElementById('logoPreview'));
+    const logoImgEl = /** @type {HTMLImageElement} */ (document.getElementById('logoImg'));
+    const logoName = /** @type {HTMLSpanElement} */ (document.getElementById('logoName'));
+    const removeLogoBtn = /** @type {HTMLButtonElement} */ (document.getElementById('removeLogo'));
+    const logoSize = /** @type {HTMLInputElement} */ (document.getElementById('logoSize'));
+    const colorDots = /** @type {HTMLInputElement} */ (document.getElementById('colorDots'));
+    const colorBg = /** @type {HTMLInputElement} */ (document.getElementById('colorBg'));
+    const colorFrame = /** @type {HTMLInputElement} */ (document.getElementById('colorFrame'));
+    const dotShapeSeg = /** @type {HTMLDivElement} */ (document.getElementById('dotShapeSeg'));
+    const frameStyleSeg = /** @type {HTMLDivElement} */ (document.getElementById('frameStyleSeg'));
+    const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('qrCanvas'));
+    const ctx2d = canvas.getContext('2d');
+    const statusLine = /** @type {HTMLDivElement} */ (document.getElementById('statusLine'));
+    const metaLine = /** @type {HTMLDivElement} */ (document.getElementById('metaLine'));
+    const capacityHint = /** @type {HTMLDivElement} */ (document.getElementById('capacityHint'));
+    const toast = /** @type {HTMLDivElement} */ (document.getElementById('toast'));
+    const btnPng = /** @type {HTMLButtonElement} */ (document.getElementById('btnPng'));
+    const btnSvg = /** @type {HTMLButtonElement} */ (document.getElementById('btnSvg'));
+    const btnCopy = /** @type {HTMLButtonElement} */ (document.getElementById('btnCopy'));
+    
+    let state = {
+      dotShape: 'square',
+      frameStyle: 'line',
+      logoImage: null
+    };
+    let lastResult = null; // {matrix, size, moduleSize, quiet, frameStyle, ...} for export reuse
+    
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 1800);
+    }
+    
+    // ---- segmented controls ----
+    function bindSeg(seg, onChange){
+      seg.querySelectorAll('button').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          seg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          onChange(btn.dataset.val);
+        });
+      });
+    }
+    bindSeg(dotShapeSeg, (v)=> { state.dotShape=v; render(); });
+    bindSeg(frameStyleSeg, (v)=> { state.frameStyle=v; render(); });
+    
+    // ---- logo upload ----
+    function loadLogoFile(file){
+      if (!file || !file.type || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (ev)=>{
+        const dataUrl = /** @type {string} */ (ev.target?.result);
+        const img = new Image();
+        img.onload = ()=>{
+          state.logoImage = img;
+          logoImgEl.src = dataUrl;
+          if(logoName) logoName.textContent = file.name.length>18? file.name.slice(0,16)+'…' : file.name;
+          logoPreview.style.display='flex';
+          render();
+        };
+        img.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+    logoInput.addEventListener('change', (e)=>{
+      const input = /** @type {HTMLInputElement} */ (e.target);
+      if (input.files) loadLogoFile(input.files[0]);
+    });
+    ;['dragenter','dragover'].forEach(evt=>{
+      uploadBox.addEventListener(evt, (e)=>{
+        e.preventDefault(); e.stopPropagation();
+        uploadBox.classList.add('drag-over');
+      });
+    });
+    ;['dragleave','drop'].forEach(evt=>{
+      uploadBox.addEventListener(evt, (e)=>{
+        e.preventDefault(); e.stopPropagation();
+        uploadBox.classList.remove('drag-over');
+      });
+    });
+    uploadBox.addEventListener('drop', (e)=>{
+      const file = e.dataTransfer?.files?.[0];
+      if (file) loadLogoFile(file);
+    });
+    removeLogoBtn.addEventListener('click', ()=>{
+      state.logoImage = null;
+      logoInput.value = '';
+      logoPreview.style.display='none';
+      render();
+    });
+    
+    [urlInput, captionInput, colorDots, colorBg, colorFrame, logoSize].forEach(el=>{
+      el.addEventListener('input', render);
+    });
+    
+    // ---- core render ----
+    function render(){
+      const text = urlInput.value.trim();
+      if (!text){
+        ctx2d.clearRect(0,0,canvas.width,canvas.height);
+        statusLine.textContent = '';
+        statusLine.className = 'status';
+        metaLine.textContent = '';
+        capacityHint.textContent = 'اكتب الرابط لتوليد الكود فوراً';
+        setExportEnabled(false);
+        lastResult = null;
+        return;
+      }
+    
+      const level = state.logoImage ? 'H' : 'M';
+      const result = window.QRGen.generateMatrix(text, level);
+      if (!result){
+        statusLine.textContent = 'النص طويل جداً — حاول تقصير الرابط';
+        statusLine.className = 'status error';
+        metaLine.textContent = '';
+        setExportEnabled(false);
+        lastResult = null;
+        return;
+      }
+      statusLine.textContent = '✓ الكود جاهز ويعمل';
+      statusLine.className = 'status ok';
+      metaLine.textContent = 'إصدار ' + result.version + ' — تصحيح خطأ ' + result.level +
+        (state.logoImage ? ' (تم رفعه تلقائياً لدعم الشعار)' : '');
+      capacityHint.textContent = TABLE_HINT(text.length);
+    
+      const opts = {
+        dotColor: colorDots.value,
+        bgColor: colorBg.value,
+        frameColor: colorFrame.value,
+        frameStyle: state.frameStyle,
+        dotShape: state.dotShape,
+        caption: captionInput.value.trim(),
+        logo: state.logoImage,
+        logoSizePct: parseInt(logoSize.value,10)
+      };
+      drawToCanvas(result, opts, canvas, ctx2d);
+      lastResult = {result, opts};
+      setExportEnabled(true);
+    }
+    
+    function TABLE_HINT(len){
+      if (len < 40) return 'طول ممتاز — كود بسيط وسريع المسح';
+      if (len < 120) return 'طول جيد — سيبقى الكود واضحاً';
+      return 'رابط طويل — تقصيره سيجعل الكود أقل كثافة';
+    }
+    
+    function setExportEnabled(on){
+      btnPng.disabled = !on;
+      btnSvg.disabled = !on;
+      btnCopy.disabled = !on;
+    }
+    
+    // ---- drawing geometry ----
+    const QUIET = 4; // quiet zone modules (ISO minimum is 4 — never reduce this)
+    const MODULE_PX = 10;
+    const FRAME_PAD = 46; // px padding for frame/caption area
+    
+    function computeLayout(result, opts){
+      const n = result.size;
+      const qrPx = (n + QUIET*2) * MODULE_PX;
+      const hasFrame = opts.frameStyle !== 'none';
+      const hasCaption = !!opts.caption;
+      const framePad = hasFrame ? FRAME_PAD : 12;
+      const captionH = hasCaption ? 44 : 0;
+      const total = qrPx + framePad*2 + captionH;
+      return { n, qrPx, framePad, captionH, total, px: MODULE_PX };
+    }
+    
+    function roundedRectPath(ctx, x, y, w, h, r){
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.arcTo(x+w, y, x+w, y+h, r);
+      ctx.arcTo(x+w, y+h, x, y+h, r);
+      ctx.arcTo(x, y+h, x, y, r);
+      ctx.arcTo(x, y, x+w, y, r);
+      ctx.closePath();
+    }
+    
+    function drawFinderAware(matrix, n){
+      // mark which modules belong to the 3 finder-pattern 7x7 blocks (for special corner styling)
+      const isFinder = (r,c)=>{
+        return (r<7 && c<7) || (r<7 && c>=n-7) || (r>=n-7 && c<7);
+      };
+      return isFinder;
+    }
+    
+    function drawToCanvas(result, opts, cnv, c){
+      const { n, qrPx, framePad, captionH, total, px } = computeLayout(result, opts);
+      cnv.width = total; cnv.height = total;
+      c.clearRect(0,0,total,total);
+    
+      // outer background (page behind frame)
+      c.fillStyle = '#ffffff';
+      c.fillRect(0,0,total,total);
+    
+      const qrX = framePad, qrY = framePad;
+    
+      // qr background
+      c.fillStyle = opts.bgColor;
+      c.fillRect(qrX, qrY, qrPx, qrPx);
+    
+      const isFinder = drawFinderAware(result.matrix, n);
+      c.fillStyle = opts.dotColor;
+    
+      for (let r=0;r<n;r++){
+        for (let col=0; col<n; col++){
+          if (!result.matrix[r][col]) continue;
+          const x = qrX + (QUIET+col)*px;
+          const y = qrY + (QUIET+r)*px;
+          if (isFinder(r,col)){
+            c.fillRect(x,y,px,px); // finder patterns stay solid squares for reliable detection
+            continue;
+          }
+          drawDot(c, x, y, px, opts.dotShape);
+        }
+      }
+    
+      // logo overlay — sized relative to the actual QR data area (excludes the quiet
+      // zone) so the percentage always maps to the same real obstruction ratio,
+      // and capped at 25% which stays safely inside the ~30% recovery budget of
+      // error-correction level H once you account for the white backing plate.
+      if (opts.logo){
+        const dataPx = n * px;
+        const pct = Math.min(25, Math.max(10, opts.logoSizePct)) / 100;
+        const logoPx = dataPx * pct;
+        const lx = qrX + (qrPx-logoPx)/2;
+        const ly = qrY + (qrPx-logoPx)/2;
+        const pad = logoPx*0.14;
+        c.save();
+        roundedRectPath(c, lx-pad, ly-pad, logoPx+pad*2, logoPx+pad*2, 12);
+        c.fillStyle = opts.bgColor;
+        c.fill();
+        c.restore();
+        c.save();
+        roundedRectPath(c, lx, ly, logoPx, logoPx, 10);
+        c.clip();
+        c.drawImage(opts.logo, lx, ly, logoPx, logoPx);
+        c.restore();
+      }
+    
+      // frame
+      if (opts.frameStyle !== 'none'){
+        drawFrame(c, framePad*0.35, framePad*0.35, total-framePad*0.7, total-framePad*0.7-captionH, opts.frameColor, opts.frameStyle);
+      }
+    
+      // caption
+      if (opts.caption){
+        c.fillStyle = opts.frameColor;
+        c.font = '600 20px Tahoma, "Segoe UI", sans-serif';
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.direction = 'ltr';
+        c.fillText(opts.caption, total/2, total - captionH/2 - framePad*0.12, total-framePad*1.2);
+      }
+    }
+    
+    function drawDot(c, x, y, px, shape){
+      if (shape==='square'){
+        c.fillRect(x,y,px,px);
+      } else if (shape==='rounded'){
+        roundedRectPath(c, x+px*0.08, y+px*0.08, px*0.84, px*0.84, px*0.28);
+        c.fill();
+      } else { // dot
+        c.beginPath();
+        c.arc(x+px/2, y+px/2, px*0.42, 0, Math.PI*2);
+        c.fill();
+      }
+    }
+    
+    function drawFrame(c, x, y, w, h, color, style){
+      c.save();
+      c.strokeStyle = color;
+      if (style==='line'){
+        c.lineWidth = 4;
+        c.strokeRect(x+2, y+2, w-4, h-4);
+      } else if (style==='double'){
+        c.lineWidth = 3;
+        c.strokeRect(x+2, y+2, w-4, h-4);
+        c.strokeRect(x+10, y+10, w-20, h-20);
+      } else if (style==='dashed'){
+        c.lineWidth = 4;
+        c.setLineDash([14,10]);
+        c.strokeRect(x+2, y+2, w-4, h-4);
+        c.setLineDash([]);
+      } else if (style==='ornate'){
+        c.lineWidth = 3;
+        c.strokeRect(x+6, y+6, w-12, h-12);
+        const cornerLen = Math.min(38, w*0.14);
+        drawCorner(c, x, y, cornerLen, 0, color);
+        drawCorner(c, x+w, y, cornerLen, 1, color);
+        drawCorner(c, x, y+h, cornerLen, 2, color);
+        drawCorner(c, x+w, y+h, cornerLen, 3, color);
+        // small diamond accents mid-edges
+        drawDiamond(c, x+w/2, y+3, color);
+        drawDiamond(c, x+w/2, y+h-3, color);
+        drawDiamond(c, x+3, y+h/2, color);
+        drawDiamond(c, x+w-3, y+h/2, color);
+      }
+      c.restore();
+    }
+    function drawCorner(c, x, y, len, corner, color){
+      c.save();
+      c.strokeStyle = color;
+      c.lineWidth = 5;
+      c.lineCap = 'round';
+      c.beginPath();
+      if (corner===0){ c.moveTo(x, y+len); c.lineTo(x,y); c.lineTo(x+len,y); }
+      if (corner===1){ c.moveTo(x-len, y); c.lineTo(x,y); c.lineTo(x,y+len); }
+      if (corner===2){ c.moveTo(x, y-len); c.lineTo(x,y); c.lineTo(x+len,y); }
+      if (corner===3){ c.moveTo(x-len, y); c.lineTo(x,y); c.lineTo(x,y-len); }
+      c.stroke();
+      c.restore();
+    }
+    function drawDiamond(c, x, y, color){
+      const s=6;
+      c.save();
+      c.fillStyle = color;
+      c.beginPath();
+      c.moveTo(x, y-s); c.lineTo(x+s, y); c.lineTo(x, y+s); c.lineTo(x-s, y);
+      c.closePath(); c.fill();
+      c.restore();
+    }
+    
+    // ---- SVG export ----
+    function buildSVG(result, opts){
+      const { n, qrPx, framePad, captionH, total, px } = computeLayout(result, opts);
+      const qrX = framePad, qrY = framePad;
+      const isFinder = drawFinderAware(result.matrix, n);
+      let paths = '';
+      for (let r=0;r<n;r++){
+        for (let col=0; col<n; col++){
+          if (!result.matrix[r][col]) continue;
+          const x = qrX + (QUIET+col)*px;
+          const y = qrY + (QUIET+r)*px;
+          if (isFinder(r,col) || opts.dotShape==='square'){
+            paths += `<rect x="${x}" y="${y}" width="${px}" height="${px}" fill="${opts.dotColor}"/>`;
+          } else if (opts.dotShape==='rounded'){
+            const rr = px*0.28;
+            paths += `<rect x="${x+px*0.08}" y="${y+px*0.08}" width="${px*0.84}" height="${px*0.84}" rx="${rr}" fill="${opts.dotColor}"/>`;
+          } else {
+            paths += `<circle cx="${x+px/2}" cy="${y+px/2}" r="${px*0.42}" fill="${opts.dotColor}"/>`;
+          }
+        }
+      }
+      let logoSvg = '';
+      if (opts.logo){
+        const dataPx = n * px;
+        const pct = Math.min(25, Math.max(10, opts.logoSizePct)) / 100;
+        const logoPx = dataPx * pct;
+        const lx = qrX + (qrPx-logoPx)/2;
+        const ly = qrY + (qrPx-logoPx)/2;
+        const pad = logoPx*0.14;
+        const dataUrl = opts.logoDataUrl || '';
+        logoSvg = `<rect x="${lx-pad}" y="${ly-pad}" width="${logoPx+pad*2}" height="${logoPx+pad*2}" rx="12" fill="${opts.bgColor}"/>` +
+          (dataUrl ? `<image href="${dataUrl}" x="${lx}" y="${ly}" width="${logoPx}" height="${logoPx}" preserveAspectRatio="xMidYMid slice"/>` : '');
+      }
+      let frameSvg = '';
+      if (opts.frameStyle !== 'none'){
+        const x=framePad*0.35, y=framePad*0.35, w=total-framePad*0.7, h=total-framePad*0.7-captionH;
+        if (opts.frameStyle==='line'){
+          frameSvg = `<rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" fill="none" stroke="${opts.frameColor}" stroke-width="4"/>`;
+        } else if (opts.frameStyle==='double'){
+          frameSvg = `<rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" fill="none" stroke="${opts.frameColor}" stroke-width="3"/>` +
+                     `<rect x="${x+10}" y="${y+10}" width="${w-20}" height="${h-20}" fill="none" stroke="${opts.frameColor}" stroke-width="3"/>`;
+        } else if (opts.frameStyle==='dashed'){
+          frameSvg = `<rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" fill="none" stroke="${opts.frameColor}" stroke-width="4" stroke-dasharray="14,10"/>`;
+        } else if (opts.frameStyle==='ornate'){
+          const cl = Math.min(38, w*0.14);
+          frameSvg = `<rect x="${x+6}" y="${y+6}" width="${w-12}" height="${h-12}" fill="none" stroke="${opts.frameColor}" stroke-width="3"/>`;
+          const corners = [
+            `M ${x} ${y+cl} L ${x} ${y} L ${x+cl} ${y}`,
+            `M ${x+w-cl} ${y} L ${x+w} ${y} L ${x+w} ${y+cl}`,
+            `M ${x} ${y+h-cl} L ${x} ${y+h} L ${x+cl} ${y+h}`,
+            `M ${x+w-cl} ${y+h} L ${x+w} ${y+h} L ${x+w} ${y+h-cl}`
+          ];
+          for (const d of corners){
+            frameSvg += `<path d="${d}" fill="none" stroke="${opts.frameColor}" stroke-width="5" stroke-linecap="round"/>`;
+          }
+          const diamonds = [[x+w/2,y],[x+w/2,y+h],[x,y+h/2],[x+w,y+h/2]];
+          for (const [dx,dy] of diamonds){
+            frameSvg += `<polygon points="${dx},${dy-6} ${dx+6},${dy} ${dx},${dy+6} ${dx-6},${dy}" fill="${opts.frameColor}"/>`;
+          }
+        }
+      }
+      let captionSvg = '';
+      if (opts.caption){
+        captionSvg = `<text x="${total/2}" y="${total - captionH/2 - framePad*0.12}" text-anchor="middle" dominant-baseline="middle" font-family="Tahoma, Segoe UI, sans-serif" font-size="20" font-weight="600" fill="${opts.frameColor}" direction="ltr">${escapeXml(opts.caption)}</text>`;
+      }
+    
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${total}" height="${total}" viewBox="0 0 ${total} ${total}">` +
+        `<rect width="${total}" height="${total}" fill="#ffffff"/>` +
+        `<rect x="${qrX}" y="${qrY}" width="${qrPx}" height="${qrPx}" fill="${opts.bgColor}"/>` +
+        paths + logoSvg + frameSvg + captionSvg +
+        `</svg>`;
+    }
+    function escapeXml(s){
+      return s.replace(/[<>&'"]/g, ch => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[ch]));
+    }
+    
+    // ---- export handlers ----
+    btnPng.addEventListener('click', ()=>{
+      if (!lastResult) return;
+      canvas.toBlob((blob)=>{
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'qr-code.png';
+        a.click();
+        showToast('تم تحميل صورة PNG');
+      }, 'image/png');
+    });
+    
+    btnSvg.addEventListener('click', ()=>{
+      if (!lastResult) return;
+      const opts = Object.assign({}, lastResult.opts);
+      if (opts.logo){ opts.logoDataUrl = logoImgEl.src; }
+      const svg = buildSVG(lastResult.result, opts);
+      const blob = new Blob([svg], {type:'image/svg+xml'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'qr-code.svg';
+      a.click();
+      showToast('تم تحميل ملف SVG');
+    });
+    
+    btnCopy.addEventListener('click', async ()=>{
+      if (!lastResult) return;
+      try{
+        canvas.toBlob(async (blob)=>{
+          await navigator.clipboard.write([ new ClipboardItem({'image/png': blob}) ]);
+          showToast('تم نسخ الصورة إلى الحافظة');
+        }, 'image/png');
+      }catch(err){
+        showToast("تعذر النسخ — حاول استخدام زر التحميل بدلاً من ذلك");
+      }
+    });
+    
+    setExportEnabled(false);
+    
+    // ---- report height to parent window, if embedded in an iframe ----
+    // (harmless no-op when opened as a standalone page/file)
+    function reportHeight(){
+      try{
+        if (window.parent && window.parent !== window){
+          window.parent.postMessage({ type: 'qrToolHeight', height: document.documentElement.scrollHeight }, '*');
+        }
+      }catch(e){ /* cross-origin or no parent — ignore */ }
+    }
+    window.addEventListener('load', reportHeight);
+    window.addEventListener('resize', reportHeight);
+    new MutationObserver(reportHeight).observe(document.body, { childList:true, subtree:true, attributes:true });
+    })();
+  </script>
+</Layout>

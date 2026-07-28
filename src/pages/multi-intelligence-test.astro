@@ -1,0 +1,570 @@
+---
+import { MI_QUESTIONS, CATEGORY_META } from "../../mi-questions";
+import Layout from '../layouts/Layout.astro';
+
+const CATEGORY_ORDER = ["logical", "verbal", "spatial", "memory", "analytical", "social"] as const;
+const totalQuestions = MI_QUESTIONS.length;
+
+// يدمج نصًا عربيًا وإنجليزيًا في وسمين يتحكم بإظهارهما تبديل اللغة
+const bi = (ar: string, en: string) => `<span class="t-ar">${ar}</span><span class="t-en">${en}</span>`;
+---
+<Layout title="اختبار الذكاءات المتعددة">
+  <Fragment slot="head">
+    <!-- Meta tags specific to this page -->
+    <meta name="description" content="اختبار ذكاء مجاني وترفيهي مبني على نظرية الذكاءات المتعددة لهاورد غاردنر: يقيس الذكاء المنطقي، اللغوي، المكاني، الذاكرة، حل المشكلات، والذكاء الاجتماعي والعاطفي، مع نتيجة فورية قابلة للمشاركة عبر واتساب." />
+    <meta property="og:title" content="اختبار الذكاءات المتعددة — قِس 6 أنواع من ذكائك" />
+    <meta property="og:description" content="اختبار تفاعلي مجاني من 54 سؤالاً يكشف ملفك الذهني عبر 6 أبعاد للذكاء، مبني على نظرية هاورد غاردنر." />
+    <meta property="og:type" content="website" />
+    <meta name="robots" content="index, follow" />
+    <!-- The page-specific styles will be injected into the head -->
+    <style is:global>
+      :root{
+        --bg:#F6F5FB;
+        --surface:#FFFFFF;
+        --ink:#241F3D;
+        --muted:#7A7391;
+        --primary:#4B3F72;
+        --primary-dark:#332A52;
+        --line:#E7E3F3;
+        --warn-bg:#FBF3E3;
+        --warn-ink:#6b4d10;
+        --warn-line:#EFD9A8;
+        --wa:#25D366;
+        --wa-dark:#1DA851;
+      }
+      /* Reset body styles from Layout.astro for this specific page */
+      body {
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:Tahoma,'Segoe UI',Arial,sans-serif;
+        direction:rtl;
+        line-height:1.85;
+      }
+      html[lang="en"] body{direction:ltr}
+      html:not([lang="en"]) .t-en{display:none}
+      html[lang="en"] .t-ar{display:none}
+      /* Hide the global header and footer on this standalone test page */
+      body > header, body > footer {
+        display: none;
+      }
+      /* Ensure the main content provided by Layout.astro has no padding */
+      body > main {
+        padding: 0;
+      }
+
+      .hero{
+        position:relative;overflow:hidden;
+        background:linear-gradient(160deg,var(--primary) 0%,var(--primary-dark) 100%);
+        color:#fff;padding:44px 20px 64px;text-align:center;
+      }
+      .lang-toggle{
+        position:absolute;top:14px;left:14px;
+        background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);
+        color:#fff;font-size:12.5px;font-weight:bold;padding:7px 12px;
+        border-radius:20px;cursor:pointer;z-index:9;
+      }
+      html[lang="en"] .lang-toggle{left:auto;right:14px}
+      .lang-toggle:hover{background:rgba(255,255,255,.28)}
+      .hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
+      .hero .eyebrow{font-size:13px;color:#CBB8F5;font-weight:bold;letter-spacing:.3px}
+      .hero h1{font-size:30px;margin:10px 0 8px}
+      .hero .sub{font-size:14.5px;color:rgba(255,255,255,.85);margin:0}
+      .hero-hex{
+        position:absolute;left:50%;top:-40px;transform:translateX(-50%);
+        width:340px;height:340px;opacity:.14;
+      }
+      .hero-hex polygon{fill:none;stroke:#fff;stroke-width:2}
+      .wrap{max-width:700px;margin:-30px auto 60px;padding:0 16px;position:relative;z-index:2}
+      .card{
+        background:var(--surface);border:1px solid var(--line);border-radius:16px;
+        padding:22px 20px;margin-top:16px;box-shadow:0 8px 24px rgba(36,31,61,.06);
+      }
+      .card h2{font-size:17px;color:var(--primary-dark);margin:0 0 10px}
+      .seo-article h3{font-size:15px;color:var(--primary-dark);margin:18px 0 8px}
+      .seo-article p{font-size:14.5px;color:#4a4358;margin:0 0 12px}
+      .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+      .cat-chip{
+        border:1.5px solid var(--c);border-right:5px solid var(--c);border-radius:12px;padding:10px 10px;
+        background:var(--surface);
+      }
+      html[lang="en"] .cat-chip{border-right:1.5px solid var(--c);border-left:5px solid var(--c)}
+      .cat-emoji{font-size:18px}
+      .cat-name{display:block;font-weight:bold;font-size:13px;color:var(--ink);margin-top:4px}
+      .cat-desc{display:block;font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.6}
+      .howto{margin:0;padding-right:20px;font-size:14px;color:#4a4358}
+      html[lang="en"] .howto{padding-right:0;padding-left:20px}
+      .howto li{margin-bottom:6px}
+      .disclaimer{
+        background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn-ink);
+        border-radius:12px;padding:13px 15px;font-size:12.5px;margin-top:16px;
+      }
+      .start-btn,.submit-btn,.reset-btn{
+        display:block;width:100%;border:none;cursor:pointer;font-family:inherit;
+        background:var(--primary);color:#fff;font-size:16px;font-weight:bold;
+        padding:15px;border-radius:12px;margin-top:18px;transition:background .15s;
+      }
+      .start-btn:hover,.submit-btn:hover,.reset-btn:hover{background:var(--primary-dark)}
+      .wa-btn{
+        display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;cursor:pointer;
+        font-family:inherit;background:var(--wa);color:#fff;font-size:15px;font-weight:bold;
+        padding:14px;border-radius:12px;margin-top:16px;transition:background .15s;
+      }
+      .mem-start-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        border: 1px solid var(--primary); color: var(--primary); background: transparent;
+        padding: 8px 14px; border-radius: 8px; margin-top: 10px; cursor: pointer; font-size: 13px;
+      }
+      .mem-start-btn:hover { background: #F1EDFA; }
+      .wa-btn:hover{background:var(--wa-dark)}
+      #quiz-section,#result-section{display:none}
+      .progress-wrap{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5;margin-bottom:4px}
+      .progress-track{background:var(--line);border-radius:20px;height:8px;overflow:hidden}
+        font-family:inherit;background:var(--wa);color:#fff;font-size:15px;font-weight:bold;
+        padding:14px;border-radius:12px;margin-top:16px;transition:background .15s;
+      }
+      .wa-btn:hover{background:var(--wa-dark)}
+      #quiz-section,#result-section{display:none}
+      .progress-wrap{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5;margin-bottom:4px}
+      .progress-track{background:var(--line);border-radius:20px;height:8px;overflow:hidden}
+      .progress-fill{background:var(--primary);height:100%;width:0%;transition:width .2s}
+      .progress-label{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
+
+      .cat-header{
+        display:flex;align-items:center;gap:8px;margin:22px 0 10px;
+        font-weight:bold;font-size:14.5px;color:var(--ink);
+      }
+      .cat-header:first-child{margin-top:4px}
+      .cat-header .dot{width:10px;height:10px;border-radius:50%;flex:none}
+
+      .question{border-bottom:1px solid var(--line);padding:16px 0}
+      .question:last-child{border-bottom:none}
+      .question.missing{animation:shake .3s}
+      @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(4px)}75%{transform:translateX(-4px)}}
+      .q-num{
+        display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+        border-radius:50%;border:1.5px solid var(--primary);color:var(--primary-dark);
+        font-size:11.5px;font-weight:bold;margin-left:8px;flex:none;
+      }
+      html[lang="en"] .q-num{margin-left:0;margin-right:8px}
+      .q-text{font-size:14.5px;font-weight:bold;display:flex;align-items:flex-start;gap:2px}
+      .options{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+      .opt{
+        display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:10px;
+        padding:9px 12px;cursor:pointer;font-size:13.5px;color:#4a4358;transition:.15s;
+      }
+      .opt:hover{border-color:var(--primary)}
+      .opt input{accent-color:var(--primary);width:16px;height:16px;flex:none}
+      .opt.checked{border-color:var(--primary);background:#F1EDFA}
+
+      .memory-box{
+        background:var(--primary-dark);color:#fff;border-radius:12px;padding:20px;
+        text-align:center;margin-top:10px;
+      }
+      .memory-box .study-content{font-size:22px;font-weight:bold;letter-spacing:1px;direction:ltr}
+      .memory-box .study-timer{font-size:12px;color:#CBB8F5;margin-top:8px}
+      .memory-hidden-note{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+      .options.locked{opacity:.35;pointer-events:none}
+
+      .profile-summary{text-align:center;margin-bottom:18px}
+      .profile-summary .top-line{font-size:14px;color:var(--muted)}
+      .profile-summary .top-cat{font-size:20px;font-weight:bold;color:var(--primary-dark);margin-top:2px}
+      .radar-wrap{display:flex;justify-content:center;margin:10px 0 20px}
+      .cat-result-list{display:flex;flex-direction:column;gap:10px}
+      .cat-result-row{display:flex;align-items:center;gap:10px}
+      .cat-result-row .rr-emoji{font-size:16px;width:22px;text-align:center}
+      .cat-result-row .rr-label{font-size:13px;width:120px;flex:none;color:var(--ink)}
+      .cat-result-row .rr-track{flex:1;background:var(--line);border-radius:10px;height:10px;overflow:hidden}
+      .cat-result-row .rr-fill{height:100%;border-radius:10px}
+      .cat-result-row .rr-pct{font-size:12px;color:var(--muted);width:38px;text-align:left}
+      .site-footer{text-align:center;font-size:12px;color:var(--muted);margin-top:24px}
+
+      @media(max-width:420px){
+        .hero h1{font-size:25px}
+        .cat-grid{grid-template-columns:1fr}
+        .cat-result-row .rr-label{width:92px;font-size:12px}
+      }
+      @media (prefers-reduced-motion: reduce){
+        *{transition:none !important;animation:none !important}
+      }
+    </style>
+  </Fragment>
+
+  <header class="hero">
+    <button class="lang-toggle" id="lang-toggle-btn" onclick="toggleLang()">English</button>
+    <div class="hero-inner">
+      <p class="eyebrow" set:html={bi("اختبار ترفيهي · 54 سؤالاً · ~15 دقيقة", "Fun test · 54 questions · ~15 min")} />
+      <h1 set:html={bi("ما هو شكل ذكائك؟", "What Shape Is Your Mind?")} />
+      <p class="sub" set:html={bi(
+        "عقلك ليس رقمًا واحدًا. جرّب 6 تحديات مختلفة واكتشف أين يلمع تفكيرك أكثر.",
+        "Your mind isn't a single number. Try 6 different challenges and discover where your thinking shines most."
+      )} />
+    </div>
+    <svg class="hero-hex" viewBox="0 0 200 200" aria-hidden="true">
+      <polygon points="100,10 175,55 175,145 100,190 25,145 25,55" />
+    </svg>
+  </header>
+
+  <div class="wrap">
+    <article class="card seo-article">
+      <h2 set:html={bi(
+        "نظرية الذكاءات المتعددة: لماذا عقلك أكبر من رقم واحد؟",
+        "Multiple Intelligences Theory: Why Your Mind Is More Than One Number"
+      )} />
+      <p set:html={bi(
+        "منذ عام 1983، قدّم عالم النفس الأمريكي هاورد غاردنر نظرية الذكاءات المتعددة (Multiple Intelligences Theory) التي غيّرت النظرة التقليدية لمفهوم الذكاء. بدل الاعتماد على رقم واحد يسمى معدل الذكاء (IQ) لتحديد قدرات الشخص، اقترح غاردنر أن الذكاء البشري يتكوّن من عدة أنواع مستقلة، لكل منها طريقة عمل ومجال تفوق مختلف.",
+        "In 1983, American psychologist Howard Gardner introduced Multiple Intelligences Theory, which reshaped the traditional view of intelligence. Instead of relying on a single number called IQ to define a person's abilities, Gardner proposed that human intelligence is made up of several independent types, each with its own way of working and its own domain of strength."
+      )} />
+      <p set:html={bi(
+        "هذا يعني أن الشخص الذي يجد صعوبة في حل المعادلات الرياضية قد يمتلك ذكاءً لغويًا أو اجتماعيًا استثنائيًا، والعكس صحيح. فهم نمط ذكائك الشخصي يساعدك على اختيار المسار الدراسي أو المهني الأنسب لك، وعلى تربية أبنائك بطريقة تراعي نقاط قوتهم الحقيقية بدل الحكم عليهم برقم واحد لا يعكس كامل الصورة.",
+        "This means someone who struggles with math equations might have exceptional verbal or social intelligence, and vice versa. Understanding your personal intelligence profile helps you choose the right academic or career path, and raise your children in a way that respects their real strengths instead of judging them by a single number that doesn't reflect the full picture."
+      )} />
+      <p set:html={bi(
+        `يقدّم لك هذا الاختبار الترفيهي المجاني تجربة تفاعلية سريعة (${totalQuestions} سؤالاً موزعة على 6 مجالات) لاستكشاف نمط ذكائك: من الذكاء المنطقي والرياضي، إلى الذكاء اللغوي، المكاني، الذاكرة والتركيز، حل المشكلات والتحليل، وأخيرًا الذكاء الاجتماعي والعاطفي. في النهاية تحصل على رسم بياني يوضح ملفك الذهني الكامل، ويمكنك مشاركته مباشرة مع أصدقائك عبر واتساب لمقارنة النتائج.`,
+        `This free entertainment test gives you a quick interactive experience (${totalQuestions} questions across 6 domains) to explore your intelligence profile: from logical-mathematical intelligence, to verbal, spatial, memory and focus, analytical problem-solving, and finally social-emotional intelligence. At the end you get a chart showing your full mental profile, which you can share directly with friends on WhatsApp to compare results.`
+      )} />
+      <h3 set:html={bi(
+        "لماذا لا يوجد \u201cذكاء واحد\u201d يحدد قدراتك؟",
+        "Why There's No Single \u201cIntelligence\u201d That Defines You"
+      )} />
+      <p set:html={bi(
+        "اختبارات الذكاء التقليدية تركز غالبًا على الجانبين المنطقي واللغوي فقط، بينما تتجاهل جوانب أخرى لا تقل أهمية مثل القدرة على التعامل مع المشاعر، أو تخيّل الأشكال في الفراغ، أو حتى القدرة على تذكّر التفاصيل بسرعة. هذا الاختبار صُمم ليعطيك صورة أشمل وأكثر إنصافًا لقدراتك الذهنية المتنوعة.",
+        "Traditional IQ tests often focus only on the logical and verbal sides, while ignoring equally important aspects like handling emotions, visualizing shapes in space, or quickly recalling details. This test is designed to give you a broader, fairer picture of your varied mental abilities."
+      )} />
+
+      <div class="cat-grid">
+        {CATEGORY_ORDER.map((key) => {
+          const m = CATEGORY_META[key];
+          return (
+            <div class="cat-chip" style={`--c:${m.color}`}>
+              <span class="cat-emoji">{m.emoji}</span>
+              <span class="cat-name" set:html={bi(m.label, m.labelEn)} />
+              <span class="cat-desc" set:html={bi(m.desc, m.descEn)} />
+            </div>
+          );
+        })}
+      </div>
+    </article>
+
+    <section id="intro-section">
+      <div class="card">
+        <h2 set:html={bi("كيف يعمل الاختبار؟", "How does the test work?")} />
+        <ul class="howto">
+          <li set:html={bi(
+            `${totalQuestions} سؤالاً موزعة بالتساوي على الأنواع الستة (9 لكل نوع).`,
+            `${totalQuestions} questions evenly split across the six types (9 each).`
+          )} />
+          <li set:html={bi(
+            "أسئلة الذاكرة تظهر لثوانٍ معدودة ثم تختفي — ركّز جيدًا!",
+            "Memory questions appear for a few seconds then disappear — focus well!"
+          )} />
+          <li set:html={bi(
+            "لا حاجة للإجابة الصحيحة في كل سؤال؛ ما يهم هو ملفك الكامل في النهاية.",
+            "No need to get every question right; what matters is your full profile at the end."
+          )} />
+          <li set:html={bi(
+            "النتيجة تظهر فور الإجابة على كل الأسئلة، مع رسم بياني سداسي لملفك الذهني، وزر لمشاركتها عبر واتساب.",
+            "Your result appears once all questions are answered, with a hexagon chart of your profile and a WhatsApp share button."
+          )} />
+        </ul>
+        <div class="disclaimer">
+          <b set:html={bi("تنبيه:", "Note:")} />
+          <span set:html={bi(
+            "هذا اختبار ترفيهي لأغراض التسلية والتعرف على أنماط تفكيرك، وليس اختبار ذكاء (IQ) علميًا معتمدًا ولا أداة تقييم نفسي أو تعليمي رسمية.",
+            "This is an entertainment test for fun and self-reflection on your thinking style — not a scientifically validated IQ test, nor an official psychological or educational assessment tool."
+          )} />
+        </div>
+        <button class="start-btn" id="start-btn" set:html={bi(
+          `ابدأ التحدي (${totalQuestions} سؤالاً)`,
+          `Start the challenge (${totalQuestions} questions)`
+        )} />
+      </div>
+    </section>
+
+    <section id="quiz-section" class="card">
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-label" id="progress-label"></div>
+      </div>
+      <div class="questions-list"></div>
+      <button class="submit-btn" id="submit-btn" set:html={bi("اكشف ملفي الذهني", "Reveal my profile")} />
+    </section>
+
+    <section id="result-section" class="card">
+      <h2 set:html={bi("ملفك الذهني", "Your Mental Profile")} />
+      <div class="result-content"></div>
+      <button class="wa-btn" id="wa-share-btn">
+        <span>📤</span>
+        <span set:html={bi("شارك نتيجتك عبر واتساب", "Share your result on WhatsApp")} />
+      </button>
+      <div class="disclaimer">
+        <b set:html={bi("تذكير:", "Reminder:")} />
+        <span set:html={bi(
+          "هذه النتيجة لأغراض التسلية والتأمل الذاتي فقط، ولا تقيس ذكاءك الفعلي بمقياس علمي. الأداء يتأثر بالتركيز والمزاج والوقت المتاح، فلا تأخذها على محمل الجد الكامل!",
+          "This result is for fun and self-reflection only, and doesn't measure your actual intelligence on a scientific scale. Performance is affected by focus, mood, and available time — don't take it too seriously!"
+        )} />
+      </div>
+      <button class="reset-btn" id="reset-btn" set:html={bi("أعد التحدي", "Retake the challenge")} />
+    </section>
+
+    <footer class="site-footer">
+      <p set:html={bi(
+        "اختبار ترفيهي مستقل — لأغراض التسلية والتأمل الذاتي فقط.",
+        "A standalone entertainment test — for fun and self-reflection only."
+      )} />
+    </footer>
+  </div>
+
+  <script>
+    import { MI_QUESTIONS, CATEGORY_META, type Category } from "../../mi-questions";
+
+    const CATEGORY_ORDER: Category[] = ["logical", "verbal", "spatial", "memory", "analytical", "social"];
+    const answers: Record<number, number> = {};
+    const total = MI_QUESTIONS.length;
+    let lastScores: Record<string, number> | null = null;
+    let lastTop: Category | null = null;
+
+    const introSection = document.getElementById("intro-section")!;
+    const quizSection = document.getElementById("quiz-section")!;
+    const resultSection = document.getElementById("result-section")!;
+    const progressFill = document.getElementById("progress-fill")!;
+    const progressLabel = document.getElementById("progress-label")!;
+    const listEl = quizSection.querySelector(".questions-list")!;
+
+    function bi(ar: string, en: string) {
+      return `<span class="t-ar">${ar}</span><span class="t-en">${en}</span>`;
+    }
+
+    // ---------------- تبديل اللغة ----------------
+    function setLang(lang: "ar" | "en") {
+      document.documentElement.setAttribute("lang", lang);
+      document.documentElement.setAttribute("dir", lang === "en" ? "ltr" : "rtl");
+      try { localStorage.setItem("mi_lang", lang); } catch (e) {}
+      const btn = document.getElementById("lang-toggle-btn");
+      if (btn) btn.textContent = lang === "en" ? "العربية" : "English";
+      updateProgress();
+    }
+    (window as any).toggleLang = function () {
+      const cur = document.documentElement.getAttribute("lang") || "ar";
+      setLang(cur === "en" ? "ar" : "en");
+    };
+    (function initLang() {
+      let saved: string | null = null;
+      try { saved = localStorage.getItem("mi_lang"); } catch (e) {}
+      if (saved === "en" || saved === "ar") setLang(saved);
+    })();
+
+    // ---------------- عرض الأسئلة ----------------
+    function renderQuestions() {
+      let html = "";
+      let lastCat: Category | null = null;
+      MI_QUESTIONS.forEach((q, i) => {
+        if (q.category !== lastCat) {
+          const m = CATEGORY_META[q.category];
+          html += `<div class="cat-header"><span class="dot" style="background:${m.color}"></span><span>${m.emoji} ${bi(m.label, m.labelEn)}</span></div>`;
+          lastCat = q.category;
+        }
+        html += `<div class="question" id="q-wrap-${i}">`;
+        html += `<div class="q-text"><span class="q-num">${i + 1}</span><span>${bi(q.prompt, q.promptEn)}</span></div>`;
+
+        if (q.type === "memory") {
+          html += `<button class="mem-start-btn" id="mem-start-btn-${i}" onclick="window.startMemoryTest(${i})">👁️ ${bi('ابدأ تحدي الذاكرة', 'Start Memory Challenge')}</button>`;
+          html += `<div class="memory-box" id="mem-box-${i}" style="display:none;">
+                      <div class="study-content">${bi(q.study || "", q.studyEn || "")}</div>
+                      <div class="study-timer" id="mem-timer-${i}">${bi(`احفظ... يختفي بعد ${q.studySeconds} ثوانٍ`, `Memorize... disappears in ${q.studySeconds}s`)}</div>
+                    </div>
+                    <div class="memory-hidden-note" id="mem-note-${i}" style="display:none;">${bi("والآن، ما الذي رأيته؟", "Now, what did you see?")}</div>
+                    <div class="options locked" id="opts-${i}">`;
+        } else {
+          html += `<div class="options">`;
+        }
+
+        q.options.forEach((label, oi) => {
+          html += `<label class="opt" id="opt-${i}-${oi}">
+                     <input type="radio" name="q${i}" value="${oi}" onchange="window.miAnswer(${i},${oi})">
+                     <span>${bi(label, q.optionsEn[oi])}</span></label>`;
+        });
+        html += `</div></div>`;
+      });
+      listEl.innerHTML = html;
+    }
+
+    (window as any).startMemoryTest = function (qIndex: number) {
+      const q = MI_QUESTIONS[qIndex];
+      const startBtn = document.getElementById(`mem-start-btn-${qIndex}`);
+      const box = document.getElementById(`mem-box-${qIndex}`);
+      const note = document.getElementById(`mem-note-${qIndex}`);
+      const opts = document.getElementById(`opts-${qIndex}`);
+
+      if (!startBtn || !box || !note || !opts) return;
+
+      startBtn.style.display = 'none';
+      box.style.display = 'block';
+
+      setTimeout(() => {
+        box.style.display = "none";
+        note.style.display = "block";
+        opts.classList.remove("locked");
+      }, (q.studySeconds || 4) * 1000);
+    };
+
+    (window as any).miAnswer = function (qIndex: number, optIndex: number) {
+      answers[qIndex] = optIndex;
+      const wrap = document.getElementById(`q-wrap-${qIndex}`)!;
+      wrap.querySelectorAll(".opt").forEach((o) => o.classList.remove("checked"));
+      document.getElementById(`opt-${qIndex}-${optIndex}`)!.classList.add("checked");
+      wrap.classList.remove("missing");
+      updateProgress();
+    };
+
+    function updateProgress() {
+      const answered = Object.keys(answers).length;
+      const pct = Math.round((answered / total) * 100);
+      progressFill.style.width = pct + "%";
+      progressLabel.innerHTML = bi(`تمت الإجابة على ${answered} من ${total}`, `Answered ${answered} of ${total}`);
+    }
+
+    document.getElementById("start-btn")!.addEventListener("click", () => {
+      introSection.style.display = "none";
+      quizSection.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    document.getElementById("submit-btn")!.addEventListener("click", () => {
+      const missing: number[] = [];
+      for (let i = 0; i < total; i++) if (!(i in answers)) missing.push(i);
+      if (missing.length) {
+        missing.forEach((i) => document.getElementById(`q-wrap-${i}`)!.classList.add("missing"));
+        document.getElementById(`q-wrap-${missing[0]}`)!.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      showResult();
+    });
+
+    document.getElementById("reset-btn")!.addEventListener("click", () => {
+      for (const k in answers) delete answers[Number(k)];
+      resultSection.style.display = "none";
+      introSection.style.display = "block";
+      renderQuestions();
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    function computeScores() {
+      const byCat: Record<string, { correct: number; total: number }> = {};
+      CATEGORY_ORDER.forEach((c) => (byCat[c] = { correct: 0, total: 0 }));
+      MI_QUESTIONS.forEach((q, i) => {
+        const a = answers[i];
+        byCat[q.category].total += 1;
+        if (q.type === "scale") {
+          byCat[q.category].correct += (a + 1) / 5;
+        } else {
+          byCat[q.category].correct += a === q.correctIndex ? 1 : 0;
+        }
+      });
+      const scores: Record<string, number> = {};
+      CATEGORY_ORDER.forEach((c) => {
+        scores[c] = Math.round((byCat[c].correct / byCat[c].total) * 100);
+      });
+      return scores;
+    }
+
+    function buildRadarSVG(scores: Record<string, number>) {
+      const cx = 110, cy = 110, R = 88;
+      const n = CATEGORY_ORDER.length;
+      const angleFor = (i: number) => -Math.PI / 2 + (i * 2 * Math.PI) / n;
+      const pointAt = (i: number, r: number): [number, number] => {
+        const a = angleFor(i);
+        return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+      };
+      let rings = "";
+      [0.33, 0.66, 1].forEach((f) => {
+        const pts = CATEGORY_ORDER.map((_, i) => pointAt(i, R * f).join(",")).join(" ");
+        rings += `<polygon points="${pts}" fill="none" stroke="#E7E3F3" stroke-width="1"/>`;
+      });
+      const dataPts = CATEGORY_ORDER.map((c, i) => pointAt(i, (R * scores[c]) / 100).join(",")).join(" ");
+      let labels = "";
+      let dots = "";
+      CATEGORY_ORDER.forEach((c, i) => {
+        const m = CATEGORY_META[c];
+        const [lx, ly] = pointAt(i, R + 18);
+        labels += `<text x="${lx}" y="${ly}" font-size="14" text-anchor="middle" dominant-baseline="middle">${m.emoji}</text>`;
+        const [dx, dy] = pointAt(i, (R * scores[c]) / 100);
+        dots += `<circle cx="${dx}" cy="${dy}" r="4" fill="${m.color}"/>`;
+      });
+      return `<svg viewBox="0 0 220 220" width="240" height="240">
+                ${rings}
+                <polygon points="${dataPts}" fill="#4B3F72" fill-opacity="0.28" stroke="#4B3F72" stroke-width="2"/>
+                ${dots}
+                ${labels}
+              </svg>`;
+    }
+
+    function showResult() {
+      const scores = computeScores();
+      let top: Category = CATEGORY_ORDER[0];
+      let low: Category = CATEGORY_ORDER[0];
+      CATEGORY_ORDER.forEach((c) => {
+        if (scores[c] > scores[top]) top = c;
+        if (scores[c] < scores[low]) low = c;
+      });
+      lastScores = scores;
+      lastTop = top;
+
+      let html = `<div class="profile-summary">
+                     <div class="top-line">${bi("أقوى أنواع ذكائك اليوم", "Your strongest intelligence today")}</div>
+                     <div class="top-cat">${CATEGORY_META[top].emoji} ${bi(CATEGORY_META[top].label, CATEGORY_META[top].labelEn)}</div>
+                   </div>`;
+      html += `<div class="radar-wrap">${buildRadarSVG(scores)}</div>`;
+      html += `<div class="cat-result-list">`;
+      CATEGORY_ORDER.forEach((c) => {
+        const m = CATEGORY_META[c];
+        html += `<div class="cat-result-row">
+                    <span class="rr-emoji">${m.emoji}</span>
+                    <span class="rr-label">${bi(m.label, m.labelEn)}</span>
+                    <span class="rr-track"><span class="rr-fill" style="width:${scores[c]}%;background:${m.color}"></span></span>
+                    <span class="rr-pct">${scores[c]}${bi("٪", "%")}</span>
+                  </div>`;
+      });
+      html += `</div>`;
+      html += `<div class="disclaimer" style="margin-top:16px">
+                 <b>${bi("ملاحظة:", "Note:")}</b>
+                 ${bi(
+                   `نوع «${CATEGORY_META[low].label}» كان الأقل اليوم — هذا لا يعني ضعفًا دائمًا، فقط مجال ممتع لتتحداه في المرة القادمة.`,
+                   `Your "${CATEGORY_META[low].labelEn}" score was the lowest today — that doesn't mean a permanent weakness, just a fun area to challenge next time.`
+                 )}
+               </div>`;
+
+      resultSection.querySelector(".result-content")!.innerHTML = html;
+      quizSection.style.display = "none";
+      resultSection.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ---------------- مشاركة عبر واتساب ----------------
+    document.getElementById("wa-share-btn")!.addEventListener("click", () => {
+      if (!lastScores || !lastTop) return;
+      const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ar";
+      let text = "";
+      if (lang === "en") {
+        text = `My Multiple Intelligences profile 🧠\nTop: ${CATEGORY_META[lastTop].emoji} ${CATEGORY_META[lastTop].labelEn}\n\n`;
+        CATEGORY_ORDER.forEach((c) => {
+          text += `${CATEGORY_META[c].emoji} ${CATEGORY_META[c].labelEn}: ${lastScores![c]}%\n`;
+        });
+        text += `\nTry it yourself: ${location.href}`;
+      } else {
+        text = `ملفي في اختبار الذكاءات المتعددة 🧠\nالأقوى: ${CATEGORY_META[lastTop].emoji} ${CATEGORY_META[lastTop].label}\n\n`;
+        CATEGORY_ORDER.forEach((c) => {
+          text += `${CATEGORY_META[c].emoji} ${CATEGORY_META[c].label}: ${lastScores![c]}٪\n`;
+        });
+        text += `\nجرّبه أنت أيضًا: ${location.href}`;
+      }
+      const url = "https://wa.me/?text=" + encodeURIComponent(text);
+      window.open(url, "_blank");
+    });
+
+    renderQuestions();
+    updateProgress();
+  </script>
+
+</Layout>

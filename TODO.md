@@ -1,19 +1,20 @@
-# ✅ Fix "Error 276" - JavaScript Bugs in Test Pages
+# TODO: إصلاح أخطاء TypeScript في medical-qr-code-generator.astro
 
-## All Issues Fixed
+## الخطوات
 
-### ✅ Critical - Missing Script/Style
-- [x] `body-image-confidence.astro` - Added missing `<script>` and `<style is:global>` blocks
+- [x] تحليل الأخطاء ووضع خطة الإصلاح
+- [x] موافقة المستخدم على الخطة
 
-### ✅ Pattern B Bugs (8 pages) - Fixed
-- [x] `attachment-style.astro` - Fixed duplicated setLang, added renderQuestionsGlobal, fixed backlink, fixed footer
-- [x] `gottman-four-horsemen.astro` - Fixed duplicated setLang, added renderQuestionsGlobal, fixed backlink, fixed footer
-- [x] `emotional-intelligence.astro` - Fixed duplicated setLang, added renderQuestionsGlobal, fixed backlink, fixed footer
-- [x] `impulsivity-test.astro` - Fixed duplicated setLang, added renderQuestionsGlobal, fixed backlink, fixed footer
-- [x] `love-languages.astro` - Fixed duplicated setLang, added renderQuestionsGlobal, fixed backlink, fixed footer
-- [x] `conflict-resolution.astro` - Fixed duplicated setLang, added renderQuestionsGlobal, fixed backlink, fixed footer
-- [x] `intimacy-habits.astro` - Fixed duplicated setLang, added renderQuestionsGlobal, fixed backlink, fixed footer
-- [x] `work-life-marriage-balance.astro` - Fixed duplicated setLang, added renderQuestionsGlobal, fixed backlink, fixed footer
+### تنفيذ التعديلات (ملف واحد: src/pages/apps/medical-qr-code-generator.astro)
 
-### ✅ Build Verification
-- [x] Run `npm run build` to verify all pages compile — 39 pages built successfully, no errors
+- [ ] **Edit 1:** استبدال دالة `$` helper بتعريفات متغيرات مع `@type` JSDoc casts لأنواع DOM الصحيحة (HTMLInputElement, HTMLCanvasElement, HTMLImageElement, HTMLButtonElement, إلخ) + إضافة متغيرات btnPng/btnSvg/btnCopy
+- [ ] **Edit 2:** إصلاح حدث `logoInput` — تحويل `e.target` إلى `HTMLInputElement` للوصول إلى `files`
+- [ ] **Edit 3:** إصلاح `reader.onload` — تحويل `ev.target.result` إلى `string`
+- [ ] **Edit 4:** إصلاح دالة `setExportEnabled` — استخدام متغيرات الأزرار المباشرة بدلاً من `$('btnPng')`
+- [ ] **Edit 5:** إصلاح `window.QRGen` — تحويل window إلى `any` للوصول إلى QRGen
+- [ ] **Edit 6:** إصلاح event listeners للأزرار — استخدام المتغيرات المباشرة btnPng/btnSvg/btnCopy بدلاً من `$('btn...')`
+
+### التحقق
+
+- [ ] التأكد من زوال جميع أخطاء TypeScript الـ 19
+
