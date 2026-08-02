@@ -1,0 +1,54 @@
+---
+// ToolsShell wraps ONLY the calculator/quiz content in the design system
+// (colors, fonts, RTL/EN toggle). It renders no <html>, <head>, <body>,
+// header, or footer — nest it inside your site's own page layout so you
+// keep your existing header, footer, and <title>/meta tags untouched.
+//
+// Usage inside one of your site's pages:
+//
+//   ---
+//   import YourSiteLayout from '../layouts/YourSiteLayout.astro';
+//   import ToolsShell from '../layouts/ToolsShell.astro';
+//   ---
+//   <YourSiteLayout title="...">
+//     <ToolsShell>
+//       ...tool content...
+//     </ToolsShell>
+//   </YourSiteLayout>
+
+import '../styles/global.css';
+---
+<div class="tools-scope" data-lang="ar">
+  <div class="container lang-toggle-row">
+    <button class="lang-toggle" type="button" aria-label="Switch language">English</button>
+  </div>
+
+  <slot />
+</div>
+
+<script>
+  // Scoped to elements with .tools-scope so it never touches the host
+  // page's own <html> lang/dir or any lang-toggle buttons outside this
+  // section.
+  function apply(scope: HTMLElement, lang: string) {
+    scope.setAttribute('data-lang', lang);
+    scope.querySelectorAll<HTMLButtonElement>(':scope .lang-toggle').forEach((btn) => {
+      btn.textContent = lang === 'ar' ? 'English' : 'العربية';
+    });
+    localStorage.setItem('tools-lang', lang);
+  }
+
+  const stored = localStorage.getItem('tools-lang') || 'ar';
+  document.querySelectorAll<HTMLElement>('.tools-scope').forEach((scope) => {
+    apply(scope, stored);
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('.tools-scope .lang-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const scope = btn.closest<HTMLElement>('.tools-scope');
+      if (!scope) return;
+      const current = scope.getAttribute('data-lang') || 'ar';
+      apply(scope, current === 'ar' ? 'en' : 'ar');
+    });
+  });
+</script>

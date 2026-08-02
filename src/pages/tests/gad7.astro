@@ -1,0 +1,116 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+import Quiz from '../../components/Quiz2.astro';
+
+const questions = [
+  { id: 'q1', ar: 'الشعور بالعصبية أو القلق أو التوتر', en: 'Feeling nervous, anxious, or on edge' },
+  { id: 'q2', ar: 'عدم القدرة على إيقاف القلق أو التحكم فيه', en: 'Not being able to stop or control worrying' },
+  { id: 'q3', ar: 'القلق الزائد حيال أمور مختلفة', en: 'Worrying too much about different things' },
+  { id: 'q4', ar: 'صعوبة في الاسترخاء', en: 'Trouble relaxing' },
+  { id: 'q5', ar: 'التململ الشديد لدرجة صعوبة الجلوس ساكناً', en: 'Being so restless that it is hard to sit still' },
+  { id: 'q6', ar: 'سرعة الانزعاج أو التهيّج', en: 'Becoming easily annoyed or irritable' },
+  { id: 'q7', ar: 'الشعور بالخوف وكأن شيئاً فظيعاً سيحدث', en: 'Feeling afraid as if something awful might happen' },
+];
+
+const options = [
+  { value: 0, ar: 'لا شيء على الإطلاق', en: 'Not at all' },
+  { value: 1, ar: 'عدة أيام', en: 'Several days' },
+  { value: 2, ar: 'أكثر من نصف الأيام', en: 'More than half the days' },
+  { value: 3, ar: 'تقريباً كل يوم', en: 'Nearly every day' },
+];
+
+const bands = [
+  { min: 0, max: 4, ar: 'ضئيل إلى معدوم', en: 'Minimal', color: 'var(--ok)' },
+  { min: 5, max: 9, ar: 'خفيف', en: 'Mild', color: 'var(--secondary)' },
+  { min: 10, max: 14, ar: 'متوسط', en: 'Moderate', color: 'var(--accent)' },
+  { min: 15, max: 21, ar: 'شديد', en: 'Severe', color: 'var(--danger)' },
+];
+---
+<Layout title="اختبار GAD-7 لتقييم القلق العام">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 02</p>
+    <p class="kicker" data-en hidden>Test 02</p>
+    <h1 data-ar>تقييم القلق<br />العام</h1>
+    <h1 data-en hidden>Generalized<br />Anxiety</h1>
+    <p class="lead" data-ar>
+      سبعة أسئلة قصيرة تقيس أكثر أعراض القلق شيوعاً خلال الأسبوعين
+      الماضيين.
+    </p>
+    <p class="lead" data-en hidden>
+      Seven short questions measuring the most common anxiety symptoms
+      over the past two weeks.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="gad7" />
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>Generalized Anxiety Disorder 7-item scale
+      (GAD-7)</strong>، من تطوير Robert L. Spitzer وKurt Kroenke وJanet
+      B.W. Williams وBernd Löwe، بدعم منحة تعليمية من شركة Pfizer، نُشر
+      عام 2006. الاختبار في الملكية العامة (Public Domain) ولا يتطلب أي
+      إذن للاستخدام أو النسخ أو الترجمة.
+    </p>
+    <p data-en hidden>
+      The <strong>Generalized Anxiety Disorder 7-item scale
+      (GAD-7)</strong>, developed by Robert L. Spitzer, Kurt Kroenke,
+      Janet B.W. Williams, and Bernd Löwe, with an educational grant
+      from Pfizer Inc., published in 2006. The instrument is in the
+      public domain and requires no permission to use, copy, or
+      translate.
+    </p>
+  </section>
+
+  <section class="container">
+    <Quiz
+      quizId="gad7"
+      questions={questions}
+      options={options}
+      bands={bands}
+      maxLabelAr="مجموع الدرجة"
+      maxLabelEn="Total score"
+    />
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      يقيس شدة سبعة أعراض أساسية لاضطراب القلق العام، وهو الاختبار
+      الأكثر استخداماً عالمياً لفرز القلق في العيادات الأولية، رغم أنه
+      يُستخدم أيضاً كمؤشر عام للقلق في اضطرابات أخرى.
+    </p>
+    <p data-en hidden>
+      It measures the severity of seven core symptoms of generalized
+      anxiety disorder, and is the most widely used anxiety screening
+      tool globally in primary care, though it's also used as a general
+      anxiety indicator in other conditions.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      درجة 8 فأعلى هي العتبة الشائعة للإشارة لاحتمال وجود اضطراب قلق
+      يستحق تقييماً أعمق. إذا كانت نتيجتك مرتفعة، لاحظ أيضاً كم أثّر
+      القلق على عملك أو علاقاتك أو حياتك اليومية — فهذا التأثير الوظيفي
+      لا يقل أهمية عن الرقم نفسه عند حديثك مع مختص.
+    </p>
+    <p data-en hidden>
+      A score of 8 or higher is the common threshold suggesting a
+      possible anxiety disorder worth deeper evaluation. If your result
+      is elevated, also notice how much the anxiety has affected your
+      work, relationships, or daily life — that functional impact
+      matters as much as the number itself when you talk to a
+      professional.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

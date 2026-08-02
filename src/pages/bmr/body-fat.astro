@@ -1,0 +1,189 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة نسبة الدهون في الجسم">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 02 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 02 on the tape</p>
+    <h1 data-ar>نسبة الدهون<br />في الجسم</h1>
+    <h1 data-en hidden>Body Fat<br />Percentage</h1>
+    <p class="lead" data-ar>
+      لا تحتاج جهاز قياس دهون لتقدير نسبتها؛ شريط قياس عادي حول رقبتك
+      وخصرك (ووركك إن كنتِ امرأة) كافٍ لتقدير دقيق نسبياً.
+    </p>
+    <p class="lead" data-en hidden>
+      You don't need a body-fat device to estimate it; an ordinary tape
+      measure around your neck and waist (and hips, for women) is enough
+      for a reasonably accurate estimate.
+    </p>
+  </section>
+
+  <Tape current="body-fat" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="gender" data-ar>الجنس</label>
+        <label for="gender" data-en hidden>Sex</label>
+        <select id="gender">
+          <option value="male">ذكر / Male</option>
+          <option value="female">أنثى / Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
+      </div>
+      <div class="field">
+        <label for="neck" data-ar>محيط الرقبة (سم)</label>
+        <label for="neck" data-en hidden>Neck circumference (cm)</label>
+        <input id="neck" type="number" inputmode="decimal" placeholder="38" min="20" max="60" />
+      </div>
+      <div class="field">
+        <label for="waist" data-ar>محيط الخصر (سم)</label>
+        <label for="waist" data-en hidden>Waist circumference (cm)</label>
+        <input id="waist" type="number" inputmode="decimal" placeholder="85" min="40" max="200" />
+      </div>
+      <div class="field" id="hipField">
+        <label for="hip" data-ar>محيط الورك (سم) — للنساء فقط</label>
+        <label for="hip" data-en hidden>Hip circumference (cm) — women only</label>
+        <input id="hip" type="number" inputmode="decimal" placeholder="95" min="40" max="200" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>نسبة الدهون التقديرية:</span>
+        <span data-en hidden>Estimated body fat:</span>
+        <span class="reading" id="bfValue">—</span>%
+        <span class="badge" id="bfBadge"></span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      هذه طريقة الجيش الأمريكي (US Navy Method)، وهي معادلة لوغاريتمية تربط
+      بين محيط الرقبة والخصر (والورك لدى النساء) والطول لتقدير نسبة الدهون
+      دون أجهزة. دقتها مقاربة للقياس بجهاز BIA المنزلي، وتقل دقتها أكثر
+      كلما ابتعد شكل الجسم عن المعتاد.
+    </p>
+    <p data-en hidden>
+      This is the US Navy method — a logarithmic equation relating neck,
+      waist (and hip, for women) circumference and height to estimate body
+      fat without equipment. Its accuracy is comparable to a home BIA
+      scale, and drops for body shapes that deviate from the typical
+      distribution the formula was built on.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      دهون أساسية لا غنى عنها (2–5% للرجال، 10–13% للنساء)، ثم نطاق
+      الرياضيين، فاللياقة، فالمقبول، فالسمنة عند تجاوز 25% للرجال أو 32%
+      للنساء تقريباً. هذا الرقم أدق من BMI في وصف تركيب جسمك لأنه يفصل
+      الدهون عن باقي الكتلة.
+    </p>
+    <p data-en hidden>
+      Essential fat the body cannot do without (2–5% for men, 10–13% for
+      women), then an athletic range, fitness, acceptable, and obesity
+      roughly above 25% for men or 32% for women. This figure is more
+      informative than BMI for body composition because it separates fat
+      from everything else.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      إن كانت نسبتك أعلى من النطاق المقبول، ركّز على تمارين المقاومة مع
+      عجز غذائي معتدل بدل التجويع السريع، فهذا يحافظ على العضلات أثناء
+      خسارة الدهون. أعد القياس شهرياً بنفس الطريقة والوقت من اليوم للحصول
+      على مقارنة عادلة، فتغيّر سنتيمتر واحد في الخصر أهم من رقم يوم واحد.
+    </p>
+    <p data-en hidden>
+      If your percentage is above the acceptable range, focus on
+      resistance training paired with a moderate calorie deficit rather
+      than rapid restriction — this preserves muscle while you lose fat.
+      Remeasure monthly, same method and time of day, for a fair
+      comparison; a one-centimeter change in your waist matters more than
+      any single day's reading.
+    </p>
+  </section>
+
+  <script>
+    const genderEl = document.getElementById('gender') as HTMLSelectElement;
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const neckEl = document.getElementById('neck') as HTMLInputElement;
+    const waistEl = document.getElementById('waist') as HTMLInputElement;
+    const hipEl = document.getElementById('hip') as HTMLInputElement;
+    const hipField = document.getElementById('hipField') as HTMLDivElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const bfValueEl = document.getElementById('bfValue')!;
+    const bfBadgeEl = document.getElementById('bfBadge')!;
+
+    function toggleHip() {
+      hipField.style.display = genderEl.value === 'female' ? 'block' : 'none';
+    }
+    genderEl.addEventListener('change', toggleHip);
+    toggleHip();
+
+    function category(pct: number, isMale: boolean) {
+      const bounds = isMale
+        ? [5, 13, 17, 24]
+        : [13, 20, 24, 31];
+      const labels = [
+        { ar: 'دهون أساسية', en: 'Essential fat', color: '#B08A2B' },
+        { ar: 'رياضي', en: 'Athletic', color: 'var(--ok)' },
+        { ar: 'لياقة', en: 'Fitness', color: 'var(--secondary)' },
+        { ar: 'مقبول', en: 'Acceptable', color: 'var(--accent)' },
+        { ar: 'سمنة', en: 'Obese', color: 'var(--danger)' },
+      ];
+      const idx = bounds.findIndex((b) => pct <= b);
+      return labels[idx === -1 ? labels.length - 1 : idx];
+    }
+
+    function calc() {
+      const height = parseFloat(heightEl.value);
+      const neck = parseFloat(neckEl.value);
+      const waist = parseFloat(waistEl.value);
+      const hip = parseFloat(hipEl.value);
+      const isMale = genderEl.value === 'male';
+      if (!height || !neck || !waist || (!isMale && !hip)) return;
+
+      let bf: number;
+      if (isMale) {
+        bf = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+      } else {
+        bf = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.221 * Math.log10(height)) - 450;
+      }
+      if (!isFinite(bf) || bf <= 0) return;
+
+      const cat = category(bf, isMale);
+      const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+
+      bfValueEl.textContent = bf.toFixed(1);
+      bfBadgeEl.textContent = lang === 'ar' ? cat.ar : cat.en;
+      bfBadgeEl.style.background = cat.color;
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+    const observer = new MutationObserver(() => {
+      if (resultEl.classList.contains('show')) calc();
+    });
+    const scopeEl = resultEl.closest('.tools-scope');
+  if (scopeEl) observer.observe(scopeEl, { attributes: true, attributeFilter: ['data-lang'] });
+  </script>
+</ToolsShell>
+</Layout>

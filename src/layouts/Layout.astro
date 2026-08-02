@@ -4,20 +4,22 @@ import Footer from '../components/Footer.astro';
 
 interface Props {
 	title?: string;
+	description?: string;
 }
 
-const { title = 'SHYM356.ORG' } = Astro.props;
+const { title = 'SHYM356.ORG', description = "Discover our free, privacy-first health applications and tools." } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-	<title>{title}</title>
+		<title>{title}</title>
+		<slot name="head" />
 	</head>
 	<body>
 		<Header />
@@ -27,21 +29,3 @@ const { title = 'SHYM356.ORG' } = Astro.props;
 		<Footer />
 	</body>
 </html>
-
-<style>
-	html {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-		font-family: Inter, Roboto, 'Helvetica Neue', Arial, sans-serif;
-		background: #f4f9f4;
-		color: #0f172a;
-	}
-	body {
-		min-height: 100vh;
-	}
-
-	main {
-		padding: 0 32px 32px;
-	}
-</style>

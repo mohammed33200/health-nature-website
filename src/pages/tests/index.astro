@@ -1,0 +1,47 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+---
+<Layout title="الاختبارات النفسية">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>فرز مبكر — لا تشخيص</p>
+    <p class="kicker" data-en hidden>Early screening — not diagnosis</p>
+    <h1 data-ar>الاختبارات<br />النفسية</h1>
+    <h1 data-en hidden>Psychometric<br />Tests</h1>
+    <p class="lead" data-ar>
+      اختبارات فرز ذاتي معتمدة علمياً، مأخوذة من مصادرها الرسمية وحرة
+      الاستخدام قانونياً. كل اختبار مصحوب بمصدره الكامل، وشرح الهدف منه،
+      وكيفية الاستفادة من نتيجته.
+    </p>
+    <p class="lead" data-en hidden>
+      Scientifically validated self-screening tests, sourced from their
+      official publishers and legally free to use. Each test comes with
+      its full source, its purpose, and how to use the result.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+
+  <TestsNav />
+
+  <section class="container info-section">
+    <h2 data-ar>لماذا هذه الاختبارات تحديداً؟</h2>
+    <h2 data-en hidden>Why these specific tests?</h2>
+    <p data-ar>
+      كل اختبار هنا إما في الملكية العامة (Public Domain) أو مرخّص رسمياً
+      للاستخدام غير التجاري مع الإسناد. لا نستخدم أي مقياس محمي بحقوق
+      ملكية دون إذن، ونذكر اسم المطوّر الأصلي وجهته وسنة النشر في كل
+      صفحة اختبار.
+    </p>
+    <p data-en hidden>
+      Every test here is either in the public domain or officially
+      licensed for non-commercial use with attribution. We never use a
+      copyrighted scale without permission, and each test page states the
+      original developer, publishing organization, and year.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

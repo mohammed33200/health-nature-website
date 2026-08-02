@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="مقياس الجسم والوزن المثالي">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar> قياسات مختلفة— جسدٌ واحد</p>
+    <p class="kicker" data-en hidden>Seven measurements — one body</p>
+    <h1 data-ar>مقياس الجسم<br />والوزن المثالي</h1>
+    <h1 data-en hidden>Body Metrics<br />&amp; Ideal Weight</h1>
+    <p class="lead" data-ar>
+      فكّر في هذا الموقع كشريط قياس واحد يمتد على جسدك: كل توقف عليه رقمٌ
+      حقيقي عنك — وزنك المثالي، نسبة دهونك، مياهك، أيضك، عضلاتك، ومساحة
+      جلدك. اختر توقفاً وابدأ.
+    </p>
+    <p class="lead" data-en hidden>
+      Think of this site as a single tape measure run along your body: every
+      stop on it is a real number about you — your ideal weight, your fat and
+      water percentage, your metabolism, your muscle mass, your skin's
+      surface area. Pick a stop and begin.
+    </p>
+  </section>
+
+  <Tape />
+
+  <section class="container info-section">
+    <h2 data-ar>لماذا هذه القياسات؟</h2>
+    <h2 data-en hidden>Why these measurements?</h2>
+    <p data-ar>
+      كل حاسبة هنا مبنية على معادلة طبية معتمدة، ومصحوبة بشرح للطريقة
+      المستخدمة، ومعنى نتيجتك، وخطوات عملية لتحسين صحتك بناءً عليها — لا رقم
+      بلا تفسير.
+    </p>
+    <p data-en hidden>
+      Every calculator here is built on a validated clinical equation, with an
+      explanation of the method used, what your result means, and practical
+      next steps based on it — no number without context.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

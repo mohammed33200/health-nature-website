@@ -1,0 +1,34 @@
+---
+interface Props { current?: string; }
+const { current } = Astro.props as Props;
+
+// only tests that are already built are listed; more will be added over time
+const tests = [
+  { slug: 'phq9', ar: 'تقييم أعراض الاكتئاب — PHQ-9', en: 'Depression Screening — PHQ-9' },
+  { slug: 'gad7', ar: 'تقييم أعراض القلق العام — GAD-7', en: 'Generalized Anxiety — GAD-7' },
+  { slug: 'cage', ar: 'فحص مشكلات الكحول — CAGE', en: 'Alcohol Screening — CAGE' },
+  { slug: 'rosenberg', ar: 'تقدير الذات — روزنبرغ', en: 'Self-Esteem — Rosenberg' },
+  { slug: 'who5', ar: 'مؤشر الرفاهية — WHO-5', en: 'Well-Being — WHO-5' },
+  { slug: 'pss10', ar: 'الإجهاد المدرك — PSS-10', en: 'Perceived Stress — PSS-10' },
+  { slug: 'pcptsd5', ar: 'فحص ما بعد الصدمة — PC-PTSD-5', en: 'PTSD Screening — PC-PTSD-5' },
+  { slug: 'pcl5', ar: 'القائمة الكاملة لأعراض الصدمة — PCL-5', en: 'Full PTSD Checklist — PCL-5' },
+  { slug: 'asrs', ar: 'فرط الحركة للكبار — ASRS', en: 'Adult ADHD — ASRS' },
+  { slug: 'dass21', ar: 'اكتئاب/قلق/توتر — DASS-21', en: 'Depression/Anxiety/Stress — DASS-21' },
+];
+---
+<nav class="tape" aria-label="الاختبارات النفسية">
+  <div class="container">
+    <div class="tape-track">
+      {tests.map((t, i) => (
+        <a
+          class={`tape-stop ${current === t.slug ? 'current' : ''}`}
+          data-tick={String(i + 1).padStart(2, '0')}
+          href={`/tests/${t.slug}`}
+        >
+          <span class="stop-label" data-ar set:html={t.ar} />
+          <span class="stop-label" data-en hidden set:html={t.en} />
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>

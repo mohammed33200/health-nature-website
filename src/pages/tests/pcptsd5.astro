@@ -1,0 +1,159 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+import Quiz from '../../components/Quiz2.astro';
+
+const questions = [
+  { id: 'q1', ar: 'راودتك كوابيس عن الحدث أو فكرت فيه رغماً عنك؟', en: 'Had nightmares about the event(s) or thought about the event(s) when you did not want to?' },
+  { id: 'q2', ar: 'حاولت جاهداً عدم التفكير في الحدث، أو تجنبت مواقف تذكّرك به؟', en: 'Tried hard not to think about the event(s) or went out of your way to avoid situations that reminded you of the event(s)?' },
+  { id: 'q3', ar: 'كنت في حالة تأهب دائم أو حذر شديد أو سريع الفزع؟', en: 'Been constantly on guard, watchful, or easily startled?' },
+  { id: 'q4', ar: 'شعرت بالخدر أو الانفصال عن الناس أو الأنشطة أو محيطك؟', en: 'Felt numb or detached from people, activities, or your surroundings?' },
+  { id: 'q5', ar: 'شعرت بالذنب أو عجزت عن التوقف عن لوم نفسك أو الآخرين على الحدث أو أي مشكلات نتجت عنه؟', en: 'Felt guilty or unable to stop blaming yourself or others for the event(s) or any problems the event(s) may have caused?' },
+];
+
+const options = [
+  { value: 0, ar: 'لا', en: 'No' },
+  { value: 1, ar: 'نعم', en: 'Yes' },
+];
+
+const bands = [
+  { min: 0, max: 2, ar: 'دون العتبة', en: 'Below threshold', color: 'var(--ok)' },
+  { min: 3, max: 5, ar: 'احتمال إصابة بمحتمل — يستدعي تقييماً', en: 'Probable PTSD — warrants evaluation', color: 'var(--danger)' },
+];
+---
+<Layout title="اختبار PC-PTSD-5 لفحص اضطراب ما بعد الصدمة">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 07</p>
+    <p class="kicker" data-en hidden>Test 07</p>
+    <h1 data-ar>فحص اضطراب<br />ما بعد الصدمة</h1>
+    <h1 data-en hidden>PTSD<br />Screening</h1>
+    <p class="lead" data-ar>
+      سؤال بوابة واحد عن التعرض لحدث صادم، ثم خمسة أسئلة فقط عن الشهر
+      الماضي إن كانت إجابتك نعم.
+    </p>
+    <p class="lead" data-en hidden>
+      One gate question about exposure to a traumatic event, then just
+      five questions about the past month if your answer is yes.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="pcptsd5" />
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>Primary Care PTSD Screen for DSM-5 (PC-PTSD-5)</strong>،
+      من تطوير فريق في المركز الوطني الأمريكي لاضطراب ما بعد الصدمة
+      التابع لوزارة شؤون المحاربين القدامى (Prins et al.)، نُشر عام
+      2016. الاختبار في الملكية العامة (Public Domain) ولا يتطلب أي إذن.
+    </p>
+    <p data-en hidden>
+      The <strong>Primary Care PTSD Screen for DSM-5 (PC-PTSD-5)</strong>,
+      developed by a team at the U.S. Department of Veterans Affairs'
+      National Center for PTSD (Prins et al.), published in 2016. The
+      instrument is in the public domain and requires no permission.
+    </p>
+  </section>
+
+  <section class="container calc-card">
+    <fieldset class="quiz-item" style="border-top:none;">
+      <legend>
+        <span data-ar>
+          هل مررت يوماً بحدث كان مخيفاً أو مروّعاً أو صادماً بشكل غير
+          معتاد (كحادث خطير، اعتداء، حرب، كارثة طبيعية، أو فقدان شخص
+          عزيز بطريقة عنيفة)؟
+        </span>
+        <span data-en hidden>
+          Have you ever experienced an event that was unusually or
+          especially frightening, horrible, or traumatic (such as a
+          serious accident, assault, combat, natural disaster, or the
+          violent loss of a loved one)?
+        </span>
+      </legend>
+      <div class="quiz-options">
+        <label class="quiz-option">
+          <input type="radio" name="gate" value="no" />
+          <span data-ar>لا</span><span data-en hidden>No</span>
+        </label>
+        <label class="quiz-option">
+          <input type="radio" name="gate" value="yes" />
+          <span data-ar>نعم</span><span data-en hidden>Yes</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <p id="gateNoMsg" hidden style="margin-top:1rem; color:var(--ink-soft);">
+      <span data-ar>لم تتعرض لحدث من هذا النوع — انتهى الفحص، والنتيجة 0.</span>
+      <span data-en hidden>You haven't experienced this kind of event — the screen is complete, with a score of 0.</span>
+    </p>
+  </section>
+
+  <div id="quizWrap" hidden>
+    <section class="container">
+      <Quiz
+        quizId="pcptsd5"
+        questions={questions}
+        options={options}
+        bands={bands}
+        maxLabelAr="عدد الإجابات بنعم"
+        maxLabelEn="Number of yes-answers"
+      />
+    </section>
+  </div>
+
+  <script>
+    const gateRadios = document.querySelectorAll('input[name="gate"]');
+    const quizWrap = document.getElementById('quizWrap')!;
+    const gateNoMsg = document.getElementById('gateNoMsg')!;
+
+    gateRadios.forEach((r) => {
+      r.addEventListener('change', () => {
+        const val = (r as HTMLInputElement).value;
+        if (val === 'yes') {
+          quizWrap.hidden = false;
+          gateNoMsg.hidden = true;
+        } else {
+          quizWrap.hidden = true;
+          gateNoMsg.hidden = false;
+        }
+      });
+    });
+  </script>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      يفحص وجود الأعراض الأساسية الخمسة لاضطراب ما بعد الصدمة — إعادة
+      المعايشة، التجنب، فرط اليقظة، الانفصال العاطفي، واللوم — خلال
+      الشهر الماضي فقط، وليس تاريخك الكامل.
+    </p>
+    <p data-en hidden>
+      It screens for the five core PTSD symptoms — re-experiencing,
+      avoidance, hyperarousal, emotional numbing, and blame — over the
+      past month only, not your entire history.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      ثلاث إجابات بـ"نعم" أو أكثر هي العتبة المعتمدة للإشارة لاحتمال
+      وجود اضطراب ما بعد الصدمة. النتيجة الإيجابية ليست تشخيصاً، لكنها
+      سبب كافٍ لطلب تقييم متخصص، خصوصاً أن العلاجات المتاحة لهذا
+      الاضطراب فعّالة جداً حين تبدأ مبكراً.
+    </p>
+    <p data-en hidden>
+      Three or more "yes" answers is the validated threshold suggesting
+      possible PTSD. A positive result isn't a diagnosis, but it's
+      reason enough to seek specialized evaluation — especially since
+      available treatments for this condition are highly effective when
+      started early.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

@@ -1,0 +1,202 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة العمر الأيضي">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 11 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 11 on the tape</p>
+    <h1 data-ar>العمر<br />الأيضي</h1>
+    <h1 data-en hidden>Metabolic<br />Age</h1>
+    <p class="lead" data-ar>
+      عمرك الحقيقي ثابت، لكن "عمر" جسمك من ناحية الأيض يتحرك حسب كتلتك
+      العضلية. هذه الأداة تقارن الاثنين من قياساتك مباشرة.
+    </p>
+    <p class="lead" data-en hidden>
+      Your chronological age is fixed, but your body's metabolic "age"
+      moves based on your lean mass. This tool compares the two directly
+      from your measurements.
+    </p>
+  </section>
+
+  <Tape current="metabolic-age" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="gender" data-ar>الجنس</label>
+        <label for="gender" data-en hidden>Sex</label>
+        <select id="gender">
+          <option value="male">ذكر / Male</option>
+          <option value="female">أنثى / Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="age" data-ar>العمر الفعلي (سنة)</label>
+        <label for="age" data-en hidden>Actual age (years)</label>
+        <input id="age" type="number" inputmode="numeric" placeholder="30" min="1" max="110" />
+      </div>
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
+      </div>
+      <div class="field">
+        <label for="weight" data-ar>الوزن (كجم)</label>
+        <label for="weight" data-en hidden>Weight (kg)</label>
+        <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
+      </div>
+      <div class="field">
+        <label for="neck" data-ar>محيط الرقبة (سم)</label>
+        <label for="neck" data-en hidden>Neck circumference (cm)</label>
+        <input id="neck" type="number" inputmode="decimal" placeholder="38" min="20" max="60" />
+      </div>
+      <div class="field">
+        <label for="waist" data-ar>محيط الخصر (سم)</label>
+        <label for="waist" data-en hidden>Waist circumference (cm)</label>
+        <input id="waist" type="number" inputmode="decimal" placeholder="85" min="40" max="200" />
+      </div>
+      <div class="field" id="hipField">
+        <label for="hip" data-ar>محيط الورك (سم) — للنساء فقط</label>
+        <label for="hip" data-en hidden>Hip circumference (cm) — women only</label>
+        <input id="hip" type="number" inputmode="decimal" placeholder="95" min="40" max="200" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>عمرك الأيضي التقديري:</span>
+        <span data-en hidden>Your estimated metabolic age:</span>
+        <span class="reading" id="metaValue">—</span>
+        <span data-ar>سنة</span><span data-en hidden>years</span>
+        <span class="badge" id="metaBadge"></span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نحسب كتلتك الخالية من الدهون من قياساتك (باستخدام طريقة الجيش
+      الأمريكي لتقدير الدهون)، ثم نحسب أيضك الأساسي منها بمعادلة
+      Katch-McArdle التي تعتمد على الكتلة الخالية من الدهون مباشرة. بعدها
+      نقارن هذا الرقم بمنحنى مرجعي لشخص بنفس طولك وجنسك عند وزن صحي
+      نموذجي، لنجد أي عمر يطابق أيضك الفعلي.
+    </p>
+    <p data-en hidden>
+      We calculate your lean body mass from your measurements (using the
+      US Navy method to estimate fat), then compute your basal metabolism
+      from it using the Katch-McArdle equation, which relies directly on
+      lean mass. We then compare this figure to a reference curve for
+      someone of your height and sex at a typical healthy weight, to find
+      which age matches your actual metabolism.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      إذا كان عمرك الأيضي أقل من عمرك الفعلي، فهذا يعني أن كتلتك العضلية
+      أعلى من المتوسط لعمرك — وهذه علامة جيدة. إن كان أعلى، فهذا غالباً
+      يعكس كتلة عضلية أقل من المتوقع نسبةً لدهونك، وليس بالضرورة مرضاً،
+      بل مؤشراً قابلاً للتحسين بالتمرين.
+    </p>
+    <p data-en hidden>
+      If your metabolic age is lower than your actual age, it means your
+      muscle mass is above average for your age — a good sign. If it's
+      higher, it usually reflects lower-than-expected muscle relative to
+      your fat, not necessarily a medical issue, but an indicator that can
+      be improved through training.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      الطريقة الوحيدة المثبتة لخفض عمرك الأيضي هي رفع كتلتك العضلية عبر
+      تمارين المقاومة المنتظمة، لا الحميات القاسية التي قد تُفقدك عضلات
+      إضافية. أعد الحساب كل 2–3 أشهر لمتابعة الاتجاه، فهو تغيّر بطيء
+      وتراكمي وليس يومياً.
+    </p>
+    <p data-en hidden>
+      The one proven way to lower your metabolic age is building muscle
+      through regular resistance training — not harsh diets, which can
+      cost you additional muscle. Recalculate every 2–3 months to track
+      the trend; it's a slow, cumulative change, not a daily one.
+    </p>
+  </section>
+
+  <script>
+    const genderEl = document.getElementById('gender') as HTMLSelectElement;
+    const ageEl = document.getElementById('age') as HTMLInputElement;
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const weightEl = document.getElementById('weight') as HTMLInputElement;
+    const neckEl = document.getElementById('neck') as HTMLInputElement;
+    const waistEl = document.getElementById('waist') as HTMLInputElement;
+    const hipEl = document.getElementById('hip') as HTMLInputElement;
+    const hipField = document.getElementById('hipField') as HTMLDivElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const metaEl = document.getElementById('metaValue')!;
+    const metaBadgeEl = document.getElementById('metaBadge')!;
+
+    function toggleHip() {
+      hipField.style.display = genderEl.value === 'female' ? 'block' : 'none';
+    }
+    genderEl.addEventListener('change', toggleHip);
+    toggleHip();
+
+    function calc() {
+      const age = parseFloat(ageEl.value);
+      const height = parseFloat(heightEl.value);
+      const weight = parseFloat(weightEl.value);
+      const neck = parseFloat(neckEl.value);
+      const waist = parseFloat(waistEl.value);
+      const hip = parseFloat(hipEl.value);
+      const isMale = genderEl.value === 'male';
+      if (!age || !height || !weight || !neck || !waist || (!isMale && !hip)) return;
+
+      let bfPct: number;
+      if (isMale) {
+        bfPct = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+      } else {
+        bfPct = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.221 * Math.log10(height)) - 450;
+      }
+      const lbm = weight * (1 - bfPct / 100);
+      const katchBmr = 370 + 21.6 * lbm;
+
+      const heightM = height / 100;
+      const idealWeight = 22 * heightM * heightM;
+      const sexConst = isMale ? 5 : -161;
+      const refBmrAtZeroAge = 10 * idealWeight + 6.25 * height + sexConst;
+      const metabolicAge = (refBmrAtZeroAge - katchBmr) / 5;
+
+      const clampedAge = Math.max(15, Math.min(90, metabolicAge));
+      const diff = clampedAge - age;
+      const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+
+      let badge;
+      if (diff <= -3) badge = { ar: 'أصغر من عمرك', en: 'Younger than your age', color: 'var(--ok)' };
+      else if (diff >= 3) badge = { ar: 'أكبر من عمرك', en: 'Older than your age', color: 'var(--accent)' };
+      else badge = { ar: 'قريب من عمرك', en: 'Close to your age', color: 'var(--secondary)' };
+
+      metaEl.textContent = Math.round(clampedAge).toString();
+      metaBadgeEl.textContent = lang === 'ar' ? badge.ar : badge.en;
+      metaBadgeEl.style.background = badge.color;
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+    const observer = new MutationObserver(() => {
+      if (resultEl.classList.contains('show')) calc();
+    });
+    const scopeEl = resultEl.closest('.tools-scope');
+  if (scopeEl) observer.observe(scopeEl, { attributes: true, attributeFilter: ['data-lang'] });
+  </script>
+</ToolsShell>
+</Layout>

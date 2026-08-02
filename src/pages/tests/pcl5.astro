@@ -1,0 +1,132 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+import Quiz from '../../components/Quiz2.astro';
+
+const questions = [
+  { id: 'q1', ar: 'ذكريات متكررة ومزعجة وغير مرغوبة عن التجربة الصادمة', en: 'Repeated, disturbing, and unwanted memories of the stressful experience?' },
+  { id: 'q2', ar: 'أحلام متكررة ومزعجة عن التجربة الصادمة', en: 'Repeated, disturbing dreams of the stressful experience?' },
+  { id: 'q3', ar: 'شعور أو تصرّف مفاجئ وكأن التجربة الصادمة تحدث مجدداً (وكأنك تعيشها من جديد)', en: 'Suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it)?' },
+  { id: 'q4', ar: 'انزعاج شديد عندما يذكّرك شيء بالتجربة الصادمة', en: 'Feeling very upset when something reminded you of the stressful experience?' },
+  { id: 'q5', ar: 'ردود فعل جسدية قوية عند تذكيرك بالتجربة (كتسارع ضربات القلب، صعوبة التنفس، التعرّق)', en: 'Having strong physical reactions when something reminded you of the stressful experience (for example, heart pounding, trouble breathing, sweating)?' },
+  { id: 'q6', ar: 'تجنّب الذكريات أو الأفكار أو المشاعر المرتبطة بالتجربة الصادمة', en: 'Avoiding memories, thoughts, or feelings related to the stressful experience?' },
+  { id: 'q7', ar: 'تجنّب المحفزات الخارجية المرتبطة بالتجربة (أشخاص، أماكن، محادثات، أنشطة، أشياء، مواقف)', en: 'Avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations)?' },
+  { id: 'q8', ar: 'صعوبة في تذكّر أجزاء مهمة من التجربة الصادمة', en: 'Trouble remembering important parts of the stressful experience?' },
+  { id: 'q9', ar: 'معتقدات سلبية قوية عن نفسك أو الآخرين أو العالم (مثل: أنا سيء، هناك خطب خطير بي، لا يمكن الوثوق بأحد، العالم خطير تماماً)', en: 'Having strong negative beliefs about yourself, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me, no one can be trusted, the world is completely dangerous)?' },
+  { id: 'q10', ar: 'لوم نفسك أو الآخرين على التجربة الصادمة أو على ما نتج عنها', en: 'Blaming yourself or someone else for the stressful experience or what happened after it?' },
+  { id: 'q11', ar: 'مشاعر سلبية قوية كالخوف أو الرعب أو الغضب أو الذنب أو الخجل', en: 'Having strong negative feelings such as fear, horror, anger, guilt, or shame?' },
+  { id: 'q12', ar: 'فقدان الاهتمام بأنشطة كنت تستمتع بها سابقاً', en: 'Loss of interest in activities that you used to enjoy?' },
+  { id: 'q13', ar: 'الشعور بالبعد أو الانفصال عن الآخرين', en: 'Feeling distant or cut off from other people?' },
+  { id: 'q14', ar: 'صعوبة في الشعور بمشاعر إيجابية (كعدم القدرة على الشعور بالسعادة أو الحب تجاه المقربين)', en: 'Trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to you)?' },
+  { id: 'q15', ar: 'سلوك متهيّج، نوبات غضب، أو تصرف عدواني', en: 'Irritable behavior, angry outbursts, or acting aggressively?' },
+  { id: 'q16', ar: 'الإقدام على مخاطرات زائدة أو أفعال قد تسبب لك الأذى', en: 'Taking too many risks or doing things that could cause you harm?' },
+  { id: 'q17', ar: 'كونك في حالة تأهب أو حذر شديد ومراقبة مستمرة', en: 'Being "superalert" or watchful or on guard?' },
+  { id: 'q18', ar: 'الشعور بالتوتر أو سرعة الفزع', en: 'Feeling jumpy or easily startled?' },
+  { id: 'q19', ar: 'صعوبة في التركيز', en: 'Having difficulty concentrating?' },
+  { id: 'q20', ar: 'صعوبة في النوم أو الاستمرار فيه', en: 'Trouble falling or staying asleep?' },
+];
+
+const options = [
+  { value: 0, ar: 'لا شيء على الإطلاق', en: 'Not at all' },
+  { value: 1, ar: 'قليلاً', en: 'A little bit' },
+  { value: 2, ar: 'باعتدال', en: 'Moderately' },
+  { value: 3, ar: 'كثيراً', en: 'Quite a bit' },
+  { value: 4, ar: 'بشكل شديد', en: 'Extremely' },
+];
+
+const bands = [
+  { min: 0, max: 32, ar: 'دون عتبة الفحص', en: 'Below screening threshold', color: 'var(--ok)' },
+  { min: 33, max: 80, ar: 'يتوافق مع احتمال إصابة بالصدمة — يستدعي تقييماً', en: 'Consistent with probable PTSD — warrants evaluation', color: 'var(--danger)' },
+];
+---
+<Layout title="اختبار PCL-5 الكامل لاضطراب ما بعد الصدمة">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 10</p>
+    <p class="kicker" data-en hidden>Test 10</p>
+    <h1 data-ar>القائمة الكاملة<br />لأعراض الصدمة</h1>
+    <h1 data-en hidden>Full PTSD<br />Symptom Checklist</h1>
+    <p class="lead" data-ar>
+      عشرون بنداً تغطي كل أعراض اضطراب ما بعد الصدمة الرسمية في الدليل
+      التشخيصي DSM-5 — أشمل من PC-PTSD-5 ومناسب لمتابعة تطور الأعراض
+      بمرور الوقت.
+    </p>
+    <p class="lead" data-en hidden>
+      Twenty items covering the full official DSM-5 PTSD symptom set —
+      more comprehensive than PC-PTSD-5 and suited for tracking symptom
+      change over time.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="pcl5" />
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>PTSD Checklist for DSM-5 (PCL-5)</strong>، من تطوير
+      Frank W. Weathers وBrett T. Litz وTerence M. Keane وزملائهم في
+      المركز الوطني الأمريكي لاضطراب ما بعد الصدمة (وزارة شؤون
+      المحاربين القدامى)، نُشر عام 2013. الاختبار غير محمي بحقوق ملكية
+      (not copyrighted) ومتاح للاستخدام الحر الكامل.
+    </p>
+    <p data-en hidden>
+      The <strong>PTSD Checklist for DSM-5 (PCL-5)</strong>, developed by
+      Frank W. Weathers, Brett T. Litz, Terence M. Keane and colleagues
+      at the U.S. National Center for PTSD (Department of Veterans
+      Affairs), published in 2013. The instrument is not copyrighted and
+      is fully free to use.
+    </p>
+  </section>
+
+  <section class="container">
+    <Quiz
+      quizId="pcl5"
+      questions={questions}
+      options={options}
+      bands={bands}
+      maxLabelAr="مجموع الدرجة (من 80)"
+      maxLabelEn="Total score (out of 80)"
+    />
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      يغطي الأعراض الأربعة الرسمية لاضطراب ما بعد الصدمة: استعادة
+      التجربة (البنود 1–5)، التجنب (6–7)، التغيرات السلبية في التفكير
+      والمزاج (8–14)، وفرط اليقظة (15–20). خلافاً لـ PC-PTSD-5 القصير،
+      يصلح هذا الاختبار لمتابعة تفصيلية لتطور كل عرض على حدة عبر جلسات
+      العلاج.
+    </p>
+    <p data-en hidden>
+      It covers the four official PTSD symptom clusters: re-experiencing
+      (items 1–5), avoidance (6–7), negative alterations in cognition and
+      mood (8–14), and hyperarousal (15–20). Unlike the shorter
+      PC-PTSD-5, this version suits detailed tracking of each symptom's
+      progress across treatment sessions.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      درجة 33 فأعلى هي العتبة الشائعة للإشارة لاحتمال وجود اضطراب ما بعد
+      الصدمة يستحق تقييماً سريرياً كاملاً. إذا كنت تحت علاج، انخفاض 5
+      نقاط يشير لبداية استجابة، وانخفاض 10 نقاط أو أكثر يعتبر تحسناً ذا
+      دلالة سريرية حقيقية — استخدم هذا الاختبار للمتابعة الدورية لا
+      لمرة واحدة فقط.
+    </p>
+    <p data-en hidden>
+      A score of 33 or higher is the common threshold suggesting possible
+      PTSD worth a full clinical evaluation. If you're in treatment, a
+      5-point drop suggests an initial response, and a drop of 10 points
+      or more is considered clinically meaningful improvement — use this
+      test for ongoing tracking, not just a single reading.
+    </p>
+  </section>
+  </ToolsShell>
+</Layout>

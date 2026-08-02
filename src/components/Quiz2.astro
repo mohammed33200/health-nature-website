@@ -1,0 +1,128 @@
+---
+interface OptionT { value: number; ar: string; en: string; }
+interface QuestionT { id: string; ar: string; en: string; }
+interface BandT { min: number; max: number; ar: string; en: string; color: string; }
+
+interface Props {
+  quizId: string;
+  questions: QuestionT[];
+  options: OptionT[];
+  bands: BandT[];
+  reverseIds?: string[];
+  multiplier?: number;
+  selfHarmItemId?: string; // if set, a raw score > 0 on this item shows a crisis banner
+  maxLabelAr?: string;
+  maxLabelEn?: string;
+}
+
+const {
+  quizId,
+  questions,
+  options,
+  bands,
+  reverseIds = [],
+  multiplier = 1,
+  selfHarmItemId,
+  maxLabelAr = 'الدرجة الكلية',
+  maxLabelEn = 'Total score',
+} = Astro.props as Props;
+
+const optionsJson = JSON.stringify(options);
+const questionsJson = JSON.stringify(questions.map((q) => q.id));
+const reverseJson = JSON.stringify(reverseIds);
+const bandsJson = JSON.stringify(bands);
+---
+<div class="calc-card quiz" data-quiz={quizId}>
+  <form id={`form-${quizId}`}>
+    {questions.map((q, i) => (
+      <fieldset class="quiz-item">
+        <legend>
+          <span class="quiz-num">{i + 1}</span>
+          <span data-ar set:html={q.ar} />
+          <span data-en hidden set:html={q.en} />
+        </legend>
+        <div class="quiz-options">
+          {options.map((opt) => (
+            <label class="quiz-option">
+              <input type="radio" name={`q_${q.id}`} value={opt.value} required />
+              <span data-ar set:html={opt.ar} />
+              <span data-en hidden set:html={opt.en} />
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    ))}
+
+    <button class="btn-calc" type="submit">
+      <span data-ar>احسب النتيجة</span>
+      <span data-en hidden>Calculate Score</span>
+    </button>
+  </form>
+
+  <div class="result" id={`result-${quizId}`}>
+    <p id={`crisis-${quizId}`} class="crisis-banner" hidden></p>
+    <p>
+      <span data-ar set:html={maxLabelAr} />: <span data-en hidden set:html={maxLabelEn} />:
+      <span class="reading" id={`score-${quizId}`}>—</span>
+      <span class="badge" id={`band-${quizId}`}></span>
+    </p>
+  </div>
+</div>
+
+<script define:vars={{ quizId, optionsJson, questionsJson, reverseJson, bandsJson, multiplier, selfHarmItemId }}>
+  const options = JSON.parse(optionsJson);
+  const questionIds = JSON.parse(questionsJson);
+  const reverseIds = JSON.parse(reverseJson);
+  const bands = JSON.parse(bandsJson);
+  const maxOptionValue = Math.max(...options.map((o) => o.value));
+
+  const form = document.getElementById(`form-${quizId}`);
+  const resultEl = document.getElementById(`result-${quizId}`);
+  const scoreEl = document.getElementById(`score-${quizId}`);
+  const bandEl = document.getElementById(`band-${quizId}`);
+  const crisisEl = document.getElementById(`crisis-${quizId}`);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let total = 0;
+    let selfHarmRaw = 0;
+
+    for (const id of questionIds) {
+      const selected = form.querySelector(`input[name="q_${id}"]:checked`);
+      if (!selected) return;
+      let val = parseFloat(selected.value);
+      if (selfHarmItemId && id === selfHarmItemId) selfHarmRaw = val;
+      if (reverseIds.includes(id)) val = maxOptionValue - val;
+      total += val;
+    }
+    total = total * multiplier;
+
+    const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+    const band = bands.find((b) => total >= b.min && total <= b.max) || bands[bands.length - 1];
+
+    scoreEl.textContent = total.toString();
+    bandEl.textContent = lang === 'ar' ? band.ar : band.en;
+    bandEl.style.background = band.color;
+
+    if (selfHarmItemId && selfHarmRaw > 0) {
+      crisisEl.hidden = false;
+      crisisEl.innerHTML = lang === 'ar'
+        ? 'أشرت إلى وجود أفكار عن إيذاء النفس. هذا أمر يستحق اهتماماً فورياً — تحدث مع طبيب أو مختص نفسي اليوم، أو تواصل مع خط دعم أزمات نفسية في بلدك.'
+        : 'You indicated thoughts of self-harm. This deserves immediate attention — speak with a doctor or mental health professional today, or contact a crisis support line in your country.';
+    } else {
+      crisisEl.hidden = true;
+    }
+
+    resultEl.classList.add('show');
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  const observer = new MutationObserver(() => {
+    if (resultEl.classList.contains('show') && scoreEl.textContent !== '—') {
+      form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true }));
+    }
+  });
+  const scopeEl = resultEl.closest('.tools-scope');
+  if (scopeEl) observer.observe(scopeEl, { attributes: true, attributeFilter: ['data-lang'] });
+</script>
+

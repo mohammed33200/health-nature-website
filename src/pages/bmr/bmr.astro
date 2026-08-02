@@ -1,0 +1,172 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة معدل الأيض الأساسي">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 04 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 04 on the tape</p>
+    <h1 data-ar>معدل الأيض<br />الأساسي</h1>
+    <h1 data-en hidden>Basal Metabolic<br />Rate</h1>
+    <p class="lead" data-ar>
+      كم سعرة يحرقها جسمك وأنت مستلقٍ بلا حراك؟ هذا هو معدل الأيض
+      الأساسي — نقطة الانطلاق لحساب احتياجك اليومي الكامل من الطاقة.
+    </p>
+    <p class="lead" data-en hidden>
+      How many calories does your body burn lying completely still? That's
+      your Basal Metabolic Rate — the starting point for calculating your
+      full daily energy needs.
+    </p>
+  </section>
+
+  <Tape current="bmr" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="gender" data-ar>الجنس</label>
+        <label for="gender" data-en hidden>Sex</label>
+        <select id="gender">
+          <option value="male">ذكر / Male</option>
+          <option value="female">أنثى / Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="age" data-ar>العمر (سنة)</label>
+        <label for="age" data-en hidden>Age (years)</label>
+        <input id="age" type="number" inputmode="numeric" placeholder="30" min="1" max="110" />
+      </div>
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
+      </div>
+      <div class="field">
+        <label for="weight" data-ar>الوزن (كجم)</label>
+        <label for="weight" data-en hidden>Weight (kg)</label>
+        <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
+      </div>
+      <div class="field" style="grid-column: 1 / -1;">
+        <label for="activity" data-ar>مستوى النشاط</label>
+        <label for="activity" data-en hidden>Activity level</label>
+        <select id="activity">
+          <option value="1.2">
+            خامل (بلا رياضة) / Sedentary (no exercise)
+          </option>
+          <option value="1.375">
+            نشاط خفيف (1–3 أيام/أسبوع) / Light (1–3 days/week)
+          </option>
+          <option value="1.55" selected>
+            نشاط متوسط (3–5 أيام/أسبوع) / Moderate (3–5 days/week)
+          </option>
+          <option value="1.725">
+            نشاط عالٍ (6–7 أيام/أسبوع) / Active (6–7 days/week)
+          </option>
+          <option value="1.9">
+            نشاط عالٍ جداً (رياضي/عمل بدني) / Very active (athlete/manual job)
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>معدل الأيض الأساسي (BMR):</span>
+        <span data-en hidden>Basal Metabolic Rate (BMR):</span>
+        <span class="reading" id="bmrValue">—</span>
+        <span data-ar>سعرة/يوم</span><span data-en hidden>kcal/day</span>
+      </p>
+      <p>
+        <span data-ar>احتياجك اليومي الكامل (TDEE):</span>
+        <span data-en hidden>Total daily need (TDEE):</span>
+        <span class="reading" id="tdeeValue">—</span>
+        <span data-ar>سعرة/يوم</span><span data-en hidden>kcal/day</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نستخدم معادلة Mifflin-St Jeor، وهي الأدق حالياً وفق الدراسات
+      المقارنة مقابل معادلة هاريس-بنديكت الأقدم. تُحسب من الوزن والطول
+      والعمر والجنس، ثم يُضرب الناتج في معامل نشاطك اليومي (TDEE) لتحديد
+      احتياجك الكلي من السعرات.
+    </p>
+    <p data-en hidden>
+      We use the Mifflin-St Jeor equation, shown in comparison studies to
+      be more accurate than the older Harris-Benedict formula. It's
+      calculated from weight, height, age and sex, then multiplied by your
+      daily activity factor (TDEE) to determine your total calorie needs.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      BMR هو أدنى طاقة يحتاجها جسمك للوظائف الحيوية فقط (تنفس، دوران دم،
+      حرارة الجسم) — لا تنزل بسعراتك تحت هذا الرقم أبداً حتى عند محاولة
+      إنقاص الوزن. أما TDEE فهو رقمك المرجعي: تناول أقل منه لخسارة الوزن،
+      وأكثر منه لزيادته، ومساوياً له للحفاظ على وزنك الحالي.
+    </p>
+    <p data-en hidden>
+      BMR is the minimum energy your body needs just for vital functions
+      (breathing, circulation, body heat) — never eat below this number,
+      even when trying to lose weight. TDEE is your reference point: eat
+      below it to lose weight, above it to gain, or at it to maintain your
+      current weight.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      إذا كان هدفك إنقاص الوزن، اطرح 300–500 سعرة من TDEE كبداية آمنة
+      ومستدامة بدل عجز كبير مفاجئ. أعد حساب الرقمين كل 4–6 أسابيع أو بعد
+      تغيّر وزنك 3–4 كجم، لأن BMR يتغيّر مع تغيّر جسمك ولا يبقى ثابتاً.
+    </p>
+    <p data-en hidden>
+      If your goal is weight loss, subtract 300–500 calories from your
+      TDEE as a safe, sustainable starting deficit rather than a large
+      sudden cut. Recalculate both numbers every 4–6 weeks, or after a
+      3–4 kg change in weight, since BMR shifts as your body changes and
+      isn't fixed.
+    </p>
+  </section>
+
+  <script>
+    const genderEl = document.getElementById('gender') as HTMLSelectElement;
+    const ageEl = document.getElementById('age') as HTMLInputElement;
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const weightEl = document.getElementById('weight') as HTMLInputElement;
+    const activityEl = document.getElementById('activity') as HTMLSelectElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const bmrEl = document.getElementById('bmrValue')!;
+    const tdeeEl = document.getElementById('tdeeValue')!;
+
+    function calc() {
+      const age = parseFloat(ageEl.value);
+      const height = parseFloat(heightEl.value);
+      const weight = parseFloat(weightEl.value);
+      const activity = parseFloat(activityEl.value);
+      const isMale = genderEl.value === 'male';
+      if (!age || !height || !weight) return;
+
+      const bmr = 10 * weight + 6.25 * height - 5 * age + (isMale ? 5 : -161);
+      const tdee = bmr * activity;
+
+      bmrEl.textContent = Math.round(bmr).toString();
+      tdeeEl.textContent = Math.round(tdee).toString();
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+  </script>
+</ToolsShell>
+</Layout>

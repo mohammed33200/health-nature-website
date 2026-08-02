@@ -1,0 +1,154 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة كتلة العضلات">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 06 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 06 on the tape</p>
+    <h1 data-ar>كتلة<br />العضلات</h1>
+    <h1 data-en hidden>Muscle<br />Mass</h1>
+    <p class="lead" data-ar>
+      وزنك رقم واحد، لكن تركيبه يختلف تماماً حسب كمية العضلات فيه. هذه
+      الحاسبة تقدّر كتلة عضلاتك الهيكلية بالكيلوجرام ونسبتها من وزنك.
+    </p>
+    <p class="lead" data-en hidden>
+      Your weight is one number, but its composition varies entirely by
+      how much muscle it contains. This calculator estimates your
+      skeletal muscle mass in kilograms and its share of your total
+      weight.
+    </p>
+  </section>
+
+  <Tape current="muscle-mass" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="gender" data-ar>الجنس</label>
+        <label for="gender" data-en hidden>Sex</label>
+        <select id="gender">
+          <option value="male">ذكر / Male</option>
+          <option value="female">أنثى / Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="age" data-ar>العمر (سنة)</label>
+        <label for="age" data-en hidden>Age (years)</label>
+        <input id="age" type="number" inputmode="numeric" placeholder="30" min="1" max="110" />
+      </div>
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
+      </div>
+      <div class="field">
+        <label for="weight" data-ar>الوزن (كجم)</label>
+        <label for="weight" data-en hidden>Weight (kg)</label>
+        <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>كتلة العضلات الهيكلية:</span>
+        <span data-en hidden>Skeletal muscle mass:</span>
+        <span class="reading" id="smValue">—</span>
+        <span data-ar>كجم</span><span data-en hidden>kg</span>
+      </p>
+      <p>
+        <span data-ar>نسبتها من وزنك:</span>
+        <span data-en hidden>Share of your weight:</span>
+        <span class="reading" id="smPctValue">—</span>%
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نستخدم معادلة Lee وزملائه (2000)، وهي معادلة أنثروبومترية تقدّر
+      كتلة العضلات الهيكلية من الوزن والطول والعمر والجنس دون الحاجة
+      لجهاز DEXA أو BIA. النتيجة تقريبية جيدة للمتابعة الذاتية، وأي فحص
+      دقيق سريرياً يحتاج جهازاً مخصصاً.
+    </p>
+    <p data-en hidden>
+      We use the Lee et al. (2000) equation, an anthropometric formula
+      that estimates skeletal muscle mass from weight, height, age and
+      sex without needing a DEXA or BIA device. The result is a solid
+      approximation for self-tracking; clinically precise measurement
+      requires dedicated equipment.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      تشكّل العضلات عادة 38–54% من وزن الرجال البالغين، و28–40% من وزن
+      النساء، وتنخفض النسبة تدريجياً مع التقدم في العمر (فقدان العضلات
+      المرتبط بالعمر يُعرف بـ Sarcopenia). نسبة أعلى تعني أيضاً أيضاً
+      أساسياً أعلى، لأن العضلات أكثر أنسجة الجسم استهلاكاً للطاقة أثناء
+      الراحة.
+    </p>
+    <p data-en hidden>
+      Muscle typically makes up 38–54% of adult men's weight and 28–40%
+      of women's, gradually declining with age (age-related muscle loss
+      is known as sarcopenia). A higher percentage also means a higher
+      basal metabolism, since muscle is the body's most energy-hungry
+      tissue at rest.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      إذا كانت نسبتك منخفضة لعمرك، أضف تمارين مقاومة مرتين إلى ثلاث مرات
+      أسبوعياً مع بروتين كافٍ في غذائك (حوالي 1.2–1.6 جم لكل كيلوجرام من
+      وزنك)، فهذا أثبت تأثيره في الحفاظ على العضلات ومقاومة فقدها مع
+      العمر. أعد الحساب كل شهرين لمتابعة الاتجاه، لا التقلب اليومي.
+    </p>
+    <p data-en hidden>
+      If your percentage is low for your age, add resistance training two
+      to three times a week along with adequate protein intake (roughly
+      1.2–1.6 g per kilogram of body weight) — this is proven to preserve
+      muscle and resist age-related loss. Recalculate every couple of
+      months to track the trend, not daily fluctuation.
+    </p>
+  </section>
+
+  <script>
+    const genderEl = document.getElementById('gender') as HTMLSelectElement;
+    const ageEl = document.getElementById('age') as HTMLInputElement;
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const weightEl = document.getElementById('weight') as HTMLInputElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const smEl = document.getElementById('smValue')!;
+    const smPctEl = document.getElementById('smPctValue')!;
+
+    function calc() {
+      const age = parseFloat(ageEl.value);
+      const height = parseFloat(heightEl.value);
+      const weight = parseFloat(weightEl.value);
+      const isMale = genderEl.value === 'male';
+      if (!age || !height || !weight) return;
+
+      const heightM = height / 100;
+      const sex = isMale ? 1 : 0;
+      const sm = 0.244 * weight + 7.8 * heightM - 0.098 * age + 6.6 * sex - 3.3;
+      const pct = (sm / weight) * 100;
+
+      smEl.textContent = sm.toFixed(1);
+      smPctEl.textContent = pct.toFixed(1);
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+  </script>
+</ToolsShell>
+</Layout>

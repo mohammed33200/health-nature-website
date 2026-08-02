@@ -1,511 +1,139 @@
+// بيانات اختبار الذكاءات المتعددة (ترفيهي) — 6 أنواع × 9 أسئلة = 54 سؤالاً
+// Multiple Intelligences (entertainment) test data — 6 types × 9 questions = 54 questions
+
 export type Category = "logical" | "verbal" | "spatial" | "memory" | "analytical" | "social";
 
-export interface Question {
-	category: Category;
-	type: "choice" | "memory" | "scale";
-	prompt: string;
-	promptEn: string;
-	options: string[];
-	optionsEn: string[];
-	correctIndex?: number; // for choice type
-	study?: string; // for memory type
-	studyEn?: string; // for memory type
-	studySeconds?: number; // for memory type
+export interface MIQuestion {
+  id: number;
+  category: Category;
+  type: "mc" | "memory" | "scale";
+  prompt: string;
+  promptEn: string;
+  study?: string;
+  studyEn?: string;
+  studySeconds?: number;
+  options: string[];
+  optionsEn: string[];
+  correctIndex?: number;
 }
 
-export const CATEGORY_META: Record<Category, { label: string; labelEn: string; emoji: string; color: string; desc: string; descEn: string; }> = {
-	logical: { label: "المنطق والرياضيات", labelEn: "Logic & Math", emoji: "🧮", color: "#4A90E2", desc: "القدرة على التحليل وحل المشكلات الرياضية.", descEn: "Ability to analyze and solve mathematical problems." },
-	verbal: { label: "اللغة والكلمات", labelEn: "Language & Words", emoji: "✍️", color: "#50E3C2", desc: "إتقان اللغة والتعبير بوضوح.", descEn: "Mastery of language and clear expression." },
-	spatial: { label: "التصور المكاني", labelEn: "Spatial Awareness", emoji: "🗺️", color: "#F5A623", desc: "فهم العلاقات بين الأشكال والمساحات.", descEn: "Understanding relationships between shapes and spaces." },
-	memory: { label: "الذاكرة والتركيز", labelEn: "Memory & Focus", emoji: "🧠", color: "#BD10E0", desc: "القدرة على تذكر المعلومات والتركيز.", descEn: "Ability to recall information and maintain focus." },
-	analytical: { label: "التحليل وحل المشكلات", labelEn: "Analysis & Problem-Solving", emoji: "🔍", color: "#9013FE", desc: "تفكيك المشاكل المعقدة وإيجاد حلول.", descEn: "Breaking down complex problems and finding solutions." },
-	social: { label: "الذكاء الاجتماعي", labelEn: "Social Intelligence", emoji: "❤️", color: "#D0021B", desc: "فهم مشاعر الآخرين والتفاعل معهم بفعالية.", descEn: "Understanding others' feelings and interacting effectively." },
+export interface CategoryMeta {
+  label: string;
+  labelEn: string;
+  short: string;
+  shortEn: string;
+  emoji: string;
+  color: string;
+  desc: string;
+  descEn: string;
+}
+
+export const CATEGORY_META: Record<Category, CategoryMeta> = {
+  logical: {
+    label: "المنطقي والرياضي", labelEn: "Logical-Mathematical", short: "منطقي", shortEn: "Logical",
+    emoji: "🧮", color: "#1FA79B",
+    desc: "قدرتك على التفكير بالأرقام والأنماط وحل المسائل الحسابية بسرعة.",
+    descEn: "Your ability to think in numbers, spot patterns, and solve math problems quickly.",
+  },
+  verbal: {
+    label: "اللغوي واللفظي", labelEn: "Verbal-Linguistic", short: "لغوي", shortEn: "Verbal",
+    emoji: "📝", color: "#E3A33B",
+    desc: "قدرتك على فهم الكلمات والتناظر اللغوي والتفكير بالمفردات.",
+    descEn: "Your ability to understand words, verbal analogies, and think in language.",
+  },
+  spatial: {
+    label: "المكاني والبصري", labelEn: "Spatial-Visual", short: "مكاني", shortEn: "Spatial",
+    emoji: "🧩", color: "#3D6FB4",
+    desc: "قدرتك على تخيّل الأشكال وعلاقتها ببعضها في الفراغ.",
+    descEn: "Your ability to visualize shapes and how they relate to each other in space.",
+  },
+  memory: {
+    label: "الذاكرة والتركيز", labelEn: "Memory & Focus", short: "ذاكرة", shortEn: "Memory",
+    emoji: "🧠", color: "#8C4B9E",
+    desc: "قدرتك على حفظ معلومة لفترة قصيرة ثم استرجاعها بدقة.",
+    descEn: "Your ability to hold information briefly then recall it accurately.",
+  },
+  analytical: {
+    label: "حل المشكلات والتحليل", labelEn: "Analytical Problem-Solving", short: "تحليلي", shortEn: "Analytical",
+    emoji: "💡", color: "#C4562E",
+    desc: "قدرتك على التفكير المنطقي، حل الألغاز، والاستنتاج الصحيح.",
+    descEn: "Your ability to reason logically, solve puzzles, and draw correct conclusions.",
+  },
+  social: {
+    label: "الذكاء الاجتماعي والعاطفي", labelEn: "Social-Emotional Intelligence", short: "عاطفي", shortEn: "Social",
+    emoji: "❤️", color: "#E4636F",
+    desc: "قدرتك على فهم مشاعرك ومشاعر من حولك والتعامل معها بذكاء.",
+    descEn: "Your ability to understand your own and others' feelings and handle them wisely.",
+  },
 };
 
-export const MI_QUESTIONS: Question[] = [
-  // ----------------- 1. الذكاء المنطقي-الرياضي (9 أسئلة) -----------------
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "ما هو الرقم التالي في المتسلسلة: 2, 4, 8, 16, ...؟",
-		promptEn: "What is the next number in the sequence: 2, 4, 8, 16, ...?",
-		options: ["24", "32", "64"],
-		optionsEn: ["24", "32", "64"],
-		correctIndex: 1,
-  },
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "إذا كان سعر مضرب وكرة هو 1.10 دولار، وسعر المضرب يزيد عن سعر الكرة بدولار واحد، فكم سعر الكرة؟",
-		promptEn: "A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?",
-		options: ["0.10 دولار", "0.05 دولار", "1.00 دولار"],
-		optionsEn: ["$0.10", "$0.05", "$1.00"],
-		correctIndex: 1,
-  },
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "ما هو الرقم التالي في المتسلسلة: 1, 4, 9, 16, 25, ...؟",
-		promptEn: "What is the next number in the sequence: 1, 4, 9, 16, 25, ...?",
-		options: ["36", "49", "30"],
-		optionsEn: ["36", "49", "30"],
-		correctIndex: 0,
-  },
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "إذا كان كل الـ (أ) هم (ب)، وبعض الـ (ب) هم (ج)، فهل بعض الـ (أ) هم (ج) بالضرورة؟",
-		promptEn: "If all A are B, and some B are C, are some A necessarily C?",
-		options: ["نعم", "لا", "لا يمكن التحديد"],
-		optionsEn: ["Yes", "No", "Cannot be determined"],
-		correctIndex: 1,
-  },
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "أي الأشكال التالية يكمل النمط: ●, ▲, ■, ●, ▲, ...؟",
-		promptEn: "Which of the following shapes completes the pattern: ●, ▲, ■, ●, ▲, ...?",
-		options: ["●", "▲", "■"],
-		optionsEn: ["●", "▲", "■"],
-		correctIndex: 2,
-  },
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "ما هو الرقم الذي لا ينتمي للمجموعة: 2, 3, 5, 7, 9, 11؟",
-		promptEn: "Which number does not belong in the set: 2, 3, 5, 7, 9, 11?",
-		options: ["3", "7", "9"],
-		optionsEn: ["3", "7", "9"],
-		correctIndex: 2, // 9 is not a prime number
-  },
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "لديك 5 آلات تنتج 5 قطع في 5 دقائق. كم دقيقة تحتاج 100 آلة لإنتاج 100 قطعة؟",
-		promptEn: "It takes 5 machines 5 minutes to make 5 widgets. How long would it take 100 machines to make 100 widgets?",
-		options: ["100 دقيقة", "50 دقيقة", "5 دقائق"],
-		optionsEn: ["100 minutes", "50 minutes", "5 minutes"],
-		correctIndex: 2,
-  },
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "ما هو الحرف التالي في المتسلسلة: أ, ج, هـ, ز, ...؟",
-		promptEn: "What is the next letter in the sequence: A, C, E, G, ...?",
-		options: ["ح", "ط", "ك"],
-		optionsEn: ["H", "I", "K"],
-		correctIndex: 1,
-  },
-  {
-		category: "logical",
-		type: "scale",
-		prompt: "أستمتع بحل الألغاز المنطقية وألعاب السودوكو.",
-		promptEn: "I enjoy solving logic puzzles and Sudoku.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  // ----------------- 2. الذكاء اللغوي (9 أسئلة) -----------------
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "أي كلمة هي الأنسب لوصف شخص يتحدث كثيرًا؟",
-		promptEn: "Which word best describes someone who talks a lot?",
-		options: ["صامت", "متحفظ", "ثرثار"],
-		optionsEn: ["Silent", "Reserved", "Talkative"],
-		correctIndex: 2,
-  },
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "ما هو عكس كلمة 'شجاع'؟",
-		promptEn: "What is the opposite of 'brave'?",
-		options: ["قوي", "سريع", "جبان"],
-		optionsEn: ["Strong", "Fast", "Cowardly"],
-		correctIndex: 2,
-  },
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "أكمل المثل: 'الطبيب للمستشفى مثل المعلم للـ...'",
-		promptEn: "Complete the analogy: 'Doctor is to Hospital as Teacher is to...'",
-		options: ["كتاب", "مدرسة", "طالب"],
-		optionsEn: ["Book", "School", "Student"],
-		correctIndex: 1,
-  },
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "أي كلمة لا تنتمي للمجموعة: تفاحة، موزة، جزرة، برتقالة؟",
-		promptEn: "Which word does not belong: Apple, Banana, Carrot, Orange?",
-		options: ["موزة", "برتقالة", "جزرة"],
-		optionsEn: ["Banana", "Orange", "Carrot"],
-		correctIndex: 2,
-  },
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "ما معنى كلمة 'عابر' أو 'زائل'؟",
-		promptEn: "What is a synonym for 'ephemeral' or 'transient'?",
-		options: ["دائم", "مؤقت", "قوي"],
-		optionsEn: ["Permanent", "Temporary", "Strong"],
-		correctIndex: 1,
-  },
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "أكمل الجملة: 'على الرغم من المطر، ___ الذهاب في نزهة.'",
-		promptEn: "Complete the sentence: 'Despite the rain, he ___ to go for a walk.'",
-		options: ["رفض", "قرر", "نسي"],
-		optionsEn: ["refused", "decided", "forgot"],
-		correctIndex: 1,
-  },
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "ما هو جمع كلمة 'مكتبة'؟",
-		promptEn: "What is the plural of 'library'?",
-		options: ["مكاتب", "مكتبات", "كتب"],
-		optionsEn: ["Desks", "Libraries", "Books"],
-		correctIndex: 1,
-  },
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "أي جملة هي الأصح نحوياً؟",
-		promptEn: "Which sentence is grammatically correct?",
-		options: ["ذهبوا الأولاد إلى الحديقة.", "الأولاد ذهبوا إلى الحديقة.", "إلى الحديقة ذهبوا الأولاد."],
-		optionsEn: ["The boys they went to the park.", "The boys went to the park.", "To the park the boys went."],
-		correctIndex: 1,
-  },
-  {
-		category: "verbal",
-		type: "scale",
-		prompt: "أستمتع بقراءة الكتب والمقالات، وأجد سهولة في تعلم كلمات جديدة.",
-		promptEn: "I enjoy reading books and articles, and I find it easy to learn new words.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  // ----------------- 3. الذكاء المكاني (9 أسئلة) -----------------
-  {
-		category: "spatial",
-		type: "choice",
-		prompt: "إذا قمت بتدوير مكعب 90 درجة إلى اليمين، فما هو الوجه الذي سيصبح في الأعلى؟",
-		promptEn: "If you rotate a cube 90 degrees to the right, which face will be on top?",
-		options: ["الوجه الأمامي", "الوجه الخلفي", "لا يمكن تحديده"],
-		optionsEn: ["Front face", "Back face", "Cannot be determined"],
-		correctIndex: 3,
-  },
-  {
-		category: "spatial",
-		type: "choice",
-		prompt: "أي من الأشكال التالية هو صورة معكوسة (مرآة) للشكل الأصلي؟",
-		promptEn: "Which of the following shapes is a mirror image of the original?",
-		options: ["نفس الشكل", "شكل مقلوب", "شكل معكوس"],
-		optionsEn: ["The same shape", "An upside-down shape", "A reversed shape"],
-		correctIndex: 2,
-  },
-  {
-		category: "spatial",
-		type: "choice",
-		prompt: "إذا كنت تواجه الشمال ثم استدرت 180 درجة، فأي اتجاه ستواجه؟",
-		promptEn: "If you are facing North and turn 180 degrees, which direction will you be facing?",
-		options: ["شرق", "غرب", "جنوب"],
-		optionsEn: ["East", "West", "South"],
-		correctIndex: 2,
-  },
-  {
-		category: "spatial",
-		type: "choice",
-		prompt: "أي قطعة تكمل اللغز (البازل)؟",
-		promptEn: "Which piece completes the puzzle?",
-		options: ["قطعة ذات حافة مستقيمة", "قطعة زاوية", "قطعة وسطية"],
-		optionsEn: ["A piece with a straight edge", "A corner piece", "A middle piece"],
-		correctIndex: 1, // Example
-  },
-  {
-		category: "spatial",
-		type: "choice",
-		prompt: "كم عدد المكعبات الصغيرة في هذا الشكل الكبير؟ (يظهر شكل 3x3x3)",
-		promptEn: "How many small cubes are in this large cube? (A 3x3x3 cube is shown)",
-		options: ["9", "18", "27"],
-		optionsEn: ["9", "18", "27"],
-		correctIndex: 2,
-  },
-  {
-		category: "spatial",
-		type: "choice",
-		prompt: "إذا طويت هذه الشبكة، أي شكل ثلاثي الأبعاد ستحصل عليه؟ (تظهر شبكة مكعب)",
-		promptEn: "If you fold this net, which 3D shape will you get? (A cube net is shown)",
-		options: ["هرم", "مكعب", "اسطوانة"],
-		optionsEn: ["Pyramid", "Cube", "Cylinder"],
-		correctIndex: 1,
-  },
-  {
-		category: "spatial",
-		type: "choice",
-		prompt: "أي من هذه المسارات هو الأقصر بين النقطتين أ و ب؟",
-		promptEn: "Which of these paths is the shortest between point A and point B?",
-		options: ["مسار متعرج", "خط مستقيم", "قوس كبير"],
-		optionsEn: ["A winding path", "A straight line", "A large arc"],
-		correctIndex: 1,
-  },
-  {
-		category: "spatial",
-		type: "scale",
-		prompt: "أجد من السهل قراءة الخرائط وتجميع الأثاث من الكتيبات.",
-		promptEn: "I find it easy to read maps and assemble furniture from instructions.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  {
-		category: "spatial",
-		type: "scale",
-		prompt: "لدي قدرة جيدة على تخيل الأشياء في ثلاثة أبعاد.",
-		promptEn: "I have a good ability to visualize things in three dimensions.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  // ----------------- 4. الذاكرة والتركيز (9 أسئلة) -----------------
-  {
-		category: "memory",
-		type: "memory",
-		prompt: "ادرس القائمة التالية جيدًا.",
-		promptEn: "Study the following list carefully.",
-		study: "تفاحة - قطار - قمر",
-		studyEn: "Apple - Train - Moon",
-		studySeconds: 5,
-		options: ["شمس - سيارة - برتقالة", "تفاحة - قطار - قمر", "نجمة - طائرة - موزة"],
-		optionsEn: ["Sun - Car - Orange", "Apple - Train - Moon", "Star - Plane - Banana"],
-		correctIndex: 1,
-  },
-  {
-		category: "memory",
-		type: "memory",
-		prompt: "احفظ هذا الرقم.",
-		promptEn: "Memorize this number.",
-		study: "8642",
-		studyEn: "8642",
-		studySeconds: 4,
-		options: ["8462", "8624", "8642"],
-		optionsEn: ["8462", "8624", "8642"],
-		correctIndex: 2,
-  },
-  {
-		category: "memory",
-		type: "memory",
-		prompt: "ادرس ترتيب الأشكال.",
-		promptEn: "Study the order of the shapes.",
-		study: "■ ▲ ●",
-		studyEn: "■ ▲ ●",
-		studySeconds: 4,
-		options: ["▲ ■ ●", "■ ● ▲", "■ ▲ ●"],
-		optionsEn: ["▲ ■ ●", "■ ● ▲", "■ ▲ ●"],
-		correctIndex: 2,
-  },
-  {
-		category: "memory",
-		type: "memory",
-		prompt: "احفظ هذه الكلمات.",
-		promptEn: "Memorize these words.",
-		study: "بيت - شجرة - بحر",
-		studyEn: "House - Tree - Sea",
-		studySeconds: 5,
-		options: ["بيت - نهر - شجرة", "بيت - شجرة - بحر", "بحر - بيت - سماء"],
-		optionsEn: ["House - River - Tree", "House - Tree - Sea", "Sea - House - Sky"],
-		correctIndex: 1,
-  },
-  {
-		category: "memory",
-		type: "memory",
-		prompt: "احفظ هذا النمط من الحروف.",
-		promptEn: "Memorize this letter pattern.",
-		study: "A-B-C-D",
-		studyEn: "A-B-C-D",
-		studySeconds: 4,
-		options: ["A-C-B-D", "A-B-D-C", "A-B-C-D"],
-		optionsEn: ["A-C-B-D", "A-B-D-C", "A-B-C-D"],
-		correctIndex: 2,
-  },
-  {
-		category: "memory",
-		type: "memory",
-		prompt: "ادرس الألوان التالية جيدًا.",
-		promptEn: "Study the following colors carefully.",
-		study: "أحمر - أزرق - أخضر",
-		studyEn: "Red - Blue - Green",
-		studySeconds: 4,
-		options: ["أحمر - أصفر - أخضر", "أحمر - أزرق - برتقالي", "أحمر - أزرق - أخضر"],
-		optionsEn: ["Red - Yellow - Green", "Red - Blue - Orange", "Red - Blue - Green"],
-		correctIndex: 2,
-  },
-  {
-		category: "memory",
-		type: "scale",
-		prompt: "أتذكر بسهولة أعياد ميلاد أصدقائي وأفراد عائلتي.",
-		promptEn: "I easily remember the birthdays of my friends and family.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  {
-		category: "memory",
-		type: "scale",
-		prompt: "يمكنني التركيز على مهمة واحدة لفترة طويلة دون تشتت.",
-		promptEn: "I can focus on a single task for a long time without getting distracted.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  {
-		category: "memory",
-		type: "scale",
-		prompt: "أنا جيد في تذكر الأسماء والوجوه.",
-		promptEn: "I am good at remembering names and faces.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  // ----------------- 5. الذكاء التحليلي (9 أسئلة) -----------------
-  {
-		category: "analytical",
-		type: "choice",
-		prompt: "كل القطط تحب السمك. (أ) صحيح، (ب) خاطئ. إذا كانت هذه الفرضية صحيحة، و'مشمش' قط، فماذا نستنتج؟",
-		promptEn: "All cats like fish. (A) True, (B) False. If this premise is true, and 'Mishmish' is a cat, what can we conclude?",
-		options: ["مشمش لا يحب السمك", "مشمش يحب السمك", "لا يمكننا معرفة"],
-		optionsEn: ["Mishmish doesn't like fish", "Mishmish likes fish", "We cannot know"],
-		correctIndex: 1,
-  },
-  {
-		category: "analytical",
-		type: "choice",
-		prompt: "طائر يطير دائمًا نحو الجنوب. في أي اتجاه يكون منقاره؟",
-		promptEn: "A bird always flies south. In which direction is its beak pointing?",
-		options: ["شمال", "جنوب", "شرق"],
-		optionsEn: ["North", "South", "East"],
-		correctIndex: 1,
-  },
-  {
-		category: "analytical",
-		type: "choice",
-		prompt: "إذا كان المطر يسبب بلل الشوارع، والشارع الآن مبتل، فهل هذا يعني أنه أمطر بالتأكيد؟",
-		promptEn: "If rain makes streets wet, and the street is now wet, does it mean it definitely rained?",
-		options: ["نعم، بالتأكيد", "لا، ليس بالضرورة", "مستحيل"],
-		optionsEn: ["Yes, definitely", "No, not necessarily", "Impossible"],
-		correctIndex: 1,
-  },
-  {
-		category: "analytical",
-		type: "choice",
-		prompt: "ما هو الافتراض الأساسي في جملة 'يجب أن تدرس بجد لتنجح'؟",
-		promptEn: "What is the underlying assumption in the sentence 'You must study hard to succeed'?",
-		options: ["النجاح مستحيل", "الدراسة بجد تؤدي للنجاح", "الجميع يدرس بجد"],
-		optionsEn: ["Success is impossible", "Studying hard leads to success", "Everyone studies hard"],
-		correctIndex: 1,
-  },
-  {
-		category: "analytical",
-		type: "choice",
-		prompt: "سيارة تسير بسرعة ثابتة. إذا قطعت 100 كم في ساعتين، فكم ستقطع في 3 ساعات؟",
-		promptEn: "A car is traveling at a constant speed. If it travels 100 km in 2 hours, how far will it travel in 3 hours?",
-		options: ["150 كم", "200 كم", "300 كم"],
-		optionsEn: ["150 km", "200 km", "300 km"],
-		correctIndex: 0,
-  },
-  {
-		category: "analytical",
-		type: "scale",
-		prompt: "عندما أواجه مشكلة معقدة، أحب تفكيكها إلى أجزاء أصغر.",
-		promptEn: "When faced with a complex problem, I like to break it down into smaller parts.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  {
-		category: "analytical",
-		type: "scale",
-		prompt: "أبحث دائمًا عن الأنماط والعلاقات بين الأشياء.",
-		promptEn: "I often look for patterns and relationships between things.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  {
-		category: "analytical",
-		type: "scale",
-		prompt: "أفضل اتخاذ القرارات بناءً على الأدلة والمنطق بدلاً من المشاعر.",
-		promptEn: "I prefer to make decisions based on evidence and logic rather than feelings.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  {
-		category: "analytical",
-		type: "scale",
-		prompt: "أستمتع بتنظيم المعلومات في جداول أو قوائم.",
-		promptEn: "I enjoy organizing information into charts or lists.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  // ----------------- 6. الذكاء الاجتماعي (9 أسئلة) -----------------
-  {
-		category: "social",
-		type: "scale",
-		prompt: "أجد من السهل فهم ما يشعر به أصدقائي حتى لو لم يتكلموا.",
-		promptEn: "I find it easy to understand what my friends are feeling even if they don't speak.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
-  // =================================================
-  // أضف بقية الأسئلة هنا. هذه 6 أمثلة إضافية.
-  // =================================================
-  {
-		category: "logical",
-		type: "choice",
-		prompt: "إذا كان اليوم هو الأربعاء، فما هو اليوم الذي يأتي بعد 3 أيام من الغد؟",
-		promptEn: "If today is Wednesday, what day is it 3 days after tomorrow?",
-		options: ["السبت", "الأحد", "الاثنين", "الثلاثاء"],
-		optionsEn: ["Saturday", "Sunday", "Monday", "Tuesday"],
-		correctIndex: 1,
-  },
-  {
-		category: "verbal",
-		type: "choice",
-		prompt: "ما هو عكس كلمة 'شجاع'؟",
-		promptEn: "What is the opposite of 'brave'?",
-		options: ["قوي", "سريع", "جبان", "ذكي"],
-		optionsEn: ["Strong", "Fast", "Cowardly", "Smart"],
-		correctIndex: 2,
-  },
-    {
-		category: "spatial",
-		type: "choice",
-		prompt: "أي من الأشكال التالية لا ينتمي للمجموعة؟ (مربع، دائرة، مثلث، خط مستقيم)",
-		promptEn: "Which of the following shapes does not belong? (Square, Circle, Triangle, Straight Line)",
-		options: ["مربع", "دائرة", "مثلث", "خط مستقيم"],
-		optionsEn: ["Square", "Circle", "Triangle", "Straight Line"],
-		correctIndex: 3, // الخط ليس شكلاً مغلقاً
-  },
-  {
-		category: "memory",
-		type: "memory",
-		prompt: "ادرس الألوان التالية جيدًا.",
-		promptEn: "Study the following colors carefully.",
-		study: "أحمر - أزرق - أخضر",
-		studyEn: "Red - Blue - Green",
-		studySeconds: 4,
-		options: ["أحمر - أصفر - أخضر", "أحمر - أزرق - برتقالي", "أحمر - أزرق - أخضر"],
-		optionsEn: ["Red - Yellow - Green", "Red - Blue - Orange", "Red - Blue - Green"],
-		correctIndex: 2,
-  },
-    {
-		category: "analytical",
-		type: "choice",
-		prompt: "طائر يطير دائمًا نحو الجنوب. في أي اتجاه يكون منقاره؟",
-		promptEn: "A bird always flies south. In which direction is its beak pointing?",
-		options: ["شمال", "جنوب", "شرق", "غرب"],
-		optionsEn: ["North", "South", "East", "West"],
-		correctIndex: 1,
-  },
-    {
-		category: "social",
-		type: "scale",
-		prompt: "أستمتع بالعمل ضمن فريق أكثر من العمل بمفردي.",
-		promptEn: "I enjoy working in a team more than working alone.",
-		options: ["لا أوافق بشدة", "لا أوافق", "محايد", "أوافق", "أوافق بشدة"],
-		optionsEn: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-  },
+export const SCALE_LABELS = ["أبدًا", "نادرًا", "أحيانًا", "غالبًا", "دائمًا"];
+export const SCALE_LABELS_EN = ["Never", "Rarely", "Sometimes", "Often", "Always"];
+
+export const MI_QUESTIONS: MIQuestion[] = [
+  // ---------------- المنطقي والرياضي / Logical-Mathematical ----------------
+  { id: 1, category: "logical", type: "mc", prompt: "ما الرقم التالي في المتتالية: 2, 4, 8, 16, ؟", promptEn: "What's next in the sequence: 2, 4, 8, 16, ?", options: ["30", "32", "34", "36"], optionsEn: ["30", "32", "34", "36"], correctIndex: 1 },
+  { id: 2, category: "logical", type: "mc", prompt: "أكمل المتتالية: 3, 6, 9, 12, ؟", promptEn: "Complete the sequence: 3, 6, 9, 12, ?", options: ["13", "14", "15", "16"], optionsEn: ["13", "14", "15", "16"], correctIndex: 2 },
+  { id: 3, category: "logical", type: "mc", prompt: "إذا كان س + 5 = 12، فكم قيمة س؟", promptEn: "If x + 5 = 12, what is x?", options: ["5", "6", "7", "8"], optionsEn: ["5", "6", "7", "8"], correctIndex: 2 },
+  { id: 4, category: "logical", type: "mc", prompt: "أكمل متتالية فيبوناتشي: 1, 1, 2, 3, 5, 8, ؟", promptEn: "Complete the Fibonacci sequence: 1, 1, 2, 3, 5, 8, ?", options: ["10", "11", "12", "13"], optionsEn: ["10", "11", "12", "13"], correctIndex: 3 },
+  { id: 5, category: "logical", type: "mc", prompt: "ناتج 7 × 8 − 6 = ؟", promptEn: "What is 7 × 8 − 6?", options: ["48", "50", "52", "56"], optionsEn: ["48", "50", "52", "56"], correctIndex: 1 },
+  { id: 6, category: "logical", type: "mc", prompt: "أكمل المتتالية: 100, 90, 80, 70, ؟", promptEn: "Complete the sequence: 100, 90, 80, 70, ?", options: ["50", "55", "60", "65"], optionsEn: ["50", "55", "60", "65"], correctIndex: 2 },
+  { id: 7, category: "logical", type: "mc", prompt: "إذا كانت 3 أقلام تكلف 6 ريالات، فكم يكلف 7 أقلام؟", promptEn: "If 3 pens cost $6, how much do 7 pens cost?", options: ["12", "13", "14", "15"], optionsEn: ["$12", "$13", "$14", "$15"], correctIndex: 2 },
+  { id: 8, category: "logical", type: "mc", prompt: "أكمل متتالية المربعات: 1, 4, 9, 16, 25, ؟", promptEn: "Complete the sequence of squares: 1, 4, 9, 16, 25, ?", options: ["30", "32", "34", "36"], optionsEn: ["30", "32", "34", "36"], correctIndex: 3 },
+  { id: 9, category: "logical", type: "mc", prompt: "نصف عدد زائد 10 يساوي 20، فما العدد؟", promptEn: "Half a number plus 10 equals 20. What is the number?", options: ["15", "18", "20", "24"], optionsEn: ["15", "18", "20", "24"], correctIndex: 2 },
+
+  // ---------------- اللغوي واللفظي / Verbal-Linguistic ----------------
+  { id: 10, category: "verbal", type: "mc", prompt: "أكمل التماثل: «قلم : كتابة» كما «سكين : ؟»", promptEn: "Complete the analogy: \"pen : writing\" as \"knife : ?\"", options: ["طبخ", "تقطيع", "زراعة", "بناء"], optionsEn: ["cooking", "cutting", "farming", "building"], correctIndex: 1 },
+  { id: 11, category: "verbal", type: "mc", prompt: "ما الكلمة الشاذة بين هذه الكلمات؟", promptEn: "Which word doesn't belong?", options: ["تفاحة", "موز", "برتقال", "طاولة"], optionsEn: ["apple", "banana", "orange", "table"], correctIndex: 3 },
+  { id: 12, category: "verbal", type: "mc", prompt: "ما مرادف كلمة «سعيد»؟", promptEn: "What is a synonym for \"happy\"?", options: ["حزين", "بائس", "مسرور", "غاضب"], optionsEn: ["sad", "miserable", "joyful", "angry"], correctIndex: 2 },
+  { id: 13, category: "verbal", type: "mc", prompt: "ما عكس كلمة «كبير»؟", promptEn: "What is the opposite of \"big\"?", options: ["صغير", "طويل", "قصير", "واسع"], optionsEn: ["small", "tall", "short", "wide"], correctIndex: 0 },
+  { id: 14, category: "verbal", type: "mc", prompt: "أكمل التماثل: «طبيب : مستشفى» كما «معلم : ؟»", promptEn: "Complete the analogy: \"doctor : hospital\" as \"teacher : ?\"", options: ["بيت", "مدرسة", "سوق", "مصنع"], optionsEn: ["house", "school", "market", "factory"], correctIndex: 1 },
+  { id: 15, category: "verbal", type: "mc", prompt: "ما الكلمة الشاذة بين هذه الكلمات؟", promptEn: "Which word doesn't belong?", options: ["أحمر", "أزرق", "أخضر", "سريع"], optionsEn: ["red", "blue", "green", "fast"], correctIndex: 3 },
+  { id: 16, category: "verbal", type: "mc", prompt: "ما مرادف كلمة «ذكي»؟", promptEn: "What is a synonym for \"smart\"?", options: ["بليد", "فطن", "غبي", "بطيء"], optionsEn: ["dull", "clever", "foolish", "slow"], correctIndex: 1 },
+  { id: 17, category: "verbal", type: "mc", prompt: "أكمل التماثل: «سمكة : ماء» كما «طائر : ؟»", promptEn: "Complete the analogy: \"fish : water\" as \"bird : ?\"", options: ["أرض", "هواء", "شجرة", "عش"], optionsEn: ["ground", "air", "tree", "nest"], correctIndex: 1 },
+  { id: 18, category: "verbal", type: "mc", prompt: "ما الكلمة الشاذة بين هذه الكلمات؟", promptEn: "Which word doesn't belong?", options: ["قطة", "كلب", "أسد", "سيارة"], optionsEn: ["cat", "dog", "lion", "car"], correctIndex: 3 },
+
+  // ---------------- المكاني والبصري / Spatial-Visual ----------------
+  { id: 19, category: "spatial", type: "mc", prompt: "أكمل التسلسل: ⬤ ⬛ ⬤ ⬛ ⬤ ؟", promptEn: "Complete the sequence: ⬤ ⬛ ⬤ ⬛ ⬤ ?", options: ["⬤", "⬛", "▲", "★"], optionsEn: ["⬤", "⬛", "▲", "★"], correctIndex: 1 },
+  { id: 20, category: "spatial", type: "mc", prompt: "أي شكل مختلف عن البقية؟", promptEn: "Which shape is different from the rest?", options: ["⬤", "⬤", "⬛", "⬤"], optionsEn: ["⬤", "⬤", "⬛", "⬤"], correctIndex: 2 },
+  { id: 21, category: "spatial", type: "mc", prompt: "كم عدد المربعات الصغيرة في شبكة 3×3؟", promptEn: "How many small squares are in a 3×3 grid?", options: ["6", "9", "12", "16"], optionsEn: ["6", "9", "12", "16"], correctIndex: 1 },
+  { id: 22, category: "spatial", type: "mc", prompt: "إذا طويت ورقة مربعة من المنتصف مرتين، كم جزءًا ينتج عند فردها؟", promptEn: "If you fold a square paper in half twice, how many sections appear when unfolded?", options: ["2", "3", "4", "6"], optionsEn: ["2", "3", "4", "6"], correctIndex: 2 },
+  { id: 23, category: "spatial", type: "mc", prompt: "أكمل النمط: ▲ ▼ ▲ ▼ ؟", promptEn: "Complete the pattern: ▲ ▼ ▲ ▼ ?", options: ["▲", "▼", "■", "●"], optionsEn: ["▲", "▼", "■", "●"], correctIndex: 0 },
+  { id: 24, category: "spatial", type: "mc", prompt: "كم عدد أضلاع الشكل السداسي؟", promptEn: "How many sides does a hexagon have?", options: ["5", "6", "7", "8"], optionsEn: ["5", "6", "7", "8"], correctIndex: 1 },
+  { id: 25, category: "spatial", type: "mc", prompt: "أكمل النمط: ● ●● ●●● ؟", promptEn: "Complete the pattern: ● ●● ●●● ?", options: ["●●", "●●●", "●●●●", "●●●●●"], optionsEn: ["●●", "●●●", "●●●●", "●●●●●"], correctIndex: 2 },
+  { id: 26, category: "spatial", type: "mc", prompt: "كم حركة دوران بمقدار 90° يحتاجها المربع ليعود لوضعه الأصلي؟", promptEn: "How many 90° rotations does a square need to return to its original position?", options: ["2", "3", "4", "8"], optionsEn: ["2", "3", "4", "8"], correctIndex: 2 },
+  { id: 27, category: "spatial", type: "mc", prompt: "أكمل النمط: ★ ☆ ★ ☆ ★ ؟", promptEn: "Complete the pattern: ★ ☆ ★ ☆ ★ ?", options: ["★", "☆", "●", "▲"], optionsEn: ["★", "☆", "●", "▲"], correctIndex: 1 },
+
+  // ---------------- الذاكرة والتركيز / Memory & Focus ----------------
+  { id: 28, category: "memory", type: "memory", study: "4 — 9 — 2 — 7", studyEn: "4 — 9 — 2 — 7", studySeconds: 4, prompt: "ما هو التسلسل الذي حفظته للتو؟", promptEn: "What was the sequence you just memorized?", options: ["4927", "4972", "9427", "2749"], optionsEn: ["4927", "4972", "9427", "2749"], correctIndex: 0 },
+  { id: 29, category: "memory", type: "memory", study: "8 — 1 — 5 — 3 — 6", studyEn: "8 — 1 — 5 — 3 — 6", studySeconds: 4, prompt: "ما هو التسلسل الذي حفظته للتو؟", promptEn: "What was the sequence you just memorized?", options: ["81536", "85136", "81563", "15836"], optionsEn: ["81536", "85136", "81563", "15836"], correctIndex: 0 },
+  { id: 30, category: "memory", type: "memory", study: "تفاح — قلم — شمس", studyEn: "Apple — Pen — Sun", studySeconds: 4, prompt: "أي كلمة من التالي لم تظهر في القائمة؟", promptEn: "Which of these words did NOT appear in the list?", options: ["تفاح", "قلم", "شمس", "كرسي"], optionsEn: ["Apple", "Pen", "Sun", "Chair"], correctIndex: 3 },
+  { id: 31, category: "memory", type: "memory", study: "3 — 7 — 2 — 9 — 4 — 1", studyEn: "3 — 7 — 2 — 9 — 4 — 1", studySeconds: 5, prompt: "ما الرقم الثالث في التسلسل الذي حفظته؟", promptEn: "What was the third number in the sequence?", options: ["7", "2", "9", "4"], optionsEn: ["7", "2", "9", "4"], correctIndex: 1 },
+  { id: 32, category: "memory", type: "memory", study: "⬤ ▲ ■", studyEn: "⬤ ▲ ■", studySeconds: 3, prompt: "ما الترتيب الصحيح للأشكال كما ظهرت؟", promptEn: "What was the correct order of the shapes?", options: ["⬤ ▲ ■", "▲ ⬤ ■", "■ ▲ ⬤", "▲ ■ ⬤"], optionsEn: ["⬤ ▲ ■", "▲ ⬤ ■", "■ ▲ ⬤", "▲ ■ ⬤"], correctIndex: 0 },
+  { id: 33, category: "memory", type: "memory", study: "6 — 3 — 9 — 1 — 5 — 8 — 2", studyEn: "6 — 3 — 9 — 1 — 5 — 8 — 2", studySeconds: 5, prompt: "ما الرقم الأخير في التسلسل الذي حفظته؟", promptEn: "What was the last number in the sequence?", options: ["8", "5", "2", "1"], optionsEn: ["8", "5", "2", "1"], correctIndex: 2 },
+  { id: 34, category: "memory", type: "memory", study: "قمر — نجمة — غيمة — مطر", studyEn: "Moon — Star — Cloud — Rain", studySeconds: 4, prompt: "كم كلمة كانت في القائمة التي حفظتها؟", promptEn: "How many words were in the list you memorized?", options: ["3", "4", "5", "6"], optionsEn: ["3", "4", "5", "6"], correctIndex: 1 },
+  { id: 35, category: "memory", type: "memory", study: "5 — 2 — 8 — 4", studyEn: "5 — 2 — 8 — 4", studySeconds: 4, prompt: "ما مجموع الأرقام الأربعة التي حفظتها؟", promptEn: "What is the sum of the four numbers you memorized?", options: ["17", "18", "19", "20"], optionsEn: ["17", "18", "19", "20"], correctIndex: 2 },
+  { id: 36, category: "memory", type: "memory", study: "أزرق — أحمر — أخضر — أصفر", studyEn: "Blue — Red — Green — Yellow", studySeconds: 4, prompt: "ما اللون الثاني في القائمة التي حفظتها؟", promptEn: "What was the second color in the list?", options: ["أزرق", "أحمر", "أخضر", "أصفر"], optionsEn: ["Blue", "Red", "Green", "Yellow"], correctIndex: 1 },
+
+  // ---------------- حل المشكلات والتحليل / Analytical Problem-Solving ----------------
+  { id: 37, category: "analytical", type: "mc", prompt: "عمر أكبر من سالم بثلاث سنوات، وسالم أكبر من علي بسنتين. من الأصغر سنًا؟", promptEn: "Omar is 3 years older than Salem, and Salem is 2 years older than Ali. Who is the youngest?", options: ["عمر", "سالم", "علي", "لا يمكن معرفة ذلك"], optionsEn: ["Omar", "Salem", "Ali", "Can't be determined"], correctIndex: 2 },
+  { id: 38, category: "analytical", type: "mc", prompt: "كل الوردات أزهار، وبعض الأزهار حمراء. فهل كل الورود حمراء بالضرورة؟", promptEn: "All roses are flowers, and some flowers are red. Must all roses be red?", options: ["نعم", "لا", "ربما", "لا توجد معلومات كافية"], optionsEn: ["Yes", "No", "Maybe", "Not enough information"], correctIndex: 1 },
+  { id: 39, category: "analytical", type: "mc", prompt: "أب وابنه تعرّضا لحادث، الأب توفي والابن نُقل للمستشفى، فدخل الطبيب وقال: «لا أستطيع تشخيصه فهو ابني». كيف يكون ذلك؟", promptEn: "A father and son were in an accident. The father died and the son was taken to hospital. The doctor said: \"I can't operate, he's my son.\" How is this possible?", options: ["الطبيب هو الجد", "الطبيب هو الأم", "الابن يحلم", "خطأ في القصة"], optionsEn: ["The doctor is the grandfather", "The doctor is the mother", "The son is dreaming", "The story has an error"], correctIndex: 1 },
+  { id: 40, category: "analytical", type: "mc", prompt: "لديك 5 تفاحات وأكلت 3، كم تبقى معك؟", promptEn: "You have 5 apples and eat 3. How many are left?", options: ["1", "2", "3", "5"], optionsEn: ["1", "2", "3", "5"], correctIndex: 1 },
+  { id: 41, category: "analytical", type: "mc", prompt: "إذا استغرق 5 عمال 5 دقائق لصنع 5 كراسٍ، كم دقيقة يستغرق 100 عامل لصنع 100 كرسي؟", promptEn: "If 5 workers take 5 minutes to make 5 chairs, how many minutes do 100 workers take to make 100 chairs?", options: ["5 دقائق", "20 دقيقة", "100 دقيقة", "500 دقيقة"], optionsEn: ["5 minutes", "20 minutes", "100 minutes", "500 minutes"], correctIndex: 0 },
+  { id: 42, category: "analytical", type: "mc", prompt: "إذا كان 2+3=10، و3+4=21، و4+5=36، فما ناتج 5+6 بنفس النمط؟", promptEn: "If 2+3=10, 3+4=21, and 4+5=36, what is 5+6 using the same pattern?", options: ["30", "45", "55", "66"], optionsEn: ["30", "45", "55", "66"], correctIndex: 2 },
+  { id: 43, category: "analytical", type: "mc", prompt: "ثلاثة مفاتيح إضاءة خارج غرفة، كل واحد يتحكم بلمبة، ولا يمكنك رؤية اللمبات إلا بالدخول مرة واحدة. كيف تعرف أي مفتاح لأي لمبة؟", promptEn: "Three light switches are outside a room, each controlling one bulb, and you can only enter once. How do you determine which switch controls which bulb?", options: ["تفتح مفتاحًا واحدًا فقط وتدخل", "تشغّل كل المفاتيح معًا", "تشغّل مفتاحًا لفترة ثم تطفئه وتشغّل آخر قبل الدخول", "لا يمكن معرفة ذلك أبدًا"], optionsEn: ["Turn on just one switch and enter", "Turn on all switches together", "Turn one on for a while, turn it off, turn on another, then enter", "It can never be determined"], correctIndex: 2 },
+  { id: 44, category: "analytical", type: "mc", prompt: "أي الأرقام التالية لا ينتمي للنمط: 2, 4, 6, 7, 8؟", promptEn: "Which of these numbers doesn't belong: 2, 4, 6, 7, 8?", options: ["2", "4", "7", "8"], optionsEn: ["2", "4", "7", "8"], correctIndex: 2 },
+  { id: 45, category: "analytical", type: "mc", prompt: "كل المهندسين يعرفون الرياضيات، وأحمد يعرف الرياضيات. هل أحمد بالضرورة مهندس؟", promptEn: "All engineers know math, and Ahmed knows math. Must Ahmed be an engineer?", options: ["نعم بالتأكيد", "لا، هذا استنتاج خاطئ", "ربما بنسبة 50٪", "يعتمد على عمره"], optionsEn: ["Yes, definitely", "No, that's a flawed conclusion", "Maybe, 50/50", "Depends on his age"], correctIndex: 1 },
+
+  // ---------------- الذكاء الاجتماعي والعاطفي / Social-Emotional ----------------
+  { id: 46, category: "social", type: "scale", prompt: "أستطيع أن ألاحظ مشاعر الآخرين من تعابير وجوههم بسهولة.", promptEn: "I can easily notice others' feelings from their facial expressions.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
+  { id: 47, category: "social", type: "scale", prompt: "أتعامل مع النقد دون أن أثور بسرعة.", promptEn: "I handle criticism without quickly getting upset.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
+  { id: 48, category: "social", type: "scale", prompt: "أستطيع تهدئة صديق حزين بكلمات مناسبة.", promptEn: "I can calm a sad friend with the right words.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
+  { id: 49, category: "social", type: "scale", prompt: "أفهم سبب انزعاجي قبل أن أتصرف بناءً عليه.", promptEn: "I understand why I'm upset before acting on it.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
+  { id: 50, category: "social", type: "scale", prompt: "أستطيع إقناع الآخرين برأيي دون فرضه عليهم.", promptEn: "I can persuade others of my view without forcing it on them.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
+  { id: 51, category: "social", type: "scale", prompt: "ألاحظ عندما يحتاج شخص ما للمساعدة دون أن يطلبها.", promptEn: "I notice when someone needs help even if they don't ask.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
+  { id: 52, category: "social", type: "scale", prompt: "أتعامل مع الخلافات في العمل أو الحياة بهدوء.", promptEn: "I handle conflicts at work or in life calmly.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
+  { id: 53, category: "social", type: "scale", prompt: "أستطيع تكوين صداقات جديدة بسهولة نسبية.", promptEn: "I can make new friends relatively easily.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
+  { id: 54, category: "social", type: "scale", prompt: "أعتذر بصدق عندما أخطئ في حق أحد.", promptEn: "I apologize sincerely when I wrong someone.", options: SCALE_LABELS, optionsEn: SCALE_LABELS_EN },
 ];

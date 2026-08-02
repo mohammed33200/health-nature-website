@@ -1,0 +1,119 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+import Quiz from '../../components/Quiz2.astro';
+
+const questions = [
+  { id: 'q1', ar: 'قلة الاهتمام أو المتعة في القيام بالأشياء', en: 'Little interest or pleasure in doing things' },
+  { id: 'q2', ar: 'الشعور بالحزن أو الاكتئاب أو اليأس', en: 'Feeling down, depressed, or hopeless' },
+  { id: 'q3', ar: 'صعوبة في النوم أو الاستمرار فيه، أو النوم بإفراط', en: 'Trouble falling or staying asleep, or sleeping too much' },
+  { id: 'q4', ar: 'الشعور بالتعب أو قلة الطاقة', en: 'Feeling tired or having little energy' },
+  { id: 'q5', ar: 'ضعف الشهية أو الإفراط في الأكل', en: 'Poor appetite or overeating' },
+  { id: 'q6', ar: 'الشعور بالسوء تجاه نفسك — أو أنك فاشل، أو أنك خيّبت أملك أو أمل أسرتك', en: 'Feeling bad about yourself — or that you are a failure or have let yourself or your family down' },
+  { id: 'q7', ar: 'صعوبة التركيز في أشياء مثل قراءة الجريدة أو مشاهدة التلفاز', en: 'Trouble concentrating on things, such as reading the newspaper or watching television' },
+  { id: 'q8', ar: 'الحركة أو الكلام ببطء شديد لدرجة ملاحظة الآخرين، أو العكس: التململ والحركة الزائدة أكثر من المعتاد', en: 'Moving or speaking so slowly that other people could have noticed, or the opposite — being so fidgety or restless that you have been moving around a lot more than usual' },
+  { id: 'q9', ar: 'أفكار بأنك ستكون أفضل حالاً لو متّ، أو أفكار عن إيذاء نفسك بطريقة ما', en: 'Thoughts that you would be better off dead, or of hurting yourself in some way' },
+];
+
+const options = [
+  { value: 0, ar: 'لا شيء على الإطلاق', en: 'Not at all' },
+  { value: 1, ar: 'عدة أيام', en: 'Several days' },
+  { value: 2, ar: 'أكثر من نصف الأيام', en: 'More than half the days' },
+  { value: 3, ar: 'تقريباً كل يوم', en: 'Nearly every day' },
+];
+
+const bands = [
+  { min: 0, max: 4, ar: 'ضئيل إلى معدوم', en: 'None to minimal', color: 'var(--ok)' },
+  { min: 5, max: 9, ar: 'خفيف', en: 'Mild', color: 'var(--secondary)' },
+  { min: 10, max: 14, ar: 'متوسط', en: 'Moderate', color: 'var(--accent)' },
+  { min: 15, max: 19, ar: 'متوسط إلى شديد', en: 'Moderately severe', color: 'var(--accent-dark)' },
+  { min: 20, max: 27, ar: 'شديد', en: 'Severe', color: 'var(--danger)' },
+];
+---
+<Layout title="اختبار PHQ-9 لتقييم أعراض الاكتئاب">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 01</p>
+    <p class="kicker" data-en hidden>Test 01</p>
+    <h1 data-ar>تقييم أعراض<br />الاكتئاب</h1>
+    <h1 data-en hidden>Depression<br />Screening</h1>
+    <p class="lead" data-ar>
+      تسعة أسئلة فقط عن أسبوعيك الماضيين، مبنية مباشرة على معايير التشخيص
+      الرسمية للاكتئاب.
+    </p>
+    <p class="lead" data-en hidden>
+      Just nine questions about your past two weeks, built directly on
+      the official diagnostic criteria for depression.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="phq9" />
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>Patient Health Questionnaire-9 (PHQ-9)</strong>، من
+      تطوير Robert L. Spitzer وJanet B.W. Williams وKurt Kroenke وزملائهم،
+      بدعم منحة تعليمية من شركة Pfizer، نُشر عام 1999. الاختبار في
+      الملكية العامة (Public Domain) ولا يتطلب أي إذن للاستخدام أو النسخ
+      أو الترجمة.
+    </p>
+    <p data-en hidden>
+      The <strong>Patient Health Questionnaire-9 (PHQ-9)</strong>,
+      developed by Robert L. Spitzer, Janet B.W. Williams, Kurt Kroenke
+      and colleagues, with an educational grant from Pfizer Inc.,
+      published in 1999. The instrument is in the public domain and
+      requires no permission to use, copy, or translate.
+    </p>
+  </section>
+
+  <section class="container">
+    <Quiz
+      quizId="phq9"
+      questions={questions}
+      options={options}
+      bands={bands}
+      selfHarmItemId="q9"
+      maxLabelAr="مجموع الدرجة"
+      maxLabelEn="Total score"
+    />
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      يقيس شدة تسعة أعراض للاكتئاب وفق الدليل التشخيصي DSM، بناءً على
+      تكرارها خلال الأسبوعين الماضيين فقط — لا طوال حياتك. يُستخدم في
+      العيادات الأولية حول العالم كأداة فرز سريعة قبل أي تقييم متعمق.
+    </p>
+    <p data-en hidden>
+      It measures the severity of nine DSM-aligned depression symptoms
+      based on how often they occurred over the past two weeks only —
+      not your whole life. It's used in primary care clinics worldwide
+      as a quick screening tool before any deeper evaluation.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      درجة 10 فأعلى هي العتبة الأكثر استخداماً للإشارة إلى ضرورة تقييم
+      طبي أعمق. لكن الأهم من الرقم نفسه هو الاتجاه: أعد الاختبار كل
+      أسبوعين إذا كنت تحت متابعة أو علاج، فالتغيّر في الدرجة أصدق مؤشر
+      على التحسن من قراءة واحدة معزولة.
+    </p>
+    <p data-en hidden>
+      A score of 10 or higher is the most commonly used threshold
+      suggesting a need for deeper clinical evaluation. But more
+      important than the number itself is the trend: retake the test
+      every two weeks if you're under care or treatment, since the change
+      in score is a more honest indicator of improvement than any single
+      isolated reading.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

@@ -1,0 +1,113 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+import Quiz from '../../components/Quiz2.astro';
+
+const questions = [
+  { id: 'q1', ar: 'شعرتُ بالبهجة وبروح معنوية جيدة', en: 'I have felt cheerful and in good spirits' },
+  { id: 'q2', ar: 'شعرتُ بالهدوء والاسترخاء', en: 'I have felt calm and relaxed' },
+  { id: 'q3', ar: 'شعرتُ بالنشاط والحيوية', en: 'I have felt active and vigorous' },
+  { id: 'q4', ar: 'استيقظتُ وأنا أشعر بالانتعاش والراحة', en: 'I woke up feeling fresh and rested' },
+  { id: 'q5', ar: 'كانت حياتي اليومية مليئة بأشياء تثير اهتمامي', en: 'My daily life has been filled with things that interest me' },
+];
+
+const options = [
+  { value: 5, ar: 'طوال الوقت', en: 'All of the time' },
+  { value: 4, ar: 'معظم الوقت', en: 'Most of the time' },
+  { value: 3, ar: 'أكثر من نصف الوقت', en: 'More than half of the time' },
+  { value: 2, ar: 'أقل من نصف الوقت', en: 'Less than half of the time' },
+  { value: 1, ar: 'بعض الوقت', en: 'Some of the time' },
+  { value: 0, ar: 'في أي وقت — أبداً', en: 'At no time' },
+];
+
+const bands = [
+  { min: 0, max: 28, ar: 'رفاهية منخفضة جداً', en: 'Very low well-being', color: 'var(--danger)' },
+  { min: 29, max: 50, ar: 'رفاهية منخفضة', en: 'Low well-being', color: 'var(--accent)' },
+  { min: 51, max: 100, ar: 'رفاهية جيدة', en: 'Good well-being', color: 'var(--ok)' },
+];
+---
+<Layout title="مؤشر منظمة الصحة العالمية للرفاهية WHO-5">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 05</p>
+    <p class="kicker" data-en hidden>Test 05</p>
+    <h1 data-ar>مؤشر<br />الرفاهية</h1>
+    <h1 data-en hidden>Well-Being<br />Index</h1>
+    <p class="lead" data-ar>
+      خمس عبارات إيجابية فقط عن أسبوعيك الماضيين — لا يسأل عن الأعراض، بل
+      عن مدى شعورك بالحياة الجيدة.
+    </p>
+    <p class="lead" data-en hidden>
+      Just five positively worded statements about your past two weeks —
+      it doesn't ask about symptoms, but about how much you've felt good
+      about life.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="who5" />
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>WHO-5 Well-Being Index</strong>، طوّره المكتب
+      الإقليمي الأوروبي لمنظمة الصحة العالمية، نُشر عام 1998. الاختبار
+      حر الاستخدام تماماً ولا يتطلب أي إذن، مع طلب واحد فقط: أن يُذكر
+      كمصدر عند استخدامه.
+    </p>
+    <p data-en hidden>
+      The <strong>WHO-5 Well-Being Index</strong>, developed by the WHO
+      Regional Office for Europe, published in 1998. The instrument is
+      completely free to use and requires no permission, with one simple
+      request: that it be cited as the source when used.
+    </p>
+  </section>
+
+  <section class="container">
+    <Quiz
+      quizId="who5"
+      questions={questions}
+      options={options}
+      bands={bands}
+      multiplier={4}
+      maxLabelAr="مؤشر الرفاهية (من 100)"
+      maxLabelEn="Well-being score (out of 100)"
+    />
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      خلافاً لمعظم اختبارات الفرز التي تسأل عن الأعراض السلبية، هذا
+      الاختبار يقيس الرفاهية الإيجابية مباشرة — وهذا يقلل من وصمة
+      الإجابة عليه، ويجعله أداة جيدة للمتابعة الدورية حتى بلا شكوى واضحة.
+    </p>
+    <p data-en hidden>
+      Unlike most screening tests that ask about negative symptoms, this
+      one measures positive well-being directly — which reduces the
+      stigma of answering it, and makes it a good tool for routine
+      monitoring even without a clear complaint.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      درجة 50 فأقل هي العتبة الشائعة للإشارة إلى احتمال وجود اكتئاب
+      يستحق فحصاً أعمق (بأداة مثل PHQ-9)، ودرجة 28 فأقل مؤشر أقوى على
+      ذلك. تابع هذا الرقم كل أسبوعين إذا كان منخفضاً، فاتجاهه أهم من أي
+      قراءة منفردة.
+    </p>
+    <p data-en hidden>
+      A score of 50 or below is the common threshold suggesting possible
+      depression worth deeper screening (with a tool like PHQ-9), and 28
+      or below is a stronger signal of that. Track this number every two
+      weeks if it's low — the trend matters more than any single
+      reading.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

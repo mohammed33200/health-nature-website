@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة احتياج الماء اليومي">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 09 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 09 on the tape</p>
+    <h1 data-ar>احتياج الماء<br />اليومي</h1>
+    <h1 data-en hidden>Daily Water<br />Need</h1>
+    <p class="lead" data-ar>
+      ليس "8 أكواب" رقماً ثابتاً للجميع. احتياجك الفعلي يعتمد على وزنك
+      ونشاطك اليومي والطقس المحيط بك.
+    </p>
+    <p class="lead" data-en hidden>
+      "8 glasses" isn't a fixed number for everyone. Your actual need
+      depends on your weight, your daily activity, and the climate around
+      you.
+    </p>
+  </section>
+
+  <Tape current="daily-water-need" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="weight" data-ar>الوزن (كجم)</label>
+        <label for="weight" data-en hidden>Weight (kg)</label>
+        <input id="weight" type="number" inputmode="decimal" placeholder="70" min="20" max="300" />
+      </div>
+      <div class="field">
+        <label for="activity" data-ar>مستوى النشاط اليومي</label>
+        <label for="activity" data-en hidden>Daily activity level</label>
+        <select id="activity">
+          <option value="0">خامل / Sedentary</option>
+          <option value="350">نشاط خفيف (أقل من 30 دقيقة) / Light (under 30 min)</option>
+          <option value="550">نشاط متوسط (30–60 دقيقة) / Moderate (30–60 min)</option>
+          <option value="750">نشاط عالٍ (أكثر من 60 دقيقة) / Intense (over 60 min)</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column: 1 / -1;">
+        <label for="climate" data-ar>الطقس المحيط</label>
+        <label for="climate" data-en hidden>Surrounding climate</label>
+        <select id="climate">
+          <option value="0">معتدل / Moderate</option>
+          <option value="500">حار أو رطب / Hot or humid</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>احتياجك اليومي من الماء:</span>
+        <span data-en hidden>Your daily water need:</span>
+        <span class="reading" id="waterValue">—</span>
+        <span data-ar>لتر</span><span data-en hidden>L</span>
+      </p>
+      <p style="color:var(--ink-soft); font-size:0.85rem;">
+        <span data-ar>(يشمل الماء من الطعام والشراب معاً)</span>
+        <span data-en hidden>(includes water from both food and drink)</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نبدأ بخط أساس شائع الاستخدام: 33 مل لكل كيلوجرام من وزنك، ثم نضيف
+      كمية تعويضية عن العرق حسب مدة نشاطك، وأخرى إن كنت في طقس حار أو
+      رطب يزيد التعرّق. الناتج تقدير عملي وليس رقماً طبياً صارماً.
+    </p>
+    <p data-en hidden>
+      We start from a commonly used baseline: 33 ml per kilogram of your
+      weight, then add a sweat-replacement amount based on how long you're
+      active, plus more if you're in hot or humid weather that increases
+      perspiration. The result is a practical estimate, not a strict
+      medical figure.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      هذا الرقم يشمل كل مصادر الماء — الشراب المباشر، وما تحصل عليه من
+      الطعام (خصوصاً الفواكه والخضروات). لست بحاجة لشربه كله كماء نقي؛
+      اعتبره سقفاً تقريبياً لا هدفاً حرفياً يومياً.
+    </p>
+    <p data-en hidden>
+      This number includes all water sources — direct drinking, and what
+      you get from food (especially fruits and vegetables). You don't
+      need to drink it all as plain water; treat it as an approximate
+      ceiling, not a literal daily target.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      وزّع الكمية على اليوم بدل شربها دفعة واحدة، وزد الكمية فوراً في
+      أيام النشاط العالي أو الطقس الحار. لون البول الفاتح مؤشر يومي بسيط
+      يخبرك إن كنت تقترب من احتياجك الفعلي أم لا.
+    </p>
+    <p data-en hidden>
+      Spread the amount across the day rather than drinking it all at
+      once, and increase it immediately on high-activity or hot-weather
+      days. Light-colored urine is a simple daily indicator of whether
+      you're meeting your actual need.
+    </p>
+  </section>
+
+  <script>
+    const weightEl = document.getElementById('weight') as HTMLInputElement;
+    const activityEl = document.getElementById('activity') as HTMLSelectElement;
+    const climateEl = document.getElementById('climate') as HTMLSelectElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const waterEl = document.getElementById('waterValue')!;
+
+    function calc() {
+      const weight = parseFloat(weightEl.value);
+      if (!weight) return;
+
+      const baselineMl = weight * 33;
+      const activityMl = parseFloat(activityEl.value);
+      const climateMl = parseFloat(climateEl.value);
+      const totalL = (baselineMl + activityMl + climateMl) / 1000;
+
+      waterEl.textContent = totalL.toFixed(1);
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+  </script>
+</ToolsShell>
+</Layout>

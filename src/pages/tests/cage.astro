@@ -1,0 +1,174 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+import Quiz from '../../components/Quiz2.astro';
+
+const questions = [
+  { id: 'q1', ar: 'هل شعرت يوماً بأنك يجب أن تقلل من شرب الكحول؟', en: 'Have you ever felt you should cut down on your drinking?' },
+  { id: 'q2', ar: 'هل أزعجك أشخاص بانتقاد شربك للكحول؟', en: 'Have people annoyed you by criticizing your drinking?' },
+  { id: 'q3', ar: 'هل شعرت يوماً بالسوء أو الذنب حيال شربك؟', en: 'Have you ever felt bad or guilty about your drinking?' },
+  { id: 'q4', ar: 'هل شربت يوماً أول شيء في الصباح لتهدئة أعصابك أو للتخلص من آثار الثمالة؟', en: 'Have you ever had a drink first thing in the morning to steady your nerves or get rid of a hangover?' },
+];
+
+const options = [
+  { value: 0, ar: 'لا', en: 'No' },
+  { value: 1, ar: 'نعم', en: 'Yes' },
+];
+
+const bands = [
+  { min: 0, max: 1, ar: 'منخفض الاحتمال', en: 'Low likelihood', color: 'var(--ok)' },
+  { min: 2, max: 4, ar: 'يستدعي تقييماً أعمق', en: 'Warrants further evaluation', color: 'var(--danger)' },
+];
+---
+<Layout title="اختبار CAGE لفحص مشكلات الكحول">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 03</p>
+    <p class="kicker" data-en hidden>Test 03</p>
+    <h1 data-ar>فحص مشكلات<br />الكحول</h1>
+    <h1 data-en hidden>Alcohol<br />Screening</h1>
+    <p class="lead" data-ar>
+      أربعة أسئلة فقط، تركّز على سلوكك تجاه الشرب لا على كميته، وهذا ما
+      يجعلها فعّالة رغم بساطتها.
+    </p>
+    <p class="lead" data-en hidden>
+      Just four questions, focused on your behavior toward drinking
+      rather than the amount — which is what makes it effective despite
+      its simplicity.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="cage" />
+
+  <section class="container test-index-card">
+    <a class="test-index-link" href="/tests">
+      <img src="/icon/general-pysho-icon.png" alt="General Psycho Test" width="64" height="64" loading="lazy" />
+      <div>
+        <p class="card-title" data-ar>الاختبار النفسي العام</p>
+        <p class="card-subtitle" data-ar>العودة إلى صفحة الاختبارات</p>
+        <p class="card-title" data-en hidden>General Psycho Test</p>
+        <p class="card-subtitle" data-en hidden>Back to test index</p>
+      </div>
+    </a>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>CAGE Questionnaire</strong>، من تطوير الدكتور John A.
+      Ewing، نُشر عام 1984 في مجلة JAMA. الاسم اختصار للكلمات الإنجليزية
+      الأربع التي يقيسها الاختبار: Cut down (التقليل)، Annoyed (الانزعاج
+      من الانتقاد)، Guilty (الشعور بالذنب)، وEye-opener (الشرب صباحاً).
+      الاختبار حر الاستخدام والنسخ دون إذن.
+    </p>
+    <p data-en hidden>
+      The <strong>CAGE Questionnaire</strong>, developed by Dr. John A.
+      Ewing, published in 1984 in JAMA. The name is an acronym of the
+      four concepts it measures: Cut down, Annoyed, Guilty, and
+      Eye-opener. The instrument is freely usable and reproducible
+      without permission.
+    </p>
+  </section>
+
+  <section class="container">
+    <Quiz
+      quizId="cage"
+      questions={questions}
+      options={options}
+      bands={bands}
+      maxLabelAr="مجموع الإجابات بنعم"
+      maxLabelEn="Total yes-answers"
+    />
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      يبحث عن أنماط سلوكية ترافق اعتماد الكحول — لا عن كمية الشرب أو
+      تكراره — لذا فهو فعّال حتى مع من لا يعتقدون أن لديهم مشكلة. يُستخدم
+      على نطاق واسع في العيادات الأولية كخطوة فرز أولى وسريعة.
+    </p>
+    <p data-en hidden>
+      It looks for behavioral patterns that accompany alcohol dependence
+      — not the amount or frequency of drinking — which is what makes it
+      effective even for those who don't believe they have a problem.
+      It's widely used in primary care as a quick first screening step.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      إجابتان بـ"نعم" أو أكثر تشير لضرورة تقييم أعمق من مختص، وليس حكماً
+      نهائياً على وجود إدمان. حتى إجابة واحدة بـ"نعم" تستحق تأملاً صادقاً
+      في علاقتك بالكحول، خصوصاً سؤال "الشرب صباحاً" الذي يشير غالباً إلى
+      اعتماد جسدي حقيقي إن كانت الإجابة نعم.
+    </p>
+    <p data-en hidden>
+      Two or more "yes" answers suggest the need for deeper evaluation by
+      a professional, not a final verdict of addiction. Even a single
+      "yes" is worth honest reflection on your relationship with alcohol
+      — especially the "morning drink" question, which, if answered yes,
+      often points to genuine physical dependence.
+    </p>
+  </section>
+
+  <style>
+    .test-index-card {
+      margin: 28px auto;
+      max-width: 680px;
+    }
+
+    .test-index-link {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: center;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .test-index-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 24px 50px rgba(15, 23, 42, 0.10);
+    }
+
+    .test-index-link img {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      margin: 0 0 6px;
+      font-size: 1.03rem;
+      font-weight: 700;
+      color: #134e39;
+    }
+
+    .card-subtitle {
+      margin: 0;
+      color: #475569;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    [dir='rtl'] .test-index-link {
+      grid-template-columns: 1fr auto;
+      text-align: right;
+    }
+  </style>
+</ToolsShell>
+</Layout>

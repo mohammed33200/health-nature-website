@@ -1,0 +1,115 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+import Quiz from '../../components/Quiz2.astro';
+
+const questions = [
+  { id: 'q1', ar: 'أشعر أنني إنسان ذو قيمة، على الأقل بنفس مستوى الآخرين', en: 'I feel that I am a person of worth, at least on an equal plane with others.' },
+  { id: 'q2', ar: 'أشعر أن لدي عدداً من الصفات الجيدة', en: 'I feel that I have a number of good qualities.' },
+  { id: 'q3', ar: 'بشكل عام، أميل للشعور بأنني فاشل', en: 'All in all, I am inclined to feel that I am a failure.' },
+  { id: 'q4', ar: 'أنا قادر على فعل الأشياء بنفس جودة معظم الناس', en: 'I am able to do things as well as most other people.' },
+  { id: 'q5', ar: 'أشعر أنه ليس لدي الكثير لأفتخر به', en: 'I feel I do not have much to be proud of.' },
+  { id: 'q6', ar: 'أتبنى موقفاً إيجابياً تجاه نفسي', en: 'I take a positive attitude toward myself.' },
+  { id: 'q7', ar: 'أنا راضٍ عن نفسي بشكل عام', en: 'On the whole, I am satisfied with myself.' },
+  { id: 'q8', ar: 'أتمنى لو كان بإمكاني احترام نفسي أكثر', en: 'I wish I could have more respect for myself.' },
+  { id: 'q9', ar: 'أشعر بالفعل أنني عديم الفائدة أحياناً', en: 'I certainly feel useless at times.' },
+  { id: 'q10', ar: 'أعتقد أنني لا أساوي شيئاً على الإطلاق', en: 'I think I am no good at all.' },
+];
+
+const options = [
+  { value: 3, ar: 'أوافق بشدة', en: 'Strongly agree' },
+  { value: 2, ar: 'أوافق', en: 'Agree' },
+  { value: 1, ar: 'لا أوافق', en: 'Disagree' },
+  { value: 0, ar: 'لا أوافق بشدة', en: 'Strongly disagree' },
+];
+
+const bands = [
+  { min: 0, max: 14, ar: 'منخفض', en: 'Low', color: 'var(--danger)' },
+  { min: 15, max: 25, ar: 'ضمن النطاق الطبيعي', en: 'Within normal range', color: 'var(--ok)' },
+  { min: 26, max: 30, ar: 'مرتفع', en: 'High', color: 'var(--secondary)' },
+];
+---
+<Layout title="اختبار روزنبرغ لتقدير الذات">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 04</p>
+    <p class="kicker" data-en hidden>Test 04</p>
+    <h1 data-ar>تقدير<br />الذات</h1>
+    <h1 data-en hidden>Self<br />-Esteem</h1>
+    <p class="lead" data-ar>
+      عشر عبارات عن نظرتك العامة لنفسك — أحد أكثر مقاييس تقدير الذات
+      استخداماً في العالم منذ الستينيات.
+    </p>
+    <p class="lead" data-en hidden>
+      Ten statements about your general view of yourself — one of the
+      most widely used self-esteem scales in the world since the 1960s.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="rosenberg" />
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>Rosenberg Self-Esteem Scale (RSES)</strong>، من
+      تطوير عالم الاجتماع Morris Rosenberg، نُشر عام 1965. الاختبار حر
+      الاستخدام للأغراض البحثية والسريرية دون إذن.
+    </p>
+    <p data-en hidden>
+      The <strong>Rosenberg Self-Esteem Scale (RSES)</strong>, developed
+      by sociologist Morris Rosenberg, published in 1965. The instrument
+      is free to use for research and clinical purposes without
+      permission.
+    </p>
+  </section>
+
+  <section class="container">
+    <Quiz
+      quizId="rosenberg"
+      questions={questions}
+      options={options}
+      bands={bands}
+      reverseIds={['q3', 'q5', 'q8', 'q9', 'q10']}
+      maxLabelAr="مجموع الدرجة"
+      maxLabelEn="Total score"
+    />
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      يقيس تقدير الذات العام — إحساسك الإجمالي بقيمتك كإنسان — لا مجالاً
+      محدداً كالثقة في العمل أو المظهر. خُمس العبارات إيجابية وخُمسها
+      سلبية عمداً لتقليل ميل المستجيب للموافقة التلقائية.
+    </p>
+    <p data-en hidden>
+      It measures global self-esteem — your overall sense of worth as a
+      person — not a specific domain like work confidence or appearance.
+      Half the statements are worded positively and half negatively, by
+      design, to reduce the tendency to automatically agree.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      النطاق الطبيعي واسع (15–25)، فلا داعي للقلق من نتيجة متوسطة. إن
+      كانت نتيجتك منخفضة باستمرار عبر أكثر من قياس، فالأجدى العمل معها
+      عبر مختص نفسي بدل محاولة "رفعها" بمفردك — تقدير الذات غالباً
+      انعكاس لأنماط تفكير قابلة للتغيير بالعلاج المعرفي السلوكي.
+    </p>
+    <p data-en hidden>
+      The normal range is wide (15–25), so there's no need to worry over
+      a middling score. If your result is consistently low across more
+      than one measurement, it's more useful to work on it with a mental
+      health professional than to try to "raise it" alone — self-esteem
+      often reflects thinking patterns that respond well to cognitive
+      behavioral therapy.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

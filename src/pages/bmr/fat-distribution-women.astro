@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="نسبة توزيع الدهون لدى النساء">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 05 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 05 on the tape</p>
+    <h1 data-ar>توزيع الدهون<br />لدى النساء</h1>
+    <h1 data-en hidden>Fat Distribution<br />in Women</h1>
+    <p class="lead" data-ar>
+      نفس نسبة الدهون قد تحمل مخاطر مختلفة حسب مكان تمركزها. نسبة الخصر
+      إلى الورك تكشف هل توزيعك أقرب لشكل "الكمثرى" أم "التفاحة".
+    </p>
+    <p class="lead" data-en hidden>
+      The same fat percentage can carry different risks depending on where
+      it sits. Your waist-to-hip ratio reveals whether your distribution
+      is closer to a "pear" or an "apple" shape.
+    </p>
+  </section>
+
+  <Tape current="fat-distribution-women" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="waist" data-ar>محيط الخصر (سم)</label>
+        <label for="waist" data-en hidden>Waist circumference (cm)</label>
+        <input id="waist" type="number" inputmode="decimal" placeholder="75" min="40" max="200" />
+      </div>
+      <div class="field">
+        <label for="hip" data-ar>محيط الورك (سم)</label>
+        <label for="hip" data-en hidden>Hip circumference (cm)</label>
+        <input id="hip" type="number" inputmode="decimal" placeholder="98" min="40" max="200" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسبي</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>نسبة الخصر إلى الورك:</span>
+        <span data-en hidden>Waist-to-hip ratio:</span>
+        <span class="reading" id="whrValue">—</span>
+        <span class="badge" id="whrBadge"></span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نقسم محيط الخصر على محيط الورك (كلاهما بالسنتيمتر): WHR = الخصر ÷
+      الورك. منظمة الصحة العالمية تعتمد هذه النسبة تحديداً للنساء لأن
+      حدود الخطورة تختلف عن الرجال بسبب اختلاف توزيع الدهون الطبيعي بين
+      الجنسين.
+    </p>
+    <p data-en hidden>
+      We divide waist circumference by hip circumference (both in
+      centimeters): WHR = waist ÷ hip. The WHO uses this ratio with
+      women-specific thresholds because natural fat distribution differs
+      between the sexes.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      نسبة 0.80 أو أقل تشير لتوزيع "كمثري" (دهون حول الورك والفخذين)
+      ومخاطر قلبية وعائية أقل. من 0.81 إلى 0.85 خطر متوسط. أعلى من 0.85
+      يشير لتوزيع "تفاحي" (دهون حول الخصر والبطن)، وهو النمط المرتبط
+      بمخاطر أعلى لأمراض القلب والسكري، بغض النظر عن الوزن الكلي.
+    </p>
+    <p data-en hidden>
+      A ratio of 0.80 or below suggests a "pear" distribution (fat around
+      hips and thighs) with lower cardiovascular risk. 0.81 to 0.85 is
+      moderate risk. Above 0.85 suggests an "apple" distribution (fat
+      around the waist and abdomen), the pattern linked to higher risk of
+      heart disease and diabetes regardless of total weight.
+    </p>
+
+    <h2 data-ar>كيف تستخدمين هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      إذا كانت نسبتك في النطاق المرتفع، ركّزي على تقليل دهون البطن تحديداً
+      عبر تمارين القلب المنتظمة وتقليل السكريات المكررة، فهذا النوع من
+      الدهون هو الأكثر استجابة للنشاط البدني المنتظم. قيسي محيط خصرك
+      وورك مرة كل شهر بنفس الشريط وبعد الزفير مباشرة لضمان قياس متسق.
+    </p>
+    <p data-en hidden>
+      If your ratio falls in the higher range, focus specifically on
+      reducing abdominal fat through regular cardio and less refined
+      sugar — this fat type responds most readily to consistent physical
+      activity. Measure your waist and hips once a month with the same
+      tape, right after exhaling, to keep measurements consistent.
+    </p>
+  </section>
+
+  <script>
+    const waistEl = document.getElementById('waist') as HTMLInputElement;
+    const hipEl = document.getElementById('hip') as HTMLInputElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const whrEl = document.getElementById('whrValue')!;
+    const whrBadgeEl = document.getElementById('whrBadge')!;
+
+    function category(whr: number) {
+      if (whr <= 0.8) return { ar: 'خطر منخفض — كمثري', en: 'Low risk — pear', color: 'var(--ok)' };
+      if (whr <= 0.85) return { ar: 'خطر متوسط', en: 'Moderate risk', color: 'var(--accent)' };
+      return { ar: 'خطر مرتفع — تفاحي', en: 'High risk — apple', color: 'var(--danger)' };
+    }
+
+    function calc() {
+      const waist = parseFloat(waistEl.value);
+      const hip = parseFloat(hipEl.value);
+      if (!waist || !hip) return;
+
+      const whr = waist / hip;
+      const cat = category(whr);
+      const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+
+      whrEl.textContent = whr.toFixed(2);
+      whrBadgeEl.textContent = lang === 'ar' ? cat.ar : cat.en;
+      whrBadgeEl.style.background = cat.color;
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+    const observer = new MutationObserver(() => {
+      if (resultEl.classList.contains('show')) calc();
+    });
+    const scopeEl = resultEl.closest('.tools-scope');
+  if (scopeEl) observer.observe(scopeEl, { attributes: true, attributeFilter: ['data-lang'] });
+  </script>
+</ToolsShell>
+</Layout>

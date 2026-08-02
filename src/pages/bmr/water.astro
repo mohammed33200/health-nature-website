@@ -1,0 +1,175 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة نسبة الماء في الجسم">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 03 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 03 on the tape</p>
+    <h1 data-ar>نسبة الماء<br />في الجسم</h1>
+    <h1 data-en hidden>Body Water<br />Percentage</h1>
+    <p class="lead" data-ar>
+      أكثر من نصف وزنك ماء. هذه الحاسبة تقدّر إجمالي ماء جسمك بالليتر
+      ونسبته من وزنك الكلي.
+    </p>
+    <p class="lead" data-en hidden>
+      More than half your weight is water. This calculator estimates your
+      total body water in liters and as a percentage of your total
+      weight.
+    </p>
+  </section>
+
+  <Tape current="water" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="gender" data-ar>الجنس</label>
+        <label for="gender" data-en hidden>Sex</label>
+        <select id="gender">
+          <option value="male">ذكر / Male</option>
+          <option value="female">أنثى / Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="age" data-ar>العمر (سنة)</label>
+        <label for="age" data-en hidden>Age (years)</label>
+        <input id="age" type="number" inputmode="numeric" placeholder="30" min="1" max="110" />
+      </div>
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
+      </div>
+      <div class="field">
+        <label for="weight" data-ar>الوزن (كجم)</label>
+        <label for="weight" data-en hidden>Weight (kg)</label>
+        <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>إجمالي ماء الجسم:</span>
+        <span data-en hidden>Total body water:</span>
+        <span class="reading" id="litersValue">—</span>
+        <span data-ar>لتر</span><span data-en hidden>L</span>
+      </p>
+      <p>
+        <span data-ar>نسبة الماء من وزنك:</span>
+        <span data-en hidden>Water as % of weight:</span>
+        <span class="reading" id="pctValue">—</span>%
+        <span class="badge" id="pctBadge"></span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نستخدم معادلة واطسون (Watson Formula)، المعتمدة سريرياً لتقدير
+      إجمالي ماء الجسم من الطول والوزن والعمر والجنس، ثم نحوّل الناتج إلى
+      نسبة مئوية بقسمته على وزنك الكلي. مساحة سطح الجسم ترتبط بهذا الرقم
+      لأنها تحدد سرعة فقد الجسم للماء عبر الجلد والتعرّق، لذا كلما كبرت
+      مساحة سطحك بالنسبة لوزنك احتجت متابعة ترطيب أدق.
+    </p>
+    <p data-en hidden>
+      We use the Watson formula, clinically used to estimate total body
+      water from height, weight, age and sex, then convert it to a
+      percentage by dividing by your total weight. Body surface area
+      relates to this figure because it governs how fast the body loses
+      water through skin and sweat — the larger your surface area relative
+      to your weight, the more closely you should track hydration.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      يتراوح ماء الجسم الطبيعي بين 50–65% للرجال و45–60% للنساء تقريباً،
+      وتقل النسبة مع تقدم العمر وزيادة الدهون (لأن الدهون تحتوي ماءً أقل
+      من العضلات). نسبة منخفضة بشكل ملحوظ قد تشير لجفاف مزمن أو ارتفاع
+      نسبة الدهون، بينما الارتفاع الشديد نادر ويستدعي تقييماً طبياً.
+    </p>
+    <p data-en hidden>
+      Normal body water runs roughly 50–65% for men and 45–60% for women,
+      and it declines with age and higher body fat (fat holds less water
+      than muscle). A notably low percentage may point to chronic
+      dehydration or higher body fat, while an unusually high one is rare
+      and warrants medical review.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      إذا كانت نسبتك منخفضة، ابدأ بزيادة تدريجية في شرب الماء موزّعة على
+      اليوم بدل دفعة واحدة، وراقب لون البول كمؤشر يومي بسيط. إن كانت
+      النسبة مرتبطة بارتفاع نسبة الدهون، فتحسين تركيب الجسم عبر النشاط
+      البدني سيرفع نسبة الماء تلقائياً مع الوقت.
+    </p>
+    <p data-en hidden>
+      If your percentage is low, start with a gradual increase in water
+      intake spread across the day rather than all at once, and watch
+      urine color as a simple daily indicator. If the low reading is
+      linked to higher body fat, improving body composition through
+      physical activity will raise your water percentage naturally over
+      time.
+    </p>
+  </section>
+
+  <script>
+    const genderEl = document.getElementById('gender') as HTMLSelectElement;
+    const ageEl = document.getElementById('age') as HTMLInputElement;
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const weightEl = document.getElementById('weight') as HTMLInputElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const litersEl = document.getElementById('litersValue')!;
+    const pctEl = document.getElementById('pctValue')!;
+    const pctBadgeEl = document.getElementById('pctBadge')!;
+
+    function category(pct: number, isMale: boolean) {
+      const low = isMale ? 50 : 45;
+      const high = isMale ? 65 : 60;
+      if (pct < low) return { ar: 'منخفضة', en: 'Low', color: '#B08A2B' };
+      if (pct > high) return { ar: 'مرتفعة', en: 'High', color: 'var(--secondary)' };
+      return { ar: 'طبيعية', en: 'Normal', color: 'var(--ok)' };
+    }
+
+    function calc() {
+      const age = parseFloat(ageEl.value);
+      const height = parseFloat(heightEl.value);
+      const weight = parseFloat(weightEl.value);
+      const isMale = genderEl.value === 'male';
+      if (!age || !height || !weight) return;
+
+      const tbw = isMale
+        ? 2.447 - 0.09156 * age + 0.1074 * height + 0.3362 * weight
+        : -2.097 + 0.1069 * height + 0.2466 * weight;
+
+      const pct = (tbw / weight) * 100;
+      const cat = category(pct, isMale);
+      const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+
+      litersEl.textContent = tbw.toFixed(1);
+      pctEl.textContent = pct.toFixed(1);
+      pctBadgeEl.textContent = lang === 'ar' ? cat.ar : cat.en;
+      pctBadgeEl.style.background = cat.color;
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+    const observer = new MutationObserver(() => {
+      if (resultEl.classList.contains('show')) calc();
+    });
+    const scopeEl = resultEl.closest('.tools-scope');
+  if (scopeEl) observer.observe(scopeEl, { attributes: true, attributeFilter: ['data-lang'] });
+  </script>
+</ToolsShell>
+</Layout>

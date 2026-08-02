@@ -1,0 +1,119 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+import Quiz from '../../components/Quiz2.astro';
+
+const questions = [
+  { id: 'q1', ar: 'خلال الشهر الماضي، كم مرة انزعجت بسبب أمر حدث بشكل غير متوقع؟', en: 'In the last month, how often have you been upset because of something that happened unexpectedly?' },
+  { id: 'q2', ar: 'خلال الشهر الماضي، كم مرة شعرت أنك غير قادر على التحكم في الأمور المهمة في حياتك؟', en: 'In the last month, how often have you felt that you were unable to control the important things in your life?' },
+  { id: 'q3', ar: 'خلال الشهر الماضي، كم مرة شعرت بالتوتر والضغط النفسي؟', en: "In the last month, how often have you felt nervous and stressed?" },
+  { id: 'q4', ar: 'خلال الشهر الماضي، كم مرة شعرت بالثقة في قدرتك على التعامل مع مشكلاتك الشخصية؟', en: 'In the last month, how often have you felt confident about your ability to handle your personal problems?' },
+  { id: 'q5', ar: 'خلال الشهر الماضي، كم مرة شعرت أن الأمور تسير كما تريد؟', en: 'In the last month, how often have you felt that things were going your way?' },
+  { id: 'q6', ar: 'خلال الشهر الماضي، كم مرة وجدت أنك لا تستطيع التعامل مع كل ما يجب عليك فعله؟', en: 'In the last month, how often have you found that you could not cope with all the things that you had to do?' },
+  { id: 'q7', ar: 'خلال الشهر الماضي، كم مرة كنت قادراً على التحكم في مصادر الانزعاج في حياتك؟', en: 'In the last month, how often have you been able to control irritations in your life?' },
+  { id: 'q8', ar: 'خلال الشهر الماضي، كم مرة شعرت أنك متمكن من زمام أمورك؟', en: 'In the last month, how often have you felt that you were on top of things?' },
+  { id: 'q9', ar: 'خلال الشهر الماضي، كم مرة غضبت بسبب أمور خارجة عن سيطرتك؟', en: 'In the last month, how often have you been angered because of things that happened that were outside of your control?' },
+  { id: 'q10', ar: 'خلال الشهر الماضي، كم مرة شعرت أن الصعوبات تتراكم لدرجة أنك لا تستطيع التغلب عليها؟', en: 'In the last month, how often have you felt difficulties were piling up so high that you could not overcome them?' },
+];
+
+const options = [
+  { value: 0, ar: 'أبداً', en: 'Never' },
+  { value: 1, ar: 'نادراً', en: 'Almost never' },
+  { value: 2, ar: 'أحياناً', en: 'Sometimes' },
+  { value: 3, ar: 'غالباً', en: 'Fairly often' },
+  { value: 4, ar: 'كثيراً جداً', en: 'Very often' },
+];
+
+const bands = [
+  { min: 0, max: 13, ar: 'ضغط منخفض', en: 'Low stress', color: 'var(--ok)' },
+  { min: 14, max: 26, ar: 'ضغط متوسط', en: 'Moderate stress', color: 'var(--secondary)' },
+  { min: 27, max: 40, ar: 'ضغط مرتفع', en: 'High perceived stress', color: 'var(--danger)' },
+];
+---
+<Layout title="مقياس الإجهاد المدرك PSS-10">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 06</p>
+    <p class="kicker" data-en hidden>Test 06</p>
+    <h1 data-ar>الإجهاد<br />المدرك</h1>
+    <h1 data-en hidden>Perceived<br />Stress</h1>
+    <p class="lead" data-ar>
+      لا يقيس أحداثك الضاغطة، بل كيف تشعر تجاهها — وهذا ما يجعله مؤشراً
+      أدق من مجرد عد الأحداث السيئة في حياتك.
+    </p>
+    <p class="lead" data-en hidden>
+      It doesn't measure your stressful events, but how you feel about
+      them — which makes it a more accurate indicator than simply
+      counting bad things happening in your life.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="pss10" />
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>Perceived Stress Scale (PSS-10)</strong>، من تطوير
+      Sheldon Cohen وTom Kamarck وRobin Mermelstein، جامعة كارنيغي
+      ميلون، نُشر عام 1983. متاح مجاناً للاستخدام البحثي وغير التجاري مع
+      ذكر المصدر.
+    </p>
+    <p data-en hidden>
+      The <strong>Perceived Stress Scale (PSS-10)</strong>, developed by
+      Sheldon Cohen, Tom Kamarck, and Robin Mermelstein at Carnegie
+      Mellon University, published in 1983. Freely available for
+      research and non-commercial use with attribution.
+    </p>
+  </section>
+
+  <section class="container">
+    <Quiz
+      quizId="pss10"
+      questions={questions}
+      options={options}
+      bands={bands}
+      reverseIds={['q4', 'q5', 'q7', 'q8']}
+      maxLabelAr="مجموع الدرجة"
+      maxLabelEn="Total score"
+    />
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      يقيس مدى شعورك بأن حياتك غير متوقعة أو خارجة عن سيطرتك أو مثقلة
+      بالأعباء خلال الشهر الماضي. أربعة من بنوده إيجابية عمداً (الثقة
+      والتحكم) لتوازن البنود السلبية وتعكس جانب "القدرة على التكيف" لا
+      الضغط وحده.
+    </p>
+    <p data-en hidden>
+      It measures how much you've felt your life is unpredictable,
+      uncontrollable, or overloaded over the past month. Four items are
+      deliberately positive (confidence and control) to balance the
+      negative items and reflect a "coping capacity" side, not just
+      stress alone.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      رقم واحد مرتفع لا يعني شيئاً كبيراً — الحياة الطبيعية تتضمن فترات
+      ضغط. الأهم هو الاتجاه: أعد الاختبار شهرياً، فإن ظل مرتفعاً باستمرار
+      لأشهر، فهذا وقت جيد للتفكير في تعديل مصادر الضغط نفسها لا فقط طرق
+      التعامل معها.
+    </p>
+    <p data-en hidden>
+      A single elevated number doesn't mean much — normal life includes
+      stressful periods. What matters is the trend: retake it monthly,
+      and if it stays consistently high for months, that's a good time
+      to think about changing the sources of stress themselves, not just
+      your coping methods.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

@@ -1,0 +1,133 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة مساحة سطح الجسم">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 07 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 07 on the tape</p>
+    <h1 data-ar>مساحة<br />سطح الجسم</h1>
+    <h1 data-en hidden>Body Surface<br />Area</h1>
+    <p class="lead" data-ar>
+      لو نشرت جلدك كورقة، كم متراً مربعاً ستشغل؟ هذا الرقم ليس فضولاً
+      علمياً فقط — يستخدمه الأطباء فعلياً لحساب جرعات بعض الأدوية.
+    </p>
+    <p class="lead" data-en hidden>
+      If you unrolled your skin flat, how many square meters would it
+      cover? This isn't just scientific curiosity — physicians actually
+      use this figure to calculate certain medication doses.
+    </p>
+  </section>
+
+  <Tape current="bsa" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="40" max="230" />
+      </div>
+      <div class="field">
+        <label for="weight" data-ar>الوزن (كجم)</label>
+        <label for="weight" data-en hidden>Weight (kg)</label>
+        <input id="weight" type="number" inputmode="decimal" placeholder="70" min="2" max="300" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>مساحة سطح الجسم:</span>
+        <span data-en hidden>Body surface area:</span>
+        <span class="reading" id="bsaValue">—</span>
+        <span data-ar>م²</span><span data-en hidden>m²</span>
+      </p>
+      <p style="color:var(--ink-soft); font-size:0.85rem;">
+        <span data-ar>(بمعادلة DuBois المرجعية: </span>
+        <span data-en hidden>(reference DuBois formula: </span>
+        <span id="duboisValue" class="num">—</span>
+        <span data-ar> م²)</span><span data-en hidden> m²)</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نعتمد معادلة Mosteller وهي الأبسط والأكثر استخداماً سريرياً اليوم:
+      BSA = الجذر التربيعي لـ (الطول بالسم × الوزن بالكجم ÷ 3600). نعرض
+      إلى جانبها معادلة DuBois الكلاسيكية الأقدم للمقارنة، وعادة ما
+      يتقاربان بفارق ضئيل.
+    </p>
+    <p data-en hidden>
+      We use the Mosteller formula, the simplest and most widely used
+      clinically today: BSA = the square root of (height in cm × weight
+      in kg ÷ 3600). Alongside it we show the older classic DuBois
+      formula for comparison; the two typically agree within a small
+      margin.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      يتراوح BSA للبالغين عادة بين 1.6 و2.0 م² تقريباً. يستخدم الأطباء
+      هذا الرقم لحساب جرعات بعض أدوية العلاج الكيميائي وبعض المؤشرات
+      القلبية (كمؤشر القلب Cardiac Index)، لأنه يعكس حجم الجسم الفعلي
+      بدقة أكبر من الوزن وحده في هذه الحالات.
+    </p>
+    <p data-en hidden>
+      Adult BSA typically falls between roughly 1.6 and 2.0 m². Physicians
+      use this figure to calculate doses for certain chemotherapy drugs
+      and some cardiac indices (like Cardiac Index), because it reflects
+      actual body size more accurately than weight alone in these cases.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      هذا الرقم أداة معرفية أكثر منه هدفاً للتغيير — لا يمكن تعديله بالنشاط
+      أو الغذاء كباقي القياسات. أهميته العملية الحقيقية تظهر عند مراجعة
+      الطبيب: اذكره إن كنت تتابع علاجاً يعتمد الجرعة فيه على مساحة سطح
+      الجسم، فهذا يساعدك على فهم كيف يُحسب دواؤك.
+    </p>
+    <p data-en hidden>
+      This number is more of a knowledge tool than a target to change —
+      unlike the other measurements, it can't be shifted through activity
+      or diet. Its real practical value shows up at the doctor's office:
+      mention it if you're on a treatment whose dose is calculated from
+      body surface area, so you understand how your medication is dosed.
+    </p>
+  </section>
+
+  <script>
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const weightEl = document.getElementById('weight') as HTMLInputElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const bsaEl = document.getElementById('bsaValue')!;
+    const duboisEl = document.getElementById('duboisValue')!;
+
+    function calc() {
+      const height = parseFloat(heightEl.value);
+      const weight = parseFloat(weightEl.value);
+      if (!height || !weight) return;
+
+      const mosteller = Math.sqrt((height * weight) / 3600);
+      const dubois = 0.007184 * Math.pow(weight, 0.425) * Math.pow(height, 0.725);
+
+      bsaEl.textContent = mosteller.toFixed(2);
+      duboisEl.textContent = dubois.toFixed(2);
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+  </script>
+</ToolsShell>
+</Layout>

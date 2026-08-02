@@ -1,0 +1,173 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+
+const questions = [
+  { id: 'q1', ar: 'كم مرة تواجه صعوبة في إنهاء التفاصيل الأخيرة لمشروع بعد الانتهاء من الأجزاء الصعبة؟', en: 'How often do you have trouble wrapping up the final details of a project, once the challenging parts have been done?', threshold: 2 },
+  { id: 'q2', ar: 'كم مرة تجد صعوبة في ترتيب الأمور عند القيام بمهمة تتطلب التنظيم؟', en: 'How often do you have difficulty getting things in order when you have to do a task that requires organization?', threshold: 3 },
+  { id: 'q3', ar: 'كم مرة تواجه مشكلة في تذكر المواعيد أو الالتزامات؟', en: 'How often do you have problems remembering appointments or obligations?', threshold: 3 },
+  { id: 'q4', ar: 'عندما تواجه مهمة تتطلب تفكيراً كبيراً، كم مرة تتجنب أو تؤجل البدء فيها؟', en: 'When you have a task that requires a lot of thought, how often do you avoid or delay getting started?', threshold: 3 },
+  { id: 'q5', ar: 'كم مرة تتململ أو تحرك يديك أو قدميك عندما تضطر للجلوس لفترة طويلة؟', en: 'How often do you fidget or squirm with your hands or feet when you have to sit down for a long time?', threshold: 4 },
+  { id: 'q6', ar: 'كم مرة تشعر بنشاط زائد ورغبة قهرية في فعل الأشياء، وكأنك مدفوع بمحرك؟', en: 'How often do you feel overly active and compelled to do things, like you were driven by a motor?', threshold: 4 },
+];
+
+// options indices: 0=Never,1=Rarely,2=Sometimes,3=Often,4=Very Often
+const options = [
+  { value: 0, ar: 'أبداً', en: 'Never' },
+  { value: 1, ar: 'نادراً', en: 'Rarely' },
+  { value: 2, ar: 'أحياناً', en: 'Sometimes' },
+  { value: 3, ar: 'غالباً', en: 'Often' },
+  { value: 4, ar: 'كثيراً جداً', en: 'Very often' },
+];
+---
+<Layout title="اختبار ASRS v1.1 لفحص فرط الحركة وتشتت الانتباه للكبار">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>الاختبار 08</p>
+    <p class="kicker" data-en hidden>Test 08</p>
+    <h1 data-ar>فرط الحركة<br />وتشتت الانتباه</h1>
+    <h1 data-en hidden>Adult<br />ADHD</h1>
+    <p class="lead" data-ar>
+      ستة أسئلة فقط عن آخر ستة أشهر، وهي الأسئلة الستة الأكثر تنبؤاً من
+      أصل 18 سؤالاً في النسخة الكاملة.
+    </p>
+    <p class="lead" data-en hidden>
+      Just six questions about the past six months — the six most
+      predictive questions out of the full 18-item version.
+    </p>
+  </section>
+
+  <MedicalDisclaimer />
+  <TestsNav current="asrs" />
+
+  <section class="container info-section">
+    <h2 data-ar>مصدر الاختبار</h2>
+    <h2 data-en hidden>Test source</h2>
+    <p data-ar>
+      اختبار <strong>Adult ADHD Self-Report Scale (ASRS v1.1) — الجزء
+      أ</strong>، طُوّر بالتعاون بين منظمة الصحة العالمية وفريق عمل
+      الكبار المصابين بفرط الحركة وتشتت الانتباه (بمن فيهم Ronald
+      Kessler، جامعة هارفارد)، نُشر عام 2005. الاختبار في الملكية العامة
+      ولا يتطلب أي إذن.
+    </p>
+    <p data-en hidden>
+      The <strong>Adult ADHD Self-Report Scale (ASRS v1.1) — Part A</strong>,
+      developed jointly by the World Health Organization and the
+      Workgroup on Adult ADHD (including Ronald Kessler, Harvard Medical
+      School), published in 2005. The instrument is in the public domain
+      and requires no permission.
+    </p>
+  </section>
+
+  <section class="container calc-card">
+    <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:1rem;" data-ar>
+      أجب عن كل سؤال بناءً على كيف شعرت وتصرفت خلال الأشهر الستة الماضية.
+    </p>
+    <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:1rem;" data-en hidden>
+      Answer each question based on how you have felt and conducted
+      yourself over the past six months.
+    </p>
+
+    <form id="asrsForm">
+      {questions.map((q, i) => (
+        <fieldset class="quiz-item">
+          <legend>
+            <span class="quiz-num">{i + 1}</span>
+            <span data-ar>{q.ar}</span>
+            <span data-en hidden>{q.en}</span>
+          </legend>
+          <div class="quiz-options">
+            {options.map((opt) => (
+              <label class="quiz-option">
+                <input type="radio" name={`q_${q.id}`} value={opt.value} required />
+                <span data-ar>{opt.ar}</span>
+                <span data-en hidden>{opt.en}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+      <button class="btn-calc" type="submit">
+        <span data-ar>احسب النتيجة</span>
+        <span data-en hidden>Calculate Score</span>
+      </button>
+    </form>
+
+    <div class="result" id="asrsResult">
+      <p>
+        <span data-ar>عدد الأسئلة التي تجاوزت العتبة:</span>
+        <span data-en hidden>Questions above threshold:</span>
+        <span class="reading" id="asrsScore">—</span> / 6
+        <span class="badge" id="asrsBadge"></span>
+      </p>
+    </div>
+  </section>
+
+  <script define:vars={{ thresholds: questions.map((q) => ({ id: q.id, threshold: q.threshold })) }}>
+    const form = document.getElementById('asrsForm');
+    const resultEl = document.getElementById('asrsResult');
+    const scoreEl = document.getElementById('asrsScore');
+    const badgeEl = document.getElementById('asrsBadge');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let count = 0;
+      for (const { id, threshold } of thresholds) {
+        const selected = form.querySelector(`input[name="q_${id}"]:checked`);
+        if (!selected) return;
+        const val = parseFloat(selected.value);
+        if (val >= threshold) count += 1;
+      }
+
+      const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+      scoreEl.textContent = count.toString();
+
+      if (count >= 4) {
+        badgeEl.textContent = lang === 'ar' ? 'يتفق مع أعراض فرط الحركة/تشتت الانتباه' : 'Consistent with adult ADHD';
+        badgeEl.style.background = 'var(--danger)';
+      } else {
+        badgeEl.textContent = lang === 'ar' ? 'دون العتبة' : 'Below threshold';
+        badgeEl.style.background = 'var(--ok)';
+      }
+      resultEl.classList.add('show');
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  </script>
+
+  <section class="container info-section">
+    <h2 data-ar>ما الهدف من هذا الاختبار؟</h2>
+    <h2 data-en hidden>What is this test for?</h2>
+    <p data-ar>
+      كل سؤال هنا له عتبة حساسية خاصة به وفق التصميم الرسمي للاختبار —
+      فبعض الأسئلة تُحتسب من إجابة "أحياناً" فأعلى، وأخرى لا تُحتسب إلا
+      عند "كثيراً جداً" فقط. هذا التصميم الدقيق هو ما يمنح الاختبار
+      دقته رغم قصره.
+    </p>
+    <p data-en hidden>
+      Each question here has its own sensitivity threshold by the
+      instrument's official design — some questions count from
+      "Sometimes" and above, others only count at "Very often." This
+      precise design is what gives the test its accuracy despite its
+      brevity.
+    </p>
+
+    <h2 data-ar>كيف تستفيد من نتيجتك؟</h2>
+    <h2 data-en hidden>How do you benefit from your result?</h2>
+    <p data-ar>
+      أربع إجابات فأكثر تتجاوز العتبة المحددة لكل سؤال تشير إلى أن
+      أعراضك متوافقة مع فرط الحركة وتشتت الانتباه لدى الكبار، وتستحق
+      تقييماً سريرياً كاملاً. تذكّر أن أعراضاً مشابهة قد تنتج عن القلق أو
+      قلة النوم أو ضغط العمل، لذا التقييم المهني هو ما يميّز بينها.
+    </p>
+    <p data-en hidden>
+      Four or more answers crossing each question's specific threshold
+      suggests your symptoms are consistent with adult ADHD and warrant
+      a full clinical evaluation. Remember that similar symptoms can
+      stem from anxiety, poor sleep, or work stress, so professional
+      evaluation is what distinguishes between them.
+    </p>
+  </section>
+</ToolsShell>
+</Layout>

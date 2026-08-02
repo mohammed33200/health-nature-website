@@ -1,0 +1,602 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = "أداة تنظيف الروابط | URL Cleaner Tool";
+const description = "أداة بسيطة لإزالة متغيرات التتبع غير الضرورية من الروابط الطويلة للحصول على رابط نظيف وقصير.";
+---
+
+<Layout title={title} description={description}>
+	<Fragment slot="head">
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+	</Fragment>
+
+	<div id="uc-root" dir="rtl" lang="ar">
+		<div class="uc-topbar">
+			<div>
+				<div class="uc-eyebrow" data-ar="أداة مجانية" data-en="Free tool">أداة مجانية</div>
+				<h1 class="uc-title" data-ar="تنظيف الروابط" data-en="URL Cleaner">تنظيف الروابط</h1>
+			</div>
+			<button type="button" class="uc-lang-btn" id="uc-lang-toggle">English</button>
+		</div>
+
+		<p
+			class="uc-sub"
+			data-ar="الصق أي رابط لإزالة معاملات التتبع منه فورًا داخل متصفحك، دون إرسال أي بيانات إلى أي خادم."
+			data-en="Paste any link to instantly strip its tracking parameters, right inside your browser — nothing is ever sent to a server."
+		>
+			الصق أي رابط لإزالة معاملات التتبع منه فورًا داخل متصفحك، دون إرسال أي بيانات إلى أي خادم.
+		</p>
+
+		<div class="uc-card">
+			<div class="uc-input-row">
+				<input type="text" id="uc-input" data-ar-ph="https://example.com/?utm_source=...&fbclid=..." data-en-ph="https://example.com/?utm_source=...&fbclid=..." placeholder="https://example.com/?utm_source=...&fbclid=..." autocomplete="off" spellcheck="false" />
+				<button type="button" class="uc-btn-primary" id="uc-clean-btn" data-ar="نظّف الرابط" data-en="Clean link">نظّف الرابط</button>
+			</div>
+			<div id="uc-error" data-ar="الرجاء إدخال رابط صحيح (يبدأ بـ http:// أو https://)." data-en="Please enter a valid link (starting with http:// or https://)."></div>
+
+			<div id="uc-result">
+				<div class="uc-compare">
+					<div>
+						<div class="uc-row-label" data-ar="قبل" data-en="Before">قبل</div>
+						<div class="uc-url-box uc-before" id="uc-before-box"></div>
+					</div>
+					<div>
+						<div class="uc-row-label" data-ar="بعد" data-en="After">بعد</div>
+						<div class="uc-url-box uc-after" id="uc-after-box"></div>
+					</div>
+				</div>
+
+				<div class="uc-removed-note" id="uc-removed-note"></div>
+
+				<div class="uc-actions">
+					<button type="button" class="uc-btn-ghost" id="uc-copy-btn" data-ar="نسخ الرابط النظيف" data-en="Copy clean link">نسخ الرابط النظيف</button>
+					<button type="button" class="uc-btn-ghost" id="uc-qr-btn" data-ar="إنشاء رمز QR" data-en="Generate QR code">إنشاء رمز QR</button>
+				</div>
+
+				<div id="uc-qr-wrap">
+					<div id="uc-qr-box"></div>
+					<div class="uc-qr-caption" data-ar="امسحه بالكاميرا للوصول مباشرة إلى الرابط النظيف" data-en="Scan with a camera to open the clean link directly">
+						امسحه بالكاميرا للوصول مباشرة إلى الرابط النظيف
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<hr class="uc-divider" />
+
+		<div class="uc-cta-row">
+			<a class="uc-cta-btn uc-cta-primary" href="/apps/medical-qr-code-generator" data-ar="اصنع رمز QR فني" data-en="Create an artistic QR code">اصنع رمز QR فني</a>
+			<a class="uc-cta-btn uc-cta-secondary" href="/published-apps" data-ar="اكتشف تطبيقاتنا الصحية" data-en="Explore our health apps">اكتشف تطبيقاتنا الصحية</a>
+		</div>
+
+		<div class="uc-article" id="uc-article-ar">
+			<h2>لماذا تحتاج إلى تنظيف روابطك؟</h2>
+			<p>
+				كل رابط تراه تقريبًا اليوم يحمل أكثر من مجرد عنوان الصفحة. عندما تنقر على رابط وصلك عبر واتساب، أو تنسخه من منشور على فيسبوك أو إنستغرام، أو تصله عبر نشرة بريدية، غالبًا ما يكون محمّلًا بمعاملات إضافية بعد علامة الاستفهام، مثل
+				<strong>utm_source</strong> أو <strong>fbclid</strong> أو <strong>gclid</strong>. هذه المعاملات لا تغيّر الصفحة التي ستفتح، لكنها تُستخدم من قبل أدوات التسويق والإعلانات لمعرفة من أين أتيت، وما هي الحملة التي دفعتك للنقر، وأحيانًا لتتبع سلوكك بين المواقع.
+			</p>
+			<p>
+				المشكلة أن هذه الإضافات تجعل الرابط أطول وأصعب في القراءة، وتمنحه مظهرًا يثير الشك بدل الثقة، خصوصًا عند مشاركته مع عملاء أو زملاء أو في محتوى رسمي. كما أنها تكشف بشكل غير مقصود تفاصيل عن مصدر مشاركتك، فقد يعرف الموقع الذي فتحته أنك جئت من حملة بريدية معينة أو من إعلان محدد، وهي معلومة قد لا ترغب في تسريبها. وفي بعض الحالات، تُستغل هذه المعاملات الطويلة لإخفاء روابط ضارة، ما يجعل المستخدمين المتمرسين يتجنبون النقر على أي رابط يبدو "محشوًا" بنص غريب.
+			</p>
+			<p>
+				هذه الأداة تحل هذه المشكلة ببساطة: تلصق الرابط، وتقوم الأداة فورًا بفحصه وإزالة كل المعاملات المعروفة المستخدمة في التتبع، مع الإبقاء على الجزء الأساسي من الرابط الذي يقودك فعليًا إلى المحتوى المطلوب. النتيجة رابط أقصر وأوضح وأكثر احترافية، يصلح للمشاركة في رسالة بريدية، أو منشور، أو حتى مطبوع ورقي.
+			</p>
+			<p>
+				ما يميز هذه الأداة أن كل شيء يحدث داخل متصفحك أنت فقط. لا يُرسل الرابط الذي تُدخله إلى أي خادم، ولا يُخزَّن في أي قاعدة بيانات، ولا تحتاج إلى إنشاء حساب أو تسجيل دخول. بمجرد إغلاق الصفحة، لا يبقى أي أثر لما أدخلته. هذا النهج، المعروف أحيانًا بـ"الاستخدام والمغادرة"، يمنحك أداة عملية دون أن تتنازل عن خصوصيتك مقابل الراحة.
+			</p>
+			<p>
+				إلى جانب التنظيف، توفر الأداة ميزة إنشاء <strong>رمز QR</strong>
+				 للرابط النظيف مباشرة. هذه الميزة مفيدة في مواقف كثيرة تتجاوز الاستخدام الرقمي البحت: يمكن لصاحب متجر طباعة الرمز على بطاقة العمل أو على لافتة المحل ليصل الزبائن مباشرة إلى صفحة المنتجات دون كتابة أي عنوان. ويمكن لمقدم محتوى صحي أو تعليمي وضع الرمز على منشور أو نشرة توعوية ليتمكن القارئ من مسحه بكاميرا الهاتف والوصول فورًا إلى المصدر الموثوق، دون المرور عبر رابط طويل مليء برموز التتبع التي قد تبدو غير موثوقة على الورق.
+			</p>
+			<p>باختصار، هذه الأداة صُممت لتكون سريعة وواضحة الغرض: تحصل على رابط أنظف يعكس المحتوى الحقيقي بدل أدوات التسويق التي أضافته، وتحصل على رمز QR جاهز لأي استخدام مطبوع، وكل ذلك دون أن تغادر بياناتك جهازك.</p>
+		</div>
+
+		<div class="uc-article" id="uc-article-en" style="display:none;">
+			<h2>Why clean up your links?</h2>
+			<p>
+				Almost every link you encounter today carries more than just a page address. When you tap a link shared on WhatsApp, copy one from a social media post, or click through from a newsletter, it usually comes loaded with extra parameters after the question mark — things like
+				<strong>utm_source</strong>, <strong>fbclid</strong>, or <strong>gclid</strong>. These don't change which page opens; they exist so marketing and advertising tools can tell where you came from, which campaign drove the click, and sometimes track behavior across sites.
+			</p>
+			<p>
+				The downside is that this baggage makes links longer, harder to read, and less trustworthy-looking — especially when sharing with clients, colleagues, or in anything official. It also quietly reveals details about how you shared it: the destination site may learn you came from a specific email campaign or a particular ad, information you may not want to leak. In some cases, long strings of parameters are also used to disguise malicious links, which is why cautious users hesitate to click anything that looks "stuffed" with unfamiliar text.
+			</p>
+			<p>
+				This tool solves that in one step: paste a link, and it immediately scans it and strips every known tracking parameter, while keeping the essential part that actually takes you to the intended content. What you get is a shorter, clearer, more professional-looking link — suitable for an email, a post, or even print.
+			</p>
+			<p>
+				What sets this tool apart is that everything happens inside your own browser. The link you type is never sent to a server, never stored in any database, and there's no account or sign-in required. Close the page, and no trace of what you entered remains. This "use it and leave" approach gives you a genuinely useful tool without trading your privacy for convenience.
+			</p>
+			<p>
+				Alongside cleaning, the tool can generate a <strong>QR code</strong>
+				 for the cleaned link on the spot. This is useful well beyond purely digital sharing: a shop owner can print the code on a business card or storefront sign so customers land directly on a product page without typing anything. Someone sharing health or educational material can place the code on a flyer or handout so readers scan it with a phone camera and land straight on the trusted source — instead of a long link full of tracking clutter that looks suspicious on paper.
+			</p>
+			<p>In short, this tool is built to do one job well: give you a cleaner link that reflects the actual content rather than the marketing tools that tagged it, plus a ready-to-print QR code for it — all without your data ever leaving your device.</p>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	#uc-root {
+		--uc-ink: #16302c;
+		--uc-paper: #f6f3ec;
+		--uc-card: #ffffff;
+		--uc-teal: #2f7d72;
+		--uc-teal-deep: #1e5952;
+		--uc-coral: #d9603b;
+		--uc-line: #dcd6c8;
+		--uc-mono: 'JetBrains Mono', monospace;
+		max-width: 760px;
+		margin: 2.5rem auto;
+		background: var(--uc-paper);
+		color: var(--uc-ink);
+		border: 1px solid var(--uc-line);
+		border-radius: 18px;
+		padding: 2rem 1.75rem 2.25rem;
+		font-family: 'Tajawal', 'Inter', sans-serif;
+		line-height: 1.75;
+		box-sizing: border-box;
+	}
+	#uc-root * {
+		box-sizing: border-box;
+	}
+	#uc-root[dir='ltr'] {
+		font-family: 'Inter', 'Tajawal', sans-serif;
+	}
+
+	.uc-topbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 1.5rem;
+	}
+	.uc-eyebrow {
+		font-size: 0.78rem;
+		letter-spacing: 0.06em;
+		color: var(--uc-teal-deep);
+		font-weight: 700;
+		text-transform: uppercase;
+		opacity: 0.75;
+	}
+	.uc-title {
+		font-size: 1.55rem;
+		font-weight: 900;
+		margin: 0.15rem 0 0;
+	}
+	.uc-lang-btn {
+		border: 1px solid var(--uc-teal-deep);
+		background: transparent;
+		color: var(--uc-teal-deep);
+		font-family: inherit;
+		font-weight: 700;
+		font-size: 0.85rem;
+		padding: 0.4rem 0.9rem;
+		border-radius: 999px;
+		cursor: pointer;
+		transition: background 0.15s ease, color 0.15s ease;
+		white-space: nowrap;
+	}
+	.uc-lang-btn:hover {
+		background: var(--uc-teal-deep);
+		color: #fff;
+	}
+	.uc-lang-btn:focus-visible {
+		outline: 3px solid var(--uc-coral);
+		outline-offset: 2px;
+	}
+
+	.uc-sub {
+		font-size: 0.98rem;
+		opacity: 0.8;
+		margin: 0 0 1.5rem;
+	}
+
+	.uc-card {
+		background: var(--uc-card);
+		border: 1px solid var(--uc-line);
+		border-radius: 14px;
+		padding: 1.25rem;
+		box-shadow: 0 1px 2px rgba(22, 48, 44, 0.04);
+	}
+
+	.uc-input-row {
+		display: flex;
+		gap: 0.6rem;
+		flex-wrap: wrap;
+	}
+	#uc-input {
+		flex: 1 1 260px;
+		font-family: var(--uc-mono);
+		font-size: 0.92rem;
+		padding: 0.75rem 0.9rem;
+		border: 1.5px solid var(--uc-line);
+		border-radius: 10px;
+		background: #fdfcf9;
+		color: var(--uc-ink);
+		min-width: 0;
+	}
+	#uc-input:focus-visible {
+		outline: 3px solid var(--uc-coral);
+		outline-offset: 1px;
+		border-color: var(--uc-teal);
+	}
+	.uc-btn-primary {
+		background: var(--uc-teal-deep);
+		color: #fff;
+		border: none;
+		font-family: inherit;
+		font-weight: 700;
+		font-size: 0.95rem;
+		padding: 0.75rem 1.4rem;
+		border-radius: 10px;
+		cursor: pointer;
+		transition: transform 0.1s ease, background 0.15s ease;
+	}
+	.uc-btn-primary:hover {
+		background: var(--uc-teal);
+	}
+	.uc-btn-primary:active {
+		transform: scale(0.97);
+	}
+	.uc-btn-primary:focus-visible {
+		outline: 3px solid var(--uc-coral);
+		outline-offset: 2px;
+	}
+	.uc-btn-primary:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.uc-cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 12px;
+		margin: 1.5rem 0 2rem;
+	}
+
+	.uc-cta-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 180px;
+		padding: 0.9rem 1.4rem;
+		border-radius: 999px;
+		font-weight: 700;
+		text-decoration: none;
+		transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+	}
+
+	.uc-cta-btn:hover {
+		transform: translateY(-1px);
+	}
+
+	.uc-cta-primary {
+		background: linear-gradient(135deg, rgba(47,125,114,0.95), rgba(41,88,80,0.96));
+		color: #fff;
+	}
+
+	.uc-cta-secondary {
+		background: rgba(255,255,255,0.96);
+		color: var(--uc-ink);
+		border: 1.5px solid rgba(47,125,114,0.18);
+	}
+
+	.uc-cta-secondary:hover {
+		background: rgba(47,125,114,0.08);
+	}
+
+	#uc-error {
+		color: var(--uc-coral);
+		font-size: 0.88rem;
+		font-weight: 700;
+		margin-top: 0.6rem;
+		display: none;
+	}
+
+	#uc-result {
+		display: none;
+		margin-top: 1.5rem;
+	}
+
+	.uc-compare {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0.9rem;
+	}
+	.uc-row-label {
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		opacity: 0.65;
+		margin-bottom: 0.35rem;
+	}
+	.uc-url-box {
+		font-family: var(--uc-mono);
+		font-size: 0.85rem;
+		padding: 0.7rem 0.85rem;
+		border-radius: 10px;
+		word-break: break-all;
+		line-height: 1.6;
+	}
+	.uc-before {
+		background: #fbeee7;
+		border: 1px dashed #e3b39e;
+	}
+	.uc-before .uc-strike {
+		color: var(--uc-coral);
+		text-decoration: line-through;
+		opacity: 0.75;
+	}
+	.uc-after {
+		background: #eaf3f0;
+		border: 1px solid var(--uc-teal);
+		font-weight: 600;
+	}
+
+	.uc-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-top: 1rem;
+	}
+	.uc-btn-ghost {
+		background: #fff;
+		border: 1.5px solid var(--uc-teal-deep);
+		color: var(--uc-teal-deep);
+		font-family: inherit;
+		font-weight: 700;
+		font-size: 0.88rem;
+		padding: 0.55rem 1.1rem;
+		border-radius: 10px;
+		cursor: pointer;
+	}
+	.uc-btn-ghost:hover {
+		background: #eaf3f0;
+	}
+	.uc-btn-ghost:focus-visible {
+		outline: 3px solid var(--uc-coral);
+		outline-offset: 2px;
+	}
+
+	.uc-removed-note {
+		font-size: 0.85rem;
+		margin-top: 0.85rem;
+		opacity: 0.85;
+	}
+	.uc-removed-note b {
+		color: var(--uc-teal-deep);
+	}
+
+	#uc-qr-wrap {
+		display: none;
+		margin-top: 1.1rem;
+		text-align: center;
+	}
+	#uc-qr-box {
+		display: inline-block;
+		padding: 0.8rem;
+		background: #fff;
+		border: 1px solid var(--uc-line);
+		border-radius: 12px;
+	}
+	.uc-qr-caption {
+		font-size: 0.8rem;
+		opacity: 0.7;
+		margin-top: 0.5rem;
+	}
+
+	.uc-divider {
+		border: none;
+		border-top: 1px solid var(--uc-line);
+		margin: 2.25rem 0;
+	}
+
+	.uc-article h2 {
+		font-size: 1.25rem;
+		font-weight: 900;
+		margin: 0 0 0.9rem;
+	}
+	.uc-article p {
+		margin: 0 0 1rem;
+		font-size: 0.97rem;
+		opacity: 0.92;
+	}
+	.uc-article strong {
+		color: var(--uc-teal-deep);
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.uc-fade-in {
+			animation: ucFadeIn 0.35s ease both;
+		}
+	}
+	@keyframes ucFadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (max-width: 480px) {
+		#uc-root {
+			padding: 1.4rem 1.1rem 1.6rem;
+			border-radius: 14px;
+		}
+		.uc-title {
+			font-size: 1.3rem;
+		}
+	}
+</style>
+
+<script is:inline>
+	(function () {
+		var root = document.getElementById('uc-root');
+		var lang = 'ar';
+
+		var TRACKING_EXACT = ['fbclid', 'gclid', 'gclsrc', 'dclid', 'msclkid', 'yclid', 'twclid', 'igshid', 'mc_cid', 'mc_eid', '_hsenc', '_hsmi', 'mkt_tok', 'vero_id', 'vero_conv', 'oly_enc_id', 'oly_anon_id', 'wickedid', 'ref', 'ref_src', 'spm', 'trk', 'trkCampaign', 'ito', 'icid', 'ncid', 'cmpid', 'cid', 's_kwcid', 'sc_cid', 'pk_campaign', 'pk_kwd', 'pk_source', 'pk_medium', 'ck_subscriber_id', 'elqTrackId', 'elqaid', 'elqat', 'soc_src', 'soc_trk', 'ScCid'];
+		var TRACKING_PREFIX = ['utm_'];
+
+		function isTrackingParam(key) {
+			var k = key.toLowerCase();
+			if (TRACKING_EXACT.indexOf(k) !== -1) return true;
+			for (var i = 0; i < TRACKING_PREFIX.length; i++) {
+				if (k.indexOf(TRACKING_PREFIX[i]) === 0) return true;
+			}
+			return false;
+		}
+
+		function cleanUrl(raw) {
+			var u = new URL(raw); // throws if invalid
+			var removed = [];
+			var kept = new URLSearchParams();
+			u.searchParams.forEach(function (value, key) {
+				if (isTrackingParam(key)) {
+					removed.push(key + '=' + value);
+				} else {
+					kept.append(key, value);
+				}
+			});
+			var qs = kept.toString();
+			var cleanHref = u.origin + u.pathname + (qs ? '?' + qs : '') + (u.hash || '');
+			return { clean: cleanHref, removed: removed, before: raw };
+		}
+
+		function escapeHtml(s) {
+			return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		}
+
+		function renderBefore(before, removed) {
+			var html = escapeHtml(before);
+			removed.forEach(function (pair) {
+				var safePair = escapeHtml(pair);
+				html = html.split(safePair).join('<span class="uc-strike">' + safePair + '</span>');
+			});
+			return html;
+		}
+
+		var input = document.getElementById('uc-input');
+		var cleanBtn = document.getElementById('uc-clean-btn');
+		var errorBox = document.getElementById('uc-error');
+		var resultBox = document.getElementById('uc-result');
+		var beforeBox = document.getElementById('uc-before-box');
+		var afterBox = document.getElementById('uc-after-box');
+		var removedNote = document.getElementById('uc-removed-note');
+		var copyBtn = document.getElementById('uc-copy-btn');
+		var qrBtn = document.getElementById('uc-qr-btn');
+		var qrWrap = document.getElementById('uc-qr-wrap');
+		var qrBox = document.getElementById('uc-qr-box');
+		var currentClean = '';
+
+		function t(ar, en) {
+			return lang === 'ar' ? ar : en;
+		}
+
+		function handleClean() {
+			var raw = input.value.trim();
+			errorBox.style.display = 'none';
+			if (!raw) return;
+			if (!/^https?:\/\//i.test(raw)) {
+				errorBox.style.display = 'block';
+				resultBox.style.display = 'none';
+				return;
+			}
+			var result;
+			try {
+				result = cleanUrl(raw);
+			} catch (e) {
+				errorBox.style.display = 'block';
+				resultBox.style.display = 'none';
+				return;
+			}
+			currentClean = result.clean;
+			beforeBox.innerHTML = renderBefore(result.before, result.removed);
+			afterBox.textContent = result.clean;
+			if (result.removed.length > 0) {
+				removedNote.innerHTML = t('تمت إزالة <b>' + result.removed.length + '</b> من معاملات التتبع.', '<b>' + result.removed.length + '</b> tracking parameter(s) removed.');
+			} else {
+				removedNote.innerHTML = t('لم يتم العثور على أي معاملات تتبع معروفة — الرابط نظيف بالفعل.', 'No known tracking parameters found — this link is already clean.');
+			}
+			resultBox.style.display = 'block';
+			resultBox.classList.add('uc-fade-in');
+			qrWrap.style.display = 'none';
+			qrBox.innerHTML = '';
+		}
+
+		cleanBtn.addEventListener('click', handleClean);
+		input.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter') handleClean();
+		});
+
+		copyBtn.addEventListener('click', function () {
+			if (!currentClean) return;
+			navigator.clipboard.writeText(currentClean).then(function () {
+				var original = copyBtn.textContent;
+				copyBtn.textContent = t('تم النسخ ✓', 'Copied ✓');
+				setTimeout(function () {
+					copyBtn.textContent = lang === 'ar' ? copyBtn.getAttribute('data-ar') : copyBtn.getAttribute('data-en');
+				}, 1600);
+			});
+		});
+
+		qrBtn.addEventListener('click', function () {
+			if (!currentClean) {
+				handleClean();
+			}
+			if (!currentClean) return;
+			qrBox.innerHTML = '';
+			if (typeof QRCode !== 'undefined') {
+				new QRCode(qrBox, {
+					text: currentClean,
+					width: 176,
+					height: 176,
+					correctLevel: (QRCode.CorrectLevel && QRCode.CorrectLevel.M) || 1
+				});
+				qrWrap.style.display = 'block';
+				qrWrap.classList.add('uc-fade-in');
+			} else {
+				console.warn('QRCode library is not loaded.');
+			}
+		});
+
+		// ---- language toggle ----
+		var langBtn = document.getElementById('uc-lang-toggle');
+		var articleAr = document.getElementById('uc-article-ar');
+		var articleEn = document.getElementById('uc-article-en');
+
+		function applyLang() {
+			root.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+			root.setAttribute('lang', lang);
+			langBtn.textContent = lang === 'ar' ? 'English' : 'العربية';
+
+			var nodes = root.querySelectorAll('[data-ar][data-en]');
+			nodes.forEach(function (el) {
+				el.textContent = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+			});
+			var phNodes = root.querySelectorAll('[data-ar-ph][data-en-ph]');
+			phNodes.forEach(function (el) {
+				el.setAttribute('placeholder', lang === 'ar' ? el.getAttribute('data-ar-ph') : el.getAttribute('data-en-ph'));
+			});
+
+			articleAr.style.display = lang === 'ar' ? 'block' : 'none';
+			articleEn.style.display = lang === 'en' ? 'block' : 'none';
+
+			// re-run removed note translation if a result is already showing
+			if (resultBox.style.display === 'block' && currentClean) {
+				handleClean.call(null); // recompute with new lang text (input unchanged)
+			}
+		}
+
+		langBtn.addEventListener('click', function () {
+			lang = lang === 'ar' ? 'en' : 'ar';
+			applyLang();
+		});
+	})();
+</script>

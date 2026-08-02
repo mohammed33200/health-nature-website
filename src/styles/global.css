@@ -1,0 +1,291 @@
+/* ============================================================
+   مقياس الجسم والوزن المثالي — design tokens
+   Concept: the body-measuring tape. Every tool is a "stop" on
+   a ruler; numbers behave like tick marks and readings.
+
+   Everything in this file is scoped under .tools-scope (the
+   wrapper rendered by ToolsShell.astro), so importing it never
+   touches the host site's <html>, <body>, header, footer, or
+   global classes like .container.
+   ============================================================ */
+
+.tools-scope {
+  /* color */
+  --ink: #1E2D2A;
+  --ink-soft: #3E524C;
+  --paper: #F3F6F1;
+  --paper-alt: #E9F0E4;
+  --line: #D3DBCD;
+  --accent: #C1592C;       /* rust — calculate / act */
+  --accent-dark: #9C431E;
+  --secondary: #4B7A64;    /* sage — calm / informational */
+  --secondary-dark: #33574A;
+  --danger: #A23B2E;
+  --ok: #3F7A55;
+
+  /* type scale */
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+  --step-3: clamp(2.25rem, 1.9rem + 1.75vw, 3.25rem);
+
+  --radius: 6px;
+
+  background: var(--paper);
+  color: var(--ink);
+  font-size: var(--step-0);
+  line-height: 1.7;
+  display: block;
+}
+
+.tools-scope, .tools-scope *, .tools-scope *::before, .tools-scope *::after {
+  box-sizing: border-box;
+}
+
+.tools-scope[data-lang="ar"] { direction: rtl; }
+.tools-scope[data-lang="en"] { direction: ltr; }
+
+/* language visibility */
+.tools-scope[data-lang="ar"] [data-en] { display: none; }
+.tools-scope[data-lang="en"] [data-ar]  { display: none; }
+
+.tools-scope[data-lang="ar"] { font-family: "IBM Plex Sans Arabic", sans-serif; }
+.tools-scope[data-lang="en"] { font-family: "IBM Plex Sans", sans-serif; }
+
+.tools-scope h1, .tools-scope h2, .tools-scope h3, .tools-scope .display {
+  margin: 0 0 0.5em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.tools-scope[data-lang="ar"] h1,
+.tools-scope[data-lang="ar"] h2,
+.tools-scope[data-lang="ar"] .display { font-family: "Amiri", serif; }
+.tools-scope[data-lang="en"] h1,
+.tools-scope[data-lang="en"] h2,
+.tools-scope[data-lang="en"] .display { font-family: "IBM Plex Sans", sans-serif; font-weight: 700; }
+
+.tools-scope .num,
+.tools-scope .reading,
+.tools-scope input,
+.tools-scope select,
+.tools-scope .tick-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.tools-scope a { color: var(--secondary-dark); }
+
+.tools-scope .container {
+  max-width: 880px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+/* ---------- language toggle ---------- */
+.tools-scope .lang-toggle-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-block: 0.75rem;
+}
+.tools-scope .lang-toggle {
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.tools-scope .lang-toggle:hover { background: var(--ink); color: var(--paper); }
+
+/* ---------- ruler / tape (signature element) ---------- */
+.tools-scope .tape {
+  position: relative;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  padding-block: 0.75rem;
+  margin-block: 1.5rem;
+}
+.tools-scope .tape-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.tools-scope .tape-stop {
+  position: relative;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--paper);
+  padding-inline: 0.5rem;
+  padding-block: 0.75rem 0.4rem;
+  text-align: center;
+  transition: background 0.15s ease;
+}
+.tools-scope .tape-stop::before {
+  content: attr(data-tick);
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem;
+  color: var(--secondary-dark);
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.05em;
+}
+.tools-scope .tape-stop .stop-label {
+  display: block;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+.tools-scope .tape-stop:hover { background: var(--paper-alt); }
+.tools-scope .tape-stop.current { background: var(--accent); color: var(--paper); }
+.tools-scope .tape-stop.current::before { color: var(--paper); }
+
+@media (max-width: 560px) {
+  .tools-scope .tape-track { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
+}
+
+/* ---------- tool page ---------- */
+.tools-scope .tool-hero {
+  padding-block: 2rem 1rem;
+}
+.tools-scope .tool-hero .kicker {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  color: var(--secondary-dark);
+  letter-spacing: 0.06em;
+}
+.tools-scope .tool-hero h1 { font-size: var(--step-3); max-width: 20ch; }
+.tools-scope .tool-hero p.lead { color: var(--ink-soft); max-width: 60ch; }
+
+.tools-scope .calc-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-block: 1.5rem;
+}
+.tools-scope .field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 560px) { .tools-scope .field-grid { grid-template-columns: 1fr; } }
+
+.tools-scope .field label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.35rem;
+}
+.tools-scope .field input, .tools-scope .field select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  background: var(--paper);
+  color: var(--ink);
+}
+.tools-scope .field input:focus, .tools-scope .field select:focus {
+  outline: 2px solid var(--secondary);
+  outline-offset: 1px;
+}
+
+.tools-scope .btn-calc {
+  margin-top: 1.25rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tools-scope .btn-calc:hover { background: var(--accent-dark); }
+.tools-scope .btn-calc:focus-visible { outline: 3px solid var(--secondary); outline-offset: 2px; }
+
+.tools-scope .result {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed var(--line);
+  display: none;
+}
+.tools-scope .result.show { display: block; }
+.tools-scope .result .reading {
+  font-size: var(--step-2);
+  font-weight: 700;
+}
+.tools-scope .result .badge {
+  display: inline-block;
+  margin-inline-start: 0.6rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+.tools-scope .info-section { margin-block: 2.5rem; }
+.tools-scope .info-section h2 { font-size: var(--step-1); border-inline-start: 4px solid var(--accent); padding-inline-start: 0.75rem; }
+.tools-scope .info-section p { color: var(--ink-soft); max-width: 68ch; }
+
+.tools-scope .disclaimer {
+  background: var(--paper-alt);
+  border-inline-start: 4px solid var(--secondary);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-block: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- quiz engine ---------- */
+.tools-scope .quiz-item {
+  border: none;
+  border-top: 1px solid var(--line);
+  padding-block: 1rem;
+  margin: 0;
+}
+.tools-scope .quiz-item:first-of-type { border-top: none; }
+.tools-scope .quiz-item legend {
+  display: flex;
+  gap: 0.5rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  padding: 0;
+}
+.tools-scope .quiz-num {
+  font-family: "IBM Plex Mono", monospace;
+  color: var(--secondary-dark);
+  flex-shrink: 0;
+}
+.tools-scope .quiz-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.tools-scope .quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.tools-scope .quiz-option:has(input:checked) {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.tools-scope .crisis-banner {
+  background: #FBEAE6;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}

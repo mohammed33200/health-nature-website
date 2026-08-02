@@ -1,0 +1,144 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة معدل النبض المستهدف">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 12 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 12 on the tape</p>
+    <h1 data-ar>معدل النبض<br />المستهدف</h1>
+    <h1 data-en hidden>Target<br />Heart Rate</h1>
+    <p class="lead" data-ar>
+      قياسان بسيطان — عمرك ونبضك وأنت مسترخٍ — كافيان لمعرفة نطاق النبض
+      الذي يجعل تمرينك فعّالاً دون إرهاق زائد.
+    </p>
+    <p class="lead" data-en hidden>
+      Two simple measurements — your age and your resting pulse — are
+      enough to know the heart rate zone that makes your workout
+      effective without overexertion.
+    </p>
+  </section>
+
+  <Tape current="target-heart-rate" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="age" data-ar>العمر (سنة)</label>
+        <label for="age" data-en hidden>Age (years)</label>
+        <input id="age" type="number" inputmode="numeric" placeholder="30" min="10" max="100" />
+      </div>
+      <div class="field">
+        <label for="rhr" data-ar>النبض أثناء الراحة (نبضة/دقيقة)</label>
+        <label for="rhr" data-en hidden>Resting heart rate (bpm)</label>
+        <input id="rhr" type="number" inputmode="numeric" placeholder="70" min="30" max="120" />
+      </div>
+    </div>
+    <p style="color:var(--ink-soft); font-size:0.8rem; margin-top:0.5rem;" data-ar>
+      نصيحة: قِس نبضك فور الاستيقاظ صباحاً قبل النهوض من الفراش لأدق قراءة.
+    </p>
+    <p style="color:var(--ink-soft); font-size:0.8rem; margin-top:0.5rem;" data-en hidden>
+      Tip: measure your pulse right after waking, before getting out of
+      bed, for the most accurate reading.
+    </p>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>نطاق التمرين المعتدل (50%–70%):</span>
+        <span data-en hidden>Moderate zone (50%–70%):</span>
+        <span class="reading" id="moderateValue">—</span>
+        <span data-ar>نبضة/دقيقة</span><span data-en hidden>bpm</span>
+      </p>
+      <p>
+        <span data-ar>نطاق التمرين العالي (70%–85%):</span>
+        <span data-en hidden>Vigorous zone (70%–85%):</span>
+        <span class="reading" id="vigorousValue">—</span>
+        <span data-ar>نبضة/دقيقة</span><span data-en hidden>bpm</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نستخدم معادلة كارفونين: أولاً نقدّر الحد الأقصى لنبضك (220 − العمر)،
+      ثم نطرح منه نبضك أثناء الراحة لنحصل على "احتياطي النبض"، ثم نضربه
+      في نسبة الشدة المطلوبة ونضيف نبض الراحة مجدداً. إدخال نبض الراحة
+      الفعلي هو ما يجعل هذه الطريقة أدق من معادلات تعتمد على العمر فقط.
+    </p>
+    <p data-en hidden>
+      We use the Karvonen formula: first estimate your maximum heart rate
+      (220 − age), subtract your resting heart rate to get your "heart
+      rate reserve," multiply by the desired intensity percentage, then
+      add your resting rate back. Using your actual resting rate is what
+      makes this method more accurate than age-only formulas.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      النطاق المعتدل (50–70%) مناسب لتمارين التحمل الطويلة وحرق الدهون
+      وبناء لياقة أساسية. النطاق العالي (70–85%) يستهدف تحسين لياقة
+      القلب والرئتين بشكل أسرع لكنه أكثر إرهاقاً ويحتاج لياقة أساسية
+      قبل الانتقال إليه.
+    </p>
+    <p data-en hidden>
+      The moderate zone (50–70%) suits long endurance work, fat burning,
+      and building a base level of fitness. The vigorous zone (70–85%)
+      targets faster cardiovascular improvement but is more taxing and
+      needs a base fitness level before working in it.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      ابدأ معظم تمارينك في النطاق المعتدل إذا كنت مبتدئاً، وأدرج جلسة أو
+      جلستين أسبوعياً في النطاق العالي بعد أن تبني قاعدة لياقة. أعد
+      الحساب كل بضعة أشهر، فنبضك أثناء الراحة ينخفض مع تحسّن لياقتك
+      تدريجياً.
+    </p>
+    <p data-en hidden>
+      Start most of your workouts in the moderate zone if you're a
+      beginner, and add one or two sessions a week in the vigorous zone
+      once you've built a fitness base. Recalculate every few months, as
+      your resting heart rate gradually drops as your fitness improves.
+    </p>
+  </section>
+
+  <script>
+    const ageEl = document.getElementById('age') as HTMLInputElement;
+    const rhrEl = document.getElementById('rhr') as HTMLInputElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const moderateEl = document.getElementById('moderateValue')!;
+    const vigorousEl = document.getElementById('vigorousValue')!;
+
+    function calc() {
+      const age = parseFloat(ageEl.value);
+      const rhr = parseFloat(rhrEl.value);
+      if (!age || !rhr) return;
+
+      const hrMax = 220 - age;
+      const reserve = hrMax - rhr;
+
+      const modLow = Math.round(reserve * 0.5 + rhr);
+      const modHigh = Math.round(reserve * 0.7 + rhr);
+      const vigLow = Math.round(reserve * 0.7 + rhr);
+      const vigHigh = Math.round(reserve * 0.85 + rhr);
+
+      moderateEl.textContent = `${modLow}–${modHigh}`;
+      vigorousEl.textContent = `${vigLow}–${vigHigh}`;
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+  </script>
+</ToolsShell>
+</Layout>

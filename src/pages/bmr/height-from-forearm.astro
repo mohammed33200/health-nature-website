@@ -1,0 +1,135 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="تقدير الطول من طول الساعد">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 14 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 14 on the tape</p>
+    <h1 data-ar>الطول من<br />طول الساعد</h1>
+    <h1 data-en hidden>Height from<br />Forearm</h1>
+    <p class="lead" data-ar>
+      حين يتعذّر قياس الطول واقفاً — لكبار السن طريحي الفراش أو ذوي
+      انحناء العمود الفقري — يستخدم طاقم التمريض طول الساعد بديلاً معتمداً.
+    </p>
+    <p class="lead" data-en hidden>
+      When standing height can't be measured — for bedridden elderly
+      patients or those with spinal curvature — clinical staff use
+      forearm length as a validated proxy.
+    </p>
+  </section>
+
+  <Tape current="height-from-forearm" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="gender" data-ar>الجنس</label>
+        <label for="gender" data-en hidden>Sex</label>
+        <select id="gender">
+          <option value="male">ذكر / Male</option>
+          <option value="female">أنثى / Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ulna" data-ar>طول الساعد (سم)</label>
+        <label for="ulna" data-en hidden>Ulna length (cm)</label>
+        <input id="ulna" type="number" inputmode="decimal" placeholder="26" min="15" max="35" />
+      </div>
+    </div>
+    <p style="color:var(--ink-soft); font-size:0.8rem; margin-top:0.5rem;" data-ar>
+      يُقاس من طرف الكوع (الزند البارز) إلى نقطة العظم البارزة عند الرسغ،
+      مع ثني الذراع 90 درجة والراحة على الصدر.
+    </p>
+    <p style="color:var(--ink-soft); font-size:0.8rem; margin-top:0.5rem;" data-en hidden>
+      Measured from the point of the elbow (olecranon) to the prominent
+      wrist bone, with the arm bent 90 degrees and resting on the chest.
+    </p>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>الطول التقديري:</span>
+        <span data-en hidden>Estimated height:</span>
+        <span class="reading" id="heightValue">—</span>
+        <span data-ar>سم</span><span data-en hidden>cm</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نستخدم معادلة انحدار خطية تربط طول الساعد (الزند) بالطول الكلي،
+      وهي طريقة تقييم تغذوي معروفة (مشابهة لما تعتمده أدوات مثل MUST في
+      التغذية السريرية). المعاملات تقريبية عامة وتختلف قليلاً باختلاف
+      الدراسة والمجتمع المرجعي المستخدم.
+    </p>
+    <p data-en hidden>
+      We use a linear regression equation relating ulna (forearm) length
+      to total height — a recognized nutritional-assessment method
+      (similar to what tools like MUST use in clinical nutrition). The
+      coefficients are general approximations and vary slightly by study
+      and reference population.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      هذا الرقم بديل تقريبي فقط، لا قياس دقيق. هامش الخطأ عادة بضع
+      سنتيمترات، وهو مقبول في السياق الذي صُممت له الطريقة أصلاً: تقدير
+      كافٍ لحساب مؤشرات مثل BMI عندما يستحيل الوقوف للقياس المباشر، لا
+      بديل عن القياس المباشر متى أمكن.
+    </p>
+    <p data-en hidden>
+      This figure is only an approximate proxy, not a precise measurement.
+      The margin of error is usually a few centimeters, acceptable for the
+      context the method was designed for: estimating enough to calculate
+      indices like BMI when standing measurement is impossible — not a
+      replacement for direct measurement whenever it's possible.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      استخدم هذا التقدير فقط عند تعذّر الوقوف للقياس المباشر — لمريض
+      طريح الفراش مثلاً تحتاج عائلته حساب مؤشر كتلة جسمه لمتابعة تغذيته.
+      إن كان القياس المباشر ممكناً، فاعتمده دائماً فهو أدق من أي تقدير.
+    </p>
+    <p data-en hidden>
+      Use this estimate only when direct standing measurement isn't
+      possible — for example, a bedridden patient whose family needs to
+      calculate his BMI to track his nutrition. Whenever direct
+      measurement is possible, always use it instead, since it's more
+      accurate than any estimate.
+    </p>
+  </section>
+
+  <script>
+    const genderEl = document.getElementById('gender') as HTMLSelectElement;
+    const ulnaEl = document.getElementById('ulna') as HTMLInputElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const heightEl = document.getElementById('heightValue')!;
+
+    function calc() {
+      const ulna = parseFloat(ulnaEl.value);
+      const isMale = genderEl.value === 'male';
+      if (!ulna) return;
+
+      const height = isMale ? 79.2 + 3.6 * ulna : 68.1 + 4.29 * ulna;
+
+      heightEl.textContent = height.toFixed(0);
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+  </script>
+</ToolsShell>
+</Layout>

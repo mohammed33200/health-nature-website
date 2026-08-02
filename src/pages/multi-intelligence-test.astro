@@ -1,5 +1,5 @@
 ---
-import { MI_QUESTIONS, CATEGORY_META } from "../../mi-questions";
+import { MI_QUESTIONS, CATEGORY_META, SCALE_LABELS, SCALE_LABELS_EN, type MIQuestion } from "../../mi-questions";
 import Layout from '../layouts/Layout.astro';
 
 const CATEGORY_ORDER = ["logical", "verbal", "spatial", "memory", "analytical", "social"] as const;
@@ -307,7 +307,7 @@ const bi = (ar: string, en: string) => `<span class="t-ar">${ar}</span><span cla
   </div>
 
   <script>
-    import { MI_QUESTIONS, CATEGORY_META, type Category } from "../../mi-questions";
+    import { MI_QUESTIONS, CATEGORY_META, type Category, type MIQuestion } from "../../mi-questions";
 
     const CATEGORY_ORDER: Category[] = ["logical", "verbal", "spatial", "memory", "analytical", "social"];
     const answers: Record<number, number> = {};
@@ -349,7 +349,7 @@ const bi = (ar: string, en: string) => `<span class="t-ar">${ar}</span><span cla
     function renderQuestions() {
       let html = "";
       let lastCat: Category | null = null;
-      MI_QUESTIONS.forEach((q, i) => {
+      (MI_QUESTIONS as MIQuestion[]).forEach((q, i) => {
         if (q.category !== lastCat) {
           const m = CATEGORY_META[q.category];
           html += `<div class="cat-header"><span class="dot" style="background:${m.color}"></span><span>${m.emoji} ${bi(m.label, m.labelEn)}</span></div>`;
@@ -381,7 +381,7 @@ const bi = (ar: string, en: string) => `<span class="t-ar">${ar}</span><span cla
     }
 
     (window as any).startMemoryTest = function (qIndex: number) {
-      const q = MI_QUESTIONS[qIndex];
+      const q = (MI_QUESTIONS as MIQuestion[])[qIndex];
       const startBtn = document.getElementById(`mem-start-btn-${qIndex}`);
       const box = document.getElementById(`mem-box-${qIndex}`);
       const note = document.getElementById(`mem-note-${qIndex}`);
@@ -444,7 +444,7 @@ const bi = (ar: string, en: string) => `<span class="t-ar">${ar}</span><span cla
     function computeScores() {
       const byCat: Record<string, { correct: number; total: number }> = {};
       CATEGORY_ORDER.forEach((c) => (byCat[c] = { correct: 0, total: 0 }));
-      MI_QUESTIONS.forEach((q, i) => {
+      (MI_QUESTIONS as MIQuestion[]).forEach((q, i) => {
         const a = answers[i];
         byCat[q.category].total += 1;
         if (q.type === "scale") {

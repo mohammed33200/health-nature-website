@@ -1,0 +1,169 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة تقدير كتلة العظام">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 13 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 13 on the tape</p>
+    <h1 data-ar>تقدير<br />كتلة العظام</h1>
+    <h1 data-en hidden>Bone Mass<br />Estimate</h1>
+    <p class="lead" data-ar>
+      عظامك جزء صامت من وزنك نادراً ما يُذكر. هذه أداة توعوية تقدّر
+      حصتها التقريبية من كتلتك الخالية من الدهون.
+    </p>
+    <p class="lead" data-en hidden>
+      Your bones are a quiet part of your weight rarely talked about.
+      This is an educational tool estimating their approximate share of
+      your lean mass.
+    </p>
+  </section>
+
+  <Tape current="bone-mass" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="gender" data-ar>الجنس</label>
+        <label for="gender" data-en hidden>Sex</label>
+        <select id="gender">
+          <option value="male">ذكر / Male</option>
+          <option value="female">أنثى / Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
+      </div>
+      <div class="field">
+        <label for="weight" data-ar>الوزن (كجم)</label>
+        <label for="weight" data-en hidden>Weight (kg)</label>
+        <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
+      </div>
+      <div class="field">
+        <label for="neck" data-ar>محيط الرقبة (سم)</label>
+        <label for="neck" data-en hidden>Neck circumference (cm)</label>
+        <input id="neck" type="number" inputmode="decimal" placeholder="38" min="20" max="60" />
+      </div>
+      <div class="field">
+        <label for="waist" data-ar>محيط الخصر (سم)</label>
+        <label for="waist" data-en hidden>Waist circumference (cm)</label>
+        <input id="waist" type="number" inputmode="decimal" placeholder="85" min="40" max="200" />
+      </div>
+      <div class="field" id="hipField">
+        <label for="hip" data-ar>محيط الورك (سم) — للنساء فقط</label>
+        <label for="hip" data-en hidden>Hip circumference (cm) — women only</label>
+        <input id="hip" type="number" inputmode="decimal" placeholder="95" min="40" max="200" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>كتلة العظام التقريبية:</span>
+        <span data-en hidden>Approximate bone mass:</span>
+        <span class="reading" id="boneValue">—</span>
+        <span data-ar>كجم</span><span data-en hidden>kg</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نحسب أولاً كتلتك الخالية من الدهون من قياساتك (بطريقة الجيش
+      الأمريكي لتقدير الدهون)، ثم نطبّق عليها نسبة تقريبية شائعة في أدبيات
+      تركيب الجسم: حوالي 15% للرجال و12% للنساء، باعتبار أن العظام تشكّل
+      هذه الحصة تقريباً من الكتلة الخالية من الدهون لدى البالغين.
+    </p>
+    <p data-en hidden>
+      We first calculate your lean body mass from your measurements
+      (using the US Navy method to estimate fat), then apply a commonly
+      cited approximation from body-composition literature: roughly 15%
+      for men and 12% for women, reflecting bone's typical share of lean
+      mass in adults.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      هذا رقم تقريبي على مستوى السكان، وليس قياساً فعلياً لكثافة أو صحة
+      عظامك — فحص كثافة العظام الحقيقي (DEXA) هو الوسيلة الوحيدة الموثوقة
+      لتقييم هشاشة العظام أو صحتها. اعتبر هذا الرقم للتعرّف العام على
+      تركيب جسمك فقط.
+    </p>
+    <p data-en hidden>
+      This is a population-level approximation, not an actual measurement
+      of your bone density or health — a real bone density scan (DEXA) is
+      the only reliable way to assess osteoporosis or bone health. Treat
+      this figure as general body-composition awareness only.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      بدل التركيز على هذا الرقم نفسه، استخدمه كتذكير: تمارين حمل الأوزان
+      وكفاية الكالسيوم وفيتامين D تدعم صحة العظام فعلياً. إذا كنت فوق
+      الخمسين أو لديك عوامل خطورة لهشاشة العظام، اطلب فحص DEXA فعلياً من
+      طبيبك بدل الاعتماد على أي حاسبة تقريبية.
+    </p>
+    <p data-en hidden>
+      Rather than focusing on this exact number, use it as a reminder:
+      weight-bearing exercise and adequate calcium and vitamin D
+      genuinely support bone health. If you're over fifty or have
+      osteoporosis risk factors, ask your doctor for an actual DEXA scan
+      rather than relying on any approximate calculator.
+    </p>
+  </section>
+
+  <script>
+    const genderEl = document.getElementById('gender') as HTMLSelectElement;
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const weightEl = document.getElementById('weight') as HTMLInputElement;
+    const neckEl = document.getElementById('neck') as HTMLInputElement;
+    const waistEl = document.getElementById('waist') as HTMLInputElement;
+    const hipEl = document.getElementById('hip') as HTMLInputElement;
+    const hipField = document.getElementById('hipField') as HTMLDivElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const boneEl = document.getElementById('boneValue')!;
+
+    function toggleHip() {
+      hipField.style.display = genderEl.value === 'female' ? 'block' : 'none';
+    }
+    genderEl.addEventListener('change', toggleHip);
+    toggleHip();
+
+    function calc() {
+      const height = parseFloat(heightEl.value);
+      const weight = parseFloat(weightEl.value);
+      const neck = parseFloat(neckEl.value);
+      const waist = parseFloat(waistEl.value);
+      const hip = parseFloat(hipEl.value);
+      const isMale = genderEl.value === 'male';
+      if (!height || !weight || !neck || !waist || (!isMale && !hip)) return;
+
+      let bfPct: number;
+      if (isMale) {
+        bfPct = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+      } else {
+        bfPct = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.221 * Math.log10(height)) - 450;
+      }
+      const lbm = weight * (1 - bfPct / 100);
+      const boneMass = lbm * (isMale ? 0.15 : 0.12);
+
+      boneEl.textContent = boneMass.toFixed(1);
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+  </script>
+</ToolsShell>
+</Layout>

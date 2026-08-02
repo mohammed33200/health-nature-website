@@ -1,0 +1,137 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة نسبة الخصر إلى الطول">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 08 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 08 on the tape</p>
+    <h1 data-ar>الخصر<br />إلى الطول</h1>
+    <h1 data-en hidden>Waist-to<br />-Height</h1>
+    <p class="lead" data-ar>
+      قياس واحد فقط بجانب طولك، ويعتبره كثير من الباحثين أدق من BMI في
+      التنبؤ بمخاطر القلب — لأنه يركّز على دهون البطن تحديداً.
+    </p>
+    <p class="lead" data-en hidden>
+      Just one measurement alongside your height, and many researchers
+      consider it more predictive of cardiac risk than BMI — because it
+      focuses specifically on abdominal fat.
+    </p>
+  </section>
+
+  <Tape current="waist-to-height" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
+      </div>
+      <div class="field">
+        <label for="waist" data-ar>محيط الخصر (سم)</label>
+        <label for="waist" data-en hidden>Waist circumference (cm)</label>
+        <input id="waist" type="number" inputmode="decimal" placeholder="85" min="40" max="200" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>نسبة الخصر إلى الطول:</span>
+        <span data-en hidden>Waist-to-height ratio:</span>
+        <span class="reading" id="whtrValue">—</span>
+        <span class="badge" id="whtrBadge"></span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نقسم محيط الخصر على الطول (بنفس الوحدة): WHtR = الخصر ÷ الطول.
+      خلافاً لـ BMI أو WHR، لا يحتاج هذا المؤشر جدولاً منفصلاً للرجال
+      والنساء أو للأعراق المختلفة، وهذا ما يجعله سهل التذكر والتطبيق.
+    </p>
+    <p data-en hidden>
+      We divide waist circumference by height (same unit): WHtR = waist ÷
+      height. Unlike BMI or WHR, this indicator doesn't need separate
+      tables for men and women or different ethnicities, which is what
+      makes it easy to remember and apply.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      القاعدة الشائعة والمبسطة: حافظ على خصرك أقل من نصف طولك (WHtR أقل
+      من 0.5). أقل من 0.4 نادر ويستحق المتابعة، من 0.4 إلى 0.49 نطاق
+      صحي، من 0.5 إلى 0.59 خطر متزايد يستدعي انتباهاً، و0.6 فأعلى خطر
+      مرتفع.
+    </p>
+    <p data-en hidden>
+      The common simplified rule: keep your waist under half your height
+      (WHtR below 0.5). Below 0.4 is rare and worth monitoring, 0.4 to
+      0.49 is a healthy range, 0.5 to 0.59 signals increased risk worth
+      attention, and 0.6 or above is high risk.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      إن كانت نسبتك 0.5 أو أعلى، اجعل هدفك الأول تقليل محيط خصرك بضع
+      سنتيمترات لا الوزن الكلي — فقدان دهون البطن تحديداً هو ما يخفض
+      المخاطر القلبية، ويمكن رصده بشريط قياس بسيط أسبوعياً دون ميزان.
+    </p>
+    <p data-en hidden>
+      If your ratio is 0.5 or above, make your first goal reducing your
+      waist circumference by a few centimeters rather than total weight —
+      it's abdominal fat specifically that lowers cardiac risk, and it's
+      trackable with a simple tape measure weekly, no scale required.
+    </p>
+  </section>
+
+  <script>
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const waistEl = document.getElementById('waist') as HTMLInputElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const whtrEl = document.getElementById('whtrValue')!;
+    const whtrBadgeEl = document.getElementById('whtrBadge')!;
+
+    function category(r: number) {
+      if (r < 0.4) return { ar: 'نادر — راقبه', en: 'Rare — monitor', color: '#B08A2B' };
+      if (r < 0.5) return { ar: 'صحي', en: 'Healthy', color: 'var(--ok)' };
+      if (r < 0.6) return { ar: 'خطر متزايد', en: 'Increased risk', color: 'var(--accent)' };
+      return { ar: 'خطر مرتفع', en: 'High risk', color: 'var(--danger)' };
+    }
+
+    function calc() {
+      const height = parseFloat(heightEl.value);
+      const waist = parseFloat(waistEl.value);
+      if (!height || !waist) return;
+
+      const whtr = waist / height;
+      const cat = category(whtr);
+      const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+
+      whtrEl.textContent = whtr.toFixed(2);
+      whtrBadgeEl.textContent = lang === 'ar' ? cat.ar : cat.en;
+      whtrBadgeEl.style.background = cat.color;
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+    const observer = new MutationObserver(() => {
+      if (resultEl.classList.contains('show')) calc();
+    });
+    const scopeEl = resultEl.closest('.tools-scope');
+  if (scopeEl) observer.observe(scopeEl, { attributes: true, attributeFilter: ['data-lang'] });
+  </script>
+</ToolsShell>
+</Layout>

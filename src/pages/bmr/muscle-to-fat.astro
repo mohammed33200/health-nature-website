@@ -1,0 +1,210 @@
+---
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+<Layout title="حاسبة نسبة العضلات إلى الدهون">
+  <ToolsShell>
+  <section class="container tool-hero">
+    <p class="kicker" data-ar>التوقف 10 على الشريط</p>
+    <p class="kicker" data-en hidden>Stop 10 on the tape</p>
+    <h1 data-ar>العضلات<br />مقابل الدهون</h1>
+    <h1 data-en hidden>Muscle vs.<br />Fat</h1>
+    <p class="lead" data-ar>
+      نفس الوزن يمكن أن يكون تركيبه مختلفاً تماماً بين شخصين. هذه الأداة
+      تحسب كتلة عضلاتك وكتلة دهونك من نفس قياساتك مباشرة، وتقارن بينهما.
+    </p>
+    <p class="lead" data-en hidden>
+      The same weight can have an entirely different composition between
+      two people. This tool computes your muscle mass and fat mass
+      directly from your own measurements and compares them.
+    </p>
+  </section>
+
+  <Tape current="muscle-to-fat" />
+
+  <section class="container calc-card">
+    <div class="field-grid">
+      <div class="field">
+        <label for="gender" data-ar>الجنس</label>
+        <label for="gender" data-en hidden>Sex</label>
+        <select id="gender">
+          <option value="male">ذكر / Male</option>
+          <option value="female">أنثى / Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="age" data-ar>العمر (سنة)</label>
+        <label for="age" data-en hidden>Age (years)</label>
+        <input id="age" type="number" inputmode="numeric" placeholder="30" min="1" max="110" />
+      </div>
+      <div class="field">
+        <label for="height" data-ar>الطول (سم)</label>
+        <label for="height" data-en hidden>Height (cm)</label>
+        <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
+      </div>
+      <div class="field">
+        <label for="weight" data-ar>الوزن (كجم)</label>
+        <label for="weight" data-en hidden>Weight (kg)</label>
+        <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
+      </div>
+      <div class="field">
+        <label for="neck" data-ar>محيط الرقبة (سم)</label>
+        <label for="neck" data-en hidden>Neck circumference (cm)</label>
+        <input id="neck" type="number" inputmode="decimal" placeholder="38" min="20" max="60" />
+      </div>
+      <div class="field">
+        <label for="waist" data-ar>محيط الخصر (سم)</label>
+        <label for="waist" data-en hidden>Waist circumference (cm)</label>
+        <input id="waist" type="number" inputmode="decimal" placeholder="85" min="40" max="200" />
+      </div>
+      <div class="field" id="hipField">
+        <label for="hip" data-ar>محيط الورك (سم) — للنساء فقط</label>
+        <label for="hip" data-en hidden>Hip circumference (cm) — women only</label>
+        <input id="hip" type="number" inputmode="decimal" placeholder="95" min="40" max="200" />
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" type="button">
+      <span data-ar>احسب</span>
+      <span data-en hidden>Calculate</span>
+    </button>
+
+    <div class="result" id="result">
+      <p>
+        <span data-ar>كتلة العضلات:</span> <span data-en hidden>Muscle mass:</span>
+        <span class="reading" id="smValue">—</span>
+        <span data-ar>كجم</span><span data-en hidden>kg</span>
+      </p>
+      <p>
+        <span data-ar>كتلة الدهون:</span> <span data-en hidden>Fat mass:</span>
+        <span class="reading" id="fatValue">—</span>
+        <span data-ar>كجم</span><span data-en hidden>kg</span>
+      </p>
+      <p>
+        <span data-ar>نسبة العضلات إلى الدهون:</span>
+        <span data-en hidden>Muscle-to-fat ratio:</span>
+        <span class="reading" id="ratioValue">—</span>
+        <span class="badge" id="ratioBadge"></span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container info-section">
+    <h2 data-ar>ما المعادلة المستخدمة؟</h2>
+    <h2 data-en hidden>What equation is used?</h2>
+    <p data-ar>
+      نحسب كتلة العضلات بمعادلة Lee (من الوزن والطول والعمر والجنس)،
+      وكتلة الدهون بطريقة الجيش الأمريكي (من محيط الرقبة والخصر، والورك
+      للنساء)، ثم نقسم الأولى على الثانية. كل هذا من قياساتك الأساسية
+      مباشرة دون الحاجة لأي نتيجة جاهزة من حاسبة أخرى.
+    </p>
+    <p data-en hidden>
+      We calculate muscle mass with the Lee equation (from weight,
+      height, age and sex) and fat mass with the US Navy method (from
+      neck and waist circumference, plus hip for women), then divide the
+      first by the second. All directly from your basic measurements,
+      with no need for a pre-computed result from another calculator.
+    </p>
+
+    <h2 data-ar>ماذا تعني النتيجة؟</h2>
+    <h2 data-en hidden>What does the result mean?</h2>
+    <p data-ar>
+      نسبة أقل من 1 تعني أن دهونك تفوق عضلاتك وزناً، وهذا شائع لدى من
+      لديهم نسبة دهون مرتفعة. من 1 إلى 2 تركيب متوازن نسبياً. أعلى من 2
+      يشير لتركيب عضلي واضح، شائع لدى الرياضيين ومن يمارسون تمارين
+      المقاومة بانتظام.
+    </p>
+    <p data-en hidden>
+      A ratio below 1 means your fat outweighs your muscle, common for
+      those with a higher body fat percentage. 1 to 2 is a relatively
+      balanced composition. Above 2 indicates a clearly muscular build,
+      common among athletes and regular resistance trainers.
+    </p>
+
+    <h2 data-ar>كيف تستخدم هذا الرقم لتحسين حياتك؟</h2>
+    <h2 data-en hidden>How to use this number to improve your life?</h2>
+    <p data-ar>
+      هذه النسبة أفضل مقياس لمتابعة تقدمك من الوزن وحده، لأنها تكشف هل
+      التغيّر في وزنك عضلات أم دهون. راقبها كل شهرين مع تمارين المقاومة
+      وبروتين كافٍ، فارتفاعها التدريجي مع الوقت مؤشر تحسن حقيقي حتى لو
+      بقي وزنك الكلي ثابتاً تقريباً.
+    </p>
+    <p data-en hidden>
+      This ratio is a better progress metric than weight alone, since it
+      reveals whether a change in your weight is muscle or fat. Track it
+      every couple of months alongside resistance training and adequate
+      protein — a gradual rise over time is a genuine sign of improvement
+      even if your total weight stays roughly the same.
+    </p>
+  </section>
+
+  <script>
+    const genderEl = document.getElementById('gender') as HTMLSelectElement;
+    const ageEl = document.getElementById('age') as HTMLInputElement;
+    const heightEl = document.getElementById('height') as HTMLInputElement;
+    const weightEl = document.getElementById('weight') as HTMLInputElement;
+    const neckEl = document.getElementById('neck') as HTMLInputElement;
+    const waistEl = document.getElementById('waist') as HTMLInputElement;
+    const hipEl = document.getElementById('hip') as HTMLInputElement;
+    const hipField = document.getElementById('hipField') as HTMLDivElement;
+    const resultEl = document.getElementById('result') as HTMLDivElement;
+    const smEl = document.getElementById('smValue')!;
+    const fatEl = document.getElementById('fatValue')!;
+    const ratioEl = document.getElementById('ratioValue')!;
+    const ratioBadgeEl = document.getElementById('ratioBadge')!;
+
+    function toggleHip() {
+      hipField.style.display = genderEl.value === 'female' ? 'block' : 'none';
+    }
+    genderEl.addEventListener('change', toggleHip);
+    toggleHip();
+
+    function category(ratio: number) {
+      if (ratio < 1) return { ar: 'الدهون أعلى', en: 'Fat-dominant', color: '#B08A2B' };
+      if (ratio <= 2) return { ar: 'متوازن', en: 'Balanced', color: 'var(--ok)' };
+      return { ar: 'عضلي', en: 'Muscular', color: 'var(--secondary)' };
+    }
+
+    function calc() {
+      const age = parseFloat(ageEl.value);
+      const height = parseFloat(heightEl.value);
+      const weight = parseFloat(weightEl.value);
+      const neck = parseFloat(neckEl.value);
+      const waist = parseFloat(waistEl.value);
+      const hip = parseFloat(hipEl.value);
+      const isMale = genderEl.value === 'male';
+      if (!age || !height || !weight || !neck || !waist || (!isMale && !hip)) return;
+
+      const heightM = height / 100;
+      const sex = isMale ? 1 : 0;
+      const muscle = 0.244 * weight + 7.8 * heightM - 0.098 * age + 6.6 * sex - 3.3;
+
+      let bfPct: number;
+      if (isMale) {
+        bfPct = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+      } else {
+        bfPct = 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.221 * Math.log10(height)) - 450;
+      }
+      const fatMass = weight * (bfPct / 100);
+      const ratio = muscle / fatMass;
+      const cat = category(ratio);
+      const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+
+      smEl.textContent = muscle.toFixed(1);
+      fatEl.textContent = fatMass.toFixed(1);
+      ratioEl.textContent = ratio.toFixed(2);
+      ratioBadgeEl.textContent = lang === 'ar' ? cat.ar : cat.en;
+      ratioBadgeEl.style.background = cat.color;
+      resultEl.classList.add('show');
+    }
+
+    document.getElementById('calcBtn')!.addEventListener('click', calc);
+    const observer = new MutationObserver(() => {
+      if (resultEl.classList.contains('show')) calc();
+    });
+    const scopeEl = resultEl.closest('.tools-scope');
+  if (scopeEl) observer.observe(scopeEl, { attributes: true, attributeFilter: ['data-lang'] });
+  </script>
+</ToolsShell>
+</Layout>

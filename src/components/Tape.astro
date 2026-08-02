@@ -1,0 +1,39 @@
+---
+interface Props {
+  current?: string; // slug of current page, or undefined on homepage
+}
+const { current } = Astro.props as Props;
+
+const stops = [
+  { slug: 'bmi',                    ar: 'كتلة الجسم والوزن المثالي', en: 'BMI &amp; Ideal Weight' },
+  { slug: 'body-fat',               ar: 'نسبة الدهون في الجسم',       en: 'Body Fat %' },
+  { slug: 'water',                  ar: 'نسبة الماء في الجسم',       en: 'Body Water %' },
+  { slug: 'bmr',                    ar: 'معدل الأيض الأساسي',        en: 'BMR' },
+  { slug: 'fat-distribution-women', ar: 'توزيع الدهون لدى النساء',    en: 'Fat Distribution (Women)' },
+  { slug: 'muscle-mass',            ar: 'كتلة العضلات',              en: 'Muscle Mass' },
+  { slug: 'bsa',                    ar: 'مساحة سطح الجسم',           en: 'Body Surface Area' },
+  { slug: 'waist-to-height',        ar: 'نسبة الخصر إلى الطول',      en: 'Waist-to-Height Ratio' },
+  { slug: 'daily-water-need',       ar: 'احتياج الماء اليومي',       en: 'Daily Water Need' },
+  { slug: 'muscle-to-fat',          ar: 'نسبة العضلات للدهون',       en: 'Muscle-to-Fat Ratio' },
+  { slug: 'metabolic-age',          ar: 'العمر الأيضي',              en: 'Metabolic Age' },
+  { slug: 'target-heart-rate',      ar: 'معدل النبض المستهدف',       en: 'Target Heart Rate' },
+  { slug: 'bone-mass',              ar: 'تقدير كتلة العظام',         en: 'Bone Mass Estimate' },
+  { slug: 'height-from-forearm',    ar: 'تقدير الطول من الساعد',     en: 'Height from Forearm' },
+];
+---
+<nav class="tape" aria-label="أدوات القياس">
+  <div class="container">
+    <div class="tape-track">
+      {stops.map((s, i) => (
+        <a
+          class={`tape-stop ${current === s.slug ? 'current' : ''}`}
+          data-tick={String(i + 1).padStart(2, '0')}
+          href={`/bmr/${s.slug}`}
+        >
+          <span class="stop-label" data-ar set:html={s.ar} />
+          <span class="stop-label" data-en hidden set:html={s.en} />
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
