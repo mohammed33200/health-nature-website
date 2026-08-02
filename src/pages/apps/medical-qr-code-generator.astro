@@ -1357,7 +1357,21 @@ import Layout from '../../layouts/Layout.astro';
         }
       }catch(e){ /* cross-origin or no parent — ignore */ }
     }
+    // ---- populate from query param (allow sharing from URL Cleaner) ----
+    function populateFromQuery(){
+      try{
+        var params = new URLSearchParams(window.location.search);
+        var u = params.get('u');
+        if (!u) return;
+        try{ urlInput.value = decodeURIComponent(u); } catch(e){ urlInput.value = u; }
+        // trigger a render to generate the QR immediately
+        render();
+        // bring user attention to the canvas
+        setTimeout(()=> { canvas.scrollIntoView({behavior:'smooth', block:'center'}); }, 120);
+      }catch(e){ /* ignore malformed URLs */ }
+    }
     window.addEventListener('load', reportHeight);
+    window.addEventListener('load', populateFromQuery);
     window.addEventListener('resize', reportHeight);
     new MutationObserver(reportHeight).observe(document.body, { childList:true, subtree:true, attributes:true });
     })();

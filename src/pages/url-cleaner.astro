@@ -547,23 +547,17 @@ const description = "أداة بسيطة لإزالة متغيرات التتب�
 		});
 
 		qrBtn.addEventListener('click', function () {
+			// If we don't have a cleaned URL yet, attempt to produce one
 			if (!currentClean) {
 				handleClean();
 			}
-			if (!currentClean) return;
-			qrBox.innerHTML = '';
-			if (typeof QRCode !== 'undefined') {
-				new QRCode(qrBox, {
-					text: currentClean,
-					width: 176,
-					height: 176,
-					correctLevel: (QRCode.CorrectLevel && QRCode.CorrectLevel.M) || 1
-				});
-				qrWrap.style.display = 'block';
-				qrWrap.classList.add('uc-fade-in');
-			} else {
-				console.warn('QRCode library is not loaded.');
+			if (!currentClean) {
+				// nothing to send
+				return;
 			}
+			// Navigate to the QR generator page and pass the cleaned URL as query param `u`
+			var target = '/apps/medical-qr-code-generator?u=' + encodeURIComponent(currentClean);
+			window.location.href = target;
 		});
 
 		// ---- language toggle ----
