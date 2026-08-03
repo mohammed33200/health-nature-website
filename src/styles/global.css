@@ -46,8 +46,10 @@
 .tools-scope[data-lang="en"] { direction: ltr; }
 
 /* language visibility */
-.tools-scope[data-lang="ar"] [data-en] { display: none; }
-.tools-scope[data-lang="en"] [data-ar]  { display: none; }
+.tools-scope[data-lang="ar"] [data-en] { display: none !important; }
+.tools-scope[data-lang="ar"] [data-ar]  { display: revert !important; }
+.tools-scope[data-lang="en"] [data-ar]  { display: none !important; }
+.tools-scope[data-lang="en"] [data-en]  { display: revert !important; }
 
 .tools-scope[data-lang="ar"] { font-family: "IBM Plex Sans Arabic", sans-serif; }
 .tools-scope[data-lang="en"] { font-family: "IBM Plex Sans", sans-serif; }

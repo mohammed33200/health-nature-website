@@ -29,8 +29,8 @@ import Tape from '../../components/Tape.astro';
         <label for="gender" data-ar>الجنس</label>
         <label for="gender" data-en hidden>Sex</label>
         <select id="gender">
-          <option value="male">ذكر / Male</option>
-          <option value="female">أنثى / Female</option>
+          <option value="male" data-ar="ذكر" data-en="Male">ذكر</option>
+          <option value="female" data-ar="أنثى" data-en="Female">أنثى</option>
         </select>
       </div>
       <div class="field">
@@ -153,6 +153,15 @@ import Tape from '../../components/Tape.astro';
       return labels[idx === -1 ? labels.length - 1 : idx];
     }
 
+    function syncGenderLabels() {
+      const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+      Array.from(genderEl.options).forEach((option) => {
+        option.textContent = option.dataset[lang] || option.textContent;
+      });
+    }
+
+    syncGenderLabels();
+
     function calc() {
       const height = parseFloat(heightEl.value);
       const neck = parseFloat(neckEl.value);
@@ -160,7 +169,6 @@ import Tape from '../../components/Tape.astro';
       const hip = parseFloat(hipEl.value);
       const isMale = genderEl.value === 'male';
       if (!height || !neck || !waist || (!isMale && !hip)) return;
-
       let bf: number;
       if (isMale) {
         bf = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;

@@ -49,6 +49,14 @@
 				setLanguage(nextLang);
 			});
 		}
+
+		window.addEventListener('languageChanged', (event) => {
+			const customEvent = event as CustomEvent<{ lang: string }>;
+			const lang = customEvent.detail?.lang;
+			if (lang === 'ar' || lang === 'en') {
+				setLanguage(lang, true);
+			}
+		});
 	});
 </script>
 
