@@ -1,0 +1,18 @@
+# Minimal wrangler.toml for deploying a static site (Workers Sites)
+# Add your Cloudflare `account_id` below if you intend to publish via Wrangler.
+
+name = "planetary-planet"
+# Optional: set a compatibility_date for Workers runtime
+compatibility_date = "2026-08-03"
+
+# If you want to publish a static site (Workers Sites), point the bucket to Astro's output dir
+site = { bucket = "./dist", include = ["**/*"] }
+
+# Uncomment and set your account ID when ready
+# account_id = "your-account-id-here"
+
+# Notes:
+# - For Cloudflare Pages it's preferable to use Pages' build settings: Build command `npm run build` and
+#   Build output directory `dist` instead of running `npx wrangler deploy`.
+# - If you keep `npx wrangler deploy` in your Pages Deploy command, ensure `wrangler.toml` has a correct
+#   `site.bucket` (as above) and optionally `account_id` for publish access.
