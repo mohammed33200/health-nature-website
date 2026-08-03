@@ -1,0 +1,129 @@
+---
+// حاسبة مساحة الحروق للأطفال — Lund & Browder Chart
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة مساحة الحروق للأطفال">
+  <ToolsShell>
+    <section class="tool-page container">
+      <header class="tool-hero">
+        <h1 data-ar>حاسبة مساحة الحروق للأطفال</h1>
+        <h1 data-en hidden>Pediatric Burn Surface Area</h1>
+        <p class="credit-line">Lund &amp; Browder, 1944</p>
+      </header>
+
+      <article class="info-block">
+        <h2 data-ar>ما هي؟</h2><h2 data-en hidden>What is it?</h2>
+        <p data-ar>تحسب النسبة المئوية لمساحة الجسم المصابة بالحرق (TBSA%) لدى الأطفال، مع تعديل خاص لنسب الرأس والأطراف السفلية حسب العمر، لأن نسب جسم الطفل تختلف عن البالغ (رأس أكبر نسبيًا، أرجل أقصر نسبيًا).</p>
+        <p data-en hidden>Calculates the total body surface area burned (TBSA%) in children, with age-specific adjustments to head and leg proportions — since a child's body proportions differ from an adult's (relatively larger head, relatively shorter legs).</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-ar>لماذا تهم؟</h2><h2 data-en hidden>Why it matters</h2>
+        <p data-ar>نسبة الحرق هي الأساس لحساب سوائل الإنعاش (Parkland Formula)، وتحديد شدة الحالة، وقرار التحويل لمركز حروق متخصص. استخدام قاعدة "9" الخاصة بالبالغين على الأطفال يعطي نتائج غير دقيقة.</p>
+        <p data-en hidden>TBSA% is the basis for calculating resuscitation fluids (Parkland Formula), judging severity, and deciding on referral to a specialized burn center. Using the adult "rule of nines" on children gives inaccurate results.</p>
+      </article>
+
+      <form class="calc-form" id="burn-form">
+        <label>
+          <span data-ar>الفئة العمرية</span><span data-en hidden>Age group</span>
+          <select id="ageGroup">
+            <option value="0">أقل من سنة / &lt;1 year</option>
+            <option value="1">1 سنة / 1 year</option>
+            <option value="5">5 سنوات / 5 years</option>
+            <option value="10">10 سنوات / 10 years</option>
+            <option value="15">15 سنة / 15 years</option>
+            <option value="adult">بالغ / Adult</option>
+          </select>
+        </label>
+        <p class="form-hint">
+          <span data-ar>أدخل نسبة الحرق داخل كل منطقة (0–100%)، وليس نسبتها من كامل الجسم:</span>
+          <span data-en hidden>Enter the % burned within each region (0–100%), not its share of the whole body:</span>
+        </p>
+        <div class="region-grid">
+          <label><span data-ar>الرأس والرقبة</span><span data-en hidden>Head &amp; neck</span><input type="number" class="region" data-region="headNeck" min="0" max="100" value="0" /></label>
+          <label><span data-ar>الجذع الأمامي</span><span data-en hidden>Anterior trunk</span><input type="number" class="region" data-region="antTrunk" min="0" max="100" value="0" /></label>
+          <label><span data-ar>الجذع الخلفي</span><span data-en hidden>Posterior trunk</span><input type="number" class="region" data-region="postTrunk" min="0" max="100" value="0" /></label>
+          <label><span data-ar>الذراع اليمنى</span><span data-en hidden>Right arm</span><input type="number" class="region" data-region="rArm" min="0" max="100" value="0" /></label>
+          <label><span data-ar>الذراع اليسرى</span><span data-en hidden>Left arm</span><input type="number" class="region" data-region="lArm" min="0" max="100" value="0" /></label>
+          <label><span data-ar>الأرداف والعجان</span><span data-en hidden>Buttocks &amp; genitalia</span><input type="number" class="region" data-region="buttGenital" min="0" max="100" value="0" /></label>
+          <label><span data-ar>الرجل اليمنى</span><span data-en hidden>Right leg</span><input type="number" class="region" data-region="rLeg" min="0" max="100" value="0" /></label>
+          <label><span data-ar>الرجل اليسرى</span><span data-en hidden>Left leg</span><input type="number" class="region" data-region="lLeg" min="0" max="100" value="0" /></label>
+        </div>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب TBSA%</span>
+          <span data-en hidden>Calculate TBSA%</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>إجمالي مساحة الحرق: </span><span data-en hidden>Total burn surface area: </span>
+          <strong id="tbsa-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-ar>القياس الطبيعي / التفسير</h2><h2 data-en hidden>Reference interpretation</h2>
+        <ul class="ref-list">
+          <li><span data-ar>&lt; 10%: حرق بسيط، غالبًا لا يحتاج سوائل وريدية مكثفة</span><span data-en hidden>&lt;10%: minor burn, usually no intensive IV fluids needed</span></li>
+          <li><span data-ar>10 – 20%: متوسط، يستدعي تقييمًا طبيًا ومتابعة سوائل</span><span data-en hidden>10–20%: moderate, needs medical evaluation and fluid monitoring</span></li>
+          <li><span data-ar>&gt; 20%: كبير، يستدعي إنعاشًا وريديًا (Parkland) وغالبًا تحويل لمركز حروق</span><span data-en hidden>&gt;20%: major, requires IV resuscitation (Parkland) and often burn-center referral</span></li>
+        </ul>
+      </article>
+
+      <a class="back-link" href="/mother&child/">
+        <span data-ar>← رجوع لمجال الأمومة والطفولة</span>
+        <span data-en hidden>← Back to Maternity &amp; Pediatrics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  // نسب مساحة كل منطقة (%) من كامل الجسم حسب العمر — Lund & Browder
+  const areaTable: Record<string, Record<string, number>> = {
+    "0":     { headNeck: 21, antTrunk: 13, postTrunk: 13, rArm: 9.5, lArm: 9.5, buttGenital: 6, rLeg: 14, lLeg: 14 },
+    "1":     { headNeck: 19, antTrunk: 13, postTrunk: 13, rArm: 9.5, lArm: 9.5, buttGenital: 6, rLeg: 15, lLeg: 15 },
+    "5":     { headNeck: 15, antTrunk: 13, postTrunk: 13, rArm: 9.5, lArm: 9.5, buttGenital: 6, rLeg: 17, lLeg: 17 },
+    "10":    { headNeck: 13, antTrunk: 13, postTrunk: 13, rArm: 9.5, lArm: 9.5, buttGenital: 6, rLeg: 18, lLeg: 18 },
+    "15":    { headNeck: 11, antTrunk: 13, postTrunk: 13, rArm: 9.5, lArm: 9.5, buttGenital: 6, rLeg: 19, lLeg: 19 },
+    "adult": { headNeck: 9,  antTrunk: 13, postTrunk: 13, rArm: 9.5, lArm: 9.5, buttGenital: 6, rLeg: 20, lLeg: 20 },
+  };
+
+  const form = document.getElementById("burn-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ageGroup = (document.getElementById("ageGroup") as HTMLSelectElement).value;
+    const table = areaTable[ageGroup];
+    let tbsa = 0;
+    document.querySelectorAll<HTMLInputElement>(".region").forEach((input) => {
+      const region = input.dataset.region as string;
+      const pctBurned = Number(input.value) || 0;
+      tbsa += (table[region] * pctBurned) / 100;
+    });
+
+    (document.getElementById("tbsa-out") as HTMLElement).textContent = `${tbsa.toFixed(1)}%`;
+    (document.getElementById("result") as HTMLElement).classList.add('show');
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 44rem; }
+  .credit-line { font-size: .8rem; opacity: .6; font-style: italic; margin-top: -0.5rem; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form > label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form select { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .form-hint { font-size: .8rem; opacity: .8; margin: 0; }
+  .region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
+  .region-grid label { display: grid; gap: .25rem; font-size: .8rem; }
+  .region-grid input { padding: .4rem .5rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; }
+  .calc-form button { justify-self: start; }
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

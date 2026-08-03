@@ -1,0 +1,135 @@
+---
+// حاسبة سوائل إنعاش الحروق — Parkland Formula
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة سوائل إنعاش الحروق">
+  <ToolsShell>
+    <section class="tool-page container">
+      <header class="tool-hero">
+        <h1 data-ar>حاسبة سوائل إنعاش الحروق</h1>
+        <h1 data-en hidden>Parkland Formula</h1>
+        <span class="badge badge-dosing">
+          <span data-ar>جرعات دوائية</span><span data-en hidden>Dosing</span>
+        </span>
+        <p class="credit-line">Parkland Formula, Baxter &amp; Shires, 1968</p>
+      </header>
+
+      <article class="info-block">
+        <h2 data-ar>ما هي؟</h2><h2 data-en hidden>What is it?</h2>
+        <p data-ar>تحسب كمية المحاليل الوريدية (محلول رينجر لاكتات عادةً) المطلوبة خلال أول 24 ساعة من إصابة الحرق، بناءً على وزن المريض ونسبة مساحة الحرق (TBSA%)، مع توزيع الكمية على نصفين: النصف الأول خلال 8 ساعات من وقت الحرق، والنصف الثاني خلال 16 ساعة التالية.</p>
+        <p data-en hidden>Calculates the volume of IV fluids (typically Lactated Ringer's) needed during the first 24 hours after a burn injury, based on the patient's weight and %TBSA burned — split into two halves: the first half over 8 hours from the time of the burn, and the second half over the following 16 hours.</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-ar>لماذا تهم؟</h2><h2 data-en hidden>Why it matters</h2>
+        <p data-ar>الحروق الكبيرة تسبب تسرّب سوائل هائل من الأوعية الدموية، وتعويض هذا الفقد بالسرعة والكمية الصحيحتين يمنع الصدمة والفشل الكلوي. الحساب الخاطئ (نقص أو زيادة) خطر بنفس القدر.</p>
+        <p data-en hidden>Major burns cause massive fluid loss from the vasculature; replacing that loss at the right rate and volume prevents shock and kidney failure. Getting the calculation wrong — too little or too much — is dangerous either way.</p>
+      </article>
+
+      <form class="calc-form" id="parkland-form">
+        <label>
+          <span data-ar>وزن المريض (كجم)</span><span data-en hidden>Patient weight (kg)</span>
+          <input type="number" id="weight" min="1" max="200" step="0.1" required />
+        </label>
+        <label>
+          <span data-ar>نسبة مساحة الحرق TBSA%</span><span data-en hidden>%TBSA burned</span>
+          <input type="number" id="tbsa" min="1" max="100" step="0.1" required />
+        </label>
+        <label>
+          <span data-ar>الوقت المنقضي منذ الحرق (ساعات)</span><span data-en hidden>Time since burn (hours)</span>
+          <input type="number" id="elapsed" min="0" max="24" step="0.1" value="0" />
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب</span>
+          <span data-en hidden>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>إجمالي السوائل لأول 24 ساعة: </span><span data-en hidden>Total 24h fluids: </span>
+          <strong id="total-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>النصف الأول (أول 8 ساعات من وقت الحرق): </span><span data-en hidden>First half (first 8h from burn time): </span>
+          <strong id="first-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>المتبقي من النصف الأول حتى الآن: </span><span data-en hidden>Remaining of first half, from now: </span>
+          <strong id="first-rate-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>النصف الثاني (الـ16 ساعة التالية): </span><span data-en hidden>Second half (next 16h): </span>
+          <strong id="second-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-ar>القياس الطبيعي / المعادلة</h2><h2 data-en hidden>Formula reference</h2>
+        <p class="formula">4 mL × <span data-ar>الوزن (كجم)</span><span data-en hidden>weight (kg)</span> × %TBSA = <span data-ar>إجمالي أول 24 ساعة</span><span data-en hidden>total 24h volume</span></p>
+        <ul class="ref-list">
+          <li><span data-ar>يُحسب فقط للحروق الدرجة الثانية والثالثة، ولا تُحسب الدرجة الأولى ضمن TBSA%</span><span data-en hidden>Only 2nd and 3rd degree burns count toward %TBSA; 1st degree burns are excluded</span></li>
+          <li><span data-ar>التوقيت يُحسب من لحظة الحرق نفسها وليس من وصول المريض للمستشفى</span><span data-en hidden>Timing starts from the moment of injury, not from hospital arrival</span></li>
+          <li><span data-ar>هذه تقديرات ابتدائية؛ يُعدَّل معدل التسريب الفعلي حسب مخرج البول والاستجابة السريرية</span><span data-en hidden>These are starting estimates; actual infusion rate is titrated to urine output and clinical response</span></li>
+        </ul>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>هذه الأداة مرجعية وتعليمية للكادر الطبي فقط، ولا تُستخدم كأساس وحيد لقرار الإنعاش الوريدي دون إشراف طبي مباشر.</span>
+        <span data-en hidden>This tool is for reference and educational use by healthcare professionals only, and must not be the sole basis for a fluid-resuscitation decision without direct clinical supervision.</span>
+      </p>
+
+      <a class="back-link" href="/mother&child/">
+        <span data-ar>← رجوع لمجال الأمومة والطفولة</span>
+        <span data-en hidden>← Back to Maternity &amp; Pediatrics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("parkland-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    const tbsa = Number((document.getElementById("tbsa") as HTMLInputElement).value);
+    const elapsed = Number((document.getElementById("elapsed") as HTMLInputElement).value) || 0;
+    if (!weight || !tbsa) return;
+
+    const total = 4 * weight * tbsa;
+    const firstHalf = total / 2;
+    const secondHalf = total / 2;
+    const remainingHoursInFirstWindow = Math.max(0, 8 - elapsed);
+    const firstHalfRate = remainingHoursInFirstWindow > 0 ? firstHalf / remainingHoursInFirstWindow : firstHalf;
+
+    (document.getElementById("total-out") as HTMLElement).textContent = `${total.toFixed(0)} mL`;
+    (document.getElementById("first-out") as HTMLElement).textContent = `${firstHalf.toFixed(0)} mL`;
+    (document.getElementById("first-rate-out") as HTMLElement).textContent =
+      remainingHoursInFirstWindow > 0
+        ? `${firstHalfRate.toFixed(0)} mL/h (${remainingHoursInFirstWindow.toFixed(1)}h متبقية)`
+        : "انتهت نافذة الـ8 ساعات الأولى / 8h window has passed";
+    (document.getElementById("second-out") as HTMLElement).textContent = `${secondHalf.toFixed(0)} mL (${(secondHalf/16).toFixed(0)} mL/h)`;
+
+    (document.getElementById("result") as HTMLElement).classList.add('show');
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+  .badge { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: var(--paper-alt); }
+  .credit-line { font-size: .8rem; opacity: .6; font-style: italic; margin-top: -0.5rem; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .formula { font-family: monospace; background: var(--paper-alt); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; margin-top: .75rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

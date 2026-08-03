@@ -1,0 +1,147 @@
+---
+// حاسبة جرعات مخفضات الحرارة للأطفال — Pediatric Antipyretic Dosing
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة جرعات مخفضات الحرارة للأطفال">
+  <ToolsShell>
+    <section class="tool-page container">
+      <header class="tool-hero">
+        <h1 data-ar>حاسبة جرعات مخفضات الحرارة للأطفال</h1>
+        <h1 data-en hidden>Pediatric Antipyretic Dosing</h1>
+        <span class="badge badge-dosing">
+          <span data-ar>جرعات دوائية</span><span data-en hidden>Dosing</span>
+        </span>
+      </header>
+
+      <article class="info-block">
+        <h2 data-ar>ما هي؟</h2><h2 data-en hidden>What is it?</h2>
+        <p data-ar>تحسب الجرعة الدوائية التقريبية (بالمليجرام والمليلتر) لخافضي الحرارة الأكثر استخدامًا لدى الأطفال — الباراسيتامول والإيبوبروفين — بناءً على وزن الطفل بالكيلوجرام.</p>
+        <p data-en hidden>Estimates the approximate dose (in mg and mL) of the two most common pediatric antipyretics — paracetamol and ibuprofen — based on the child's weight in kilograms.</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-ar>لماذا تهم؟</h2><h2 data-en hidden>Why it matters</h2>
+        <p data-ar>جرعات الأطفال تُحسب بالوزن وليست ثابتة كالكبار، والخطأ في الجرعة (زيادة أو نقصان) من أكثر أسباب التسمم الدوائي أو فشل السيطرة على الحمى لدى الأطفال. الأداة مرجع سريع للكادر الصحي والأهل تحت إشراف طبي.</p>
+        <p data-en hidden>Pediatric doses are weight-based, not fixed like adult doses, and dosing errors (too much or too little) are a common cause of drug toxicity or uncontrolled fever in children. This is a quick reference for caregivers and clinicians under medical supervision.</p>
+      </article>
+
+      <form class="calc-form" id="dose-form">
+        <label>
+          <span data-ar>وزن الطفل (كجم)</span><span data-en hidden>Child's weight (kg)</span>
+          <input type="number" id="weight" min="2" max="60" step="0.1" required />
+        </label>
+        <label>
+          <span data-ar>الدواء</span><span data-en hidden>Medication</span>
+          <select id="drug">
+            <option value="paracetamol">باراسيتامول / Paracetamol (10–15 mg/kg)</option>
+            <option value="ibuprofen">إيبوبروفين / Ibuprofen (5–10 mg/kg)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>تركيز الشراب (مجم/5 مل)</span><span data-en hidden>Syrup strength (mg/5 mL)</span>
+          <select id="strength">
+            <option value="120">120</option>
+            <option value="125">125</option>
+            <option value="160">160</option>
+            <option value="250">250</option>
+          </select>
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب الجرعة</span>
+          <span data-en hidden>Calculate dose</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>الجرعة لكل مرة: </span><span data-en hidden>Dose per administration: </span>
+          <strong id="dose-mg-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>المكافئ بالمليلتر: </span><span data-en hidden>Volume equivalent: </span>
+          <strong id="dose-ml-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>تكرار الجرعة: </span><span data-en hidden>Frequency: </span>
+          <strong id="freq-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>الحد الأقصى اليومي: </span><span data-en hidden>Max daily dose: </span>
+          <strong id="max-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-ar>القياس الطبيعي / الحدود الآمنة</h2><h2 data-en hidden>Normal safe ranges</h2>
+        <ul class="ref-list">
+          <li><span data-ar>باراسيتامول: 10–15 مجم/كجم كل 4–6 ساعات، بحد أقصى 5 جرعات/يوم (75 مجم/كجم/يوم)</span><span data-en hidden>Paracetamol: 10–15 mg/kg every 4–6h, max 5 doses/day (75 mg/kg/day)</span></li>
+          <li><span data-ar>إيبوبروفين: 5–10 مجم/كجم كل 6–8 ساعات، بحد أقصى 40 مجم/كجم/يوم — يُمنع قبل 6 أشهر</span><span data-en hidden>Ibuprofen: 5–10 mg/kg every 6–8h, max 40 mg/kg/day — avoid under 6 months</span></li>
+        </ul>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>هذه الأداة مرجعية وتعليمية فقط ولا تغني عن استشارة الطبيب أو الصيدلي، خصوصًا للرضّع أو الأطفال ذوي الحالات المرضية المزمنة.</span>
+        <span data-en hidden>This tool is for reference and educational use only and does not replace consulting a physician or pharmacist, especially for infants or children with chronic conditions.</span>
+      </p>
+
+      <a class="back-link" href="/mother&child/">
+        <span data-ar>← رجوع لمجال الأمومة والطفولة</span>
+        <span data-en hidden>← Back to Maternity &amp; Pediatrics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("dose-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    const drug = (document.getElementById("drug") as HTMLSelectElement).value;
+    const strength = Number((document.getElementById("strength") as HTMLSelectElement).value);
+    if (!weight) return;
+
+    let lowMg = 0, highMg = 0, freqAr = "", freqEn = "", maxMgPerDay = 0;
+    if (drug === "paracetamol") {
+      lowMg = weight * 10;
+      highMg = weight * 15;
+      freqAr = "كل 4–6 ساعات (حتى 5 مرات/يوم)";
+      freqEn = "every 4–6h (up to 5 times/day)";
+      maxMgPerDay = weight * 75;
+    } else {
+      lowMg = weight * 5;
+      highMg = weight * 10;
+      freqAr = "كل 6–8 ساعات";
+      freqEn = "every 6–8h";
+      maxMgPerDay = weight * 40;
+    }
+
+    const lowMl = (lowMg / strength) * 5;
+    const highMl = (highMg / strength) * 5;
+
+    (document.getElementById("dose-mg-out") as HTMLElement).textContent = `${lowMg.toFixed(0)} – ${highMg.toFixed(0)} mg`;
+    (document.getElementById("dose-ml-out") as HTMLElement).textContent = `${lowMl.toFixed(1)} – ${highMl.toFixed(1)} mL`;
+    (document.getElementById("freq-out") as HTMLElement).textContent = `${freqAr} / ${freqEn}`;
+    (document.getElementById("max-out") as HTMLElement).textContent = `${maxMgPerDay.toFixed(0)} mg/day`;
+
+    (document.getElementById("result") as HTMLElement).classList.add('show');
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+  .badge { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: var(--paper-alt); }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

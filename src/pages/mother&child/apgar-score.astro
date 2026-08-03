@@ -1,0 +1,148 @@
+---
+// مقياس أبغار لتقييم المولود — APGAR Score
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="مقياس أبغار لتقييم المولود">
+  <ToolsShell>
+    <section class="tool-page container">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>مقياس أبغار لتقييم المولود</span>
+          <span data-en hidden>APGAR Score</span>
+        </h1>
+        <p class="credit-line">Virginia Apgar, 1952</p>
+      </header>
+
+      <article class="info-block">
+        <h2 data-ar>ما هو؟</h2><h2 data-en hidden>What is it?</h2>
+        <p>
+          <span data-ar>تقييم سريع لحالة الوليد فور الولادة، يغطي 5 محاور: معدل ضربات القلب، الجهد التنفسي، توتر العضلات، استثارة المنعكسات، ولون الجلد. يُجرى عادة في الدقيقة الأولى والخامسة بعد الولادة.</span>
+          <span data-en hidden>A quick assessment of the newborn's condition right after birth, covering 5 signs: heart rate, respiratory effort, muscle tone, reflex irritability, and skin color. Typically done at 1 and 5 minutes after birth.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-ar>لماذا يهم؟</h2><h2 data-en hidden>Why it matters</h2>
+        <p>
+          <span data-ar>يساعد الكادر الطبي على تحديد ما إذا كان الوليد بحاجة إلى تدخل فوري (شفط، أكسجين، إنعاش)، ومتابعة استجابته للتدخل عبر مقارنة الدقيقة الأولى بالخامسة.</span>
+          <span data-en hidden>Helps the care team decide if the newborn needs immediate intervention (suctioning, oxygen, resuscitation), and track response to that intervention by comparing the 1-minute and 5-minute scores.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="apgar-form">
+        <label>
+          <span data-ar>معدل ضربات القلب</span><span data-en hidden>Heart rate</span>
+          <select id="hr">
+            <option value="0">غائب / Absent (0)</option>
+            <option value="1">أقل من 100 / &lt;100 bpm (1)</option>
+            <option value="2">أكثر من 100 / ≥100 bpm (2)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>الجهد التنفسي</span><span data-en hidden>Respiratory effort</span>
+          <select id="resp">
+            <option value="0">غائب / Absent (0)</option>
+            <option value="1">بطيء وغير منتظم / Slow, irregular (1)</option>
+            <option value="2">بكاء قوي / Good, crying (2)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>توتر العضلات</span><span data-en hidden>Muscle tone</span>
+          <select id="tone">
+            <option value="0">رخو / Limp (0)</option>
+            <option value="1">ثني طفيف / Some flexion (1)</option>
+            <option value="2">حركة نشطة / Active motion (2)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>استثارة المنعكسات</span><span data-en hidden>Reflex irritability</span>
+          <select id="reflex">
+            <option value="0">لا استجابة / No response (0)</option>
+            <option value="1">تكشيرة / Grimace (1)</option>
+            <option value="2">سعال أو عطس أو بكاء / Cough, sneeze, cry (2)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>لون الجلد</span><span data-en hidden>Color</span>
+          <select id="color">
+            <option value="0">شاحب أو أزرق / Blue, pale (0)</option>
+            <option value="1">جسم وردي وأطراف زرقاء / Body pink, extremities blue (1)</option>
+            <option value="2">وردي بالكامل / Completely pink (2)</option>
+          </select>
+        </label>
+        <button type="submit">
+          <span data-ar>احسب المجموع</span>
+          <span data-en hidden>Calculate score</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>المجموع: </span><span data-en hidden>Total score: </span>
+          <strong id="score-out"></strong> / 10
+        </p>
+        <p class="result-line">
+          <span data-ar>التفسير: </span><span data-en hidden>Interpretation: </span>
+          <strong id="interp-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-ar>القياس الطبيعي / التفسير</h2><h2 data-en hidden>Reference interpretation</h2>
+        <ul class="ref-list">
+          <li><span data-ar>7 – 10: طبيعي</span><span data-en hidden>7–10: normal</span></li>
+          <li><span data-ar>4 – 6: انخفاض متوسط، قد يحتاج مساعدة تنفسية بسيطة</span><span data-en hidden>4–6: moderately depressed, may need mild respiratory assistance</span></li>
+          <li><span data-ar>0 – 3: انخفاض شديد، يستدعي إنعاشًا فوريًا</span><span data-en hidden>0–3: severely depressed, needs immediate resuscitation</span></li>
+        </ul>
+        <p class="note">
+          <span data-ar>النتيجة تُقيَّم في الدقيقة الأولى والخامسة، وأحيانًا العاشرة إذا استمر الانخفاض.</span>
+          <span data-en hidden>Scored at 1 and 5 minutes, and again at 10 minutes if the score stays low.</span>
+        </p>
+      </article>
+
+      <a class="back-link" href="/mother&child/">
+        <span data-ar>← رجوع لمجال الأمومة والطفولة</span>
+        <span data-en hidden>← Back to Maternity &amp; Pediatrics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("apgar-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ids = ["hr", "resp", "tone", "reflex", "color"];
+    const total = ids.reduce((sum, id) => sum + Number((document.getElementById(id) as HTMLSelectElement).value), 0);
+
+    let interpAr = "";
+    let interpEn = "";
+    if (total >= 7) { interpAr = "طبيعي"; interpEn = "Normal"; }
+    else if (total >= 4) { interpAr = "انخفاض متوسط"; interpEn = "Moderately depressed"; }
+    else { interpAr = "انخفاض شديد"; interpEn = "Severely depressed"; }
+
+    (document.getElementById("score-out") as HTMLElement).textContent = String(total);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .credit-line { font-size: .8rem; opacity: .6; font-style: italic; margin-top: -0.5rem; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .note { font-size: .85rem; opacity: .8; color: var(--ink-soft); }
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form select { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: var(--paper-alt); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

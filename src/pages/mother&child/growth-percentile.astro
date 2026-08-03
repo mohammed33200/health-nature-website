@@ -1,0 +1,149 @@
+---
+// حاسبة منحنيات النمو للأطفال — Growth Percentile Calculator
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة منحنيات النمو للأطفال">
+  <ToolsShell>
+    <section class="tool-page container">
+      <header class="tool-hero">
+        <h1 data-ar>حاسبة منحنيات النمو للأطفال (الوزن)</h1>
+        <h1 data-en hidden>Growth Percentile Calculator (Weight-for-Age)</h1>
+        <p class="credit-line">WHO Child Growth Standards</p>
+      </header>
+
+      <article class="info-block">
+        <h2 data-ar>ما هي؟</h2><h2 data-en hidden>What is it?</h2>
+        <p data-ar>تقدير تقريبي لموقع وزن الطفل مقارنة بأقرانه من نفس العمر والجنس، بالاعتماد على متوسط وزن-لعمر المعتمد من منظمة الصحة العالمية.</p>
+        <p data-en hidden>An approximate estimate of where a child's weight falls compared to peers of the same age and sex, based on WHO weight-for-age medians.</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-ar>لماذا تهم؟</h2><h2 data-en hidden>Why it matters</h2>
+        <p data-ar>متابعة النمو تكشف مبكرًا حالات نقص التغذية أو زيادة الوزن أو مشاكل صحية كامنة، وتساعد الأهل والكادر الصحي على تقييم الاتجاه العام لنمو الطفل عبر الزمن وليس رقمًا واحدًا معزولًا.</p>
+        <p data-en hidden>Growth tracking catches undernutrition, excess weight, or underlying health issues early, and helps caregivers and clinicians judge the overall growth trend over time rather than a single isolated number.</p>
+      </article>
+
+      <form class="calc-form" id="growth-form">
+        <label>
+          <span data-ar>الجنس</span><span data-en hidden>Sex</span>
+          <select id="sex">
+            <option value="boy">ذكر / Boy</option>
+            <option value="girl">أنثى / Girl</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>العمر (أشهر)</span><span data-en hidden>Age (months)</span>
+          <input type="number" id="age" min="0" max="60" required />
+        </label>
+        <label>
+          <span data-ar>الوزن الحالي (كجم)</span><span data-en hidden>Current weight (kg)</span>
+          <input type="number" id="weight" min="1" max="40" step="0.1" required />
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب</span>
+          <span data-en hidden>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>الوزن المتوسط لهذا العمر: </span><span data-en hidden>Median weight for age: </span>
+          <strong id="median-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>التقدير التقريبي للنسبة المئوية: </span><span data-en hidden>Approximate percentile: </span>
+          <strong id="pct-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-ar>القياس الطبيعي</h2><h2 data-en hidden>Normal reference</h2>
+        <ul class="ref-list">
+          <li><span data-ar>النسبة المئوية 3–97 تُعتبر ضمن المدى الطبيعي</span><span data-en hidden>Percentile 3–97 is generally considered within the normal range</span></li>
+          <li><span data-ar>أقل من 3: قد يشير لنقص تغذية، يستدعي تقييم طبي</span><span data-en hidden>Below 3rd: may indicate undernutrition, warrants medical evaluation</span></li>
+          <li><span data-ar>أعلى من 97: قد يشير لزيادة وزن، يستدعي تقييم طبي</span><span data-en hidden>Above 97th: may indicate excess weight, warrants medical evaluation</span></li>
+        </ul>
+        <p class="note">
+          <span data-ar>هذه أداة تقريبية مبسّطة لأغراض توعوية. للتشخيص الدقيق ومتابعة منحنى النمو الكامل، يُستخدم مخطط منظمة الصحة العالمية الرسمي مع الطبيب المختص.</span>
+          <span data-en hidden>This is a simplified approximation for awareness purposes. For precise diagnosis and full growth curve tracking, use the official WHO chart with a pediatrician.</span>
+        </p>
+      </article>
+
+      <a class="back-link" href="/mother&child/">
+        <span data-ar>← رجوع لمجال الأمومة والطفولة</span>
+        <span data-en hidden>← Back to Maternity &amp; Pediatrics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  // نقاط مرجعية مبسّطة (متوسط الوزن بالكجم) من معايير منظمة الصحة العالمية
+  // Simplified reference points (median weight in kg) from WHO standards
+  const medians: Record<string, number[]> = {
+    boy:  [3.3, 6.4, 7.9, 8.9, 9.6, 10.9, 12.2, 14.3, 16.3, 18.3],
+    girl: [3.2, 5.8, 7.3, 8.2, 8.9, 10.2, 11.5, 13.9, 16.1, 18.2],
+  };
+  const ageMonths = [0, 3, 6, 9, 12, 18, 24, 36, 48, 60];
+
+  function interpolate(age: number, sex: string) {
+    const arr = medians[sex];
+    if (age <= ageMonths[0]) return arr[0];
+    if (age >= ageMonths[ageMonths.length - 1]) return arr[arr.length - 1];
+    for (let i = 0; i < ageMonths.length - 1; i++) {
+      if (age >= ageMonths[i] && age <= ageMonths[i + 1]) {
+        const t = (age - ageMonths[i]) / (ageMonths[i + 1] - ageMonths[i]);
+        return arr[i] + t * (arr[i + 1] - arr[i]);
+      }
+    }
+    return arr[arr.length - 1];
+  }
+
+  // تقريب دالة الخطأ لحساب النسبة المئوية من z-score
+  function erf(x: number) {
+    const sign = x < 0 ? -1 : 1;
+    x = Math.abs(x);
+    const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+    const t = 1 / (1 + p * x);
+    const y = 1 - (((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+    return sign * y;
+  }
+
+  const form = document.getElementById("growth-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const sex = (document.getElementById("sex") as HTMLSelectElement).value;
+    const age = Number((document.getElementById("age") as HTMLInputElement).value);
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    if (!weight && weight !== 0) return;
+
+    const median = interpolate(age, sex);
+    const sd = median * 0.13; // تقريب مبسّط لانحراف معياري ~13% من المتوسط
+    const z = (weight - median) / sd;
+    const percentile = Math.round(50 * (1 + erf(z / Math.SQRT2)));
+    const clamped = Math.min(99, Math.max(1, percentile));
+
+    (document.getElementById("median-out") as HTMLElement).textContent = `${median.toFixed(1)} kg`;
+    (document.getElementById("pct-out") as HTMLElement).textContent = `~${clamped}%`;
+
+    (document.getElementById("result") as HTMLElement).classList.add('show');
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .credit-line { font-size: .8rem; opacity: .6; font-style: italic; margin-top: -0.5rem; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .note { font-size: .85rem; opacity: .8; color: var(--ink-soft); }
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

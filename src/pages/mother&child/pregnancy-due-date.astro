@@ -1,0 +1,130 @@
+---
+// حاسبة موعد الولادة وأسابيع الحمل — Pregnancy Due Date Calculator
+// محتوى فقط، يُلَفّ داخل ToolsShell.astro
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة موعد الولادة">
+  <ToolsShell>
+    <section class="tool-page container">
+      <header class="tool-hero">
+        <h1 data-ar>حاسبة موعد الولادة وأسابيع الحمل</h1>
+        <h1 data-en hidden>Pregnancy Due Date Calculator</h1>
+      </header>
+
+      <article class="info-block">
+        <h2 data-ar>ما هي؟</h2><h2 data-en hidden>What is it?</h2>
+        <p data-ar>أداة تُقدّر تاريخ الولادة المتوقع (EDD) وعمر الجنين الحالي بالأسابيع، اعتمادًا على تاريخ أول يوم من آخر دورة شهرية (LMP) ومتوسط طول الدورة، باستخدام قاعدة نيغيل (Naegele's Rule).</p>
+        <p data-en hidden>Estimates the expected delivery date (EDD) and current gestational age in weeks, based on the first day of the last menstrual period (LMP) and average cycle length, using Naegele's Rule.</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-ar>لماذا تهم؟</h2><h2 data-en hidden>Why it matters</h2>
+        <p data-ar>معرفة عمر الحمل بدقة تساعد على تحديد مواعيد الفحوصات الدورية (السونار، فحوصات الدم)، متابعة نمو الجنين مقارنة بالمعدل الطبيعي لهذا الأسبوع، وتحديد نافذة الأمان للولادة (37-42 أسبوعًا تُعتبر ولادة مكتملة).</p>
+        <p data-en hidden>Accurate gestational age helps schedule routine checkups (ultrasounds, blood work), track fetal growth against this week's norms, and identify the safe delivery window (37–42 weeks is considered full term).</p>
+      </article>
+
+      <form class="calc-form" id="due-date-form">
+        <label>
+          <span data-ar>تاريخ أول يوم من آخر دورة شهرية</span>
+          <span data-en hidden>First day of last period</span>
+          <input type="date" id="lmp" required />
+        </label>
+        <label>
+          <span data-ar>متوسط طول الدورة (أيام)</span>
+          <span data-en hidden>Average cycle length (days)</span>
+          <input type="number" id="cycle" min="20" max="45" value="28" />
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب</span>
+          <span data-en hidden>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>تاريخ الولادة المتوقع: </span><span data-en hidden>Expected due date: </span>
+          <strong id="edd-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>عمر الحمل الحالي: </span><span data-en hidden>Current gestational age: </span>
+          <strong id="ga-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>الثلث الحالي: </span><span data-en hidden>Current trimester: </span>
+          <strong id="tri-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-ar>القياس الطبيعي</h2><h2 data-en hidden>Normal reference</h2>
+        <ul class="ref-list">
+          <li><span data-ar>الثلث الأول: أسبوع 1 – 13</span><span data-en hidden>1st trimester: week 1–13</span></li>
+          <li><span data-ar>الثلث الثاني: أسبوع 14 – 27</span><span data-en hidden>2nd trimester: week 14–27</span></li>
+          <li><span data-ar>الثلث الثالث: أسبوع 28 – 40+</span><span data-en hidden>3rd trimester: week 28–40+</span></li>
+          <li><span data-ar>حمل مكتمل: 37 – 42 أسبوعًا</span><span data-en hidden>Full term: 37–42 weeks</span></li>
+        </ul>
+        <p class="note">
+          <span data-ar>ملحوظة: قاعدة نيغيل تقديرية وتفترض دورة منتظمة؛ السونار المبكر أدق لتحديد عمر الحمل.</span>
+          <span data-en hidden>Note: Naegele's rule is an estimate assuming a regular cycle; an early ultrasound is more accurate for dating.</span>
+        </p>
+      </article>
+
+      <a class="back-link" href="/mother&child/">
+        <span data-ar>← رجوع لمجال الأمومة والطفولة</span>
+        <span data-en hidden>← Back to Maternity &amp; Pediatrics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("due-date-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const lmpVal = (document.getElementById("lmp") as HTMLInputElement).value;
+    const cycle = Number((document.getElementById("cycle") as HTMLInputElement).value) || 28;
+    if (!lmpVal) return;
+
+    const lmp = new Date(lmpVal);
+    const cycleAdjustment = cycle - 28;
+
+    const edd = new Date(lmp);
+    edd.setDate(edd.getDate() + 280 + cycleAdjustment);
+
+    const today = new Date();
+    const diffDays = Math.floor((today.getTime() - lmp.getTime()) / 86400000) + cycleAdjustment;
+    const weeks = Math.floor(diffDays / 7);
+    const days = diffDays % 7;
+
+    let trimesterAr = "";
+    let trimesterEn = "";
+    if (weeks < 13) { trimesterAr = "الأول"; trimesterEn = "1st"; }
+    else if (weeks < 28) { trimesterAr = "الثاني"; trimesterEn = "2nd"; }
+    else { trimesterAr = "الثالث"; trimesterEn = "3rd"; }
+
+    (document.getElementById("edd-out") as HTMLElement).textContent =
+      edd.toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" });
+    (document.getElementById("ga-out") as HTMLElement).textContent =
+      weeks >= 0 && weeks < 45 ? `${weeks} ${weeks === 1 ? "أسبوع" : "أسابيع"} و ${days} يوم` : "—";
+    (document.getElementById("tri-out") as HTMLElement).textContent = `${trimesterAr} / ${trimesterEn}`;
+
+    (document.getElementById("result") as HTMLElement).classList.add('show');
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .note { font-size: .85rem; opacity: .8; color: var(--ink-soft); }
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

@@ -1,0 +1,140 @@
+---
+// مؤشر بيشوب لجاهزية عنق الرحم — Bishop Score
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="مؤشر بيشوب">
+  <ToolsShell>
+    <section class="tool-page container">
+      <header class="tool-hero">
+        <h1 data-ar>مؤشر بيشوب لجاهزية عنق الرحم للولادة</h1>
+        <h1 data-en hidden>Bishop Score</h1>
+        <p class="credit-line">Bishop, 1964</p>
+      </header>
+
+      <article class="info-block">
+        <h2 data-ar>ما هو؟</h2><h2 data-en hidden>What is it?</h2>
+        <p data-ar>نظام تسجيل نقاط يقيّم مدى استعداد عنق الرحم للمخاض، من خلال 5 معايير: اتساع عنق الرحم، محو عنق الرحم، ارتفاع رأس الجنين، قوام عنق الرحم، ووضع عنق الرحم. المجموع يتراوح من 0 إلى 13.</p>
+        <p data-en hidden>A scoring system that assesses how ready the cervix is for labor, across 5 criteria: dilation, effacement, fetal station, consistency, and cervical position. Total score ranges from 0 to 13.</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-ar>لماذا يهم؟</h2><h2 data-en hidden>Why it matters</h2>
+        <p data-ar>يُستخدم قبل تحريض المخاض لتقدير احتمال نجاحه؛ فكلما ارتفع المجموع زاد احتمال نجاح الولادة المهبلية بعد التحريض، بينما المجموع المنخفض قد يستدعي استخدام وسائل لتنضيج عنق الرحم أولًا.</p>
+        <p data-en hidden>Used before labor induction to estimate its likely success — a higher score means a better chance of successful vaginal delivery after induction, while a low score may call for cervical ripening methods first.</p>
+      </article>
+
+      <form class="calc-form" id="bishop-form">
+        <label>
+          <span data-ar>اتساع عنق الرحم (سم)</span><span data-en hidden>Dilation (cm)</span>
+          <select id="dilation">
+            <option value="0">0 (0)</option>
+            <option value="1">1–2 (1)</option>
+            <option value="2">3–4 (2)</option>
+            <option value="3">≥5 (3)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>محو عنق الرحم (%)</span><span data-en hidden>Effacement (%)</span>
+          <select id="effacement">
+            <option value="0">0–30 (0)</option>
+            <option value="1">40–50 (1)</option>
+            <option value="2">60–70 (2)</option>
+            <option value="3">≥80 (3)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>ارتفاع الجزء المتقدم (Station)</span><span data-en hidden>Fetal station</span>
+          <select id="station">
+            <option value="0">-3 (0)</option>
+            <option value="1">-2 (1)</option>
+            <option value="2">-1 / 0 (2)</option>
+            <option value="3">+1 / +2 (3)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>قوام عنق الرحم</span><span data-en hidden>Consistency</span>
+          <select id="consistency">
+            <option value="0">قاسٍ / Firm (0)</option>
+            <option value="1">متوسط / Medium (1)</option>
+            <option value="2">طري / Soft (2)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>وضع عنق الرحم</span><span data-en hidden>Position</span>
+          <select id="position">
+            <option value="0">خلفي / Posterior (0)</option>
+            <option value="1">متوسط / Mid-position (1)</option>
+            <option value="2">أمامي / Anterior (2)</option>
+          </select>
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب المجموع</span>
+          <span data-en hidden>Calculate score</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>المجموع: </span><span data-en hidden>Total score: </span>
+          <strong id="score-out" class="reading"></strong> / 13
+          <span class="badge" id="interp-out"></span>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-ar>القياس الطبيعي / التفسير</h2><h2 data-en hidden>Reference interpretation</h2>
+        <ul class="ref-list">
+          <li><span data-ar>≤ 5: عنق رحم غير مواتٍ، احتمال فشل التحريض أعلى</span><span data-en hidden>≤ 5: unfavorable cervix, higher chance of failed induction</span></li>
+          <li><span data-ar>6–7: متوسط</span><span data-en hidden>6–7: intermediate</span></li>
+          <li><span data-ar>≥ 8: عنق رحم مواتٍ، فرصة نجاح الولادة المهبلية بعد التحريض تقارب الولادة التلقائية</span><span data-en hidden>≥ 8: favorable cervix, success rate approaches spontaneous labor</span></li>
+        </ul>
+      </article>
+
+      <a class="back-link" href="/mother&child/">
+        <span data-ar>← رجوع لمجال الأمومة والطفولة</span>
+        <span data-en hidden>← Back to Maternity &amp; Pediatrics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("bishop-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ids = ["dilation", "effacement", "station", "consistency", "position"];
+    const total = ids.reduce((sum, id) => sum + Number((document.getElementById(id) as HTMLSelectElement).value), 0);
+
+    let interpAr = "", interpEn = "", color = "";
+    if (total <= 5) { interpAr = "غير مواتٍ"; interpEn = "Unfavorable"; color = 'var(--danger)'; }
+    else if (total <= 7) { interpAr = "متوسط"; interpEn = "Intermediate"; color = 'var(--accent)'; }
+    else { interpAr = "مواتٍ"; interpEn = "Favorable"; color = 'var(--ok)'; }
+
+    const scoreOut = document.getElementById("score-out") as HTMLElement;
+    const interpOut = document.getElementById("interp-out") as HTMLElement;
+    const resultEl = document.getElementById("result") as HTMLElement;
+    const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
+
+    scoreOut.textContent = String(total);
+    interpOut.textContent = lang === 'ar' ? interpAr : interpEn;
+    interpOut.style.backgroundColor = color;
+    resultEl.classList.add('show');
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .credit-line { font-size: .8rem; opacity: .6; font-style: italic; margin-top: -0.5rem; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form select { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

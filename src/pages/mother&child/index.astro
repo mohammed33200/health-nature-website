@@ -1,0 +1,174 @@
+---
+// صفحة رئيسية لمجال "الأمومة والطفولة"
+// Domain hub page — Maternity & Pediatrics
+//
+// محتوى فقط، يُلَفّ داخل ToolsShell.astro الحالي، بنفس نمط ".tools-scope"
+// Content only — wraps in the existing ToolsShell.astro, same ".tools-scope" pattern.
+//
+// أضفت 3 أدوات مهمة غير موجودة في قائمتك الأصلية لأنها من أكثر حاسبات
+// هذا المجال استخدامًا في الممارسة والتطبيقات المشابهة (مؤشر بيشوب،
+// أبغار، منحنيات النمو). ضمّنتها ووسمتها NEW حتى تراجعها بسهولة.
+// Added 3 tools not in your original list because they're among the
+// most commonly used calculators in this domain (Bishop Score, APGAR,
+// WHO growth percentiles). Flagged as NEW for easy review.
+
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+
+const tools = [
+  { slug: "pregnancy-due-date", ar: "حاسبة موعد الولادة وأسابيع الحمل", en: "Pregnancy Due Date Calculator", note: "من آخر دورة شهرية" },
+  { slug: "ovulation", ar: "حاسبة أيام التبويض ونافذة الخصوبة", en: "Ovulation Calculator", note: "للتخطيط للحمل" },
+  { slug: "bishop-score", ar: "مؤشر بيشوب لجاهزية عنق الرحم للولادة", en: "Bishop Score", note: "تقييم مدى استعداد الرحم للمخاض المُحرَّض", credit: "Bishop Score", isNew: true },
+  { slug: "apgar-score", ar: "مقياس أبغار لتقييم المولود", en: "APGAR Score", note: "تقييم سريع لحالة الوليد بعد الدقيقة الأولى والخامسة", credit: "APGAR", isNew: true },
+  { slug: "pediatric-antipyretic-dosing", ar: "حاسبة جرعات مخفضات الحرارة للأطفال", en: "Pediatric Antipyretic Dosing", note: "باراسيتامول وإيبوبروفين حسب الوزن", dosing: true },
+  { slug: "growth-percentile", ar: "حاسبة منحنيات النمو للأطفال", en: "Growth Percentile Calculator", note: "الوزن والطول ومحيط الرأس حسب منحنيات WHO", credit: "WHO Growth Standards", isNew: true },
+  { slug: "lund-browder-burns", ar: "حاسبة مساحة الحروق للأطفال", en: "Pediatric Burn Surface Area", note: "نسبة الحرق مع تعديل حجم الرأس حسب العمر", credit: "Lund & Browder" },
+  { slug: "parkland-formula", ar: "حاسبة سوائل إنعاش الحروق", en: "Parkland Formula", note: "كمية المحاليل الوريدية خلال أول 24 ساعة", dosing: true, credit: "Parkland Formula" },
+];
+---
+
+
+<Layout title="أدوات الأمومة والطفولة">
+  <ToolsShell>
+    <section class="container domain-hub">
+      <header class="domain-hero">
+        <p class="eyebrow">
+          <span data-ar>مجال ١ من ٤</span>
+          <span data-en hidden>Domain 1 of 4</span>
+        </p>
+        <h1>
+          <span data-ar>الأمومة والطفولة</span>
+          <span data-en hidden>Maternity &amp; Pediatrics</span>
+        </h1>
+        <p class="lead">
+          <span data-ar>
+            أدوات تواكب الأم والطفل من التخطيط للحمل، إلى المتابعة أثناء الحمل
+            والولادة، وصولًا لتقييم نمو الطفل وحالات الطوارئ الشائعة لديه.
+            الفكرة المشتركة بين كل حاسبات هذا المجال: تحويل قياس بسيط (وزن،
+            عمر، تاريخ آخر دورة) إلى معلومة قابلة للفهم والتصرّف بها بأمان.
+          </span>
+          <span data-en hidden>
+            Tools that follow mother and child from conception planning,
+            through pregnancy and labor, to newborn assessment and common
+            pediatric emergencies. The shared idea across this domain: turn
+            one simple measurement (weight, age, last period date) into a
+            clear, actionable number.
+          </span>
+        </p>
+        <p class="audience">
+          <span data-ar>👥 لمن هذا المجال: الحوامل، الأمهات والآباء، ومقدّمو الرعاية الصحية للأطفال.</span>
+          <span data-en hidden>👥 Audience: expecting parents, mothers and fathers, and pediatric care providers.</span>
+        </p>
+      </header>
+
+      <ul class="tool-grid">
+        {tools.map((t) => (
+          <li class="tool-card">
+            <a href={`/mother&child/${t.slug}`}>
+              <span class="tool-name" data-ar set:html={t.ar} />
+              <span class="tool-name" data-en hidden set:html={t.en} />
+              <span class="tool-note" data-ar>{t.note}</span>
+              <span class="badges">
+                {t.isNew && <span class="badge badge-new">NEW</span>}
+                {t.dosing && (
+                  <span class="badge badge-dosing">
+                    <span data-ar>جرعات دوائية</span>
+                    <span data-en hidden>Dosing</span>
+                  </span>
+                )}
+                {t.credit && <span class="badge badge-credit">{t.credit}</span>}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="domain-disclaimer">
+        <span data-ar>
+          الأدوات المصنّفة "جرعات دوائية" مرجعية وتعليمية فقط لمقدّمي الرعاية الصحية، ولا تحل محل تقييم الطبيب أو الصيدلي لحالة كل طفل أو أم على حدة.
+        </span>
+        <span data-en hidden>
+          Tools tagged "Dosing" are for reference and educational use by healthcare providers only, and do not replace an individual clinical assessment.
+        </span>
+      </p>
+
+      <a class="back-to-index" href="/published-apps">
+        <span data-ar>← الرجوع للتطبيقات المنشورة</span>
+        <span data-en hidden>← Back to Published Apps</span>
+      </a>
+
+      <section class="info-section">
+        <h2 data-ar>لماذا تحتاج الأم والطفل إلى أدواتهم الخاصة؟</h2>
+        <h2 data-en hidden>Why Do Mothers and Children Need Their Own Tools?</h2>
+
+        <p data-ar>
+          في عالم الطب، لا يمكن التعامل مع جميع المرضى بنفس الطريقة. هذا المبدأ يبلغ أقصى درجات أهميته عند الحديث عن الأم الحامل والطفل. فكلتا الفئتين تمران بمراحل فسيولوجية فريدة ومتغيرة بسرعة، مما يجعل المقاييس والمعادلات الطبية القياسية غير مناسبة، بل وخطيرة في بعض الأحيان. من هنا، تنبع الحاجة الماسة إلى أدوات وحاسبات مصممة خصيصًا لتلبية احتياجاتهما الدقيقة.
+        </p>
+        <p data-en hidden>
+          In the world of medicine, not all patients can be treated the same way. This principle reaches its peak importance when discussing pregnant mothers and children. Both groups undergo unique and rapidly changing physiological stages, making standard medical scales and equations unsuitable, and sometimes even dangerous. Hence, the critical need for tools and calculators specifically designed to meet their precise needs.
+        </p>
+
+        <h3 data-ar>خصوصية الحمل: رحلة من التغيرات المستمرة</h3>
+        <h3 data-en hidden>The Uniqueness of Pregnancy: A Journey of Continuous Change</h3>
+        <p data-ar>
+          فترة الحمل ليست مجرد زيادة في الوزن، بل هي تحول شامل في جسم المرأة. يزداد حجم الدم، يتغير معدل ضربات القلب، وتتكيف وظائف الكلى والكبد لدعم حياة جديدة. لذلك، فإن حساب موعد الولادة المتوقع بدقة باستخدام أدوات مثل "حاسبة موعد الولادة" ليس مجرد رفاهية، بل هو حجر الزاوية لتنظيم جدول الفحوصات الدورية، متابعة نمو الجنين، وتحديد ما إذا كان الحمل يسير في مساره الطبيعي. كما أن أدوات مثل "مؤشر بيشوب" تساعد الأطباء على اتخاذ قرارات حاسمة بشأن تحريض المخاض، مما يقلل من المخاطر على الأم والجنين.
+        </p>
+        <p data-en hidden>
+          Pregnancy is not just about weight gain; it is a comprehensive transformation of a woman's body. Blood volume increases, heart rate changes, and kidney and liver functions adapt to support a new life. Therefore, accurately calculating the expected due date using tools like the "Pregnancy Due Date Calculator" is not a luxury but the cornerstone for scheduling regular check-ups, monitoring fetal growth, and determining if the pregnancy is on a normal track. Tools like the "Bishop Score" also help doctors make crucial decisions about labor induction, reducing risks for both mother and child.
+        </p>
+
+        <h3 data-ar>عالم الأطفال: حيث كل شهر يحدث فرقًا</h3>
+        <h3 data-en hidden>The World of Children: Where Every Month Makes a Difference</h3>
+        <p data-ar>
+          الطفل ليس "شخصًا بالغًا صغير الحجم". نسب جسمه مختلفة تمامًا (رأس أكبر، أطراف أقصر)، وقدرة أعضائه على معالجة الأدوية تتطور باستمرار. استخدام جرعة دواء للبالغين مع طفل قد يؤدي إلى تسمم قاتل. لهذا السبب، تعتمد "حاسبة جرعات مخفضات الحرارة" على الوزن لحساب الجرعة الآمنة والفعالة. وبالمثل، فإن تقييم حرق لدى طفل باستخدام "قاعدة التسعات" الخاصة بالبالغين سيعطي نتائج خاطئة، مما قد يؤدي إلى حساب غير دقيق لكمية السوائل اللازمة للإنعاش. أدوات مثل "مخطط لوند-براودر" مصممة خصيصًا لتأخذ في الاعتبار نسب جسم الطفل المتغيرة مع تقدمه في العمر.
+        </p>
+        <p data-en hidden>
+          A child is not a "small adult." Their body proportions are entirely different (a larger head, shorter limbs), and their organs' ability to process medications is constantly developing. Using an adult drug dosage for a child can lead to fatal toxicity. This is why the "Pediatric Antipyretic Dosing Calculator" relies on weight to calculate a safe and effective dose. Similarly, assessing a child's burn using the adult "Rule of Nines" will yield incorrect results, potentially leading to an inaccurate calculation of the fluids needed for resuscitation. Tools like the "Lund-Browder Chart" are specifically designed to account for a child's changing body proportions as they age.
+        </p>
+
+        <h3 data-ar>من التخطيط إلى الرعاية: أدوات لكل مرحلة</h3>
+        <h3 data-en hidden>From Planning to Care: Tools for Every Stage</h3>
+        <p data-ar>
+          تبدأ رحلة الأمومة حتى قبل الحمل. أدوات مثل "حاسبة التبويض" تساعد الأزواج على فهم نافذة الخصوبة لديهم، مما يزيد من فرص الحمل لمن يرغبون فيه. وبعد الولادة، يأتي دور أدوات مثل "مقياس أبغار" الذي يقدم تقييمًا سريعًا وحاسمًا لحالة المولود في الدقائق الأولى من حياته، مما يسمح بالتدخل الفوري إذا لزم الأمر. ومع نمو الطفل، تصبح "حاسبة منحنيات النمو" أداة لا غنى عنها للآباء والأطباء لمراقبة ما إذا كان الطفل ينمو بمعدل صحي مقارنة بأقرانه.
+        </p>
+        <p data-en hidden>
+          The journey of motherhood begins even before conception. Tools like the "Ovulation Calculator" help couples understand their fertile window, increasing the chances of pregnancy for those who desire it. After birth, tools like the "APGAR Score" provide a quick and crucial assessment of the newborn's condition in the first few minutes of life, allowing for immediate intervention if necessary. As the child grows, the "Growth Percentile Calculator" becomes an indispensable tool for parents and doctors to monitor whether the child is growing at a healthy rate compared to their peers.
+        </p>
+
+        <p data-ar>
+          في الختام، إن توفير مجموعة متخصصة من الأدوات للأمومة والطفولة ليس مجرد تحسين للخدمة، بل هو ضرورة طبية تضمن سلامة ورعاية أفضل لهذه الفئة الثمينة. كل حاسبة في هذا القسم مصممة بعناية لترجمة الأرقام والقياسات إلى معلومات واضحة وقابلة للتنفيذ، مما يمكّن الأمهات والآباء ومقدمي الرعاية من اتخاذ قرارات مستنيرة ومبنية على أسس علمية دقيقة.
+        </p>
+        <p data-en hidden>
+          In conclusion, providing a specialized set of tools for maternity and childhood is not just a service improvement but a medical necessity that ensures the safety and better care of this precious group. Each calculator in this section is carefully designed to translate numbers and measurements into clear, actionable information, empowering mothers, fathers, and caregivers to make informed decisions based on precise scientific foundations.
+        </p>
+      </section>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<style>
+  .domain-hub { padding-block: 2rem; }
+  .domain-hero { max-width: 46rem; margin: 0 auto 2rem; text-align: center; }
+  .eyebrow { letter-spacing: .04em; opacity: .7; font-size: .8rem; }
+  .domain-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .75rem; }
+  .domain-hero .lang-en { font-size: .7em; opacity: .65; font-weight: 500; }
+  .lead .lang-en { display: block; font-size: .85em; opacity: .7; margin-top: .6rem; }
+  .audience { margin-top: 1rem; font-size: .9rem; opacity: .85; }
+  .audience .lang-en { display: block; opacity: .65; margin-top: .2rem; }
+
+  .tool-grid { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .75rem; }
+  .tool-card a { display: block; padding: .85rem 1rem; border: 1px solid rgba(0,0,0,.12); border-radius: .6rem; text-decoration: none; height: 100%; }
+  .tool-name { display: block; }
+  .tool-name.lang-en { font-size: .8em; opacity: .6; margin-top: .1rem; }
+  .tool-note { display: block; font-size: .75rem; opacity: .6; margin-top: .4rem; }
+  .badges { display: block; margin-top: .5rem; }
+  .badge { display: inline-block; font-size: .65rem; margin-inline-end: .3rem; padding: .1rem .5rem; border-radius: 999px; }
+  .badge-new { background: rgba(30,110,200,.14); font-weight: 700; }
+  .badge-dosing { background: rgba(180,90,0,.12); }
+  .badge-credit { background: rgba(0,0,0,.06); font-style: italic; }
+  .badge .lang-en { font-size: .9em; opacity: .8; }
+
+  .domain-disclaimer { margin-top: 2rem; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .domain-disclaimer .lang-en { display: block; margin-top: .4rem; opacity: .8; }
+  .back-to-index { display: inline-block; margin-top: 1.5rem; font-size: .85rem; text-decoration: none; }
+</style>
