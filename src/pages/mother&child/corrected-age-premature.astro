@@ -1,0 +1,138 @@
+---
+// حاسبة العمر المصحح للخدج — Corrected Age for Premature Infants
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة العمر المصحح للخدج | Corrected Age for Premature Infants">
+  <ToolsShell>
+    <section class="tool-page container">
+      <header class="tool-hero">
+        <h1 data-i18n data-ar="حاسبة العمر المصحح للخدج" data-en="Corrected Age for Premature Infants">حاسبة العمر المصحح للخدج</h1>
+      </header>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="ما هي؟" data-en="What is it?">ما هي؟</h2>
+        <p data-i18n data-ar="تحسب 'العمر المصحح' للطفل الخديج — أي عمره لو كانت الولادة تمت في الموعد المتوقع (40 أسبوعًا) — بطرح عدد أسابيع الخداج من عمره الزمني الفعلي." data-en="Calculates a premature infant's 'corrected age' — the age they would be had they been born at full term (40 weeks) — by subtracting the weeks of prematurity from their actual chronological age.">تحسب "العمر المصحح" للطفل الخديج — أي عمره لو كانت الولادة تمت في الموعد المتوقع (40 أسبوعًا) — بطرح عدد أسابيع الخداج من عمره الزمني الفعلي.</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="لماذا تهم؟" data-en="Why it matters">لماذا تهم؟</h2>
+        <p data-i18n data-ar="مقارنة نمو الطفل الخديج بمنحنيات النمو القياسية أو معالم التطور (كالجلوس والمشي) باستخدام عمره الزمني فقط تعطي انطباعًا خاطئًا بالتأخر؛ العمر المصحح هو المقياس العادل حتى عمر سنتين تقريبًا." data-en="Comparing a premature infant's growth or developmental milestones (like sitting, walking) using chronological age alone gives a misleading impression of delay; corrected age is the fair measure until roughly age 2.">مقارنة نمو الطفل الخديج بمنحنيات النمو القياسية أو معالم التطور (كالجلوس والمشي) باستخدام عمره الزمني فقط تعطي انطباعًا خاطئًا بالتأخر؛ العمر المصحح هو المقياس العادل حتى عمر سنتين تقريبًا.</p>
+      </article>
+
+      <form class="calc-form" id="corrected-age-form">
+        <label>
+          <span data-i18n data-ar="تاريخ الميلاد الفعلي" data-en="Actual birth date">تاريخ الميلاد الفعلي</span>
+          <input type="date" id="birthDate" required />
+        </label>
+        <label>
+          <span data-i18n data-ar="عمر الحمل عند الولادة (أسابيع)" data-en="Gestational age at birth (weeks)">عمر الحمل عند الولادة (أسابيع)</span>
+          <input type="number" id="gestWeeks" min="22" max="40" required />
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-i18n data-ar="احسب" data-en="Calculate">احسب</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-i18n data-ar="العمر الزمني الفعلي: " data-en="Chronological age: ">العمر الزمني الفعلي: </span>
+          <strong id="chrono-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-i18n data-ar="درجة الخداج: " data-en="Prematurity: ">درجة الخداج: </span>
+          <strong id="premie-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-i18n data-ar="العمر المصحح: " data-en="Corrected age: ">العمر المصحح: </span>
+          <strong id="corrected-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="القياس الطبيعي / المرجع" data-en="Reference">القياس الطبيعي / المرجع</h2>
+        <ul class="ref-list">
+          <li data-i18n data-ar="يُستخدم العمر المصحح عادة حتى عمر 2–3 سنوات في متابعة النمو والتطور" data-en="Corrected age is typically used until age 2–3 years for growth and development tracking">يُستخدم العمر المصحح عادة حتى عمر 2–3 سنوات في متابعة النمو والتطور</li>
+          <li data-i18n data-ar="الحمل الكامل يُحسب من 37 إلى 40 أسبوعًا" data-en="Full term is considered 37–40 weeks">الحمل الكامل يُحسب من 37 إلى 40 أسبوعًا</li>
+        </ul>
+      </article>
+
+      <a class="back-link" href="/mother&child/">
+        <span data-i18n data-ar="← رجوع لمجال الأمومة والطفولة" data-en="← Back to Maternity & Pediatrics">← رجوع لمجال الأمومة والطفولة</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("corrected-age-form") as HTMLFormElement;
+  const resultDiv = document.getElementById("result") as HTMLElement;
+  const chronoOut = document.getElementById("chrono-out") as HTMLElement;
+  const premieOut = document.getElementById("premie-out") as HTMLElement;
+  const correctedOut = document.getElementById("corrected-out") as HTMLElement;
+
+  function formatWeeks(weeks: number, lang: string) {
+    if (lang === 'ar') {
+      if (weeks === 1) return 'أسبوع واحد';
+      if (weeks === 2) return 'أسبوعان';
+      if (weeks >= 3 && weeks <= 10) return `${weeks} أسابيع`;
+      return `${weeks} أسبوعًا`;
+    }
+    return `${weeks} ${weeks === 1 ? 'week' : 'weeks'}`;
+  }
+
+  function calculateAndDisplay() {
+      const birthDateVal = (document.getElementById("birthDate") as HTMLInputElement).value;
+      const gestWeeks = Number((document.getElementById("gestWeeks") as HTMLInputElement).value);
+      if (!birthDateVal || !gestWeeks) return;
+
+      const birthDate = new Date(birthDateVal);
+      const today = new Date();
+      const chronoDays = Math.floor((today.getTime() - birthDate.getTime()) / 86400000);
+      const chronoWeeks = Math.floor(chronoDays / 7);
+
+      const prematureWeeks = Math.max(0, 40 - gestWeeks);
+      const correctedDays = chronoDays - prematureWeeks * 7;
+      const correctedWeeks = Math.floor(Math.max(0, correctedDays) / 7);
+
+      const lang = document.documentElement.lang || 'ar';
+
+      chronoOut.textContent = formatWeeks(chronoWeeks, lang);
+      premieOut.textContent = lang === 'ar' ? `${formatWeeks(prematureWeeks, lang)} قبل الأوان` : `${formatWeeks(prematureWeeks, lang)} premature`;
+      
+      if (correctedDays >= 0) {
+        correctedOut.textContent = formatWeeks(correctedWeeks, lang);
+      } else {
+        correctedOut.textContent = lang === 'ar' ? 'لم يصل بعد لتاريخ الاستحقاق المتوقع' : 'Not yet at expected due date';
+      }
+
+      resultDiv.classList.add('show');
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    calculateAndDisplay();
+  });
+
+  window.addEventListener('languageChanged', () => {
+    if (resultDiv.classList.contains('show')) {
+      calculateAndDisplay();
+    }
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .note { font-size: .85rem; opacity: .8; color: var(--ink-soft); }
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

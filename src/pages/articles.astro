@@ -10,6 +10,25 @@ import Layout from '../layouts/Layout.astro';
 			<p class="lead" data-i18n data-en="Read trusted articles that explain health topics in clear Arabic and English." data-ar="اقرأ مقالات موثوقة تشرح المواضيع الصحية بوضوح بالعربية والإنجليزية.">اقرأ مقالات موثوقة تشرح المواضيع الصحية بوضوح بالعربية والإنجليزية.</p>
 		</section>
 
+		<section class="apps-listing">
+			<div class="app-cards">
+				<a class="app-card" href="/psychological-tests">
+					<img src="/icon/marriage-test-icon.png" alt="Psychological Tests for Couples" width="72" height="72" loading="lazy" />
+					<div>
+						<h3 data-i18n data-en="Psychological Tests for Couples" data-ar="اختبارات نفسية وسلوكية للمتزوجين">اختبارات نفسية وسلوكية للمتزوجين</h3>
+						<p data-i18n data-en="A collection of tests to help understand and improve marital relationships." data-ar="مجموعة اختبارات للمساعدة على فهم وتحسين العلاقة الزوجية.">مجموعة اختبارات للمساعدة على فهم وتحسين العلاقة الزوجية.</p>
+					</div>
+				</a>
+				<a class="app-card app-card--cta" href="/tests">
+					<img src="/icon/general-pysho-icon.png" alt="General Psycho Tests" width="72" height="72" loading="lazy" />
+					<div>
+						<h3 data-i18n data-en="General Psycho Tests" data-ar="الاختبارات النفسية العامة">الاختبارات النفسية العامة</h3>
+						<p data-i18n data-en="Browse all psychometric tests on the test index." data-ar="تصفح جميع الاختبارات النفسية في صفحة الاختبارات.">تصفح جميع الاختبارات النفسية في صفحة الاختبارات.</p>
+					</div>
+				</a>
+			</div>
+		</section>
+
 		<article class="featured-article">
 			<h2 data-i18n data-en="Integrity and Clarity: Crafting Medical Content Beyond Complexity and Superficiality" data-ar="الأمانة والوضوح: كيف نصيغ محتوانا الطبي بعيداً عن الغموض والسطحية؟">الأمانة والوضوح: كيف نصيغ محتوانا الطبي بعيداً عن الغموض والسطحية؟</h2>
 
@@ -107,6 +126,59 @@ import Layout from '../layouts/Layout.astro';
 		max-width: 640px;
 		margin-left: auto;
 		margin-right: auto;
+	}
+
+	.apps-listing {
+		margin-bottom: 32px;
+	}
+
+	.app-cards {
+		display: grid;
+		gap: 16px;
+	}
+
+	.app-card {
+		display: flex;
+		align-items: center;
+		gap: 18px;
+		padding: 18px 20px;
+		border-radius: 20px;
+		border: 1px solid rgba(56, 132, 81, 0.12);
+		background: rgba(255, 255, 255, 0.96);
+		box-shadow: 0 24px 60px rgba(15, 23, 42, 0.06);
+		text-decoration: none;
+		color: inherit;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	[dir='rtl'] .app-card {
+		flex-direction: row-reverse;
+		text-align: right;
+	}
+
+	.app-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+	}
+
+	.app-card img {
+		width: 72px;
+		height: 72px;
+		border-radius: 18px;
+		flex-shrink: 0;
+	}
+
+	.app-card h3 {
+		margin: 0 0 6px;
+		font-size: 1.15rem;
+		color: #134e39;
+	}
+
+	.app-card p {
+		margin: 0;
+		font-size: 0.95rem;
+		color: #475569;
+		line-height: 1.6;
 	}
 
 	.featured-article {

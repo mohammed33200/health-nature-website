@@ -1,0 +1,138 @@
+---
+// اختبار AUDIT-C لفحص إدمان الكحول — AUDIT-C
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+---
+
+<Layout title="اختبار AUDIT-C لفحص استخدام الكحول">
+  <ToolsShell>
+    <section class="container tool-page">
+      <header class="tool-hero">
+        <h1 data-i18n data-ar="اختبار AUDIT-C لفحص استخدام الكحول" data-en="AUDIT-C Alcohol Use Screen">اختبار AUDIT-C لفحص استخدام الكحول</h1>
+        <p class="credit-line">World Health Organization — derived from AUDIT (Babor et al., 1989)</p>
+      </header>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="ما هو؟" data-en="What is it?">ما هو؟</h2>
+        <p data-i18n data-ar="نسخة مختصرة من 3 أسئلة فقط لأداة منظمة الصحة العالمية لفحص أنماط استخدام الكحول، تركّز على التكرار والكمية وشرب الكميات الكبيرة دفعة واحدة." data-en="A brief 3-question version of the WHO's alcohol use screening tool, focusing on frequency, quantity, and binge drinking.">نسخة مختصرة من 3 أسئلة فقط لأداة منظمة الصحة العالمية لفحص أنماط استخدام الكحول، تركّز على التكرار والكمية وشرب الكميات الكبيرة دفعة واحدة.</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="لماذا يهم؟" data-en="Why it matters">لماذا يهم؟</h2>
+        <p data-i18n data-ar="فحص سريع يمكن إجراؤه في أي زيارة طبية روتينية للكشف المبكر عن أنماط شرب قد تحتاج محادثة أو تدخل، قبل تطور مشاكل صحية أو اجتماعية أكبر." data-en="A quick screen that can be done at any routine medical visit to catch drinking patterns early that may warrant a conversation or intervention, before larger health or social problems develop.">فحص سريع يمكن إجراؤه في أي زيارة طبية روتينية للكشف المبكر عن أنماط شرب قد تحتاج محادثة أو تدخل، قبل تطور مشاكل صحية أو اجتماعية أكبر.</p>
+      </article>
+
+      <form class="calc-form" id="auditc-form">
+        <label>
+          <span data-i18n data-ar="كم مرة تشرب مشروبًا يحتوي على كحول؟" data-en="How often do you have a drink containing alcohol?">كم مرة تشرب مشروبًا يحتوي على كحول؟</span>
+          <select id="q1">
+            <option value="0" data-i18n data-ar="أبدًا" data-en="Never">أبدًا</option>
+            <option value="1" data-i18n data-ar="مرة أو أقل شهريًا" data-en="Monthly or less">مرة أو أقل شهريًا</option>
+            <option value="2" data-i18n data-ar="2–4 مرات شهريًا" data-en="2–4 times a month">2–4 مرات شهريًا</option>
+            <option value="3" data-i18n data-ar="2–3 مرات أسبوعيًا" data-en="2–3 times a week">2–3 مرات أسبوعيًا</option>
+            <option value="4" data-i18n data-ar="4 مرات فأكثر أسبوعيًا" data-en="4+ times a week">4 مرات فأكثر أسبوعيًا</option>
+          </select>
+        </label>
+        <label>
+          <span data-i18n data-ar="كم مشروبًا تشرب في اليوم النموذجي الذي تشرب فيه؟" data-en="How many drinks on a typical drinking day?">كم مشروبًا تشرب في اليوم النموذجي الذي تشرب فيه؟</span>
+          <select id="q2">
+            <option value="0">1–2</option>
+            <option value="1">3–4</option>
+            <option value="2">5–6</option>
+            <option value="3">7–9</option>
+            <option value="4" data-i18n data-ar="10 فأكثر" data-en="10 or more">10 فأكثر</option>
+          </select>
+        </label>
+        <label>
+          <span data-i18n data-ar="كم مرة تشرب 6 مشروبات أو أكثر في مناسبة واحدة؟" data-en="How often do you have 6+ drinks on one occasion?">كم مرة تشرب 6 مشروبات أو أكثر في مناسبة واحدة؟</span>
+          <select id="q3">
+            <option value="0" data-i18n data-ar="أبدًا" data-en="Never">أبدًا</option>
+            <option value="1" data-i18n data-ar="أقل من شهريًا" data-en="Less than monthly">أقل من شهريًا</option>
+            <option value="2" data-i18n data-ar="شهريًا" data-en="Monthly">شهريًا</option>
+            <option value="3" data-i18n data-ar="أسبوعيًا" data-en="Weekly">أسبوعيًا</option>
+            <option value="4" data-i18n data-ar="يوميًا أو شبه يومي" data-en="Daily or almost daily">يوميًا أو شبه يومي</option>
+          </select>
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-i18n data-ar="احسب" data-en="Calculate">احسب</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-i18n data-ar="المجموع: " data-en="Score: ">المجموع: </span>
+          <strong id="score-out" class="reading"></strong> / 12
+        </p>
+        <p>
+          <span data-i18n data-ar="التفسير: " data-en="Interpretation: ">التفسير: </span>
+          <strong id="interp-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="القياس الطبيعي / التفسير" data-en="Reference interpretation">القياس الطبيعي / التفسير</h2>
+        <ul class="ref-list">
+          <li data-i18n data-ar="الرجال: 4 فأكثر — فحص إيجابي يستدعي محادثة أعمق" data-en="Men: ≥4 — positive screen, warrants a deeper conversation">الرجال: 4 فأكثر — فحص إيجابي يستدعي محادثة أعمق</li>
+          <li data-i18n data-ar="النساء: 3 فأكثر — فحص إيجابي يستدعي محادثة أعمق" data-en="Women: ≥3 — positive screen, warrants a deeper conversation">النساء: 3 فأكثر — فحص إيجابي يستدعي محادثة أعمق</li>
+        </ul>
+      </article>
+
+      <p class="note-sensitive" data-i18n data-ar="هذا فحص أولي وليس تشخيصًا. إذا كانت النتيجة تشغل بالك، التحدث مع طبيب مختص هو أفضل خطوة تالية." data-en="This is a screening tool, not a diagnosis. If the result concerns you, speaking with a healthcare professional is the best next step.">هذا فحص أولي وليس تشخيصًا. إذا كانت النتيجة تشغل بالك، التحدث مع طبيب مختص هو أفضل خطوة تالية.</p>
+
+      <TestsNav current="audit-c" />
+      <MedicalDisclaimer />
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("auditc-form") as HTMLFormElement;
+  const resultDiv = document.getElementById("result") as HTMLElement;
+  const scoreOut = document.getElementById("score-out") as HTMLElement;
+  const interpOut = document.getElementById("interp-out") as HTMLElement;
+  const ids = ["q1", "q2", "q3"];
+
+  function calculateAndDisplay() {
+      const total = ids.reduce((sum, id) => sum + Number((document.getElementById(id) as HTMLSelectElement).value), 0);
+      const lang = document.documentElement.lang || 'ar';
+
+      const interp = {
+        ar: total >= 3 ? "فحص إيجابي (استخدم 3+ للنساء، 4+ للرجال كحد فاصل)" : "فحص سلبي غالبًا",
+        en: total >= 3 ? "Positive screen (cutoff 3+ for women, 4+ for men)" : "Likely negative screen"
+      };
+
+      scoreOut.textContent = String(total);
+      interpOut.textContent = interp[lang];
+      resultDiv.classList.add('show');
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    calculateAndDisplay();
+  });
+
+  window.addEventListener('languageChanged', () => {
+    if (resultDiv.classList.contains('show')) {
+      calculateAndDisplay();
+    }
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form select { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+
+  .note-sensitive { font-size: .85rem; opacity: .8; margin-bottom: 1.5rem; padding: .9rem 1.1rem; border-inline-start: 3px solid var(--ink-soft); color: var(--ink-soft); }
+</style>

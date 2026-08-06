@@ -1,0 +1,111 @@
+---
+// اختبار SCOFF لفحص اضطرابات الأكل — SCOFF
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import TestsNav from '../../components/TestsNav.astro';
+import MedicalDisclaimer from '../../components/MedicalDisclaimer.astro';
+---
+
+<Layout title="اختبار SCOFF لفحص اضطرابات الأكل">
+  <ToolsShell>
+    <section class="container tool-page">
+      <header class="tool-hero">
+        <h1 data-i18n data-ar="اختبار SCOFF لفحص اضطرابات الأكل" data-en="SCOFF Screening Tool">اختبار SCOFF لفحص اضطرابات الأكل</h1>
+        <p class="credit-line">Morgan, Reid &amp; Lacey, BMJ 1999</p>
+      </header>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="ما هو؟" data-en="What is it?">ما هو؟</h2>
+        <p data-i18n data-ar="فحص أولي من 5 أسئلة بنعم/لا فقط، يساعد على تحديد من قد يستفيد من تقييم متخصص لاضطرابات الأكل." data-en="A brief 5-question yes/no screen that helps identify who might benefit from a specialist eating disorder assessment.">فحص أولي من 5 أسئلة بنعم/لا فقط، يساعد على تحديد من قد يستفيد من تقييم متخصص لاضطرابات الأكل.</p>
+      </article>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="لماذا يهم؟" data-en="Why it matters">لماذا يهم؟</h2>
+        <p data-i18n data-ar="اضطرابات الأكل كثيرًا ما تُكتشف متأخرًا؛ فحص سريع وبسيط في العيادة العامة يفتح الباب لمحادثة مبكرة وتحويل لأخصائي عند الحاجة." data-en="Eating disorders are often caught late; a quick, simple screen in general practice opens the door to an early conversation and specialist referral when needed.">اضطرابات الأكل كثيرًا ما تُكتشف متأخرًا؛ فحص سريع وبسيط في العيادة العامة يفتح الباب لمحادثة مبكرة وتحويل لأخصائي عند الحاجة.</p>
+      </article>
+
+      <form class="calc-form" id="scoff-form">
+        <label class="checkbox-label"><input type="checkbox" id="sick" /> <span data-i18n data-ar="هل تجعل نفسك تتقيأ لأنك تشعر بامتلاء غير مريح؟ (S)" data-en="Do you make yourself Sick because you feel uncomfortably full? (S)">هل تجعل نفسك تتقيأ لأنك تشعر بامتلاء غير مريح؟ (S)</span></label>
+        <label class="checkbox-label"><input type="checkbox" id="control" /> <span data-i18n data-ar="هل تقلق أنك فقدت السيطرة على كمية أكلك؟ (C)" data-en="Do you worry you've lost Control over how much you eat? (C)">هل تقلق أنك فقدت السيطرة على كمية أكلك؟ (C)</span></label>
+        <label class="checkbox-label"><input type="checkbox" id="stone" /> <span data-i18n data-ar="هل فقدت أكثر من 6 كجم في آخر 3 أشهر؟ (O)" data-en="Have you recently lost more than 6kg (One stone) in a 3-month period? (O)">هل فقدت أكثر من 6 كجم في آخر 3 أشهر؟ (O)</span></label>
+        <label class="checkbox-label"><input type="checkbox" id="fat" /> <span data-i18n data-ar="هل تعتقد أنك سمين رغم أن الآخرين يقولون إنك نحيف جدًا؟ (F)" data-en="Do you believe yourself to be Fat when others say you're too thin? (F)">هل تعتقد أنك سمين رغم أن الآخرين يقولون إنك نحيف جدًا؟ (F)</span></label>
+        <label class="checkbox-label"><input type="checkbox" id="food" /> <span data-i18n data-ar="هل يسيطر الطعام على حياتك؟ (F)" data-en="Would you say Food dominates your life? (F)">هل يسيطر الطعام على حياتك؟ (F)</span></label>
+        <button type="submit" class="btn-calc">
+          <span data-i18n data-ar="احسب" data-en="Calculate">احسب</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-i18n data-ar='عدد إجابات "نعم": ' data-en='Number of "yes" answers: '>عدد إجابات "نعم": </span>
+          <strong id="score-out" class="reading"></strong> / 5
+        </p>
+        <p>
+          <span data-i18n data-ar="التفسير: " data-en="Interpretation: ">التفسير: </span>
+          <strong id="interp-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2 data-i18n data-ar="القياس الطبيعي / التفسير" data-en="Reference interpretation">القياس الطبيعي / التفسير</h2>
+        <ul class="ref-list">
+          <li data-i18n data-ar='إجابتان "نعم" أو أكثر: يستدعي تقييمًا متخصصًا لاضطرابات الأكل' data-en='2 or more "yes" answers: warrants a specialist eating disorder assessment'>إجابتان "نعم" أو أكثر: يستدعي تقييمًا متخصصًا لاضطرابات الأكل</li>
+        </ul>
+      </article>
+
+      <p class="note-sensitive" data-i18n data-ar="هذا فحص أولي وليس تشخيصًا. إذا كانت النتيجة تشغل بالك أو تشغل بال شخص تعرفه، التحدث مع طبيب أو أخصائي مختص هو أفضل خطوة تالية. في الولايات المتحدة، يمكن التواصل مع National Alliance for Eating Disorders على خط المساعدة الخاص بهم." data-en="This is a screening tool, not a diagnosis. If this result concerns you or someone you know, speaking with a doctor or specialist is the best next step. In the US, the National Alliance for Eating Disorders helpline is available for support.">هذا فحص أولي وليس تشخيصًا. إذا كانت النتيجة تشغل بالك أو تشغل بال شخص تعرفه، التحدث مع طبيب أو أخصائي مختص هو أفضل خطوة تالية. في الولايات المتحدة، يمكن التواصل مع National Alliance for Eating Disorders على خط المساعدة الخاص بهم.</p>
+
+      <TestsNav current="scoff" />
+      <MedicalDisclaimer />
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("scoff-form") as HTMLFormElement;
+  const resultDiv = document.getElementById("result") as HTMLElement;
+  const scoreOut = document.getElementById("score-out") as HTMLElement;
+  const interpOut = document.getElementById("interp-out") as HTMLElement;
+  const ids = ["sick", "control", "stone", "fat", "food"];
+
+  function calculateAndDisplay() {
+      const total = ids.reduce((sum, id) => sum + ((document.getElementById(id) as HTMLInputElement).checked ? 1 : 0), 0);
+      const lang = document.documentElement.lang || 'ar';
+
+      const interp = {
+        ar: total >= 2 ? "يستدعي تقييمًا متخصصًا" : "أقل احتمالًا لوجود اضطراب أكل",
+        en: total >= 2 ? "Warrants specialist assessment" : "Lower likelihood of an eating disorder"
+      };
+
+      scoreOut.textContent = String(total);
+      interpOut.textContent = interp[lang];
+      resultDiv.classList.add('show');
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    calculateAndDisplay();
+  });
+
+  window.addEventListener('languageChanged', () => {
+    if (resultDiv.classList.contains('show')) {
+      calculateAndDisplay();
+    }
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+
+  .calc-form { display: grid; gap: .75rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .checkbox-label { display: flex; align-items: center; gap: .5rem; font-size: .9rem; }
+  .calc-form button { justify-self: start; margin-top: .5rem; }
+
+  .note-sensitive { font-size: .85rem; opacity: .8; margin-bottom: 1.5rem; padding: .9rem 1.1rem; border-inline-start: 3px solid var(--ink-soft); color: var(--ink-soft); }
+</style>
