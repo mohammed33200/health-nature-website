@@ -1,0 +1,117 @@
+---
+// حاسبة الماكروز من السعرات — Calories to Macros
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الماكروز من السعرات">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة الماكروز من السعرات</span>
+          <span data-en>Calories to Macros</span>
+        </h1>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحوّل السعرات اليومية المستهدفة إلى جرامات فعلية من البروتين والكربوهيدرات والدهون، حسب نوع الحمية المختارة (عالية البروتين، كيتو، متوازنة).</span>
+          <span data-en>Converts a target daily calorie count into actual grams of protein, carbs, and fat, based on the chosen diet type (high-protein, keto, balanced).</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>معرفة "2000 سعرة" لا تكفي للتسوق أو التخطيط للوجبات؛ تحويلها لجرامات محددة يجعل تطبيق النظام الغذائي عمليًا وقابلًا للتنفيذ اليومي.</span>
+          <span data-en>Knowing "2000 calories" isn't enough for shopping or meal planning; converting it to specific grams makes the diet practical and executable day to day.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="c2m-form">
+        <label>
+          <span data-ar>السعرات اليومية المستهدفة</span><span data-en>Target daily calories</span>
+          <input type="number" id="calories" min="800" max="6000" required />
+        </label>
+        <label>
+          <span data-ar>نوع الحمية</span><span data-en>Diet type</span>
+          <select id="dietType">
+            <option value="40,40,20">عالية البروتين / High protein (40/40/20)</option>
+            <option value="30,40,30">متوازنة / Balanced (30/40/30)</option>
+            <option value="25,45,30">منخفضة الدهون / Low fat (25/45/30)</option>
+            <option value="25,5,70">كيتو / Keto (25/5/70)</option>
+          </select>
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>البروتين: </span><strong id="protein-out"></strong>
+        </p>
+        <p class="result-line">
+          <span data-ar>الكربوهيدرات: </span><strong id="carbs-out"></strong>
+        </p>
+        <p class="result-line">
+          <span data-ar>الدهون: </span><strong id="fat-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>المعادلة</span><span data-en>Formula</span></h2>
+        <p class="formula">Protein/Carb grams = (Calories × %) / 4 &nbsp;|&nbsp; Fat grams = (Calories × %) / 9</p>
+      </article>
+
+      <a class="back-link" href="/fittness/">
+        <span data-ar>← رجوع لمجال اللياقة المتقدمة</span>
+        <span data-en>← Back to Advanced Fitness</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("c2m-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const calories = Number((document.getElementById("calories") as HTMLInputElement).value);
+    const dietType = (document.getElementById("dietType") as HTMLSelectElement).value;
+    if (!calories) return;
+
+    const [proteinPct, carbsPct, fatPct] = dietType.split(",").map(Number);
+    const proteinG = (calories * (proteinPct / 100)) / 4;
+    const carbsG = (calories * (carbsPct / 100)) / 4;
+    const fatG = (calories * (fatPct / 100)) / 9;
+
+    (document.getElementById("protein-out") as HTMLElement).textContent = `${proteinG.toFixed(0)} g (${proteinPct}%)`;
+    (document.getElementById("carbs-out") as HTMLElement).textContent = `${carbsG.toFixed(0)} g (${carbsPct}%)`;
+    (document.getElementById("fat-out") as HTMLElement).textContent = `${fatG.toFixed(0)} g (${fatPct}%)`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .8rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

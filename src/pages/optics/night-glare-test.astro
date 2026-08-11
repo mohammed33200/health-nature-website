@@ -1,0 +1,134 @@
+---
+// اختبار الوهج والرؤية الليلية (Night Glare Test)
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Night Glare Test">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>اختبار الوهج والرؤية الليلية</span>
+        <span data-en>Night Glare & Driving Vision Test</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>يحاكي هذا الاختبار تأثير أضواء السيارات المقابلة أثناء القيادة ليلاً، ويقيس مدى قدرتك على تمييز أشكال باهتة رغم وجود مصدر ضوء مباشر وقوي في مجال رؤيتك.</span>
+        <span data-en>This test simulates the effect of oncoming headlights while driving at night, measuring how well you can make out faint shapes despite a strong direct light source in your field of view.</span>
+      </p>
+    </div>
+
+    <div class="calc-card">
+      <ol class="steps">
+        <li><span data-ar>يُفضّل إجراء هذا الاختبار في غرفة معتمة أو خافتة الإضاءة.</span><span data-en>This test is best done in a dark or dimly lit room.</span></li>
+        <li><span data-ar>ارفع سطوع شاشتك إلى المستوى المعتاد الذي تستخدمه ليلاً.</span><span data-en>Set your screen to the brightness you'd normally use at night.</span></li>
+        <li><span data-ar>انظر إلى اللوحة أدناه، واضغط على آخر حرف لا يزال بإمكانك تمييزه رغم وهج الضوء.</span><span data-en>Look at the panel below and tap the last letter you can still make out despite the glare.</span></li>
+      </ol>
+
+      <div class="glare-stage">
+        <div class="glare-source" aria-hidden="true"></div>
+        <div id="glareLetters" class="glare-letters"></div>
+      </div>
+
+      <div class="result" id="glareResultBox">
+        <p class="reading" id="glareResultTitle"></p>
+        <span class="badge" id="glareResultBadge"></span>
+        <p id="glareResultText"></p>
+        <button type="button" class="btn-ghost" id="glareRetry" style="margin-top:10px;">
+          <span data-ar>إعادة الاختبار</span><span data-en>Retry</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>لماذا تحدث صعوبة الرؤية عند الوهج؟</span><span data-en>Why does glare make vision harder?</span></h2>
+      <p>
+        <span data-ar>يحدث الوهج عندما يتشتت الضوء داخل العين بدلاً من التركيز على الشبكية بشكل نظيف، غالباً بسبب عدم انتظام في سطح القرنية، أو بدايات الساد، أو حتى بصمات وخدوش على النظارة.</span>
+        <span data-en>Glare happens when light scatters inside the eye instead of focusing cleanly on the retina — often due to an irregular corneal surface, early cataracts, or even smudges and scratches on your glasses.</span>
+      </p>
+      <h2><span data-ar>نصائح لتقليل إزعاج الوهج الليلي</span><span data-en>Tips to reduce night glare discomfort</span></h2>
+      <p>
+        <span data-ar>تأكد من نظافة عدسات نظارتك وخلوها من الخدوش، اسأل أخصائي البصريات عن طلاء مضاد للانعكاس، وتجنّب النظر المباشر لأضواء السيارات المقابلة قدر الإمكان.</span>
+        <span data-en>Keep your glasses clean and scratch-free, ask your optometrist about an anti-reflective coating, and avoid looking directly at oncoming headlights when possible.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذا الاختبار تقريبي ويتأثر بنوع شاشتك وسطوعها
+        وإضاءة الغرفة المحيطة، وليس نتيجة نهائية. الصعوبة الملحوظة والمستمرة في القيادة
+        الليلية تستدعي فحصاً شاملاً لدى طبيب عيون.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This test is approximate and affected by your screen type,
+        brightness, and room lighting — it is not a final result. Noticeable, persistent
+        difficulty with night driving warrants a comprehensive exam with an eye doctor.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  // رموز عالمية موحّدة لكلا اللغتين (حروف Sloan المستخدمة عالمياً في لوحات فحص النظر)
+  const letters = ['R', 'H', 'K', 'N', 'C', 'Z', 'D', 'O'];
+  const opacities = [0.9, 0.7, 0.5, 0.36, 0.24, 0.15, 0.09, 0.05];
+
+  const container = document.getElementById('glareLetters');
+  const box = document.getElementById('glareResultBox');
+  const title = document.getElementById('glareResultTitle');
+  const badge = document.getElementById('glareResultBadge');
+  const text = document.getElementById('glareResultText');
+  const retryBtn = document.getElementById('glareRetry');
+
+  function render() {
+    if (!container) return;
+    container.innerHTML = '';
+    box.classList.remove('show');
+    letters.forEach((letter, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'glare-letter-btn';
+      btn.style.color = `rgba(255,255,255,${opacities[i]})`;
+      btn.textContent = letter;
+      btn.addEventListener('click', () => showResult(i + 1));
+      container.appendChild(btn);
+    });
+  }
+
+  function showResult(level) {
+    const lang = getLang();
+    let cls, badgeText, resultTitle, resultText;
+    if (level >= 6) {
+      cls = 'badge-ok'; badgeText = { ar: 'جيد', en: 'Good' };
+      resultTitle = { ar: 'تحمّل جيد للوهج', en: 'Good glare tolerance' };
+      resultText = { ar: 'استطعت تمييز حروف باهتة جداً رغم مصدر الضوء القوي — مؤشر جيد. الفحص الدوري لدى طبيب عيون يبقى الوسيلة الدقيقة لتأكيد ذلك.', en: 'You could make out very faint letters despite the strong light source — a good sign. Regular exams with an eye doctor remain the accurate way to confirm this.' };
+    } else if (level >= 3) {
+      cls = 'badge-warn'; badgeText = { ar: 'متوسط', en: 'Moderate' };
+      resultTitle = { ar: 'تأثر متوسط بالوهج', en: 'Moderate glare sensitivity' };
+      resultText = { ar: 'يبدو أن الوهج يؤثر بشكل ملحوظ على قدرتك على تمييز التفاصيل الباهتة. تأكد من نظافة نظارتك، وإن استمر الأمر خصوصاً أثناء القيادة الليلية، يُفضّل استشارة طبيب عيون.', en: 'Glare appears to noticeably affect your ability to make out faint details. Keep your glasses clean, and if this persists especially while night driving, consult an eye doctor.' };
+    } else {
+      cls = 'badge-danger'; badgeText = { ar: 'مرتفع', en: 'High' };
+      resultTitle = { ar: 'حساسية عالية للوهج', en: 'High glare sensitivity' };
+      resultText = { ar: 'صعوبة واضحة في تمييز الأشكال بوجود الوهج قد ترتبط بأسباب مثل بدايات الساد أو خدوش القرنية أو النظارة. يُنصح بفحص شامل لدى طبيب عيون، خاصة إن كنت تعاني صعوبة حقيقية في القيادة ليلاً.', en: 'Clear difficulty making out shapes under glare may relate to causes like early cataracts or scratches on the cornea or glasses. A comprehensive eye exam is recommended, especially if you have real trouble driving at night.' };
+    }
+    badge.className = 'badge ' + cls;
+    badge.textContent = t(lang, badgeText);
+    title.textContent = t(lang, resultTitle);
+    text.textContent = t(lang, resultText);
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  retryBtn?.addEventListener('click', render);
+  window.addEventListener('languageChanged', render);
+  render();
+</script>

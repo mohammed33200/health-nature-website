@@ -1,0 +1,109 @@
+---
+// حاسبة السعرات المحروقة أثناء النوم — Sleep Calorie Burn
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة السعرات المحروقة أثناء النوم">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة السعرات المحروقة أثناء النوم</span>
+      <span data-en dir="ltr">Sleep Calorie Burn</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تقدّر عدد السعرات التي يحرقها جسمك أثناء النوم، بفعل الأيض الأساسي (BMR) الذي يستمر حتى في حالة الراحة الكاملة.</span>
+      <span data-en dir="ltr">Estimates the calories your body burns during sleep, from basal metabolic rate (BMR) that continues even at complete rest.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>تساعد على إدراك أن النوم ليس "فترة صفرية" في استهلاك الطاقة، بل جزء فعّال من الأيض اليومي، مما يعزز تقدير النوم الكافي كجزء من إدارة الوزن.</span>
+      <span data-en dir="ltr">Helps make clear that sleep isn't a "zero-energy" period — it's an active part of daily metabolism, reinforcing the value of adequate sleep as part of weight management.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="sleep-form">
+    <label>
+      <span data-ar>الوزن (كجم)</span><span data-en dir="ltr">Weight (kg)</span>
+      <input type="number" id="weight" min="30" max="200" step="0.1" required />
+    </label>
+    <label>
+      <span data-ar>ساعات النوم</span><span data-en dir="ltr">Sleep hours</span>
+      <input type="number" id="hours" min="1" max="14" step="0.5" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>السعرات المحروقة أثناء النوم: </span><span data-en dir="ltr">Calories burned during sleep: </span>
+      <strong id="calories-out"></strong> kcal
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en dir="ltr">Formula &amp; reference</span></h2>
+    <p class="formula">Calories ≈ Weight (kg) × 0.95 × Sleep hours</p>
+    <p class="note">
+      <span data-ar>يعتمد على تقدير تقريبي أن معدل الأيض أثناء النوم قريب من BMR الطبيعي (حوالي 0.95 مرة منه بسبب انخفاض بسيط في النشاط الأيضي أثناء النوم العميق).</span>
+      <span data-en dir="ltr">Based on the approximation that sleeping metabolic rate is close to normal BMR (roughly 0.95× it, due to a slight metabolic dip during deep sleep).</span>
+    </p>
+  </article>
+
+  <a class="back-link" href="/fittness/">
+    <span data-ar>← رجوع لمجال اللياقة</span>
+    <span data-en dir="ltr">← Back to Fitness</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("sleep-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    const hours = Number((document.getElementById("hours") as HTMLInputElement).value);
+    if (!weight || !hours) return;
+
+    const calories = weight * 0.95 * hours;
+    (document.getElementById("calories-out") as HTMLElement).textContent = calories.toFixed(0);
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; margin-bottom: .75rem; }
+  .note { font-size: .85rem; opacity: .75; }
+  .note [data-en] { display: block; margin-top: .2rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

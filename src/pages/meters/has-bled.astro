@@ -1,0 +1,117 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ToolsShell from "../../layouts/ToolsShell.astro";
+// حاسبة خطر النزيف — HAS-BLED
+---
+
+<Layout title="حاسبة خطر النزيف">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة خطر النزيف</span>
+      <span data-en dir="ltr">HAS-BLED Score</span>
+    </h1>
+    <p class="credit-line">Pisters et al., 2010</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تقدّر خطر النزيف السنوي لدى مرضى الرجفان الأذيني الذين يتناولون أو يخططون لتناول مضادات التجلط الفموية، عبر 7 عوامل خطر.</span>
+      <span data-en dir="ltr">Estimates the annual bleeding risk in atrial fibrillation patients taking or planning to take oral anticoagulants, based on 7 risk factors.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>تُستخدم إلى جانب CHA2DS2-VASc لتحقيق التوازن بين خطر السكتة الدماغية وخطر النزيف عند اتخاذ قرار مضادات التجلط، ولإبراز العوامل القابلة للتعديل (كضغط الدم غير المضبوط) قبل بدء العلاج.</span>
+      <span data-en dir="ltr">Used alongside CHA2DS2-VASc to balance stroke risk against bleeding risk when deciding on anticoagulation, and to highlight modifiable factors (like uncontrolled blood pressure) before starting treatment.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="hasbled-form">
+    <label class="checkbox-label"><input type="checkbox" id="htn" /> <span data-ar>ارتفاع ضغط الدم غير مضبوط (انقباضي &gt;160) (1)</span><span data-en dir="ltr">Uncontrolled hypertension (SBP &gt;160) (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="renal" /> <span data-ar>خلل كلوي (غسيل/زرع/كرياتينين مرتفع) (1)</span><span data-en dir="ltr">Abnormal renal function (dialysis/transplant/high creatinine) (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="liver" /> <span data-ar>خلل كبدي (تليف/بيليروبين مرتفع) (1)</span><span data-en dir="ltr">Abnormal liver function (cirrhosis/high bilirubin) (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="stroke" /> <span data-ar>سكتة دماغية سابقة (1)</span><span data-en dir="ltr">Prior stroke (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="bleeding" /> <span data-ar>تاريخ نزيف أو استعداد للنزيف (1)</span><span data-en dir="ltr">Bleeding history or predisposition (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="labile" /> <span data-ar>INR غير مستقر (لمن يتناول وارفارين) (1)</span><span data-en dir="ltr">Labile INR (if on warfarin) (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="elderly" /> <span data-ar>العمر &gt; 65 (1)</span><span data-en dir="ltr">Age &gt;65 (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="drugs" /> <span data-ar>أدوية مرافقة (مضادات صفائح/مضادات التهاب) (1)</span><span data-en dir="ltr">Concurrent drugs (antiplatelets/NSAIDs) (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="alcohol" /> <span data-ar>إدمان كحول (1)</span><span data-en dir="ltr">Alcohol excess (1)</span></label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>المجموع: </span><span data-en dir="ltr">Score: </span>
+      <strong id="score-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>التفسير: </span><span data-en dir="ltr">Interpretation: </span>
+      <strong id="interp-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / التفسير</span><span data-en dir="ltr">Reference interpretation</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>0–2: خطر نزيف منخفض إلى متوسط</span><span data-en dir="ltr">0–2: low to moderate bleeding risk</span></li>
+      <li><span data-ar>≥3: خطر نزيف مرتفع — يستدعي مراقبة أدق ومعالجة العوامل القابلة للتعديل، وليس بالضرورة إيقاف مضادات التجلط</span><span data-en dir="ltr">≥3: high bleeding risk — warrants closer monitoring and addressing modifiable factors, not necessarily stopping anticoagulation</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/meters/">
+    <span data-ar>← رجوع لمجال المؤشرات التقييمية</span>
+    <span data-en dir="ltr">← Back to Assessment &amp; Risk Indices</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("hasbled-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ids = ["htn", "renal", "liver", "stroke", "bleeding", "labile", "elderly", "drugs", "alcohol"];
+    const total = ids.reduce((sum, id) => sum + ((document.getElementById(id) as HTMLInputElement).checked ? 1 : 0), 0);
+
+    const interpAr = total >= 3 ? "خطر نزيف مرتفع" : "خطر نزيف منخفض إلى متوسط";
+    const interpEn = total >= 3 ? "High bleeding risk" : "Low to moderate bleeding risk";
+
+    (document.getElementById("score-out") as HTMLElement).textContent = String(total);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: .75rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .checkbox-label { display: flex; align-items: center; gap: .5rem; font-size: .9rem; }
+  .checkbox-label [data-en] { opacity: .6; font-size: .85em; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; margin-top: .5rem; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

@@ -245,7 +245,7 @@ function renderQuestions(){
     window.scrollTo({top:0, behavior:'smooth'});
   }
 
-  (window as any).resetQuiz = function(){
+  window.resetQuiz = function(){
     answers = {};
     resultSection.style.display = 'none';
     introSection.style.display = 'block';

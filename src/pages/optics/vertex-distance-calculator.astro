@@ -1,0 +1,137 @@
+---
+// حاسبة تحويل مقاس النظارة إلى عدسة لاصقة (Vertex Distance Compensation)
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Vertex Distance Calculator">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>حاسبة تحويل مقاس النظارة إلى عدسة لاصقة</span>
+        <span data-en>Spectacle-to-Contact-Lens Power Calculator</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>عند الانتقال من النظارة إلى العدسات اللاصقة، تتغيّر قوة العدسة الفعّالة بسبب اختلاف بُعد القمة. هذه الحاسبة تطبّق المعادلة الفيزيائية القياسية لحساب القوة المكافئة.</span>
+        <span data-en>When switching from glasses to contact lenses, the effective lens power changes due to the different vertex distance. This calculator applies the standard physics formula to compute the equivalent power.</span>
+      </p>
+    </div>
+
+    <div class="calc-card">
+      <ol class="steps">
+        <li><span data-ar>أدخل قوة الكرة (Sphere) كما هي مكتوبة في وصفة نظارتك بالضبط.</span><span data-en>Enter the sphere power exactly as written on your glasses prescription.</span></li>
+        <li><span data-ar>اترك بُعد القمة على القيمة الافتراضية 12 مم إلا إذا كانت لديك قيمة أدق من طبيب العيون.</span><span data-en>Leave vertex distance at the default 12 mm unless you have a more precise value from your eye doctor.</span></li>
+        <li><span data-ar>اضغط "احسب القوة المكافئة" لعرض النتيجة فوراً.</span><span data-en>Press "Calculate equivalent power" to see the result instantly.</span></li>
+      </ol>
+
+      <form id="vertexForm">
+        <div class="field-grid">
+          <div class="field">
+            <label for="sphere"><span data-ar>قوة النظارة الكروية (Sphere) بالديوبتر</span><span data-en>Spectacle sphere power (diopters)</span></label>
+            <input type="number" id="sphere" name="sphere" step="0.25" placeholder="-6.00" required />
+          </div>
+          <div class="field">
+            <label for="vertexDistance"><span data-ar>بُعد القمة بالمليمتر</span><span data-en>Vertex distance (mm)</span></label>
+            <input type="number" id="vertexDistance" name="vertexDistance" step="1" value="12" required />
+          </div>
+        </div>
+        <p style="font-size:.85rem; color:var(--ink-soft); margin-top:-.5rem;">
+          <span data-ar>استخدم إشارة سالبة لقصر النظر (-) وموجبة لطول النظر (+). القيمة القياسية الشائعة لبُعد القمة هي 12 مم.</span>
+          <span data-en>Use a negative sign for myopia (-) and positive for hyperopia (+). The common standard vertex distance value is 12 mm.</span>
+        </p>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب القوة المكافئة</span><span data-en>Calculate equivalent power</span>
+        </button>
+      </form>
+
+      <div class="result" id="vertexResultBox">
+        <p class="reading" id="vertexResultTitle"></p>
+        <span class="badge" id="vertexResultBadge"></span>
+        <p id="vertexResultText"></p>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>لماذا يهم بُعد القمة؟</span><span data-en>Why does vertex distance matter?</span></h2>
+      <p>
+        <span data-ar>العدسة اللاصقة تجلس مباشرة على القرنية، بينما تبعد عدسة النظارة عادة 12 مم عن العين. هذا الفرق يغيّر القوة الفعلية المطلوبة، خصوصاً في الوصفات القوية (عادة ±4.00 ديوبتر فأكثر).</span>
+        <span data-en>A contact lens sits directly on the cornea, while a spectacle lens usually sits 12 mm away. This difference changes the actual power needed, especially for stronger prescriptions (typically ±4.00 D or more).</span>
+      </p>
+      <h2><span data-ar>ملاحظة عن المحور الأسطواني</span><span data-en>Note on cylinder power</span></h2>
+      <p>
+        <span data-ar>هذه الحاسبة تُعنى بقوة الكرة (Sphere) فقط. تصحيح الاستجماتيزم (Cylinder/Axis) في الوصفات المعقدة يتطلب حسابات إضافية ومعايرة من أخصائي بصريات، خصوصاً عند التحويل لعدسات تورك (Toric).</span>
+        <span data-en>This calculator handles sphere power only. Astigmatism correction (cylinder/axis) in complex prescriptions needs additional calculation and fitting by an optometrist, especially for toric contact lenses.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذه الحاسبة أداة مرجعية تعليمية لفهم المعادلة
+        الفيزيائية فقط، وليست نتيجة نهائية، ولا تُستخدم لصرف عدسات لاصقة دون فحص
+        ومطابقة من أخصائي بصريات أو طبيب عيون مرخّص.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This calculator is an educational reference tool to understand
+        the physics formula only — it is not a final result and must not be used to dispense
+        contact lenses without a fitting exam by a licensed optometrist or eye doctor.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  const form = document.getElementById('vertexForm') as HTMLFormElement;
+  const box = document.getElementById('vertexResultBox');
+  const title = document.getElementById('vertexResultTitle');
+  const badge = document.getElementById('vertexResultBadge');
+  const text = document.getElementById('vertexResultText');
+
+  function roundToQuarter(v) { return Math.round(v * 4) / 4; }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const sphere = parseFloat(fd.get('sphere') as string);
+    const vertexMm = parseFloat(fd.get('vertexDistance') as string);
+    const lang = getLang();
+    if (Number.isNaN(sphere) || Number.isNaN(vertexMm)) return;
+
+    const dMeters = vertexMm / 1000;
+    const rawConverted = sphere / (1 - dMeters * sphere);
+    const converted = roundToQuarter(rawConverted);
+    const diff = Math.abs(converted - sphere);
+
+    title.textContent = t(lang, {
+      ar: `القوة المكافئة: ${converted > 0 ? '+' : ''}${converted.toFixed(2)} D`,
+      en: `Equivalent power: ${converted > 0 ? '+' : ''}${converted.toFixed(2)} D`,
+    });
+
+    if (diff < 0.25) {
+      badge.className = 'badge badge-ok';
+      badge.textContent = t(lang, { ar: 'فرق ضئيل', en: 'Small difference' });
+      text.textContent = t(lang, {
+        ar: `الفرق بين قوة النظارة وقوة العدسة اللاصقة ضئيل جداً (أقل من 0.25 ديوبتر)، لذا يمكن غالباً استخدام نفس رقم النظارة تقريباً — لكن يبقى القرار النهائي بيد أخصائي البصريات بعد الفحص.`,
+        en: `The difference between spectacle and contact lens power is very small (under 0.25 D), so the same number can often be used — but the final decision remains with an optometrist after a fitting exam.`,
+      });
+    } else {
+      badge.className = 'badge badge-warn';
+      badge.textContent = t(lang, { ar: 'فرق ملحوظ', en: 'Noticeable difference' });
+      text.textContent = t(lang, {
+        ar: `القوة الأصلية للنظارة هي ${sphere > 0 ? '+' : ''}${sphere.toFixed(2)} D عند بُعد قمة ${vertexMm} مم. بسبب قرب العدسة اللاصقة من العين، تصبح القوة المكافئة المطلوبة تقريباً ${converted > 0 ? '+' : ''}${converted.toFixed(2)} D. هذا الفرق (${diff.toFixed(2)} D) قابل للملاحظة، لذا يجب تأكيد المقاس عملياً عبر فحص وتجربة العدسة لدى أخصائي بصريات.`,
+        en: `The original spectacle power is ${sphere > 0 ? '+' : ''}${sphere.toFixed(2)} D at a vertex distance of ${vertexMm} mm. Because the contact lens sits closer to the eye, the equivalent power needed is approximately ${converted > 0 ? '+' : ''}${converted.toFixed(2)} D. This difference (${diff.toFixed(2)} D) is noticeable, so the power should be confirmed with an actual fitting exam by an optometrist.`,
+      });
+    }
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>

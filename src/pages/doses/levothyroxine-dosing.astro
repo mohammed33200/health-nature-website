@@ -1,0 +1,129 @@
+---
+// حاسبة جرعة الثايروكسين المبدئية — Levothyroxine Dosing
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة جرعة الثايروكسين المبدئية">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة جرعة الثايروكسين المبدئية</span>
+          <span data-en>Levothyroxine Dosing</span>
+        </h1>
+        <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تقترح جرعة البدء اليومية من الثايروكسين (ليفوثيروكسين) لعلاج قصور الغدة الدرقية، بناءً على وزن المريض والفئة العمرية ووجود مرض قلبي.</span>
+          <span data-en>Suggests a starting daily levothyroxine dose for treating hypothyroidism, based on patient weight, age group, and presence of cardiac disease.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>البدء بجرعة كاملة لدى كبار السن أو مرضى القلب قد يسبب اضطراب نظم قلبي أو ذبحة صدرية؛ لذا تُبدأ الجرعة منخفضة وتُرفع تدريجيًا لديهم، بينما يمكن البدء بالجرعة الكاملة للشباب الأصحاء.</span>
+          <span data-en>Starting with a full dose in elderly patients or those with heart disease can trigger arrhythmia or angina; their dose is started low and titrated up gradually, while healthy young patients can typically start at the full dose.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="levo-form">
+        <label>
+          <span data-ar>الوزن (كجم)</span><span data-en>Weight (kg)</span>
+          <input type="number" id="weight" min="20" max="200" step="0.1" required />
+        </label>
+        <label>
+          <span data-ar>الفئة</span><span data-en>Category</span>
+          <select id="category">
+            <option value="healthy">شاب وصحي بدون مرض قلبي / Young &amp; healthy, no cardiac disease</option>
+            <option value="elderly">كبير سن أو مرض قلبي / Elderly or cardiac disease</option>
+          </select>
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>الجرعة المقترحة: </span><span data-en>Suggested dose: </span>
+          <strong id="dose-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي / المرجع</span><span data-en>Reference</span></h2>
+        <ul class="ref-list">
+          <li><span data-ar>الشباب الأصحاء: 1.6 مايكروجرام/كجم/يوم كجرعة بدء كاملة</span><span data-en>Healthy young adults: 1.6 mcg/kg/day as a full starting dose</span></li>
+          <li><span data-ar>كبار السن أو مرضى القلب: البدء بـ 12.5–25 مايكروجرام/يوم مع رفع تدريجي كل 4–6 أسابيع</span><span data-en>Elderly or cardiac patients: start at 12.5–25 mcg/day, titrating up every 4–6 weeks</span></li>
+          <li><span data-ar>يُعاد فحص TSH بعد 6–8 أسابيع من أي تعديل جرعة</span><span data-en>Recheck TSH 6–8 weeks after any dose change</span></li>
+        </ul>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>هذه الأداة مرجعية وتعليمية فقط ولا تغني عن تقييم الطبيب الشامل لحالة كل مريض.</span>
+        <span data-en>This tool is for reference and educational use only and does not replace a physician's full assessment of each patient.</span>
+      </p>
+
+      <a class="back-link" href="/doses/">
+        <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+        <span data-en>← Back to Medication Dosing</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("levo-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    const category = (document.getElementById("category") as HTMLSelectElement).value;
+    if (!weight) return;
+
+    let doseText = "";
+    if (category === "healthy") {
+      const dose = weight * 1.6;
+      doseText = `${dose.toFixed(0)} mcg/day`;
+    } else {
+      doseText = "12.5–25 mcg/day (بدء منخفض / low start, titrate gradually)";
+    }
+
+    (document.getElementById("dose-out") as HTMLElement).textContent = doseText;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(180,90,0,.12); }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .disclaimer { margin: 1.5rem 0; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

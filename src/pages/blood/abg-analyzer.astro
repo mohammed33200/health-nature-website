@@ -1,0 +1,166 @@
+---
+// مفسر ومحلل غازات الدم الشرياني — ABG Analyzer
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="مفسر ومحلل غازات الدم الشرياني">
+  <ToolsShell>
+    <section class="container tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>مفسر ومحلل غازات الدم الشرياني</span>
+          <span data-en>ABG Analyzer</span>
+        </h1>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحلل قيم pH وثاني أكسيد الكربون (PaCO2) والبيكربونات (HCO3) لتحديد نوع اضطراب توازن الحمض والقاعدة في الدم: حماض أو قلاء، تنفسي أو استقلابي، ومدى وجود تعويض.</span>
+          <span data-en>Analyzes pH, PaCO2, and HCO3 to identify the type of acid-base disturbance: acidosis or alkalosis, respiratory or metabolic, and whether compensation is present.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا يهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>اضطرابات الحمض والقاعدة شائعة في حالات الطوارئ والعناية المركزة، وتحديد نوعها بدقة يوجّه العلاج (مثل تصحيح الجفاف، دعم التنفس، أو علاج السبب الاستقلابي الكامن).</span>
+          <span data-en>Acid-base disturbances are common in emergency and critical care; correctly identifying the type guides treatment — such as correcting dehydration, supporting ventilation, or treating the underlying metabolic cause.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="abg-form">
+        <label>
+          <span>pH</span>
+          <input type="number" id="ph" min="6.8" max="7.8" step="0.01" required />
+        </label>
+        <label>
+          <span>PaCO2 (mmHg)</span>
+          <input type="number" id="paco2" min="10" max="100" step="1" required />
+        </label>
+        <label>
+          <span>HCO3 (mEq/L)</span>
+          <input type="number" id="hco3" min="5" max="50" step="0.1" required />
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-ar>حلّل</span><span data-en>Analyze</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>الحالة الحمضية: </span><span data-en>Acid-base status: </span>
+          <strong id="status-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>الاضطراب الأساسي: </span><span data-en>Primary disorder: </span>
+          <strong id="primary-out" class="reading"></strong>
+        </p>
+        <p>
+          <span data-ar>التعويض: </span><span data-en>Compensation: </span>
+          <strong id="compensation-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي</span><span data-en>Normal reference</span></h2>
+        <ul class="ref-list">
+          <li>pH: 7.35 – 7.45</li>
+          <li>PaCO2: 35 – 45 mmHg</li>
+          <li>HCO3: 22 – 26 mEq/L</li>
+        </ul>
+        <p class="note">
+          <span data-ar>هذا تحليل مبسّط للمبادئ الأساسية فقط؛ الحالات المختلطة أو المعقّدة تحتاج تقييم الطبيب مع باقي الصورة السريرية.</span>
+          <span data-en>This is a simplified analysis of the basic principles only; mixed or complex disorders need physician assessment alongside the full clinical picture.</span>
+        </p>
+      </article>
+
+      <a class="back-link" href="/blood/">
+        <span data-ar>← رجوع لمجال تحاليل الدم</span>
+        <span data-en>← Back to Blood Tests & Diagnostics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("abg-form") as HTMLFormElement;
+  const resultDiv = document.getElementById("result") as HTMLElement;
+  const statusOut = document.getElementById("status-out") as HTMLElement;
+  const primaryOut = document.getElementById("primary-out") as HTMLElement;
+  const compensationOut = document.getElementById("compensation-out") as HTMLElement;
+
+  function calculateAndDisplay() {
+      const ph = Number((document.getElementById("ph") as HTMLInputElement).value);
+      const paco2 = Number((document.getElementById("paco2") as HTMLInputElement).value);
+      const hco3 = Number((document.getElementById("hco3") as HTMLInputElement).value);
+      if (!ph || !paco2 || !hco3) return;
+
+      const lang = document.documentElement.lang || 'ar';
+
+      let status = { ar: "", en: "" };
+      if (ph < 7.35) { status = { ar: "حماض", en: "Acidemia" }; }
+      else if (ph > 7.45) { status = { ar: "قلاء", en: "Alkalemia" }; }
+      else { status = { ar: "طبيعي (أو معوَّض بالكامل)", en: "Normal (or fully compensated)" }; }
+
+      let primary = { ar: "", en: "" };
+      const acidemia = ph < 7.35;
+      const alkalemia = ph > 7.45;
+      const lowHco3 = hco3 < 22, highHco3 = hco3 > 26;
+      const highPaco2 = paco2 > 45, lowPaco2 = paco2 < 35;
+
+      if (acidemia && lowHco3) { primary = { ar: "حماض استقلابي", en: "Metabolic acidosis" }; }
+      else if (acidemia && highPaco2) { primary = { ar: "حماض تنفسي", en: "Respiratory acidosis" }; }
+      else if (alkalemia && highHco3) { primary = { ar: "قلاء استقلابي", en: "Metabolic alkalosis" }; }
+      else if (alkalemia && lowPaco2) { primary = { ar: "قلاء تنفسي", en: "Respiratory alkalosis" }; }
+      else if (!acidemia && !alkalemia && (lowHco3 || highPaco2 || highHco3 || lowPaco2)) {
+        primary = { ar: "اضطراب معوَّض بالكامل أو مختلط", en: "Fully compensated or mixed disorder" };
+      } else {
+        primary = { ar: "لا يوجد اضطراب واضح", en: "No clear disorder" };
+      }
+
+      let comp = { ar: "", en: "" };
+      if (acidemia && lowHco3) {
+        const expectedPaco2 = 1.5 * hco3 + 8;
+        if (Math.abs(paco2 - expectedPaco2) <= 2) { comp = { ar: "تعويض تنفسي مناسب (وينتر)", en: "Appropriate respiratory compensation (Winter's)" }; }
+        else if (paco2 > expectedPaco2 + 2) { comp = { ar: "احتمال حماض تنفسي مرافق", en: "Possible concurrent respiratory acidosis" }; }
+        else { comp = { ar: "احتمال قلاء تنفسي مرافق", en: "Possible concurrent respiratory alkalosis" }; }
+      } else {
+        comp = { ar: "غير محسوب لهذا النوع", en: "Not calculated for this pattern" };
+      }
+
+      statusOut.textContent = status[lang];
+      primaryOut.textContent = primary[lang];
+      compensationOut.textContent = comp[lang];
+      resultDiv.classList.add('show');
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    calculateAndDisplay();
+  });
+
+  window.addEventListener('languageChanged', () => {
+    if (resultDiv.classList.contains('show')) {
+      calculateAndDisplay();
+    }
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+  .note { font-size: .85rem; opacity: .8; color: var(--ink-soft); margin-top: .75rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

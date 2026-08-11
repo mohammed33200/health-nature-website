@@ -1,0 +1,134 @@
+---
+// حاسبة تحويل الستيرويدات — Corticosteroid Dose Converter
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+---
+
+<Layout title="حاسبة تحويل الستيرويدات">
+<ToolsShell>
+<section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة تحويل الستيرويدات</span>
+      <span data-en>Corticosteroid Dose Converter</span>
+    </h1>
+    <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تحوّل جرعة من نوع كورتيزون معيّن إلى الجرعة المكافئة من نوع آخر، اعتمادًا على نسب الفعالية المضادة للالتهاب النسبية بين أنواع الستيرويدات المختلفة.</span>
+      <span data-en>Converts a dose of one corticosteroid to the equivalent dose of another, based on the relative anti-inflammatory potency ratios between different steroid types.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>ضرورية عند تبديل دواء المريض (مثلًا من هيدروكورتيزون وريدي إلى بريدنيزولون فموي عند الخروج من المستشفى)، لتفادي جرعة زائدة أو ناقصة غير مقصودة.</span>
+      <span data-en>Essential when switching a patient's medication (e.g. from IV hydrocortisone to oral prednisolone at hospital discharge), to avoid an unintended overdose or underdose.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="converter-form">
+    <label>
+      <span data-ar>الدواء الحالي</span><span data-en>Current drug</span>
+      <select id="fromDrug">
+        <option value="25">كورتيزون أسيتات / Cortisone acetate (25mg)</option>
+        <option value="20">هيدروكورتيزون / Hydrocortisone (20mg)</option>
+        <option value="5">بريدنيزون / Prednisone (5mg)</option>
+        <option value="5">بريدنيزولون / Prednisolone (5mg)</option>
+        <option value="4">ميثيل بريدنيزولون / Methylprednisolone (4mg)</option>
+        <option value="4">تريامسينولون / Triamcinolone (4mg)</option>
+        <option value="0.75">ديكساميثازون / Dexamethasone (0.75mg)</option>
+        <option value="0.6">بيتاميثازون / Betamethasone (0.6mg)</option>
+      </select>
+    </label>
+    <label>
+      <span data-ar>الجرعة الحالية (مجم)</span><span data-en>Current dose (mg)</span>
+      <input type="number" id="dose" min="0.1" max="1000" step="0.1" required />
+    </label>
+    <label>
+      <span data-ar>الدواء المستهدف</span><span data-en>Target drug</span>
+      <select id="toDrug">
+        <option value="25">كورتيزون أسيتات / Cortisone acetate (25mg)</option>
+        <option value="20">هيدروكورتيزون / Hydrocortisone (20mg)</option>
+        <option value="5">بريدنيزون / Prednisone (5mg)</option>
+        <option value="5">بريدنيزولون / Prednisolone (5mg)</option>
+        <option value="4">ميثيل بريدنيزولون / Methylprednisolone (4mg)</option>
+        <option value="4">تريامسينولون / Triamcinolone (4mg)</option>
+        <option value="0.75">ديكساميثازون / Dexamethasone (0.75mg)</option>
+        <option value="0.6">بيتاميثازون / Betamethasone (0.6mg)</option>
+      </select>
+    </label>
+    <button type="submit">
+      <span data-ar>احسب الجرعة المكافئة</span>
+      <span data-en>Calculate equivalent dose</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>الجرعة المكافئة: </span><span data-en>Equivalent dose: </span>
+      <strong id="equiv-out"></strong> mg
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula & reference</span></h2>
+    <p class="formula">Equivalent dose = Current dose × (Target potency mg / Current potency mg)</p>
+    <p class="note">
+      <span data-ar>القيم بين قوسين تمثل الجرعة المكافئة تقريبيًا لهيدروكورتيزون 20 مجم (فعالية مضادة للالتهاب متساوية تقريبًا).</span>
+      <span data-en>The values in parentheses represent the approximate equipotent dose to 20mg hydrocortisone (roughly equal anti-inflammatory effect).</span>
+    </p>
+  </article>
+
+  <a class="back-link" href="/doses/">
+    <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+    <span data-en>← Back to Medication Dosing</span>
+  </a>
+</section>
+</ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("converter-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fromPotency = Number((document.getElementById("fromDrug") as HTMLSelectElement).value);
+    const toPotency = Number((document.getElementById("toDrug") as HTMLSelectElement).value);
+    const dose = Number((document.getElementById("dose") as HTMLInputElement).value);
+    if (!dose) return;
+
+    const equivalent = dose * (toPotency / fromPotency);
+    (document.getElementById("equiv-out") as HTMLElement).textContent = equivalent.toFixed(2);
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; } .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(180,90,0,.12); }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; } .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; margin-bottom: .75rem; }
+  .note { font-size: .85rem; opacity: .75; }
+  .note [data-en] { display: block; margin-top: .2rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

@@ -1,0 +1,168 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MI_QUESTIONS, SCALE_LABELS, SCALE_LABELS_EN } from '../../mi-questions';
+import type { MIQuestion } from '../../mi-questions';
+
+export const prerender = true;
+---
+
+<Layout title="Multiple Intelligences Test | SHYM365.ORG">
+	<div class="mi-test-container">
+		<div class="page-head">
+			<h1 data-i18n data-en="Multiple Intelligences Test" data-ar="اختبار الذكاءات المتعددة">اختبار الذكاءات المتعددة</h1>
+			<p data-i18n data-en="An entertaining test to discover your dominant intelligence type. Answer the questions to get your result." data-ar="اختبار ترفيهي لاكتشاف نوع الذكاء المهيمن لديك. أجب عن الأسئلة للحصول على نتيجتك.">اختبار ترفيهي لاكتشاف نوع الذكاء المهيمن لديك. أجب عن الأسئلة للحصول على نتيجتك.</p>
+		</div>
+
+		<form id="mi-test-form">
+			{MI_QUESTIONS.map((q, i) => (
+				<div class="question-card">
+					<p class="question-prompt" data-i18n data-en={q.promptEn} data-ar={q.prompt}>{q.prompt}</p>
+					<div class="options">
+						{q.type === 'scale' ? (
+							SCALE_LABELS.map((label, index) => (
+								<label class="option">
+									<input type="radio" name={`q${i}`} value={index} required />
+									<span data-i18n data-en={SCALE_LABELS_EN[index]} data-ar={label}>{label}</span>
+								</label>
+							))
+						) : (
+							q.options.map((option, index) => (
+								<label class="option">
+									<input type="radio" name={`q${i}`} value={index} required />
+									<span data-i18n data-en={q.optionsEn[index]} data-ar={option}>{option}</span>
+								</label>
+							))
+						)}
+					</div>
+				</div>
+			))}
+			<button type="submit" class="submit-btn" data-i18n data-en="Show My Result" data-ar="أظهر نتيجتي">أظهر نتيجتي</button>
+		</form>
+
+		<div id="results" class="results-card" style="display: none;">
+			<h2 data-i18n data-en="Your Result" data-ar="نتيجتك">نتيجتك</h2>
+			<p id="result-text"></p>
+		</div>
+	</div>
+</Layout>
+
+<script define:vars={{ questions: MI_QUESTIONS }}>
+  import { initializeMITest } from '../../components/mi-test-logic.ts';
+  initializeMITest(questions);
+</script>
+
+<style>
+	.mi-test-container {
+		max-width: 800px;
+		margin: 2rem auto;
+		padding: 2rem;
+		background-color: #f9fafb;
+		border-radius: 16px;
+	}
+
+	.page-head {
+		text-align: center;
+		margin-bottom: 2rem;
+	}
+
+	.page-head h1 {
+		font-size: 2.25rem;
+		font-weight: 800;
+		color: #111827;
+		margin-bottom: 0.5rem;
+	}
+
+	.page-head p {
+		font-size: 1.125rem;
+		color: #4b5563;
+	}
+
+	#mi-test-form {
+		display: grid;
+		gap: 1.5rem;
+	}
+
+	.question-card {
+		background-color: #ffffff;
+		border: 1px solid #e5e7eb;
+		border-radius: 12px;
+		padding: 1.5rem;
+		box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+	}
+
+	.question-prompt {
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: #1f2937;
+		margin: 0 0 1rem;
+	}
+
+	.options {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.option {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem;
+		border-radius: 8px;
+		border: 1px solid #d1d5db;
+		cursor: pointer;
+		transition: background-color 0.2s, border-color 0.2s;
+	}
+
+	.option:hover {
+		background-color: #f3f4f6;
+	}
+
+	.option input[type="radio"] {
+		flex-shrink: 0;
+	}
+
+	.option input[type="radio"]:checked + span {
+		font-weight: 600;
+		color: #16603f;
+	}
+
+	.submit-btn {
+		justify-self: center;
+		padding: 0.75rem 2rem;
+		font-size: 1rem;
+		font-weight: 700;
+		color: #ffffff;
+		background: linear-gradient(135deg, #2b6e4a, #60a472);
+		border: none;
+		border-radius: 999px;
+		cursor: pointer;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.submit-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+	}
+
+	.results-card {
+		margin-top: 2rem;
+		padding: 2rem;
+		background-color: #e8f5e9;
+		border: 1px solid #a5d6a7;
+		border-radius: 12px;
+		text-align: center;
+	}
+
+	.results-card h2 {
+		font-size: 1.75rem;
+		color: #16603f;
+		margin-bottom: 1rem;
+	}
+
+	#result-text {
+		font-size: 1.25rem;
+		font-weight: 500;
+		color: #1f2937;
+	}
+</style>

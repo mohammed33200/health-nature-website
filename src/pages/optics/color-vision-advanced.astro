@@ -1,0 +1,207 @@
+---
+// اختبار عمى الألوان المتقدم — ترتيب تدرّجات لونية (مستوحى من Farnsworth D-15)
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Advanced Color Vision Test">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>اختبار عمى الألوان المتقدم</span>
+        <span data-en>Advanced Color Vision Test</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>بدلاً من قراءة رقم من نقاط، هذا الاختبار يطلب منك ترتيب بطاقات لونية متدرجة حسب أقرب تشابه لوني. طريقة الترتيب هذه أكثر مقاومة لاختلاف إعدادات الشاشة، وتعطي مؤشراً على شدة صعوبة تمييز الألوان.</span>
+        <span data-en>Instead of reading a number from dots, this test asks you to arrange color chips by closest similarity. This ordering method is more resistant to screen setting differences, and gives an indication of severity.</span>
+      </p>
+    </div>
+
+    <div class="calc-card" id="testCard">
+      <ol class="steps">
+        <li><span data-ar>أجرِ الاختبار في إضاءة نهارية أو بيضاء جيدة، بعيداً عن الإضاءة الملونة.</span><span data-en>Take the test in good daylight or white lighting, away from colored lighting.</span></li>
+        <li><span data-ar>البطاقة الأولى (المرجعية) ثابتة في البداية. اضغط من بين البطاقات المبعثرة أدناه على أقرب لون شبهاً بها.</span><span data-en>The first (reference) chip is fixed at the start. From the scattered chips below, tap the one closest in color to it.</span></li>
+        <li><span data-ar>استمر: كل بطاقة تختارها تصبح المرجع التالي، حتى تنتهي كل البطاقات.</span><span data-en>Continue: each chip you pick becomes the next reference, until all chips are placed.</span></li>
+        <li><span data-ar>لا تفكر طويلاً في كل خطوة — اختر انطباعك اللوني الأول.</span><span data-en>Don't overthink each step — go with your first color impression.</span></li>
+      </ol>
+
+      <p><span data-ar>البطاقة المرجعية الحالية:</span><span data-en>Current reference chip:</span></p>
+      <div class="d15-reference" id="referenceChip"></div>
+
+      <p id="progressLabel"></p>
+      <div class="d15-pool" id="poolGrid"></div>
+      <div class="d15-sequence" id="sequenceStrip" aria-hidden="true"></div>
+
+      <button type="button" class="btn-ghost" id="d15Reset" style="margin-top:14px;">
+        <span data-ar>إعادة البدء</span><span data-en>Start over</span>
+      </button>
+    </div>
+
+    <div class="result" id="d15ResultBox">
+      <p class="reading" id="d15ResultTitle"></p>
+      <span class="badge" id="d15ResultBadge"></span>
+      <p id="d15ResultText"></p>
+      <button type="button" class="btn-ghost" id="d15Retry" style="margin-top:10px;">
+        <span data-ar>إعادة الاختبار</span><span data-en>Retry</span>
+      </button>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>لماذا الترتيب أدق من قراءة الأرقام؟</span><span data-en>Why is arrangement more accurate than reading numbers?</span></h2>
+      <p>
+        <span data-ar>في اختبار النقاط، إما أن تقرأ الرقم أو لا تقرأه — نتيجة ثنائية. هنا، نمط أخطائك في الترتيب يعطي صورة أوضح عن درجة الصعوبة، وهذا مبدأ الاختبار المعروف طبياً باسم Farnsworth D-15.</span>
+        <span data-en>In a dot-plate test, you either read the number or you don't — a binary outcome. Here, the pattern of your ordering mistakes gives a clearer picture of severity — the principle behind the clinically known Farnsworth D-15 test.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذه نسخة مبسّطة مستوحاة من فكرة اختبار
+        Farnsworth D-15 لأغراض توعوية فقط، وليست نسخة معتمدة سريرياً ولا نتيجة
+        نهائية. الألوان المعروضة تعتمد على دقة شاشتك وإعداداتها. لتشخيص دقيق
+        لعمى الألوان ونوعه ودرجته، يُرجى إجراء الاختبار المعتمد لدى طبيب عيون أو
+        أخصائي بصريات.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This is a simplified version inspired by the
+        Farnsworth D-15 concept, for awareness purposes only — not a clinically
+        validated version and not a final result. The colors shown depend on your
+        screen's accuracy and settings. For an accurate diagnosis of color
+        blindness type and severity, please take a certified test with an eye
+        doctor or optometrist.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  const TOTAL = 16;
+  const SATURATION = 45, LIGHTNESS = 55;
+
+  function hueColor(i) { return `hsl(${((i * 360) / TOTAL).toFixed(1)}, ${SATURATION}%, ${LIGHTNESS}%)`; }
+  function pointFor(i) { const a = (i * 2 * Math.PI) / TOTAL; return { x: Math.cos(a), y: Math.sin(a) }; }
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+
+  function orientation(p, q, r) {
+    const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    if (Math.abs(val) < 1e-9) return 0;
+    return val > 0 ? 1 : 2;
+  }
+  function onSegment(p, q, r) {
+    return q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) && q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y);
+  }
+  function segmentsIntersect(p1, p2, p3, p4) {
+    const o1 = orientation(p1, p2, p3), o2 = orientation(p1, p2, p4);
+    const o3 = orientation(p3, p4, p1), o4 = orientation(p3, p4, p2);
+    if (o1 !== o2 && o3 !== o4) return true;
+    if (o1 === 0 && onSegment(p1, p3, p2)) return true;
+    if (o2 === 0 && onSegment(p1, p4, p2)) return true;
+    if (o3 === 0 && onSegment(p3, p1, p4)) return true;
+    if (o4 === 0 && onSegment(p3, p2, p4)) return true;
+    return false;
+  }
+  function countCrossings(sequence) {
+    const pts = sequence.map(pointFor);
+    let crossings = 0;
+    for (let i = 0; i < pts.length - 1; i++) {
+      for (let j = i + 2; j < pts.length - 1; j++) {
+        if (segmentsIntersect(pts[i], pts[i + 1], pts[j], pts[j + 1])) crossings++;
+      }
+    }
+    return crossings;
+  }
+
+  const referenceChip = document.getElementById('referenceChip');
+  const poolGrid = document.getElementById('poolGrid');
+  const sequenceStrip = document.getElementById('sequenceStrip');
+  const progressLabel = document.getElementById('progressLabel');
+  const resetBtn = document.getElementById('d15Reset');
+  const resultBox = document.getElementById('d15ResultBox');
+  const resultTitle = document.getElementById('d15ResultTitle');
+  const resultBadge = document.getElementById('d15ResultBadge');
+  const resultText = document.getElementById('d15ResultText');
+  const retryBtn = document.getElementById('d15Retry');
+  const testCard = document.getElementById('testCard');
+
+  let remaining = [];
+  let sequence = [0];
+
+  function updateProgress() {
+    progressLabel.textContent = t(getLang(), { ar: `تبقّى ${remaining.length} من 15 بطاقة`, en: `${remaining.length} of 15 chips remaining` });
+  }
+
+  function renderPool() {
+    referenceChip.style.background = hueColor(sequence[sequence.length - 1]);
+    poolGrid.innerHTML = '';
+    remaining.forEach((idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'd15-chip';
+      btn.style.background = hueColor(idx);
+      btn.addEventListener('click', () => pick(idx));
+      poolGrid.appendChild(btn);
+    });
+    sequenceStrip.innerHTML = sequence.map((idx) => `<span class="d15-seq-dot" style="background:${hueColor(idx)}"></span>`).join('');
+    updateProgress();
+  }
+
+  function pick(idx) {
+    sequence.push(idx);
+    remaining = remaining.filter((v) => v !== idx);
+    if (remaining.length === 0) finish(); else renderPool();
+  }
+
+  function start() {
+    resultBox.classList.remove('show');
+    testCard.hidden = false;
+    sequence = [0];
+    remaining = shuffle(Array.from({ length: TOTAL - 1 }, (_, i) => i + 1));
+    renderPool();
+  }
+
+  function finish() {
+    testCard.hidden = true;
+    const crossings = countCrossings(sequence);
+    const lang = getLang();
+    let cls, badgeText, title, text;
+    if (crossings === 0) {
+      cls = 'badge-ok'; badgeText = { ar: 'طبيعي', en: 'Normal' };
+      title = { ar: `0 تقاطع لوني`, en: `0 color crossings` };
+      text = { ar: 'رتّبت البطاقات دون أي تقاطعات لونية ملحوظة — مؤشر جيد على تمييز لوني طبيعي في هذا الاختبار المبسط. الفحص الدوري لدى طبيب عيون يبقى المرجع الدقيق للتأكيد.', en: 'You arranged the chips with no notable color crossings — a good sign of normal color discrimination on this simplified test. Regular exams with an eye doctor remain the accurate reference to confirm.' };
+    } else if (crossings <= 2) {
+      cls = 'badge-warn'; badgeText = { ar: 'حدّي', en: 'Borderline' };
+      title = { ar: `${crossings} تقاطع لوني`, en: `${crossings} color crossings` };
+      text = { ar: 'ظهر عدد قليل من التقاطعات في ترتيبك، وقد يكون هذا طبيعياً (إعدادات الشاشة أو تسرّع) أو مؤشراً خفيفاً. جرّب الاختبار مرة أخرى بتركيز، وإن تكررت النتيجة يُفضّل استشارة طبيب عيون أو أخصائي بصريات.', en: 'A few crossings appeared in your arrangement. This could be normal (screen settings or rushed choices) or a mild indicator. Try the test again with more focus, and if it repeats, consult an eye doctor or optometrist.' };
+    } else {
+      cls = 'badge-danger'; badgeText = { ar: 'ملحوظ', en: 'Notable' };
+      title = { ar: `${crossings} تقاطع لوني`, en: `${crossings} color crossings` };
+      text = { ar: 'عدد التقاطعات في ترتيبك مرتفع نسبياً، وهذا قد يشير لصعوبة حقيقية في تمييز بعض الألوان. يُنصح بإجراء اختبار Farnsworth D-15 معتمد لدى طبيب عيون أو أخصائي بصريات لتأكيد النتيجة وتحديد نوعها ودرجتها بدقة.', en: 'The number of crossings in your arrangement is relatively high, which may suggest a real difficulty distinguishing certain colors. A certified Farnsworth D-15 test with an eye doctor or optometrist is recommended to confirm the result and precisely determine its type and severity.' };
+    }
+    resultBadge.className = 'badge ' + cls;
+    resultBadge.textContent = t(lang, badgeText);
+    resultTitle.textContent = t(lang, title);
+    resultText.textContent = t(lang, text);
+    resultBox.classList.add('show');
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  resetBtn?.addEventListener('click', start);
+  retryBtn?.addEventListener('click', start);
+  window.addEventListener('languageChanged', () => { if (!testCard.hidden) renderPool(); });
+
+  start();
+</script>

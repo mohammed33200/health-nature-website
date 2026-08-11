@@ -1,0 +1,187 @@
+---
+// صفحة رئيسية لمجال "المؤشرات التقييمية للمخاطر"
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+
+// Domain hub page — Assessment & Risk Indices
+//
+// أضفت أداتين مهمتين جدًا غير موجودتين في القائمة الأصلية: qSOFA
+// (فحص سريع للإنتان) و CHA2DS2-VASc (خطر السكتة في الرجفان الأذيني) —
+// من أكثر مؤشرات المخاطر استخدامًا في الطوارئ والباطنة. وسمتهما NEW.
+// Added 2 very commonly used tools not in the original list — qSOFA
+// (rapid sepsis screening) and CHA2DS2-VASc (stroke risk in atrial
+// fibrillation) — among the most-used risk indices in emergency and
+// internal medicine. Flagged NEW.
+
+const tools = [
+  { slug: "map-calculator", ar: "حاسبة معدل الضغط الشرياني المتوسط", en: "MAP Calculator", note: "كفاءة تروية الأعضاء الحيوية", noteEn: "Perfusion efficiency of vital organs" },
+  { slug: "wells-score-pe", ar: "حاسبة تقييم خطورة جلطة الرئة", en: "Wells Score for PE", note: "احتمالية وجود خثرة رئوية", noteEn: "Likelihood of pulmonary embolism", credit: "Wells Score" },
+  { slug: "qsofa", ar: "فحص qSOFA السريع للإنتان", en: "qSOFA Sepsis Screen", note: "فرز سريع لخطر الإنتان الشديد", noteEn: "Rapid screening for severe sepsis", isNew: true },
+  { slug: "akin-kdigo-staging", ar: "حاسبة مؤشر خطر الفشل الكلوي الحاد", en: "AKIN / KDIGO Staging", note: "درجة الإصابة الحادة للكلى", noteEn: "Acute kidney injury severity" },
+  { slug: "cha2ds2-vasc", ar: "حاسبة خطر السكتة في الرجفان الأذيني", en: "CHA₂DS₂-VASc Score", note: "قرار مضادات التجلط للرجفان الأذيني", noteEn: "Anticoagulation decision for atrial fibrillation", isNew: true },
+  { slug: "centor-score", ar: "حاسبة درجة خطر سكتة ومراكزة وريدية", en: "CENTOR Score", note: "تقييم سكتة ومراكزة وريدية", noteEn: "Evaluation of stroke and venous thrombosis", credit: "CENTOR" },
+  { slug: "child-pugh", ar: "حاسبة تصنيف تشايلد-بو", en: "Child-Pugh Classification", note: "تقييم شدة فشل الكبد", noteEn: "Assessment of liver failure severity", credit: "Child-Pugh" },
+  { slug: "curb-65", ar: "حاسبة درجة CURB-65", en: "CURB-65 Score", note: "تقييم خطورة الالتهاب الرئوي", noteEn: "Pneumonia severity assessment", credit: "CURB-65" },
+  { slug: "glasgow-coma-scale", ar: "حاسبة مقياس غلاسكو للغيبوبة", en: "Glasgow Coma Scale", note: "تقييم مستوى الوعي", noteEn: "Level of consciousness assessment", credit: "Glasgow Coma Scale" },
+  { slug: "has-bled", ar: "حاسبة درجة HAS-BLED", en: "HAS-BLED Score", note: "خطر النزيف في مضادات التجلط", noteEn: "Bleeding risk on anticoagulation", credit: "HAS-BLED" },
+];
+---
+
+<Layout title="المؤشرات التقييمية للمخاطر">
+  <ToolsShell>
+    <section class="domain-hub">
+      <header class="domain-hero">
+        
+        <h1>
+          <span data-ar>المؤشرات التقييمية للمخاطر</span>
+          <span data-en>Assessment &amp; Risk Indices</span>
+        </h1>
+        <p class="lead">
+          <span data-ar>
+            مقاييس سريرية سريعة تحوّل مجموعة من العلامات والقراءات إلى
+            درجة خطر واحدة واضحة — تساعد على فرز الحالات، وتحديد من يحتاج
+            فحوصًا إضافية أو تدخلًا عاجلًا.
+          </span>
+          <span data-en>
+            Quick clinical scores that turn a set of signs and readings
+            into one clear risk grade — helping triage cases and identify
+            who needs further testing or urgent intervention.
+          </span>
+        </p>
+        <p class="audience">
+          <span data-ar>👥 لمن هذا المجال: الكادر الطبي في الطوارئ والباطنة، وطلاب الطب.</span>
+          <span data-en>👥 Audience: emergency &amp; internal medicine clinicians, and medical students.</span>
+        </p>
+      </header>
+
+      <ul class="tool-grid">
+        {tools.map((t) => (
+          <li class="tool-card">
+            <a href={`/meters/${t.slug}`}>
+              <span class="tool-name" data-ar>{t.ar}</span>
+              <span class="tool-name" data-en>{t.en}</span>
+              <span class="tool-note" data-ar>{t.note}</span>
+              <span class="tool-note" data-en>{t.note}</span>
+              <span class="badges">
+                {t.isNew && <span class="badge badge-new">NEW</span>}
+                {t.credit && <span class="badge badge-credit">{t.credit}</span>}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="domain-disclaimer">
+        <span data-ar>هذه المؤشرات أدوات دعم قرار مرجعية، ولا تحل محل التقييم السريري الشامل والحكم الطبي المباشر لكل حالة.</span>
+        <span data-en>These indices are reference decision-support tools and do not replace comprehensive clinical evaluation and direct medical judgment for each case.</span>
+      </p>
+
+      <article class="featured-article">
+        <div class="article-content">
+          <h2>
+            <span data-ar>المحرّك الخفي للطب الحديث: لماذا تعتبر مقاييس المخاطر حيوية؟</span>
+            <span data-en>The Unseen Engine of Modern Medicine: Why Risk Scores Matter</span>
+          </h2>
+          <p>
+            <span data-ar>في جوهره، الطب هو فن إدارة عدم اليقين. كل يوم، يواجه الأطباء مرضى لديهم مجموعة معقدة من الأعراض والعلامات ونتائج المختبر. السؤال الحاسم دائمًا هو: "ما مدى خطورة هذا الأمر؟" و "ماذا يجب أن نفعل حيال ذلك؟". في الماضي، كانت الإجابة تعتمد بشكل كبير على ما يسمى بـ "الحدس السريري" - وهو مزيج غير ملموس من الخبرة والتعليم والتعرف على الأنماط. في حين أن هذا الحدس لا يزال لا يقدر بثمن، فقد دخل الطب الحديث عصر الدقة، مدفوعًا بأدوات قوية وهادئة: مقاييس تقييم المخاطر.</span>
+            <span data-en>At its core, medicine is the art of managing uncertainty. Every day, clinicians face patients with a complex constellation of symptoms, signs, and lab results. The crucial questions are always: "How serious is this?" and "What should we do about it?". In the past, the answer relied heavily on so-called "clinical gestalt"—an intangible blend of experience, education, and pattern recognition. While this intuition remains invaluable, modern medicine has entered an era of precision, driven by a powerful and quiet tool: risk assessment scores.</span>
+          </p>
+
+          <h3>
+            <span data-ar>1. من الحدس إلى الموضوعية: توحيد لغة المخاطرة</span>
+            <span data-en>1. From Intuition to Objectivity: Standardizing the Language of Risk</span>
+          </h3>
+          <p>
+            <span data-ar>أكبر قيود على الحدس السريري هو أنه ذاتي للغاية. يمكن لطبيبين متمرسين النظر إلى نفس المريض والوصول إلى استنتاجات مختلفة حول مستوى الخطر. تعمل مقاييس المخاطر على تسوية هذا الملعب. من خلال أخذ متغيرات محددة وموزونة (مثل العمر، ونتائج المختبر، والأمراض المصاحبة) ودمجها في صيغة تم التحقق من صحتها إحصائيًا، فإنها تترجم حالة المريض المعقدة إلى درجة واحدة وموضوعية. درجة CHA₂DS₂-VASc البالغة 4 تعني نفس الشيء - خطر سنوي محدد للسكتة الدماغية - لطبيب القلب في القاهرة أو نيويورك. هذا التوحيد يقلل من التباين في الرعاية، ويضمن أن القرارات تستند إلى أدلة قوية بدلاً من التحيزات الفردية.</span>
+            <span data-en>The biggest limitation of clinical gestalt is its subjectivity. Two experienced doctors can look at the same patient and arrive at different conclusions about their risk level. Risk scores level this playing field. By taking specific, weighted variables (like age, lab results, comorbidities) and plugging them into a statistically validated formula, they translate a complex patient case into a single, objective score. A CHA₂DS₂-VASc score of 4 means the same thing—a specific annual risk of stroke—to a cardiologist in Cairo or New York. This standardization reduces variability in care, ensuring that decisions are based on robust evidence rather than individual biases.</span>
+          </p>
+
+          <h3>
+            <span data-ar>2. توجيه القرارات الحاسمة: من التشخيص إلى العلاج</span>
+            <span data-en>2. Guiding Critical Decisions: From Diagnosis to Treatment</span>
+          </h3>
+          <p>
+            <span data-ar>مقاييس المخاطر ليست مجرد تمارين أكاديمية؛ إنها أدوات عمل توجه القرارات السريرية الحاسمة في كل خطوة. خذ على سبيل المثال مقياس Wells لجلطة الرئة (PE). في مريض يعاني من ضيق في التنفس، يمكن أن يكون التشخيص التفريقي واسعًا. يساعد مقياس Wells في تحديد "احتمالية ما قبل الاختبار" لوجود جلطة رئوية. إذا كانت النتيجة منخفضة، يمكن للطبيب استبعاد الجلطة الرئوية بثقة باستخدام فحص دم بسيط (D-dimer)، وتجنيب المريض التعرض للإشعاع وتكلفة الأشعة المقطعية. إذا كانت النتيجة عالية، يتم تجاوز الخطوات الأولية ويتم إجراء التصوير على الفور. وبالمثل، تحدد درجة CHA₂DS₂-VASc ما إذا كان مريض الرجفان الأذيني يحتاج إلى مضادات التخثر مدى الحياة للوقاية من السكتة الدماغية. هذه الأدوات تحول القرارات من "ربما" إلى مسارات عمل واضحة ومبنية على الأدلة.</span>
+            <span data-en>Risk scores are not just academic exercises; they are workhorse tools that guide critical clinical decisions at every step. Consider the Wells' Score for Pulmonary Embolism (PE). In a patient presenting with shortness of breath, the differential diagnosis can be vast. The Wells' score helps quantify the "pre-test probability" of a PE. If the score is low, a clinician can confidently rule out PE with a simple blood test (D-dimer), sparing the patient the radiation and cost of a CT scan. If the score is high, initial steps are bypassed, and imaging is ordered immediately. Similarly, the CHA₂DS₂-VASc score determines if a patient with atrial fibrillation needs lifelong anticoagulation to prevent a stroke. These tools turn "maybe" decisions into clear, evidence-based action paths.</span>
+          </p>
+
+          <h3>
+            <span data-ar>3. التواصل الفعال وتحسين سلامة المرضى</span>
+            <span data-en>3. Effective Communication and Enhanced Patient Safety</span>
+          </h3>
+          <p>
+            <span data-ar>توفر مقاييس المخاطر لغة مشتركة ليس فقط بين الأطباء ولكن أيضًا في التواصل مع المرضى. من الأسهل بكثير على المريض أن يفهم الحاجة إلى دواء جديد عندما يتم شرحه على أنه "يقلل من خطر السكتة الدماغية السنوي من 8٪ إلى 2٪" بدلاً من عبارة غامضة مثل "هذا سيساعد على منع حدوث جلطة". هذا يعزز اتخاذ القرار المشترك ويمكّن المرضى من المشاركة بنشاط في رعايتهم. علاوة على ذلك، تعمل هذه المقاييس كشبكات أمان. على سبيل المثال، يحدد مقياس qSOFA بسرعة المرضى الذين يعانون من عدوى قد تتطور إلى إنتان مهدد للحياة، مما يؤدي إلى تدخلات مبكرة ومنقذة للحياة. من خلال الإشارة إلى المرضى ذوي الخطورة العالية الذين قد لا يبدون مرضى بشكل واضح للوهلة الأولى، تمنع هذه الأدوات تدهور الحالات دون أن يلاحظها أحد.</span>
+            <span data-en>Risk scores provide a common language not just between clinicians but also in communication with patients. It is far easier for a patient to understand the need for a new medication when it's explained as "reducing your annual stroke risk from 8% to 2%" rather than a vague "this will help prevent a clot." This fosters shared decision-making and empowers patients to actively participate in their care. Furthermore, these scores act as safety nets. For instance, the qSOFA score rapidly identifies patients with an infection who may be developing life-threatening sepsis, triggering early, life-saving interventions. By flagging high-risk patients who might not appear overtly ill at first glance, these tools prevent deterioration from going unnoticed.</span>
+          </p>
+
+          <h3>
+            <span data-ar>كلمة أخيرة: أدوات، وليست أوامر</span>
+            <span data-en>A Final Word: Tools, Not Commandments</span>
+          </h3>
+          <p>
+            <span data-ar>من الأهمية بمكان أن نتذكر أن مقاييس المخاطر هي أدوات لدعم القرار، وليست بديلاً عن الحكم السريري. إنها توفر احتمالات، وليست حقائق مؤكدة. قد يكون لدى المريض درجة منخفضة في مقياس Wells ولكن لديه عامل خطر فريد غير مدرج في المقياس يعرفه طبيبه، مما يستدعي إجراء مزيد من الفحوصات. وبالمثل، فإن السياق الكامل للمريض - قيمه، وأهدافه، ووضعه الاجتماعي - يجب أن يؤخذ في الاعتبار دائمًا. إن الطبيب الماهر لا يتبع المقياس بشكل أعمى؛ بل يدمج رؤيته الموضوعية مع فهمه الشامل للمريض كفرد. في النهاية، تمثل مقاييس المخاطر أفضل ما في الطب الحديث: الجمع بين قوة البيانات الضخمة والتحقق الإحصائي مع الرعاية الإنسانية والتعاطفية التي تقع في صميم علاقة الطبيب والمريض.</span>
+            <span data-en>It is crucial to remember that risk scores are decision-support tools, not substitutes for clinical judgment. They provide probabilities, not certainties. A patient may have a low Wells' score but possess a unique, un-scored risk factor known to their doctor, warranting further investigation. Likewise, the full patient context—their values, goals, and social situation—must always be considered. The art of a skilled clinician is not to blindly follow the score but to integrate its objective insight with their holistic understanding of the patient as an individual. In the end, risk scores represent the best of modern medicine: combining the power of big data and statistical validation with the humanistic, compassionate care that lies at the heart of the doctor-patient relationship.</span>
+          </p>
+        </div>
+      </article>
+
+      <a class="back-to-index" href="/">
+        <span data-ar>← الرجوع للفهرس الرئيسي</span>
+        <span data-en>← Back to main index</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<style>
+  .domain-hub { padding-block: 2rem; }
+  .domain-hero { max-width: 46rem; margin: 0 auto 2rem; text-align: center; }
+  .eyebrow { letter-spacing: .04em; opacity: .7; font-size: .8rem; }
+  .domain-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .75rem; }
+  .domain-hero [data-en] { font-size: .7em; opacity: .65; font-weight: 500; }
+  .lead [data-en] { display: block; font-size: .85em; opacity: .7; margin-top: .6rem; }
+  .audience { margin-top: 1rem; font-size: .9rem; opacity: .85; }
+  .audience [data-en] { display: block; opacity: .65; margin-top: .2rem; }
+
+  .tool-grid { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .75rem; }
+  .tool-card a { display: block; padding: .85rem 1rem; border: 1px solid rgba(0,0,0,.12); border-radius: .6rem; text-decoration: none; height: 100%; }
+  .tool-name { display: block; }
+  .tool-name[data-en] { font-size: .8em; opacity: .6; margin-top: .1rem; }
+  .tool-note { display: block; font-size: .75rem; opacity: .6; margin-top: .4rem; }
+  .badges { display: block; margin-top: .5rem; }
+  .badge { display: inline-block; font-size: .65rem; margin-inline-end: .3rem; padding: .1rem .5rem; border-radius: 999px; }
+  .badge-new { background: rgba(30,110,200,.14); font-weight: 700; }
+  .badge-credit { background: rgba(0,0,0,.06); font-style: italic; }
+
+  .domain-disclaimer { margin-top: 2rem; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .domain-disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+  .back-to-index { display: inline-block; margin-top: 1.5rem; font-size: .85rem; text-decoration: none; }
+
+  .featured-article {
+		background: #f8f9fa;
+		border-radius: 16px;
+		padding: 2.5rem;
+		margin-top: 3rem;
+	}
+
+	.article-content {
+		max-width: 46rem;
+		margin: 0 auto;
+    line-height: 1.7;
+	}
+
+	.article-content h2 {
+		font-size: 1.75rem;
+		margin: 0 0 1rem;
+	}
+
+	.article-content h3 {
+		font-size: 1.25rem;
+		margin: 2rem 0 0.75rem;
+	}
+
+  .tool-name[data-en], .tool-note[data-en] { display: none; }
+  .tools-scope[data-lang="en"] .tool-name[data-ar], .tools-scope[data-lang="en"] .tool-note[data-ar] { display: none; }
+  .tools-scope[data-lang="en"] .tool-name[data-en], .tools-scope[data-lang="en"] .tool-note[data-en] { display: block; }
+  .tools-scope[data-lang="ar"] .tool-name[data-ar], .tools-scope[data-lang="ar"] .tool-note[data-ar] { display: block; }
+</style>

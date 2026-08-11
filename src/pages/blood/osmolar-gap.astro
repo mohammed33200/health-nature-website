@@ -1,0 +1,135 @@
+---
+// حاسبة الفجوة الأسمولية — Osmolar Gap
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الفجوة الأسمولية">
+  <ToolsShell>
+    <section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة الفجوة الأسمولية</span>
+      <span data-en>Osmolar Gap</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تقارن الأسمولية المقاسة فعليًا في الدم بالأسمولية المحسوبة من الصوديوم والجلوكوز واليوريا، والفرق بينهما يكشف عن مواد غير مقاسة في الدم.</span>
+      <span data-en>Compares the actual measured serum osmolality to the calculated osmolality from sodium, glucose, and urea — the difference reveals unmeasured substances in the blood.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>فجوة مرتفعة تشير لوجود مادة سامة غير مقاسة روتينيًا في الدم (كالميثانول أو الإيثيلين جلايكول)، وتُستخدم مع الفجوة الأنيونية معًا لتضييق نطاق التشخيص في حالات التسمم المشتبه بها.</span>
+      <span data-en>A high gap suggests an unmeasured toxic substance in the blood (like methanol or ethylene glycol), and is used together with the anion gap to narrow the diagnosis in suspected poisoning cases.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="og-form">
+    <label>
+      <span data-ar>الأسمولية المقاسة (مليوسمول/كجم)</span><span data-en>Measured osmolality (mOsm/kg)</span>
+      <input type="number" id="measured" min="250" max="400" required />
+    </label>
+    <label>
+      <span data-ar>الصوديوم (ملي مكافئ/لتر)</span><span data-en>Sodium (mEq/L)</span>
+      <input type="number" id="sodium" min="100" max="170" required />
+    </label>
+    <label>
+      <span data-ar>الجلوكوز (مجم/دل)</span><span data-en>Glucose (mg/dL)</span>
+      <input type="number" id="glucose" min="50" max="1000" required />
+    </label>
+    <label>
+      <span data-ar>يوريا الدم BUN (مجم/دل)</span><span data-en>Blood urea nitrogen (mg/dL)</span>
+      <input type="number" id="bun" min="1" max="200" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en>Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>الأسمولية المحسوبة: </span><span data-en>Calculated osmolality: </span>
+      <strong id="calc-out"></strong> mOsm/kg
+    </p>
+    <p class="result-line">
+      <span data-ar>الفجوة الأسمولية: </span><span data-en>Osmolar gap: </span>
+      <strong id="gap-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>التفسير: </span><span data-en>Interpretation: </span>
+      <strong id="interp-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula &amp; reference</span></h2>
+    <p class="formula">Calculated = 2×Na + Glucose/18 + BUN/2.8</p>
+    <ul class="ref-list">
+      <li><span data-ar>الفجوة الطبيعية: أقل من 10 مليوسمول/كجم</span><span data-en>Normal gap: &lt;10 mOsm/kg</span></li>
+      <li><span data-ar>فجوة أكبر من 10: تشير لوجود مادة تناضحية غير مقاسة</span><span data-en>Gap &gt;10: suggests an unmeasured osmotically active substance</span></li>
+    </ul>
+  </article>
+
+ <a class="back-link" href="/blood/">
+    <span data-ar>← رجوع لمجال تحاليل الدم</span>
+    <span data-en>← Back to Blood Tests &amp; Diagnostics</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("og-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const measured = Number((document.getElementById("measured") as HTMLInputElement).value);
+    const sodium = Number((document.getElementById("sodium") as HTMLInputElement).value);
+    const glucose = Number((document.getElementById("glucose") as HTMLInputElement).value);
+    const bun = Number((document.getElementById("bun") as HTMLInputElement).value);
+    if (!measured || !sodium || !glucose || !bun) return;
+
+    const calculated = 2 * sodium + glucose / 18 + bun / 2.8;
+    const gap = measured - calculated;
+
+    const interpAr = gap > 10 ? "مرتفعة — يُشتبه بمادة غير مقاسة" : "طبيعية";
+    const interpEn = gap > 10 ? "Elevated — suspect unmeasured substance" : "Normal";
+
+    (document.getElementById("calc-out") as HTMLElement).textContent = calculated.toFixed(1);
+    (document.getElementById("gap-out") as HTMLElement).textContent = gap.toFixed(1);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero .lang-en { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 .lang-en { opacity: .6; font-weight: 500; }
+  .info-block .lang-en { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list .lang-en { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button .lang-en { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line .lang-en { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

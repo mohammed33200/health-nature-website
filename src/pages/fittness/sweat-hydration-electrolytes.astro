@@ -1,0 +1,139 @@
+---
+// حاسبة العرق والترطيب والإلكتروليتات — Sweat, Hydration & Electrolytes
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة العرق والترطيب والإلكتروليتات">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة العرق والترطيب والإلكتروليتات</span>
+      <span data-en dir="ltr">Sweat, Hydration &amp; Electrolytes</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تحسب كمية السوائل المفقودة عبر العرق أثناء التمرين (من الفرق بين الوزن قبل وبعد، بعد احتساب أي سوائل شُربت أثناءه)، وتقترح كمية الماء والصوديوم والبوتاسيوم اللازمة للتعويض.</span>
+      <span data-en dir="ltr">Calculates fluid lost through sweat during exercise (from the weight difference before and after, accounting for any fluids consumed during it), and suggests the water, sodium, and potassium needed to replace it.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>فقدان الماء والأملاح معًا (وليس الماء فقط) هو سبب معظم حالات الشد العضلي والدوخة أثناء التمارين الطويلة أو في الجو الحار؛ التعويض الصحيح يحتاج الاثنين معًا.</span>
+      <span data-en dir="ltr">Losing water and salts together — not just water — is the main cause of muscle cramps and dizziness during long or hot-weather exercise; proper replacement needs both.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="sweat-form">
+    <label>
+      <span data-ar>الوزن قبل التمرين (كجم)</span><span data-en dir="ltr">Weight before exercise (kg)</span>
+      <input type="number" id="before" min="30" max="200" step="0.1" required />
+    </label>
+    <label>
+      <span data-ar>الوزن بعد التمرين (كجم)</span><span data-en dir="ltr">Weight after exercise (kg)</span>
+      <input type="number" id="after" min="30" max="200" step="0.1" required />
+    </label>
+    <label>
+      <span data-ar>مدة التمرين (دقائق)</span><span data-en dir="ltr">Exercise duration (minutes)</span>
+      <input type="number" id="duration" min="5" max="360" required />
+    </label>
+    <label>
+      <span data-ar>كمية الماء المشروبة أثناء التمرين (مل) — اختياري</span><span data-en dir="ltr">Fluid consumed during exercise (mL) — optional</span>
+      <input type="number" id="consumed" min="0" max="3000" />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>السوائل المفقودة (معدل العرق): </span><span data-en dir="ltr">Fluid lost (sweat rate): </span>
+      <strong id="loss-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>الماء الموصى بتعويضه خلال الساعتين القادمتين: </span><span data-en dir="ltr">Recommended water replacement over next 2h: </span>
+      <strong id="water-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>الصوديوم التقريبي المفقود: </span><span data-en dir="ltr">Approx. sodium lost: </span>
+      <strong id="sodium-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>البوتاسيوم التقريبي المفقود: </span><span data-en dir="ltr">Approx. potassium lost: </span>
+      <strong id="potassium-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المرجع</span><span data-en dir="ltr">Reference</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>التعويض الموصى به: 125–150% من السوائل المفقودة</span><span data-en dir="ltr">Recommended replacement: 125–150% of fluid lost</span></li>
+      <li><span data-ar>تركيز الصوديوم التقريبي في العرق: 500–700 مجم/لتر عرق</span><span data-en dir="ltr">Approximate sweat sodium concentration: 500–700 mg/L of sweat</span></li>
+      <li><span data-ar>تركيز البوتاسيوم التقريبي في العرق: 150–200 مجم/لتر عرق</span><span data-en dir="ltr">Approximate sweat potassium concentration: 150–200 mg/L of sweat</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/fittness/">
+    <span data-ar>← رجوع لمجال اللياقة</span>
+    <span data-en dir="ltr">← Back to Fitness</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("sweat-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const before = Number((document.getElementById("before") as HTMLInputElement).value);
+    const after = Number((document.getElementById("after") as HTMLInputElement).value);
+    const consumedMl = Number((document.getElementById("consumed") as HTMLInputElement).value) || 0;
+    if (!before || !after) return;
+
+    const weightLossKg = before - after;
+    const sweatLossL = weightLossKg + consumedMl / 1000;
+    const replacementL = sweatLossL * 1.375; // متوسط 125-150%
+
+    const sodiumMg = sweatLossL * 600;
+    const potassiumMg = sweatLossL * 175;
+
+    (document.getElementById("loss-out") as HTMLElement).textContent = `${(sweatLossL * 1000).toFixed(0)} mL`;
+    (document.getElementById("water-out") as HTMLElement).textContent = `${(replacementL * 1000).toFixed(0)} mL`;
+    (document.getElementById("sodium-out") as HTMLElement).textContent = `${sodiumMg.toFixed(0)} mg`;
+    (document.getElementById("potassium-out") as HTMLElement).textContent = `${potassiumMg.toFixed(0)} mg`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

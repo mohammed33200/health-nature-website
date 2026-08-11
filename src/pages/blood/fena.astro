@@ -1,0 +1,140 @@
+---
+// حاسبة الإخراج الجزئي للصوديوم — Fractional Excretion of Sodium (FeNa)
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الإخراج الجزئي للصوديوم">
+  <ToolsShell>
+    <section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة الإخراج الجزئي للصوديوم</span>
+      <span data-en>FeNa Calculator</span>
+    </h1>
+    <span class="badge badge-new">NEW</span>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تحسب النسبة المئوية للصوديوم المُرشَّح من الكلية والتي تُطرح فعليًا في البول، بالمقارنة بين صوديوم وكرياتينين البول والدم.</span>
+      <span data-en>Calculates the percentage of filtered sodium actually excreted in urine, by comparing urine and serum sodium and creatinine.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>تساعد على التفريق بين سبب الفشل الكلوي الحاد: هل هو "ما قبل الكلوي" (نقص حجم الدم، والكلية تحتفظ بالصوديوم بشكل طبيعي)، أم "كلوي داخلي" (تلف أنبوبي حاد، والكلية فقدت قدرتها على احتفاظ الصوديوم)؟ التمييز يوجه العلاج بشكل مختلف تمامًا.</span>
+      <span data-en>Helps differentiate the cause of acute kidney injury: "prerenal" (volume depletion, kidney normally retains sodium) versus "intrinsic renal" (acute tubular damage, kidney has lost its ability to retain sodium). The distinction leads to completely different management.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="fena-form">
+    <label>
+      <span data-ar>صوديوم البول (ملي مكافئ/لتر)</span><span data-en>Urine sodium (mEq/L)</span>
+      <input type="number" id="uNa" min="0" max="200" required />
+    </label>
+    <label>
+      <span data-ar>كرياتينين البول (مجم/دل)</span><span data-en>Urine creatinine (mg/dL)</span>
+      <input type="number" id="uCr" min="1" max="400" step="0.1" required />
+    </label>
+    <label>
+      <span data-ar>صوديوم الدم (ملي مكافئ/لتر)</span><span data-en>Serum sodium (mEq/L)</span>
+      <input type="number" id="sNa" min="100" max="170" required />
+    </label>
+    <label>
+      <span data-ar>كرياتينين الدم (مجم/دل)</span><span data-en>Serum creatinine (mg/dL)</span>
+      <input type="number" id="sCr" min="0.1" max="15" step="0.01" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en>Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>FeNa: </span>
+      <strong id="fena-out"></strong>%
+    </p>
+    <p class="result-line">
+      <span data-ar>التفسير: </span><span data-en>Interpretation: </span>
+      <strong id="interp-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula &amp; reference</span></h2>
+    <p class="formula">FeNa% = [(Urine Na × Serum Cr) / (Serum Na × Urine Cr)] × 100</p>
+    <ul class="ref-list">
+      <li><span data-ar>أقل من 1%: سبب ما قبل كلوي (نقص حجم)</span><span data-en>&lt;1%: prerenal cause (volume depletion)</span></li>
+      <li><span data-ar>1% – 2%: منطقة غير حاسمة</span><span data-en>1–2%: indeterminate zone</span></li>
+      <li><span data-ar>أكثر من 2%: سبب كلوي داخلي (مثل التلف الأنبوبي الحاد)</span><span data-en>&gt;2%: intrinsic renal cause (e.g. acute tubular necrosis)</span></li>
+    </ul>
+    <p class="note">
+      <span data-ar>غير موثوقة لدى مرضى استخدموا مدرات البول مؤخرًا.</span>
+      <span data-en>Unreliable in patients who have recently taken diuretics.</span>
+    </p>
+  </article>
+
+  <a class="back-link" href="/blood/">
+    <span data-ar>← رجوع لمجال تحاليل الدم</span>
+    <span data-en>← Back to Blood Tests &amp; Diagnostics</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("fena-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const uNa = Number((document.getElementById("uNa") as HTMLInputElement).value);
+    const uCr = Number((document.getElementById("uCr") as HTMLInputElement).value);
+    const sNa = Number((document.getElementById("sNa") as HTMLInputElement).value);
+    const sCr = Number((document.getElementById("sCr") as HTMLInputElement).value);
+    if (!uCr || !sNa) return;
+
+    const fena = ((uNa * sCr) / (sNa * uCr)) * 100;
+    let interpAr = "", interpEn = "";
+    if (fena < 1) { interpAr = "ما قبل كلوي"; interpEn = "Prerenal"; }
+    else if (fena <= 2) { interpAr = "غير حاسم"; interpEn = "Indeterminate"; }
+    else { interpAr = "كلوي داخلي"; interpEn = "Intrinsic renal"; }
+
+    (document.getElementById("fena-out") as HTMLElement).textContent = fena.toFixed(2);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; }
+  .tool-hero .lang-en { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-new { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(30,110,200,.14); font-weight: 700; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 .lang-en { opacity: .6; font-weight: 500; }
+  .info-block .lang-en { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list .lang-en { display: block; font-size: .85em; opacity: .65; }
+  .note { font-size: .85rem; opacity: .75; margin-top: .75rem; }
+  .note .lang-en { display: block; margin-top: .2rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button .lang-en { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line .lang-en { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

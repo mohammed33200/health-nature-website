@@ -1,0 +1,148 @@
+---
+// حاسبة خطورة تسمم الباراسيتامول — Rumack-Matthew Nomogram
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة خطورة تسمم الباراسيتامول">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة خطورة تسمم الباراسيتامول</span>
+          <span data-en>Rumack-Matthew Nomogram</span>
+        </h1>
+        <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+        <p class="credit-line">Rumack &amp; Matthew, 1975</p>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تقارن مستوى الباراسيتامول في الدم بخط العلاج المرجعي حسب عدد الساعات منذ تناول جرعة زائدة واحدة حادة، لتحديد الحاجة لترياق N-acetylcysteine.</span>
+          <span data-en>Compares the measured blood paracetamol level to the reference treatment line, based on hours since a single acute overdose, to determine the need for N-acetylcysteine antidote.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>التسمم بالباراسيتامول من أكثر أسباب فشل الكبد الحاد قابلية للعلاج إن أُعطي الترياق مبكرًا؛ المخطط يحدد بدقة من يحتاج العلاج، مما يمنع علاجًا غير ضروري أو تأخيرًا خطيرًا.</span>
+          <span data-en>Paracetamol toxicity is one of the most treatable causes of acute liver failure if the antidote is given early; the nomogram precisely identifies who needs treatment, preventing both unnecessary treatment and dangerous delay.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="rumack-form">
+        <label>
+          <span data-ar>مستوى الباراسيتامول (مايكروجرام/مل)</span><span data-en>Paracetamol level (mcg/mL)</span>
+          <input type="number" id="level" min="0" max="500" step="1" required />
+        </label>
+        <label>
+          <span data-ar>الساعات منذ تناول الجرعة</span><span data-en>Hours since ingestion</span>
+          <input type="number" id="hours" min="1" max="24" step="0.5" required />
+        </label>
+        <button type="submit">
+          <span data-ar>قيّم</span><span data-en>Assess</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line" id="early-warning" hidden>
+          <span data-ar>⚠ المخطط غير صالح قبل 4 ساعات من التناول — أعد القياس عند الساعة الرابعة.</span>
+          <span data-en>⚠ Nomogram is not valid before 4 hours post-ingestion — recheck level at 4 hours.</span>
+        </p>
+        <p class="result-line" id="normal-result">
+          <span data-ar>خط العلاج المرجعي عند هذا التوقيت: </span><span data-en>Treatment line at this time: </span>
+          <strong id="line-out"></strong> mcg/mL
+        </p>
+        <p class="result-line" id="normal-interp">
+          <span data-ar>التفسير: </span><span data-en>Interpretation: </span>
+          <strong id="interp-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي / المرجع</span><span data-en>Reference</span></h2>
+        <ul class="ref-list">
+          <li><span data-ar>خط العلاج التقريبي: 150 مايكروجرام/مل عند الساعة 4، ينخفض للنصف كل 4 ساعات تقريبًا</span><span data-en>Approximate treatment line: 150 mcg/mL at 4 hours, roughly halving every 4 hours</span></li>
+          <li><span data-ar>لا يُستخدم المخطط لجرعات متكررة أو غير محددة التوقيت — يحتاج تقييمًا مختلفًا</span><span data-en>The nomogram does not apply to repeated or unknown-timing ingestions — these need a different assessment</span></li>
+        </ul>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>هذه أداة مرجعية تعليمية فقط؛ قرار إعطاء الترياق يجب أن يتخذه طبيب طوارئ أو سموم بناءً على الصورة السريرية الكاملة.</span>
+        <span data-en>This is a reference/educational tool only; the decision to give the antidote must be made by an emergency or toxicology physician based on the full clinical picture.</span>
+      </p>
+
+      <a class="back-link" href="/doses/">
+        <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+        <span data-en>← Back to Medication Dosing</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("rumack-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const level = Number((document.getElementById("level") as HTMLInputElement).value);
+    const hours = Number((document.getElementById("hours") as HTMLInputElement).value);
+    if (level === undefined || !hours) return;
+
+    const earlyWarning = document.getElementById("early-warning") as HTMLElement;
+    const normalResult = document.getElementById("normal-result") as HTMLElement;
+    const normalInterp = document.getElementById("normal-interp") as HTMLElement;
+
+    if (hours < 4) {
+      earlyWarning.hidden = false;
+      normalResult.hidden = true;
+      normalInterp.hidden = true;
+    } else {
+      earlyWarning.hidden = true;
+      normalResult.hidden = false;
+      normalInterp.hidden = false;
+
+      const treatmentLine = 150 * Math.pow(2, -(hours - 4) / 4);
+      let interpAr = "", interpEn = "";
+      if (level >= treatmentLine) { interpAr = "فوق خط العلاج — يُستدعى الترياق"; interpEn = "Above treatment line — antidote indicated"; }
+      else { interpAr = "تحت خط العلاج"; interpEn = "Below treatment line"; }
+
+      (document.getElementById("line-out") as HTMLElement).textContent = treatmentLine.toFixed(1);
+      (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    }
+
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: .3rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(180,90,0,.12); }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; width: 100%; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .disclaimer { margin: 1.5rem 0; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

@@ -1,0 +1,132 @@
+---
+// حاسبة العجز المائي — Water Deficit Calculator
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة العجز المائي">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة العجز المائي</span>
+          <span data-en>Water Deficit Calculator</span>
+        </h1>
+        <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحسب كمية الماء الصافي (بدون أملاح) المفقودة من الجسم عند ارتفاع الصوديوم (الجفاف مفرط التوتر)، بناءً على وزن المريض والصوديوم الحالي.</span>
+          <span data-en>Calculates the amount of pure free water (without salt) lost from the body when sodium is elevated (hypertonic dehydration), based on patient weight and current sodium.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>يوجّه حجم المحلول المطلوب لتصحيح ارتفاع الصوديوم، مع الأخذ بالحسبان أن التصحيح السريع جدًا لارتفاع الصوديوم المزمن قد يسبب وذمة دماغية خطيرة، لذا يُوزَّع التعويض عادة على 48 ساعة أو أكثر.</span>
+          <span data-en>Guides the fluid volume needed to correct hyperosmolar sodium, keeping in mind that correcting chronic hypernatremia too quickly can cause dangerous cerebral edema — so replacement is typically spread over 48 hours or more.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="wd-form">
+        <label>
+          <span data-ar>الوزن (كجم)</span><span data-en>Weight (kg)</span>
+          <input type="number" id="weight" min="20" max="200" step="0.1" required />
+        </label>
+        <label>
+          <span data-ar>الفئة العمرية والجنس</span><span data-en>Age group &amp; sex</span>
+          <select id="tbwFactor">
+            <option value="0.6">ذكر بالغ / Adult male (TBW×0.6)</option>
+            <option value="0.5">أنثى بالغة / Adult female (TBW×0.5)</option>
+            <option value="0.5">ذكر مسن / Elderly male (TBW×0.5)</option>
+            <option value="0.45">أنثى مسنة / Elderly female (TBW×0.45)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>الصوديوم الحالي (ملي مكافئ/لتر)</span><span data-en>Current sodium (mEq/L)</span>
+          <input type="number" id="serumNa" min="140" max="200" required />
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>العجز المائي التقديري: </span><span data-en>Estimated water deficit: </span>
+          <strong id="deficit-out"></strong> L
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula &amp; reference</span></h2>
+        <p class="formula">Water Deficit (L) = TBW × [(Serum Na / 140) − 1]</p>
+        <ul class="ref-list">
+          <li><span data-ar>المدى الطبيعي للصوديوم: 135 – 145 ملي مكافئ/لتر</span><span data-en>Normal sodium range: 135–145 mEq/L</span></li>
+          <li><span data-ar>مُعدَّل التعويض الآمن الشائع: لا يتجاوز 10 ملي مكافئ/لتر انخفاضًا خلال 24 ساعة</span><span data-en>Common safe correction rate: no more than 10 mEq/L drop over 24 hours</span></li>
+        </ul>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>هذا تقدير للحجم الكلي المطلوب فقط؛ سرعة إعطائه يجب أن يحددها الطبيب المعالج مع مراقبة الصوديوم كل عدة ساعات.</span>
+        <span data-en>This estimates only the total volume needed; the rate of administration must be set by the treating physician with sodium monitoring every few hours.</span>
+      </p>
+
+      <a class="back-link" href="/doses/">
+        <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+        <span data-en>← Back to Medication Dosing</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("wd-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    const factor = Number((document.getElementById("tbwFactor") as HTMLSelectElement).value);
+    const serumNa = Number((document.getElementById("serumNa") as HTMLInputElement).value);
+    if (!weight || !serumNa) return;
+
+    const tbw = weight * factor;
+    const deficit = tbw * (serumNa / 140 - 1);
+
+    (document.getElementById("deficit-out") as HTMLElement).textContent = deficit.toFixed(1);
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(180,90,0,.12); }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .disclaimer { margin: 1.5rem 0; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

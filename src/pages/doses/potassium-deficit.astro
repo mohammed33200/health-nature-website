@@ -1,0 +1,122 @@
+---
+// حاسبة عجز البوتاسيوم — Potassium Deficit
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة عجز البوتاسيوم">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة عجز البوتاسيوم</span>
+          <span data-en>Potassium Deficit</span>
+        </h1>
+        <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تقدّر إجمالي النقص التقريبي للبوتاسيوم في الجسم كله (وليس فقط في الدم)، بناءً على مدى انخفاض قيمة البوتاسيوم عن الطبيعي ووزن المريض.</span>
+          <span data-en>Estimates the approximate total-body potassium deficit (not just what's in the blood), based on how far the measured potassium is below normal and the patient's weight.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>أغلب البوتاسيوم داخل الخلايا وليس في الدم، فانخفاض بسيط في قيمة الدم قد يعكس نقصًا كليًا كبيرًا جدًا. هذا التقدير يساعد على التخطيط لخطة تعويض واقعية بدل الاعتماد على رقم الدم وحده.</span>
+          <span data-en>Most potassium is intracellular, not in the blood, so a small drop in the blood value can reflect a much larger total-body deficit. This estimate helps plan a realistic replacement strategy instead of relying on the blood number alone.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="k-form">
+        <label>
+          <span data-ar>البوتاسيوم المقاس (ملي مكافئ/لتر)</span><span data-en>Measured potassium (mEq/L)</span>
+          <input type="number" id="potassium" min="1" max="4" step="0.1" required />
+        </label>
+        <label>
+          <span data-ar>الوزن (كجم)</span><span data-en>Weight (kg)</span>
+          <input type="number" id="weight" min="20" max="200" step="0.1" required />
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>النقص الكلي التقديري: </span><span data-en>Estimated total deficit: </span>
+          <strong id="deficit-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula &amp; reference</span></h2>
+        <p class="formula">Deficit (mEq) ≈ (4.0 − K measured) × Weight (kg) × 0.3–0.4</p>
+        <ul class="ref-list">
+          <li><span data-ar>المدى الطبيعي للبوتاسيوم: 3.5 – 5.0 ملي مكافئ/لتر</span><span data-en>Normal potassium range: 3.5–5.0 mEq/L</span></li>
+          <li><span data-ar>هذا تقدير تقريبي فقط، والقيم الفعلية شديدة التباين بين الأفراد</span><span data-en>This is only a rough estimate; actual values vary widely between individuals</span></li>
+        </ul>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>التعويض السريع أو الزائد للبوتاسيوم خطر على القلب؛ يجب أن تتم إعادة التعويض تدريجيًا مع مراقبة تخطيط القلب والبوتاسيوم بشكل متكرر تحت إشراف طبي.</span>
+        <span data-en>Rapid or excessive potassium replacement is dangerous for the heart; replacement must be gradual with frequent ECG and potassium monitoring under medical supervision.</span>
+      </p>
+
+      <a class="back-link" href="/doses/">
+        <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+        <span data-en>← Back to Medication Dosing</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("k-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const k = Number((document.getElementById("potassium") as HTMLInputElement).value);
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    if (!k || !weight) return;
+
+    const low = (4.0 - k) * weight * 0.3;
+    const high = (4.0 - k) * weight * 0.4;
+
+    (document.getElementById("deficit-out") as HTMLElement).textContent = `${low.toFixed(0)} – ${high.toFixed(0)} mEq`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(180,90,0,.12); }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .disclaimer { margin: 1.5rem 0; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

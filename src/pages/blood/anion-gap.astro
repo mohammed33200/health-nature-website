@@ -1,0 +1,151 @@
+---
+// حاسبة الفجوة الأنيونية — Anion Gap Calculator
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الفجوة الأنيونية">
+  <ToolsShell>
+    <section class="container tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة الفجوة الأنيونية</span>
+          <span data-en>Anion Gap Calculator</span>
+        </h1>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحسب الفرق بين الشوارد الموجبة الرئيسية (الصوديوم) والشوارد السالبة المقاسة (الكلوريد والبيكربونات)، وهو فرق يعكس وجود أحماض أو شوارد غير مقاسة في الدم.</span>
+          <span data-en>Calculates the difference between the main measured cation (sodium) and the measured anions (chloride and bicarbonate) — a gap that reflects unmeasured acids or ions in the blood.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>تساعد على تمييز سبب الحموضة الاستقلابية: فجوة مرتفعة تشير لتراكم أحماض (كيتونات، لاكتات، تسمم دوائي)، بينما فجوة طبيعية تشير لفقد بيكربونات مباشر (إسهال، بعض أمراض الكلى).</span>
+          <span data-en>Helps distinguish the cause of metabolic acidosis: a high gap suggests acid accumulation (ketones, lactate, toxic ingestion), while a normal gap suggests direct bicarbonate loss (diarrhea, certain kidney conditions).</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="ag-form">
+        <label>
+          <span data-ar>الصوديوم (ملي مكافئ/لتر)</span><span data-en>Sodium (mEq/L)</span>
+          <input type="number" id="sodium" min="100" max="170" required />
+        </label>
+        <label>
+          <span data-ar>الكلوريد (ملي مكافئ/لتر)</span><span data-en>Chloride (mEq/L)</span>
+          <input type="number" id="chloride" min="70" max="130" required />
+        </label>
+        <label>
+          <span data-ar>البيكربونات (ملي مكافئ/لتر)</span><span data-en>Bicarbonate (mEq/L)</span>
+          <input type="number" id="bicarb" min="5" max="45" required />
+        </label>
+        <label>
+          <span data-ar>الألبومين (جم/دل) — اختياري للتصحيح</span><span data-en>Albumin (g/dL) — optional correction</span>
+          <input type="number" id="albumin" min="1" max="6" step="0.1" />
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>الفجوة الأنيونية: </span><span data-en>Anion gap: </span>
+          <strong id="ag-out" class="reading"></strong> mEq/L
+        </p>
+        <p id="corrected-line" style="display: none;">
+          <span data-ar>الفجوة المصححة بالألبومين: </span><span data-en>Albumin-corrected gap: </span>
+          <strong id="ag-corrected-out" class="reading"></strong> mEq/L
+        </p>
+        <p>
+          <span data-ar>التفسير: </span><span data-en>Interpretation: </span>
+          <strong id="interp-out" class="reading"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula & reference</span></h2>
+        <p class="formula">Anion Gap = Na − (Cl + HCO3)</p>
+        <ul class="ref-list">
+          <li><span data-ar>طبيعي: 8 – 12 ملي مكافئ/لتر</span><span data-en>Normal: 8–12 mEq/L</span></li>
+          <li><span data-ar>تصحيح الألبومين: أضف 2.5 لكل 1 جم/دل نقص عن 4</span><span data-en>Albumin correction: add 2.5 for each 1 g/dL below 4</span></li>
+        </ul>
+      </article>
+
+      <a class="back-link" href="/blood/">
+        <span data-i18n data-ar="← رجوع لمجال تحاليل الدم" data-en="← Back to Blood Tests & Diagnostics">← رجوع لمجال تحاليل الدم</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("ag-form") as HTMLFormElement;
+  const resultDiv = document.getElementById("result") as HTMLElement;
+  const agOut = document.getElementById("ag-out") as HTMLElement;
+  const interpOut = document.getElementById("interp-out") as HTMLElement;
+  const correctedLine = document.getElementById("corrected-line") as HTMLElement;
+  const agCorrectedOut = document.getElementById("ag-corrected-out") as HTMLElement;
+
+  function calculateAndDisplay() {
+      const sodium = Number((document.getElementById("sodium") as HTMLInputElement).value);
+      const chloride = Number((document.getElementById("chloride") as HTMLInputElement).value);
+      const bicarb = Number((document.getElementById("bicarb") as HTMLInputElement).value);
+      const albuminVal = (document.getElementById("albumin") as HTMLInputElement).value;
+      if (!sodium || !chloride || !bicarb) return;
+
+      const lang = document.documentElement.lang || 'ar';
+      const ag = sodium - (chloride + bicarb);
+      
+      let interp = { ar: "", en: "" };
+      if (ag > 12) { interp = { ar: "فجوة مرتفعة", en: "High gap" }; }
+      else if (ag < 8) { interp = { ar: "فجوة منخفضة (نادرة)", en: "Low gap (uncommon)" }; }
+      else { interp = { ar: "طبيعية", en: "Normal" }; }
+
+      agOut.textContent = ag.toFixed(1);
+      interpOut.textContent = interp[lang];
+
+      if (albuminVal) {
+        const albumin = Number(albuminVal);
+        const corrected = ag + 2.5 * (4 - albumin);
+        agCorrectedOut.textContent = corrected.toFixed(1);
+        correctedLine.style.display = 'block';
+      } else {
+        correctedLine.style.display = 'none';
+      }
+
+      resultDiv.classList.add('show');
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    calculateAndDisplay();
+  });
+
+  window.addEventListener('languageChanged', () => {
+    if (resultDiv.classList.contains('show')) {
+      calculateAndDisplay();
+    }
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .formula { font-family: monospace; background: var(--paper-alt); padding: .6rem .8rem; border-radius: .4rem; font-size: .9rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

@@ -5,15 +5,16 @@ import Footer from '../components/Footer.astro';
 interface Props {
 	title?: string;
 	description?: string;
+	lang?: 'ar' | 'en';
 }
 
-const { title = 'SHYM356.ORG', description = "Discover our free, privacy-first health applications and tools." } = Astro.props;
+const { title = 'SHYM356.ORG', description = "Discover our free, privacy-first health applications and tools.", lang = 'ar' } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
 	<head>
-		<meta charset="UTF-8" />
+		<meta charset="utf-8" />
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />

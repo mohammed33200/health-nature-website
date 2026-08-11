@@ -1,0 +1,136 @@
+---
+// حاسبة تصحيح فترة QT — QTc (Bazett)
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة تصحيح فترة QT">
+  <ToolsShell>
+    <section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة تصحيح فترة QT</span>
+      <span data-en>QTc (Bazett)</span>
+    </h1>
+    <p class="credit-line">Bazett's Formula, 1920</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تصحح فترة QT المقاسة على تخطيط القلب لتأخذ في الحسبان معدل ضربات القلب، لأن فترة QT الخام تتغير طبيعيًا مع سرعة القلب.</span>
+      <span data-en>Corrects the measured QT interval on an ECG to account for heart rate, since the raw QT interval naturally changes with heart rate.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>إطالة QTc خطر لأنها تزيد احتمال اضطراب نظم قلبي قاتل (Torsades de Pointes)؛ تُفحص هذه القيمة قبل وأثناء إعطاء أدوية كثيرة معروفة بإطالة QT.</span>
+      <span data-en>A prolonged QTc is dangerous because it increases the risk of a fatal arrhythmia (Torsades de Pointes); this value is checked before and during many medications known to prolong QT.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="qtc-form">
+    <label>
+      <span data-ar>فترة QT المقاسة (مللي ثانية)</span><span data-en>Measured QT (ms)</span>
+      <input type="number" id="qt" min="200" max="700" required />
+    </label>
+    <label>
+      <span data-ar>فترة RR (مللي ثانية) — أو أدخل النبض بدلًا منها</span><span data-en>RR interval (ms) — or enter heart rate instead</span>
+      <input type="number" id="rr" min="300" max="2000" />
+    </label>
+    <label>
+      <span data-ar>أو: معدل النبض (نبضة/دقيقة)</span><span data-en>Or: heart rate (bpm)</span>
+      <input type="number" id="hr" min="30" max="220" />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en>Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>QTc: </span>
+      <strong id="qtc-out"></strong> ms
+    </p>
+    <p class="result-line">
+      <span data-ar>التفسير: </span><span data-en>Interpretation: </span>
+      <strong id="interp-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula &amp; reference</span></h2>
+    <p class="formula">QTc = QT / √(RR in seconds)</p>
+    <ul class="ref-list">
+      <li><span data-ar>طبيعي: أقل من 440 مللي ثانية (رجال) / 460 (نساء)</span><span data-en>Normal: &lt;440 ms (men) / &lt;460 ms (women)</span></li>
+      <li><span data-ar>مطوّل بوضوح ومقلق: أكثر من 500 مللي ثانية</span><span data-en>Clearly prolonged and concerning: &gt;500 ms</span></li>
+    </ul>
+    <p class="note">
+      <span data-ar>معادلة Bazett تبالغ في التصحيح عند نبض سريع جدًا أو بطيء جدًا؛ تُستخدم معادلات أخرى (Fridericia) في تلك الحالات.</span>
+      <span data-en>Bazett's formula over-corrects at very fast or very slow heart rates; other formulas (Fridericia) are used in those cases.</span>
+    </p>
+  </article>
+
+ <a class="back-link" href="/blood/">
+    <span data-ar>← رجوع لمجال تحاليل الدم</span>
+    <span data-en>← Back to Blood Tests &amp; Diagnostics</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("qtc-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const qt = Number((document.getElementById("qt") as HTMLInputElement).value);
+    let rr = Number((document.getElementById("rr") as HTMLInputElement).value);
+    const hr = Number((document.getElementById("hr") as HTMLInputElement).value);
+    if (!qt) return;
+    if (!rr && hr) rr = 60000 / hr;
+    if (!rr) return;
+
+    const qtc = qt / Math.sqrt(rr / 1000);
+
+    let interpAr = "", interpEn = "";
+    if (qtc < 440) { interpAr = "طبيعي"; interpEn = "Normal"; }
+    else if (qtc <= 500) { interpAr = "مطوّل قليلًا"; interpEn = "Mildly prolonged"; }
+    else { interpAr = "مطوّل بوضوح — خطر مرتفع"; interpEn = "Clearly prolonged — high risk"; }
+
+    (document.getElementById("qtc-out") as HTMLElement).textContent = qtc.toFixed(0);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero .lang-en { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 .lang-en { opacity: .6; font-weight: 500; }
+  .info-block .lang-en { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .9rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list .lang-en { display: block; font-size: .85em; opacity: .65; }
+  .note { font-size: .85rem; opacity: .75; margin-top: .75rem; }
+  .note .lang-en { display: block; margin-top: .2rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button .lang-en { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line .lang-en { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

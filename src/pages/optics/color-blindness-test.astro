@@ -1,0 +1,240 @@
+---
+// اختبار تمييز الألوان — لوحات نقطية مولّدة برمجياً
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Color Vision Test">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>اختبار تمييز الألوان</span>
+        <span data-en>Color Vision Test</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>لوحات مكوّنة من نقاط ملونة متداخلة تُخفي رقماً بداخلها. حدد الرقم الذي تراه في كل لوحة لتحصل على تقدير مبدئي حول قدرتك على تمييز الألوان.</span>
+        <span data-en>Plates made of interlocking colored dots hide a number inside. Identify the number you see in each plate to get a preliminary estimate of your color vision.</span>
+      </p>
+    </div>
+
+    <div class="calc-card">
+      <ol class="steps">
+        <li><span data-ar>اجلس في إضاءة نهارية أو بيضاء جيدة، وتجنّب الإضاءة الملونة أو الخافتة جداً.</span><span data-en>Sit in good daylight or white lighting, and avoid colored or very dim light.</span></li>
+        <li><span data-ar>انظر إلى كل لوحة من مسافة مريحة، واكتب الرقم الذي تراه بسرعة دون تفكير طويل.</span><span data-en>Look at each plate from a comfortable distance and type the number you see quickly, without overthinking.</span></li>
+        <li><span data-ar>بعد 8 لوحات، ستحصل على تقييم إجمالي لنتيجتك.</span><span data-en>After 8 plates, you'll get an overall assessment of your result.</span></li>
+      </ol>
+
+      <p id="plateCounter"></p>
+      <div class="plate-wrap">
+        <canvas id="plateCanvas" width="300" height="300" aria-label="A plate of colored dots containing a number"></canvas>
+      </div>
+
+      <form id="plateForm" class="plate-form">
+        <div class="field">
+          <label for="plateAnswer">
+            <span data-ar>ما الرقم الذي تراه؟ (اكتب "لا شيء" إن لم تلاحظ رقماً)</span>
+            <span data-en>What number do you see? (type "none" if you don't notice one)</span>
+          </label>
+          <input type="text" id="plateAnswer" name="plateAnswer" inputmode="numeric" autocomplete="off" placeholder="12" />
+        </div>
+        <button type="submit" class="btn-calc"><span data-ar>التالي</span><span data-en>Next</span></button>
+      </form>
+
+      <div class="result" id="plateResultBox">
+        <p class="reading" id="plateResultTitle"></p>
+        <span class="badge" id="plateResultBadge"></span>
+        <p id="plateResultText"></p>
+        <button type="button" class="btn-ghost" id="plateRetry" style="margin-top:10px;">
+          <span data-ar>إعادة الاختبار</span><span data-en>Retry</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>كيف يعمل هذا الاختبار؟</span><span data-en>How does this test work?</span></h2>
+      <p>
+        <span data-ar>يعتمد المبدأ على إخفاء رقم داخل مساحة من النقاط الملونة، بحيث تختلف نقاط الرقم عن نقاط الخلفية في تدرج اللون لا في السطوع، فيسهل تمييزها على من يملك رؤية ألوان طبيعية، بينما تندمج مع الخلفية لدى من يعاني صعوبة في تمييز بعض الألوان.</span>
+        <span data-en>The principle hides a number within an area of colored dots, so the number's dots differ from the background dots in hue rather than brightness — easy to spot for typical color vision, but blending into the background for those with difficulty distinguishing certain colors.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذه لوحات مولَّدة برمجياً لأغراض توعوية وتعليمية
+        فقط، وهي محاكاة مبسّطة وليست نسخة معتمدة سريرياً من اختبار إيشيهارا الرسمي، وليست
+        نتيجة نهائية. لتشخيص دقيق لعمى الألوان، يُرجى إجراء الاختبار المعتمد لدى طبيب
+        عيون أو أخصائي بصريات.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> These plates are procedurally generated for awareness and
+        educational purposes only — a simplified simulation, not a clinically validated Ishihara
+        test, and not a final result. For an accurate color blindness diagnosis, please take a
+        certified test with an eye doctor or optometrist.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  const FONT = {
+    '0': ['01110','10001','10001','10001','10001','10001','01110'],
+    '1': ['00100','01100','00100','00100','00100','00100','01110'],
+    '2': ['01110','10001','00001','00010','00100','01000','11111'],
+    '3': ['11111','00010','00100','00010','00001','10001','01110'],
+    '4': ['00010','00110','01010','10010','11111','00010','00010'],
+    '5': ['11111','10000','11110','00001','00001','10001','01110'],
+    '6': ['00110','01000','10000','11110','10001','10001','01110'],
+    '7': ['11111','00001','00010','00100','01000','01000','01000'],
+    '8': ['01110','10001','10001','01110','10001','10001','01110'],
+    '9': ['01110','10001','10001','01111','00001','00010','01100'],
+  };
+
+  const themes = [
+    { bg: ['#E4A672','#D9975F','#C98A4E','#EFB583'], fg: ['#7FA65C','#8CB369','#6E9552','#9BBB74'] },
+    { bg: ['#8CB369','#7FA65C','#9BBB74','#6E9552'], fg: ['#D9975F','#C4653A','#E4A672','#B85C39'] },
+    { bg: ['#C9A0DC','#B98CCB','#D6B3E6','#AA7BC0'], fg: ['#7FA6A0','#6C918B','#8FBBB4','#5C7F79'] },
+    { bg: ['#7FA6A0','#6C918B','#8FBBB4','#5C7F79'], fg: ['#C9A0DC','#B98CCB','#D6B3E6','#AA7BC0'] },
+  ];
+
+  const plates = [
+    { answer: '12', theme: 0 }, { answer: '8', theme: 1 }, { answer: '29', theme: 0 },
+    { answer: '5', theme: 1 }, { answer: '3', theme: 2 }, { answer: '15', theme: 0 },
+    { answer: '74', theme: 1 }, { answer: '6', theme: 3 },
+  ];
+
+  function buildGrid(digits) {
+    const rows = 7;
+    const glyphs = digits.split('').map((d) => FONT[d] || FONT['0']);
+    const grid = [];
+    for (let r = 0; r < rows; r++) {
+      let rowStr = '';
+      glyphs.forEach((g, i) => { rowStr += g[r]; if (i < glyphs.length - 1) rowStr += '0'; });
+      grid.push(rowStr);
+    }
+    return { grid, cols: grid[0].length, rows };
+  }
+
+  function jitterColor(hex, amount) {
+    const c = hex.replace('#', '');
+    const r = parseInt(c.substring(0, 2), 16), g = parseInt(c.substring(2, 4), 16), b = parseInt(c.substring(4, 6), 16);
+    const j = () => Math.max(0, Math.min(255, Math.round((Math.random() - 0.5) * amount)));
+    return `rgb(${Math.max(0,Math.min(255,r+j()))},${Math.max(0,Math.min(255,g+j()))},${Math.max(0,Math.min(255,b+j()))})`;
+  }
+
+  function renderPlate(canvas, plateIndex) {
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    const plate = plates[plateIndex];
+    const theme = themes[plate.theme];
+    const { grid, cols, rows } = buildGrid(plate.answer);
+    const cx = W / 2, cy = H / 2, R = W / 2 - 4;
+    const patternW = R * 1.55, patternH = patternW * (rows / cols);
+    const left = cx - patternW / 2, top = cy - patternH / 2;
+
+    for (let i = 0; i < 1600; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = R * Math.sqrt(Math.random());
+      const x = cx + radius * Math.cos(angle), y = cy + radius * Math.sin(angle);
+      let filled = false;
+      if (x >= left && x <= left + patternW && y >= top && y <= top + patternH) {
+        const col = Math.min(cols - 1, Math.floor(((x - left) / patternW) * cols));
+        const row = Math.min(rows - 1, Math.floor(((y - top) / patternH) * rows));
+        filled = grid[row][col] === '1';
+      }
+      const palette = filled ? theme.fg : theme.bg;
+      ctx.fillStyle = jitterColor(palette[Math.floor(Math.random() * palette.length)], 26);
+      ctx.beginPath();
+      ctx.arc(x, y, 2.6 + Math.random() * 3.6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  const canvas = document.getElementById('plateCanvas') as HTMLCanvasElement;
+  const counter = document.getElementById('plateCounter');
+  const form = document.getElementById('plateForm') as HTMLFormElement;
+  const answerInput = document.getElementById('plateAnswer') as HTMLInputElement;
+  const box = document.getElementById('plateResultBox');
+  const title = document.getElementById('plateResultTitle');
+  const badge = document.getElementById('plateResultBadge');
+  const text = document.getElementById('plateResultText');
+  const retryBtn = document.getElementById('plateRetry');
+
+  let current = 0, correctCount = 0;
+
+  function start() {
+    current = 0; correctCount = 0;
+    box.classList.remove('show');
+    form.hidden = false;
+    (canvas.closest('.plate-wrap') as HTMLElement).hidden = false;
+    counter.hidden = false;
+    showPlate();
+  }
+
+  function showPlate() {
+    counter.textContent = t(getLang(), { ar: `اللوحة ${current + 1} من ${plates.length}`, en: `Plate ${current + 1} of ${plates.length}` });
+    answerInput.value = '';
+    renderPlate(canvas, current);
+    answerInput.focus();
+  }
+
+  function finish() {
+    (canvas.closest('.plate-wrap') as HTMLElement).hidden = true;
+    form.hidden = true;
+    counter.hidden = true;
+    const lang = getLang();
+    let cls, badgeText, resultTitle, resultText;
+    if (correctCount >= 7) {
+      cls = 'badge-ok'; badgeText = { ar: 'طبيعي على الأرجح', en: 'Likely normal' };
+      resultTitle = { ar: `${correctCount} من ${plates.length} إجابات صحيحة`, en: `${correctCount} of ${plates.length} correct` };
+      resultText = { ar: 'تمكّنت من قراءة معظم الأرقام بشكل صحيح، وهذا مؤشر جيد على رؤية ألوان طبيعية في هذا الاختبار المبسط. إن احتجت تأكيداً رسمياً (لعمل أو ترخيص قيادة مثلاً)، يقدّمه طبيب عيون أو أخصائي بصريات عبر اختبار معتمد.', en: 'You read most of the numbers correctly, a good sign of normal color vision on this simplified test. If you need formal confirmation (for a job or driving license, for example), an eye doctor or optometrist can provide it via a certified test.' };
+    } else if (correctCount >= 4) {
+      cls = 'badge-warn'; badgeText = { ar: 'غير حاسم', en: 'Inconclusive' };
+      resultTitle = { ar: `${correctCount} من ${plates.length} إجابات صحيحة`, en: `${correctCount} of ${plates.length} correct` };
+      resultText = { ar: 'واجهت صعوبة في بعض اللوحات. قد يكون هذا طبيعياً (إعدادات الشاشة أو تسرّع) أو مؤشراً خفيفاً. يُفضّل إجراء اختبار إيشيهارا معتمد لتأكيد النتيجة.', en: 'You had difficulty with some plates. This could be normal (screen settings or rushed answers) or a mild indicator. A certified Ishihara test is best to confirm.' };
+    } else {
+      cls = 'badge-danger'; badgeText = { ar: 'صعوبة ملحوظة', en: 'Notable difficulty' };
+      resultTitle = { ar: `${correctCount} من ${plates.length} إجابات صحيحة`, en: `${correctCount} of ${plates.length} correct` };
+      resultText = { ar: 'واجهت صعوبة في قراءة معظم اللوحات، وهذا قد يشير لاحتمال ضعف في تمييز بعض الألوان. يُنصح بإجراء اختبار إيشيهارا معتمد لدى طبيب عيون أو أخصائي بصريات لتأكيد النتيجة رسمياً.', en: 'You had difficulty reading most of the plates, which may suggest reduced ability to distinguish certain colors. A certified Ishihara test with an eye doctor or optometrist is recommended to formally confirm the result.' };
+    }
+    badge.className = 'badge ' + cls;
+    badge.textContent = t(lang, badgeText);
+    title.textContent = t(lang, resultTitle);
+    text.textContent = t(lang, resultText);
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // تطبيع الأرقام: لوحة مفاتيح بعض الأجهزة العربية تُدخل أرقاماً هندية (٠-٩) أو
+  // فارسية/أردية ممتدة (۰-۹) تلقائياً — نحوّلها لأرقام عالمية (0-9) قبل المقارنة
+  function normalizeDigits(str) {
+    return str.replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+              .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0));
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const normalized = normalizeDigits(answerInput.value.trim()).replace(/[^0-9]/g, '');
+    if (normalized && normalized === plates[current].answer) correctCount++;
+    current++;
+    if (current < plates.length) showPlate(); else finish();
+  });
+
+  retryBtn?.addEventListener('click', start);
+  window.addEventListener('languageChanged', () => {
+    if (box.classList.contains('show')) return;
+    if (!counter.hidden) showPlate();
+  });
+
+  start();
+</script>

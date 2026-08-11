@@ -1,0 +1,131 @@
+---
+// حاسبة تصحيح الكالسيوم مع الألبومين — Corrected Calcium
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة تصحيح الكالسيوم مع الألبومين">
+  <ToolsShell>
+    <section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة تصحيح الكالسيوم مع الألبومين</span>
+      <span data-en>Corrected Calcium</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تحسب المستوى الحقيقي للكالسيوم في الدم عند انخفاض بروتين الألبومين، لأن نحو 40% من الكالسيوم يرتبط بالألبومين، فانخفاضه يُظهر رقمًا منخفضًا زائفًا للكالسيوم الكلي دون أن يعني نقصًا حقيقيًا.</span>
+      <span data-en>Calculates the true blood calcium level when serum albumin is low, since roughly 40% of calcium is protein-bound — low albumin produces a falsely low total calcium reading without a true deficiency.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>تجنب علاج "نقص كالسيوم" غير حقيقي لدى مرضى سوء التغذية أو أمراض الكبد أو الكلى المزمنة الذين تنخفض لديهم الألبومين، والاعتماد بدلًا من ذلك على الرقم المصحَّح لاتخاذ القرار العلاجي.</span>
+      <span data-en>Avoids treating a "low calcium" that isn't really there in malnourished patients or those with chronic liver/kidney disease and low albumin — the corrected value, not the raw one, should guide treatment decisions.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="calcium-form" novalidate>
+    <label>
+      <span data-ar>الكالسيوم الكلي المقاس (مجم/دل)</span><span data-en>Measured total calcium (mg/dL)</span>
+      <input type="number" id="calcium" min="4" max="16" step="0.1" required />
+    </label>
+    <label>
+      <span data-ar>الألبومين (جم/دل)</span><span data-en>Albumin (g/dL)</span>
+      <input type="number" id="albumin" min="1" max="6" step="0.1" required />
+    </label>
+    <div class="form-actions">
+      <button type="submit">
+        <span data-ar>احسب</span><span data-en>Calculate</span>
+      </button>
+      <button type="reset" id="reset-btn" class="btn-secondary">
+        <span data-ar>إعادة تعيين</span><span data-en>Reset</span>
+      </button>
+    </div>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>الكالسيوم المصحَّح: </span><span data-en>Corrected calcium: </span>
+      <strong id="corrected-out"></strong> mg/dL
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula &amp; reference</span></h2>
+    <p class="formula">Corrected Ca = Measured Ca + 0.8 × (4.0 − Albumin)</p>
+    <ul class="ref-list">
+      <li><span data-ar>المدى الطبيعي للكالسيوم الكلي: 8.5 – 10.5 مجم/دل</span><span data-en>Normal total calcium range: 8.5–10.5 mg/dL</span></li>
+      <li><span data-ar>تُستخدم المعادلة فقط إذا كان الألبومين أقل من 4 جم/دل</span><span data-en>The formula is only meaningful when albumin is below 4 g/dL</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/blood/">
+    <span data-ar>← رجوع لمجال تحاليل الدم</span>
+    <span data-en>← Back to Blood Tests &amp; Diagnostics</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("calcium-form") as HTMLFormElement | null;
+  const calciumInput = document.getElementById("calcium") as HTMLInputElement | null;
+  const albuminInput = document.getElementById("albumin") as HTMLInputElement | null;
+  const resultBox = document.getElementById("result") as HTMLElement | null;
+  const correctedOut = document.getElementById("corrected-out") as HTMLElement | null;
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!calciumInput || !albuminInput || !resultBox || !correctedOut) return;
+
+    const calcium = Number(calciumInput.value);
+    const albumin = Number(albuminInput.value);
+    if (!calcium || !albumin) return; // Basic validation
+
+    const corrected = calcium + 0.8 * (4.0 - albumin);
+    correctedOut.textContent = corrected.toFixed(2);
+    resultBox.hidden = false;
+  });
+
+  form?.addEventListener("reset", () => {
+    if (!resultBox) return;
+    resultBox.hidden = true;
+    if (correctedOut) {
+      correctedOut.textContent = "";
+    }
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero .lang-en { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 .lang-en { opacity: .6; font-weight: 500; }
+  .info-block .lang-en { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .9rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list .lang-en { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.1); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .form-actions { display: flex; gap: 0.75rem; align-items: center; }
+  .calc-form button { padding: .6rem 1.5rem; border: none; border-radius: .5rem; font-weight: 600; cursor: pointer; }
+  .calc-form button[type="submit"] { background: #1d6f5c; color: #fff; }
+  .calc-form button.btn-secondary { background: rgba(0,0,0,.08); color: inherit; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line .lang-en { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

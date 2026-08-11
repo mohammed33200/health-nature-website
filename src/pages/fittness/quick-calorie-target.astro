@@ -1,0 +1,113 @@
+---
+// حاسبة العجز/الفائض السريع للسعرات — Quick Caloric Deficit/Surplus
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة العجز/الفائض السريع للسعرات">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة العجز/الفائض السريع للسعرات</span>
+      <span data-en dir="ltr">Quick Caloric Deficit/Surplus</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تعطي رقمًا سريعًا للسعرات المستهدفة يوميًا بناءً على سعراتك الحالية وهدفك (خسارة وزن أو زيادة عضلات)، دون الحاجة لحساب TDEE كامل من الصفر.</span>
+      <span data-en dir="ltr">Gives a quick daily calorie target based on your current intake and goal (weight loss or muscle gain), without needing to calculate full TDEE from scratch.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>مفيدة لمن يعرف بالفعل سعراته اليومية التقريبية (من تطبيق تتبع طعام) ويريد رقمًا مباشرًا للبدء، بدل المرور بخطوات حساب معقدة.</span>
+      <span data-en dir="ltr">Useful for someone who already knows their approximate daily calories (from a food-tracking app) and wants a direct starting number, instead of going through complex calculation steps.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="target-form">
+    <label>
+      <span data-ar>السعرات اليومية الحالية</span><span data-en dir="ltr">Current daily calories</span>
+      <input type="number" id="current" min="800" max="6000" required />
+    </label>
+    <label>
+      <span data-ar>الهدف</span><span data-en dir="ltr">Goal</span>
+      <select id="goal">
+        <option value="-300">خسارة وزن بطيئة / Slow weight loss (-300)</option>
+        <option value="-500">خسارة وزن سريعة / Fast weight loss (-500)</option>
+        <option value="0">ثبات الوزن / Maintenance (0)</option>
+        <option value="300">زيادة عضلات صافية / Lean muscle gain (+300)</option>
+      </select>
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>السعرات المستهدفة يوميًا: </span><span data-en dir="ltr">Target daily calories: </span>
+      <strong id="target-out"></strong> kcal
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المرجع</span><span data-en dir="ltr">Reference</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>عجز 500 سعرة/يوم ≈ فقدان 0.5 كجم أسبوعيًا تقريبًا</span><span data-en dir="ltr">A 500 kcal/day deficit ≈ roughly 0.5 kg lost per week</span></li>
+      <li><span data-ar>لا يُنصح بعجز أكبر من 500-750 سعرة دون إشراف مختص تغذية</span><span data-en dir="ltr">A deficit larger than 500–750 kcal isn't recommended without a nutrition professional's supervision</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/fittness/">
+    <span data-ar>← رجوع لمجال اللياقة</span>
+    <span data-en dir="ltr">← Back to Fitness</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("target-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const current = Number((document.getElementById("current") as HTMLInputElement).value);
+    const goal = Number((document.getElementById("goal") as HTMLSelectElement).value);
+    if (!current) return;
+
+    const target = current + goal;
+    (document.getElementById("target-out") as HTMLElement).textContent = target.toFixed(0);
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

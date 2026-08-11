@@ -1,0 +1,178 @@
+---
+// حاسبة إجهاد العين الرقمي (Digital Eye Strain Score)
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Digital Eye Strain Calculator">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>حاسبة إجهاد العين الرقمي</span>
+        <span data-en>Digital Eye Strain Calculator</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>استبيان سريع لتقييم مدى تأثير الشاشات على عينيك، وإعطائك نصائح عملية مخصصة لتقليل الإجهاد والجفاف.</span>
+        <span data-en>A quick questionnaire to assess how screens affect your eyes, with practical tailored tips to reduce strain and dryness.</span>
+      </p>
+    </div>
+
+    <div class="calc-card">
+      <ol class="steps">
+        <li><span data-ar>أجب عن الأسئلة الثلاثة التالية بصدق حسب عاداتك المعتادة، لا حسب يوم استثنائي.</span><span data-en>Answer the three questions below honestly based on your usual habits, not an unusual day.</span></li>
+        <li><span data-ar>اضغط "احسب درجة الإجهاد" لتحصل فوراً على تقييمك ونصائح مخصصة.</span><span data-en>Press "Calculate strain score" to instantly get your assessment and tailored tips.</span></li>
+      </ol>
+
+      <form id="strainForm">
+        <div class="field-grid">
+          <div class="field">
+            <label for="screenHours"><span data-ar>كم ساعة تقريباً تقضيها أمام الشاشات يومياً؟</span><span data-en>Roughly how many hours a day do you spend on screens?</span></label>
+            <select id="screenHours" name="screenHours">
+              <option value="1" data-ar-label="أقل من ساعتين" data-en-label="Under 2 hours">أقل من ساعتين</option>
+              <option value="2">2-4</option>
+              <option value="3" selected>4-8</option>
+              <option value="4">8-12</option>
+              <option value="5">12+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="breaks"><span data-ar>هل تأخذ فواصل راحة منتظمة عن الشاشة؟</span><span data-en>Do you take regular breaks from the screen?</span></label>
+            <select id="breaks" name="breaks">
+              <option value="0" data-ar-label="نادراً أو أبداً" data-en-label="Rarely or never">نادراً أو أبداً</option>
+              <option value="1" selected data-ar-label="أحياناً" data-en-label="Sometimes">أحياناً</option>
+              <option value="2" data-ar-label="دائماً (كل 20-30 دقيقة)" data-en-label="Always (every 20-30 min)">دائماً (كل 20-30 دقيقة)</option>
+            </select>
+          </div>
+        </div>
+
+        <fieldset class="quiz-item">
+          <legend>
+            <span data-ar>هل تشعر بأي من الأعراض التالية بعد استخدام الشاشات؟</span>
+            <span data-en>Do you notice any of these after using screens?</span>
+          </legend>
+          <div class="quiz-options">
+            <label class="quiz-option"><input type="checkbox" name="symptom" value="dryness" /><span data-ar>جفاف أو حكة في العين</span><span data-en>Dry or itchy eyes</span></label>
+            <label class="quiz-option"><input type="checkbox" name="symptom" value="headache" /><span data-ar>صداع</span><span data-en>Headache</span></label>
+            <label class="quiz-option"><input type="checkbox" name="symptom" value="blurry" /><span data-ar>تشوش مؤقت في الرؤية</span><span data-en>Temporary blurred vision</span></label>
+            <label class="quiz-option"><input type="checkbox" name="symptom" value="neck" /><span data-ar>ألم في الرقبة أو الكتفين</span><span data-en>Neck or shoulder pain</span></label>
+            <label class="quiz-option"><input type="checkbox" name="symptom" value="sensitivity" /><span data-ar>حساسية زائدة للضوء</span><span data-en>Increased light sensitivity</span></label>
+            <label class="quiz-option"><input type="checkbox" name="symptom" value="tearing" /><span data-ar>دموع زائدة أو احمرار</span><span data-en>Excess tearing or redness</span></label>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب درجة الإجهاد</span><span data-en>Calculate strain score</span>
+        </button>
+      </form>
+
+      <div class="result" id="strainResultBox">
+        <p class="reading" id="strainResultTitle"></p>
+        <span class="badge" id="strainResultBadge"></span>
+        <p id="strainResultText"></p>
+        <ul id="strainTips"></ul>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>قاعدة 20-20-20</span><span data-en>The 20-20-20 rule</span></h2>
+      <p>
+        <span data-ar>كل 20 دقيقة أمام الشاشة، انظر إلى شيء يبعد 20 قدماً (نحو 6 أمتار) لمدة 20 ثانية على الأقل. هذه القاعدة البسيطة تقلل إجهاد عضلات التركيز في العين بشكل ملحوظ.</span>
+        <span data-en>Every 20 minutes on screen, look at something 20 feet (about 6 meters) away for at least 20 seconds. This simple rule noticeably reduces strain on the eye's focusing muscles.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذه الحاسبة تعطي تقديراً توعوياً تقريبياً فقط،
+        وليست تشخيصاً طبياً أو نتيجة نهائية. الأعراض المستمرة أو الشديدة تستدعي مراجعة
+        طبيب عيون.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This calculator gives only an approximate, awareness-level
+        estimate — not a medical diagnosis or a final result. Persistent or severe symptoms
+        warrant a visit to an eye doctor.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  // <option> لا يدعم عناصر span متداخلة، فنبدّل نصه مباشرة عبر JS
+  function applyOptionLabels() {
+    const lang = getLang();
+    document.querySelectorAll<HTMLOptionElement>('option[data-ar-label]').forEach((opt) => {
+      opt.textContent = lang === 'en' ? opt.dataset.enLabel : opt.dataset.arLabel;
+    });
+  }
+  applyOptionLabels();
+  window.addEventListener('languageChanged', applyOptionLabels);
+
+  const form = document.getElementById('strainForm') as HTMLFormElement;
+  const box = document.getElementById('strainResultBox');
+  const title = document.getElementById('strainResultTitle');
+  const badge = document.getElementById('strainResultBadge');
+  const text = document.getElementById('strainResultText');
+  const tipsList = document.getElementById('strainTips');
+
+  const allTips = {
+    rule202020: { ar: 'طبّق قاعدة 20-20-20: كل 20 دقيقة، انظر لمسافة 6 أمتار لمدة 20 ثانية.', en: 'Apply the 20-20-20 rule: every 20 minutes, look 6 meters away for 20 seconds.' },
+    blink: { ar: 'احرص على الرمش بشكل واعٍ ومتكرر أثناء العمل على الشاشة.', en: 'Blink consciously and often while on screens.' },
+    lighting: { ar: 'قلّل الوهج بضبط إضاءة الغرفة وتجنّب الجلوس مقابل نافذة أو ضوء خلف الشاشة.', en: 'Reduce glare by adjusting room lighting and avoiding a bright light behind the screen.' },
+    distance: { ar: 'اجعل الشاشة على بُعد ذراع تقريباً، وأعلى قليلاً من مستوى العين للأسفل.', en: 'Keep the screen about an arm\u2019s length away, slightly below eye level.' },
+    drops: { ar: 'قطرات الترطيب (بدون وصفة طبية) قد تساعد في تخفيف الجفاف — استشر الصيدلي عند الاستخدام المتكرر.', en: 'Over-the-counter lubricating eye drops may help with dryness — consult a pharmacist for frequent use.' },
+    nightMode: { ar: 'فعّل وضع تقليل الضوء الأزرق مساءً، خصوصاً قبل النوم بساعتين.', en: 'Enable a blue-light-reduction mode in the evening, especially two hours before bed.' },
+    breaks: { ar: 'خصص فواصل راحة فعلية عن الشاشة، وليس فقط تبديل النظر بين شاشتين.', en: 'Take real breaks away from screens, not just switching your gaze between two screens.' },
+  };
+
+  function calcScore(data) {
+    let score = 0;
+    score += parseInt(data.screenHours, 10) * 4;
+    score += data.symptoms.length * 6;
+    score += (2 - parseInt(data.breaks, 10)) * 5;
+    return score;
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const data = { screenHours: fd.get('screenHours'), breaks: fd.get('breaks'), symptoms: fd.getAll('symptom') };
+    const score = calcScore(data);
+    const lang = getLang();
+
+    let cls, badgeText, resultTitle, resultText, tips;
+    if (score <= 15) {
+      cls = 'badge-ok'; badgeText = { ar: 'منخفض', en: 'Low' };
+      resultTitle = { ar: 'إجهاد عين منخفض', en: 'Low eye strain' };
+      resultText = { ar: 'عيناك لا تبديان علامات إجهاد كبيرة حالياً حسب إجاباتك. استمر بالعادات الجيدة، ولا تُغفل الفحص الدوري لدى طبيب عيون حتى دون أعراض.', en: 'Your eyes don\u2019t show major strain signs right now based on your answers. Keep up the good habits, and don\u2019t skip a periodic eye doctor exam even without symptoms.' };
+      tips = [allTips.rule202020, allTips.blink];
+    } else if (score <= 30) {
+      cls = 'badge-warn'; badgeText = { ar: 'متوسط', en: 'Moderate' };
+      resultTitle = { ar: 'إجهاد عين متوسط', en: 'Moderate eye strain' };
+      resultText = { ar: 'هناك بعض المؤشرات على إجهاد العين الرقمي. تطبيق بضع عادات بسيطة قد يحدث فرقاً ملحوظاً، وإن استمرت الأعراض رغم ذلك فمن الأفضل استشارة طبيب عيون.', en: 'There are some signs of digital eye strain. A few simple habit changes could make a noticeable difference, and if symptoms persist despite that, an eye doctor consultation is best.' };
+      tips = [allTips.rule202020, allTips.blink, allTips.lighting, allTips.distance];
+    } else {
+      cls = 'badge-danger'; badgeText = { ar: 'مرتفع', en: 'High' };
+      resultTitle = { ar: 'إجهاد عين مرتفع', en: 'High eye strain' };
+      resultText = { ar: 'إجاباتك تشير إلى مستوى إجهاد ملحوظ. إلى جانب تعديل عادات استخدام الشاشة، يُنصح باستشارة طبيب عيون إن استمرت الأعراض.', en: 'Your answers suggest a notable strain level. Besides adjusting screen habits, an eye doctor visit is recommended if symptoms persist.' };
+      tips = [allTips.rule202020, allTips.blink, allTips.lighting, allTips.distance, allTips.drops, allTips.nightMode, allTips.breaks];
+    }
+
+    badge.className = 'badge ' + cls;
+    badge.textContent = t(lang, badgeText);
+    title.textContent = t(lang, resultTitle);
+    text.textContent = t(lang, resultText);
+    tipsList.innerHTML = tips.map((tip) => `<li>${t(lang, tip)}</li>`).join('');
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>

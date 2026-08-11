@@ -1,0 +1,130 @@
+---
+// حاسبة الحد الأقصى لاستهلاك الأكسجين — VO2 Max Estimate
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الحد الأقصى لاستهلاك الأكسجين (VO2 Max)">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة الحد الأقصى لاستهلاك الأكسجين (VO2 Max)</span>
+      <span data-en dir="ltr">VO2 Max Estimate</span>
+    </h1>
+    <p class="credit-line">Uth–Sørensen–Overgaard–Pedersen Formula, 2004</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تقدّر VO2 Max — أقصى كمية أكسجين يمكن للجسم استخدامها أثناء الجهد الشديد — من نسبة النبض الأقصى المقدَّر إلى نبض الراحة، دون الحاجة لجهاز مختبر رياضي.</span>
+      <span data-en dir="ltr">Estimates VO2 Max — the maximum oxygen the body can use during intense effort — from the ratio of estimated max heart rate to resting heart rate, without needing lab equipment.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>المقياس العالمي الأشهر للياقة القلبية والرئوية، ويرتبط ارتباطًا قويًا بالصحة العامة وطول العمر، فضلًا عن كونه مؤشر الأداء الأهم للرياضيين المتحمّلين.</span>
+      <span data-en dir="ltr">The most well-known global measure of cardiorespiratory fitness, strongly linked to overall health and longevity, as well as being the key performance marker for endurance athletes.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="vo2-form">
+    <label>
+      <span data-ar>العمر (سنة)</span><span data-en dir="ltr">Age (years)</span>
+      <input type="number" id="age" min="10" max="90" required />
+    </label>
+    <label>
+      <span data-ar>نبض القلب أثناء الراحة</span><span data-en dir="ltr">Resting heart rate</span>
+      <input type="number" id="restingHr" min="35" max="120" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>VO2 Max المقدَّر: </span>
+      <strong id="vo2-out"></strong> mL/kg/min
+    </p>
+    <p class="result-line">
+      <span data-ar>التصنيف: </span><span data-en dir="ltr">Category: </span>
+      <strong id="category-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>المعادلة / القياس الطبيعي</span><span data-en dir="ltr">Formula &amp; reference</span></h2>
+    <p class="formula">VO2 Max = 15.3 × (HRmax / HRrest), where HRmax ≈ 220 − Age</p>
+    <ul class="ref-list">
+      <li><span data-ar>ضعيف: &lt;30 / متوسط: 30–40 / جيد: 40–50 / ممتاز: &gt;50 (تقريبي، للبالغين الأصحاء)</span><span data-en dir="ltr">Poor: &lt;30 / Fair: 30–40 / Good: 40–50 / Excellent: &gt;50 (approximate, for healthy adults)</span></li>
+    </ul>
+    <p class="note">
+      <span data-ar>هذه معادلة مبسّطة غير مباشرة؛ القياس المختبري الفعلي (اختبار بروتوكول جهد متدرج) أدق بكثير.</span>
+      <span data-en dir="ltr">This is a simplified indirect formula; an actual lab test (graded exercise protocol) is far more accurate.</span>
+    </p>
+  </article>
+
+  <a class="back-link" href="/fittness/">
+    <span data-ar>← رجوع لمجال اللياقة</span>
+    <span data-en dir="ltr">← Back to Fitness</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("vo2-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const age = Number((document.getElementById("age") as HTMLInputElement).value);
+    const restingHr = Number((document.getElementById("restingHr") as HTMLInputElement).value);
+    if (!age || !restingHr) return;
+
+    const hrMax = 220 - age;
+    const vo2max = 15.3 * (hrMax / restingHr);
+
+    let categoryAr = "", categoryEn = "";
+    if (vo2max < 30) { categoryAr = "ضعيف"; categoryEn = "Poor"; }
+    else if (vo2max < 40) { categoryAr = "متوسط"; categoryEn = "Fair"; }
+    else if (vo2max < 50) { categoryAr = "جيد"; categoryEn = "Good"; }
+    else { categoryAr = "ممتاز"; categoryEn = "Excellent"; }
+
+    (document.getElementById("vo2-out") as HTMLElement).textContent = vo2max.toFixed(1);
+    (document.getElementById("category-out") as HTMLElement).textContent = `${categoryAr} / ${categoryEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+  .note { font-size: .85rem; opacity: .75; margin-top: .75rem; }
+  .note [data-en] { display: block; margin-top: .2rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

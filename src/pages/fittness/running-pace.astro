@@ -1,0 +1,133 @@
+---
+// حاسبة معدل السرعة للجري — Running Pace Calculator
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة معدل السرعة للجري">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة معدل السرعة للجري</span>
+      <span data-en dir="ltr">Running Pace Calculator</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تحسب وتيرة الجري (الدقائق لكل كيلومتر) من المسافة والوقت الإجمالي، وتستخدم هذه الوتيرة للتنبؤ بوقت إنهاء مسافات أخرى شائعة.</span>
+      <span data-en dir="ltr">Calculates running pace (minutes per kilometer) from distance and total time, and uses that pace to predict finish times for other common race distances.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>أساسية لكل عدّاء لتخطيط سرعة التدريب وتوقع زمن السباق (5 كم، 10 كم، نصف ماراثون، ماراثون كامل) قبل يوم السباق الفعلي.</span>
+      <span data-en dir="ltr">Essential for every runner to plan training speed and predict race time (5K, 10K, half marathon, full marathon) before the actual race day.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="pace-form">
+    <label>
+      <span data-ar>المسافة المقطوعة (كم)</span><span data-en dir="ltr">Distance covered (km)</span>
+      <input type="number" id="distance" min="0.1" max="200" step="0.01" required />
+    </label>
+    <label>
+      <span data-ar>الوقت الإجمالي (دقائق)</span><span data-en dir="ltr">Total time (minutes)</span>
+      <input type="number" id="time" min="1" max="600" step="0.1" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>الوتيرة: </span><span data-en dir="ltr">Pace: </span>
+      <strong id="pace-out"></strong>
+    </p>
+    <table class="predict-table">
+      <thead><tr><th><span data-ar>المسافة</span><span data-en dir="ltr">Distance</span></th><th><span data-ar>الوقت المتوقع</span><span data-en dir="ltr">Predicted time</span></th></tr></thead>
+      <tbody id="predict-body"></tbody>
+    </table>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>المعادلة</span><span data-en dir="ltr">Formula</span></h2>
+    <p class="formula">Pace (min/km) = Total time / Distance</p>
+  </article>
+
+  <a class="back-link" href="/fittness/">
+    <span data-ar>← رجوع لمجال اللياقة</span>
+    <span data-en dir="ltr">← Back to Fitness</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("pace-form") as HTMLFormElement;
+
+  function formatTime(totalMinutes: number) {
+    const h = Math.floor(totalMinutes / 60);
+    const m = Math.floor(totalMinutes % 60);
+    const s = Math.round((totalMinutes % 1) * 60);
+    return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}` : `${m}:${String(s).padStart(2, "0")}`;
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const distance = Number((document.getElementById("distance") as HTMLInputElement).value);
+    const time = Number((document.getElementById("time") as HTMLInputElement).value);
+    if (!distance || !time) return;
+
+    const pacePerKm = time / distance;
+    (document.getElementById("pace-out") as HTMLElement).textContent = `${formatTime(pacePerKm)} min/km`;
+
+    const distances = [
+      { label: "5K", km: 5 },
+      { label: "10K", km: 10 },
+      { label: "نصف ماراثون / Half Marathon", km: 21.1 },
+      { label: "ماراثون / Marathon", km: 42.2 },
+    ];
+    const tbody = document.getElementById("predict-body") as HTMLElement;
+    tbody.innerHTML = "";
+    distances.forEach((d) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${d.label}</td><td>${formatTime(pacePerKm * d.km)}</td>`;
+      tbody.appendChild(row);
+    });
+
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0 .75rem; }
+  .result-line [data-en] { opacity: .7; }
+  .predict-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  .predict-table th, .predict-table td { padding: .3rem .5rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,.08); }
+  .predict-table th [data-en] { display: block; font-size: .8em; opacity: .6; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

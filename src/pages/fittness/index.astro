@@ -1,0 +1,179 @@
+---
+// صفحة رئيسية لمجال "اللياقة المتقدمة"
+// Domain hub page — Advanced Fitness
+// مجال جديد منفصل عن مجال اللياقة الأساسي، يجمع أدوات لياقة وأداء
+// رياضي أكثر تخصصًا (رياضيين، متدربين منتظمين، عدائين).
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+
+const tools = [
+  { slug: "biological-age", ar: "حاسبة العمر البيولوجي الشامل", en: "Comprehensive Biological Age", note: "من النوم والتوتر والأكل والنشاط والتدخين", noteEn: "From sleep, stress, eating, activity, and smoking" },
+  { slug: "sweat-hydration-electrolytes", ar: "حاسبة العرق والترطيب والإلكتروليتات", en: "Sweat, Hydration & Electrolytes", note: "الماء والصوديوم والبوتاسيوم المطلوب تعويضه", noteEn: "Water, sodium, and potassium needed for replacement" },
+  { slug: "steps-to-calories", ar: "حاسبة الخطوات إلى سعرات محروقة", en: "Steps to Calories Burned", note: "من عدد الخطوات ووزن الجسم", noteEn: "From step count and body weight" },
+  { slug: "pediatric-unit-converter", ar: "محول الوحدات الإمبراطوري⇄متري للأطفال", en: "Imperial⇄Metric Pediatric Converter", note: "باوند وأونصة وإنش ⇄ كجم وسم", noteEn: "Pounds, ounces, inches ⇄ kg, cm" },
+  { slug: "quick-calorie-target", ar: "حاسبة العجز/الفائض السريع للسعرات", en: "Quick Caloric Deficit/Surplus", note: "بدون حساب TDEE كامل", noteEn: "Without full TDEE calculation" },
+  { slug: "sleep-calorie-burn", ar: "حاسبة السعرات المحروقة أثناء النوم", en: "Sleep Calorie Burn", note: "الأيض الأساسي أثناء النوم", noteEn: "Basal metabolism during sleep" },
+  { slug: "macro-ratio-splitter", ar: "مقسّم نسب الماكروز", en: "Macro Ratio Splitter", note: "جرامات الماكروز ← نسب مئوية وسعرات", noteEn: "Macro grams ← percentages and calories" },
+  { slug: "calorie-to-macros", ar: "حاسبة الماكروز من السعرات", en: "Calories to Macros", note: "سعرات + نوع حمية ← جرامات البروتين والكارب والدهون", noteEn: "Calories + diet type ← protein, carb, fat grams" },
+  { slug: "one-rep-max", ar: "حاسبة الأقصى لمرة واحدة (1RM)", en: "One Rep Max (1RM)", note: "أقصى وزن لتكرار واحد بأمان", noteEn: "Maximum weight for a single safe rep", credit: "Epley Formula" },
+  { slug: "running-pace", ar: "حاسبة معدل السرعة للجري", en: "Running Pace Calculator", note: "الوتيرة لكل كيلومتر والوقت المتوقع", noteEn: "Pace per km and estimated time" },
+  { slug: "mets-calorie-calculator", ar: "حاسبة السعرات حسب نوع التمرين (METs)", en: "METs Calorie Calculator", note: "المجهود المكافئ لكل نشاط رياضي", noteEn: "Equivalent effort for each physical activity" },
+  { slug: "vo2max-estimate", ar: "حاسبة الحد الأقصى لاستهلاك الأكسجين (VO2 Max)", en: "VO2 Max Estimate", note: "مقياس اللياقة القلبية والرئوية", noteEn: "Cardiovascular and respiratory fitness measure", credit: "Uth–Sørensen–Overgaard–Pedersen" },
+];
+---
+
+<Layout title="اللياقة المتقدمة">
+  <ToolsShell>
+    <section class="domain-hub">
+      <header class="domain-hero">
+        
+        <h1>
+          <span data-ar>اللياقة المتقدمة</span>
+          <span data-en>Advanced Fitness</span>
+        </h1>
+        <p class="lead">
+          <span data-ar>
+            أدوات موجّهة للرياضيين والمتدربين المنتظمين والعدّائين — حسابات
+            أداء وتغذية أكثر تخصصًا من مجال اللياقة الأساسي، إلى جانب أدوات
+            عملية يومية سريعة الفائدة.
+          </span>
+          <span data-en>
+            Tools aimed at athletes, regular trainees, and runners —
+            more specialized performance and nutrition calculations than
+            the basic fitness domain, alongside quick everyday practical
+            tools.
+          </span>
+        </p>
+        <p class="audience">
+          <span data-ar>👥 لمن هذا المجال: رياضيون، متدربو الأثقال، عدّاؤون، ومهتمون بتتبع نمط حياتهم بدقة.</span>
+          <span data-en>👥 Audience: athletes, weight trainees, runners, and lifestyle trackers.</span>
+        </p>
+      </header>
+
+      <ul class="tool-grid">
+        {tools.map((t) => (
+          <li class="tool-card">
+            <a href={`/fittness/${t.slug}`}>
+              <span class="tool-name" data-ar>{t.ar}</span>
+              <span class="tool-name" data-en>{t.en}</span>
+              <span class="tool-note" data-ar>{t.note}</span>
+              <span class="tool-note" data-en>{t.noteEn}</span>
+              {t.credit && <span class="badge badge-credit">{t.credit}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <article class="featured-article">
+        <div class="article-content">
+          <h2>
+            <span data-ar>لماذا القياس؟ قوة البيانات في تحويل رحلتك الرياضية</span>
+            <span data-en>Why Measure? The Power of Data in Transforming Your Fitness Journey</span>
+          </h2>
+          <p>
+            <span data-ar>في عالم اللياقة البدنية الحديث، لم يعد الأمر يقتصر على مجرد "ممارسة الرياضة" أو "الأكل الصحي". لقد دخلنا عصر الدقة والتخصيص، حيث أصبحت البيانات هي البوصلة التي توجه الرياضيين والمتدربين الجادين نحو أهدافهم بكفاءة وفعالية لم يسبق لهما مثيل. إن المبدأ بسيط: "ما لا يمكن قياسه، لا يمكن إدارته أو تحسينه". توفر لك أدوات القياس والتطبيقات الذكية القدرة على تحويل جهودك من مجرد محاولات عشوائية إلى استراتيجية علمية مدروسة.</span>
+            <span data-en>In the modern world of fitness, it's no longer just about "working out" or "eating healthy." We have entered an era of precision and personalization, where data has become the compass that guides athletes and serious trainees toward their goals with unprecedented efficiency and effectiveness. The principle is simple: "What cannot be measured, cannot be managed or improved." Measurement tools and smart applications give you the ability to transform your efforts from random attempts into a calculated, scientific strategy.</span>
+          </p>
+
+          <h3>
+            <span data-ar>1. من خط الأساس إلى قمة الأداء: قوة التتبع</span>
+            <span data-en>1. From Baseline to Peak Performance: The Power of Tracking</span>
+          </h3>
+          <p>
+            <span data-ar>كل رحلة ناجحة تبدأ بمعرفة نقطة انطلاقك. عندما تقوم بقياس مؤشراتك الحيوية والأدائية الأساسية — مثل وزنك، نسبة الدهون، أقصى وزن لتكرار واحد (1RM)، أو سرعتك في الجري — فأنت تنشئ "خط أساس" (Baseline). هذا الخط هو مرجعك الثابت الذي تقيس عليه كل تقدم تحرزه. بدون هذا المرجع، يصبح تقييم التطور مجرد تخمين. التتبع المستمر يمنحك رؤية موضوعية ويزيل التحيزات العاطفية، مما يجعلك ترى بوضوح ما إذا كانت خطتك التدريبية والغذائية تؤتي ثمارها حقًا.</span>
+            <span data-en>Every successful journey begins with knowing your starting point. When you measure your basic vital and performance indicators—such as your weight, body fat percentage, one-rep max (1RM), or running pace—you establish a "baseline." This baseline is your fixed reference against which you measure all your progress. Without it, assessing development becomes mere guesswork. Continuous tracking gives you an objective view and removes emotional biases, allowing you to see clearly whether your training and nutrition plan is truly paying off.</span>
+          </p>
+
+          <h3>
+            <span data-ar>2. أدوات متقدمة لرؤى أعمق</span>
+            <span data-en>2. Advanced Tools for Deeper Insights</span>
+          </h3>
+          <p>
+            <span data-ar>تتجاوز الأدوات المتقدمة مجرد قياس الوزن والمسافة. حاسبات مثل "الحد الأقصى لاستهلاك الأكسجين" (VO2 Max) تمنحك نافذة على كفاءة نظام القلب والأوعية الدموية لديك، وهو مؤشر أساسي على لياقتك الهوائية. أدوات مثل حاسبة "العرق والترطيب" تساعدك على فهم احتياجات جسمك الدقيقة من السوائل والأملاح، وهو أمر حاسم للأداء والتعافي، خاصة في رياضات التحمل. أما "حاسبة العمر البيولوجي"، فهي تجمع بيانات من نمط حياتك لتقدم لك تقديراً لعمر خلاياك، مما يحفزك على اتخاذ قرارات صحية شاملة تتجاوز مجرد مظهرك الخارجي.</span>
+            <span data-en>Advanced tools go beyond just measuring weight and distance. Calculators like the "VO2 Max estimate" give you a window into the efficiency of your cardiovascular system, a key indicator of your aerobic fitness. Tools like the "Sweat and Hydration Calculator" help you understand your body's precise needs for fluids and electrolytes, which is crucial for performance and recovery, especially in endurance sports. The "Biological Age Calculator" aggregates data from your lifestyle to provide an estimate of your cellular age, motivating you to make comprehensive healthy decisions that go beyond just your physical appearance.</span>
+          </p>
+
+          <h3>
+            <span data-ar>3. التخصيص: مفتاح كسر ثبات المستوى (Plateaus)</span>
+            <span data-en>3. Personalization: The Key to Breaking Through Plateaus</span>
+          </h3>
+          <p>
+            <span data-ar>كل جسم فريد من نوعه. ما يصلح لشخص قد لا يصلح لك. تتيح لك البيانات تخصيص كل جانب من جوانب رحلتك. على سبيل المثال، باستخدام "حاسبة الماكروز من السعرات"، يمكنك ضبط نسب البروتين والكربوهيدرات والدهون لتتناسب تمامًا مع أهدافك (سواء كانت بناء العضلات، فقدان الدهون، أو تحسين الأداء). عندما تواجه فترة ثبات في النتائج، يمكنك العودة إلى بياناتك، تحليل المتغيرات، وتحديد التعديل الدقيق المطلوب — سواء كان ذلك بزيادة شدة التمرين، تغيير نسب الماكروز، أو تحسين جودة نومك.</span>
+            <span data-en>Every body is unique. What works for one person may not work for you. Data allows you to personalize every aspect of your journey. For example, using a "Calories to Macros Calculator," you can adjust your protein, carbohydrate, and fat ratios to perfectly match your goals (whether it's muscle building, fat loss, or performance enhancement). When you hit a plateau, you can go back to your data, analyze the variables, and identify the precise adjustment needed—whether it's increasing training intensity, changing macro ratios, or improving your sleep quality.</span>
+          </p>
+
+          <h3>
+            <span data-ar>4. التحفيز والمساءلة: البيانات كشريك تدريب</span>
+            <span data-en>4. Motivation and Accountability: Data as a Training Partner</span>
+          </h3>
+          <p>
+            <span data-ar>رؤية الأرقام تتحسن بمرور الوقت هي واحدة من أقوى المحفزات التي يمكن أن تحصل عليها. عندما ترى أن سرعتك في الجري تزداد، أو أن أوزانك في الصالة الرياضية ترتفع، أو أن نسبة الدهون في جسمك تنخفض، فإن ذلك يمنحك دفعة هائلة من الثقة والرضا، ويجعلك أكثر التزامًا بالخطة. تعمل البيانات كشكل من أشكال المساءلة الذاتية؛ فهي تجعل من الصعب تجاهل فترات التراخي أو عدم الالتزام، وتذكرك باستمرار بالهدف الذي تسعى إليه.</span>
+            <span data-en>Seeing the numbers improve over time is one of the most powerful motivators you can have. When you see your running pace increasing, your weights in the gym going up, or your body fat percentage decreasing, it gives you a huge boost of confidence and satisfaction, making you more committed to the plan. Data acts as a form of self-accountability; it makes it difficult to ignore periods of laxity or non-compliance and constantly reminds you of the goal you are striving for.</span>
+          </p>
+
+          <h3>
+            <span data-ar>كلمة أخيرة: استخدم البيانات بحكمة</span>
+            <span data-en>A Final Word: Use Data Wisely</span>
+          </h3>
+          <p>
+            <span data-ar>على الرغم من قوتها، يجب أن تظل البيانات أداة في يدك، لا أن تصبح سيدك. من المهم تجنب الهوس بالأرقام اليومية والتركيز بدلاً من ذلك على الاتجاهات العامة طويلة المدى. استمع دائمًا إلى جسدك، فالشعور بالإرهاق أو الألم هو إشارة لا يمكن لأي تطبيق أن يلتقطها بنفس الدقة. إن الجمع بين الرؤى الموضوعية من البيانات والوعي الذاتي بجسدك هو المزيج الأمثل لتحقيق أداء مستدام وصحة دائمة.</span>
+            <span data-en>Despite its power, data should remain a tool in your hand, not become your master. It's important to avoid obsessing over daily numbers and instead focus on long-term trends. Always listen to your body, as feelings of fatigue or pain are signals that no app can capture with the same accuracy. Combining objective insights from data with self-awareness of your body is the optimal mix for achieving sustainable performance and lasting health.</span>
+          </p>
+        </div>
+      </article>
+
+      <a class="back-to-index" href="/">
+        <span data-ar>← الرجوع للفهرس الرئيسي</span>
+        <span data-en>← Back to main index</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<style>
+  .domain-hub { padding-block: 2rem; }
+  .domain-hero { max-width: 46rem; margin: 0 auto 2rem; text-align: center; }
+  .eyebrow { letter-spacing: .04em; opacity: .7; font-size: .8rem; }
+  .domain-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .75rem; }
+  .domain-hero [data-en] { font-size: .7em; opacity: .65; font-weight: 500; }
+  .lead [data-en] { display: block; font-size: .85em; opacity: .7; margin-top: .6rem; }
+  .audience { margin-top: 1rem; font-size: .9rem; opacity: .85; }
+  .audience [data-en] { display: block; opacity: .65; margin-top: .2rem; }
+
+  .tool-grid { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .75rem; }
+  .tool-card a { display: block; padding: .85rem 1rem; border: 1px solid rgba(0,0,0,.12); border-radius: .6rem; text-decoration: none; height: 100%; }
+  .tool-name { display: block; }
+  .tool-name[data-en] { font-size: .8em; opacity: .6; margin-top: .1rem; }
+  .tool-note { display: block; font-size: .75rem; opacity: .6; margin-top: .4rem; }
+  .badge-credit { display: inline-block; font-size: .65rem; margin-top: .4rem; padding: .1rem .5rem; border-radius: 999px; background: rgba(0,0,0,.06); font-style: italic; }
+
+  .back-to-index { display: inline-block; margin-top: 1.5rem; font-size: .85rem; text-decoration: none; }
+
+  .featured-article {
+		background: #f8f9fa;
+		border-radius: 16px;
+		padding: 2.5rem;
+		margin-top: 3rem;
+	}
+
+	.article-content {
+		max-width: 46rem;
+		margin: 0 auto;
+    line-height: 1.7;
+	}
+
+	.article-content h2 {
+		font-size: 1.75rem;
+		margin: 0 0 1rem;
+	}
+
+	.article-content h3 {
+		font-size: 1.25rem;
+		margin: 2rem 0 0.75rem;
+	}
+  
+  .tool-name[data-en], .tool-note[data-en] { display: none; }
+  .tools-scope[data-lang="en"] .tool-name[data-ar], .tools-scope[data-lang="en"] .tool-note[data-ar] { display: none; }
+  .tools-scope[data-lang="en"] .tool-name[data-en], .tools-scope[data-lang="en"] .tool-note[data-en] { display: block; }
+  .tools-scope[data-lang="ar"] .tool-name[data-ar], .tools-scope[data-lang="ar"] .tool-note[data-ar] { display: block; }
+</style>

@@ -1,0 +1,111 @@
+---
+// حاسبة الصوديوم المصححة في السكري — Corrected Sodium
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الصوديوم المصححة في السكري">
+  <ToolsShell>
+    <section class="container tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة الصوديوم المصححة في السكري</span>
+          <span data-en>Corrected Sodium Calculator</span>
+        </h1>
+        <p class="credit-line">Katz Correction Factor</p>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحسب المستوى الحقيقي للصوديوم عند ارتفاع الجلوكوز الحاد، لأن ارتفاع سكر الدم يسحب الماء من الخلايا إلى الدم فيخفّف الصوديوم ويُظهر رقمًا منخفضًا زائفًا (نقص صوديوم كاذب).</span>
+          <span data-en>Calculates the true sodium level when blood glucose is acutely elevated, since high glucose pulls water out of cells into the bloodstream, diluting sodium and producing a falsely low reading (pseudohyponatremia).</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>مهمة خصوصًا في الحماض الكيتوني السكري وارتفاع السكر الشديد، لتجنب تصحيح الصوديوم بشكل خاطئ (زيادة أو نقصان سريع) قد يسبب مضاعفات عصبية خطيرة.</span>
+          <span data-en>Especially important in diabetic ketoacidosis and severe hyperglycemia, to avoid correcting sodium incorrectly — a wrong or too-rapid correction can cause serious neurological complications.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="sodium-form">
+        <label>
+          <span data-ar>الصوديوم المقاس (ملي مكافئ/لتر)</span><span data-en>Measured sodium (mEq/L)</span>
+          <input type="number" id="sodium" min="100" max="170" step="0.1" required />
+        </label>
+        <label>
+          <span data-ar>الجلوكوز (مجم/دل)</span><span data-en>Glucose (mg/dL)</span>
+          <input type="number" id="glucose" min="100" max="1500" step="1" required />
+        </label>
+        <button type="submit" class="btn-calc">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result" id="result">
+        <p>
+          <span data-ar>الصوديوم المصحَّح: </span><span data-en>Corrected sodium: </span>
+          <strong id="corrected-out" class="reading"></strong> mEq/L
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula & reference</span></h2>
+        <p class="formula">Corrected Na = Measured Na + 1.6 × [(Glucose − 100) / 100]</p>
+        <ul class="ref-list">
+          <li><span data-ar>المدى الطبيعي للصوديوم: 135 – 145 ملي مكافئ/لتر</span><span data-en>Normal sodium range: 135–145 mEq/L</span></li>
+          <li><span data-ar>التصحيح مفيد فقط عند جلوكوز أعلى من 100 مجم/دل</span><span data-en>Correction is only meaningful when glucose is above 100 mg/dL</span></li>
+        </ul>
+      </article>
+
+      <a class="back-link" href="/blood/">
+        <span data-ar>← رجوع لمجال تحاليل الدم</span>
+        <span data-en>← Back to Blood Tests & Diagnostics</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("sodium-form") as HTMLFormElement;
+  const resultDiv = document.getElementById("result") as HTMLElement;
+  const correctedOut = document.getElementById("corrected-out") as HTMLElement;
+
+  function calculateAndDisplay() {
+      const sodium = Number((document.getElementById("sodium") as HTMLInputElement).value);
+      const glucose = Number((document.getElementById("glucose") as HTMLInputElement).value);
+      if (!sodium || !glucose) return;
+
+      const corrected = sodium + 1.6 * ((glucose - 100) / 100);
+      correctedOut.textContent = corrected.toFixed(1);
+      resultDiv.classList.add('show');
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    calculateAndDisplay();
+  });
+
+  // No language-specific output, so no need for languageChanged listener
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; max-width: 60ch; }
+  .info-block h2 { font-size: 1.1rem; margin-bottom: .4rem; }
+  .info-block p { color: var(--ink-soft); }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .9rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: var(--paper-alt); border-radius: .4rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid var(--line); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; margin-top: 1rem; }
+</style>

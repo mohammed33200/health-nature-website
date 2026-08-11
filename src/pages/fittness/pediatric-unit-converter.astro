@@ -1,0 +1,119 @@
+---
+// محول الوحدات الإمبراطوري⇄متري للأطفال — Imperial⇄Metric Pediatric Converter
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="محول الوحدات الإمبراطوري⇄متري للأطفال">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>محول الوحدات الإمبراطوري⇄متري للأطفال</span>
+      <span data-en dir="ltr">Imperial⇄Metric Pediatric Converter</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تحوّل أوزان وأطوال الأطفال بين النظام الإمبراطوري (باوند، أونصة، إنش) والنظام المتري (كيلوجرام، جرام، سنتيمتر)، في الاتجاهين.</span>
+      <span data-en dir="ltr">Converts children's weights and lengths between the imperial system (pounds, ounces, inches) and the metric system (kilograms, grams, centimeters), in both directions.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>كثير من المحتوى الطبي والتربوي الأمريكي يستخدم الباوند والأونصة لوزن المواليد، بينما تستخدم أغلب البلدان العربية النظام المتري في السجلات الطبية؛ هذه الأداة تسهّل المقارنة والفهم فورًا.</span>
+      <span data-en dir="ltr">Much American medical and parenting content uses pounds and ounces for newborn weight, while most Arab countries use the metric system in medical records; this tool makes comparison and understanding instant.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="convert-form">
+    <label>
+      <span data-ar>الوزن بالباوند</span><span data-en dir="ltr">Weight (lbs)</span>
+      <input type="number" id="lbs" min="0" max="200" step="0.01" />
+    </label>
+    <label>
+      <span data-ar>الوزن بالأونصة (إضافية)</span><span data-en dir="ltr">Weight (oz, additional)</span>
+      <input type="number" id="oz" min="0" max="15" step="0.1" />
+    </label>
+    <label>
+      <span data-ar>الطول بالإنش</span><span data-en dir="ltr">Length (inches)</span>
+      <input type="number" id="inches" min="0" max="80" step="0.1" />
+    </label>
+    <button type="submit">
+      <span data-ar>حوّل</span>
+      <span data-en dir="ltr">Convert</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>الوزن بالكيلوجرام: </span><span data-en dir="ltr">Weight in kg: </span>
+      <strong id="kg-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>الطول بالسنتيمتر: </span><span data-en dir="ltr">Length in cm: </span>
+      <strong id="cm-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>معامل التحويل</span><span data-en dir="ltr">Conversion factors</span></h2>
+    <ul class="ref-list">
+      <li>1 lb = 0.4536 kg</li>
+      <li>1 oz = 28.35 g</li>
+      <li>1 inch = 2.54 cm</li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/fittness/">
+    <span data-ar>← رجوع لمجال اللياقة</span>
+    <span data-en dir="ltr">← Back to Fitness</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("convert-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const lbs = Number((document.getElementById("lbs") as HTMLInputElement).value) || 0;
+    const oz = Number((document.getElementById("oz") as HTMLInputElement).value) || 0;
+    const inches = Number((document.getElementById("inches") as HTMLInputElement).value) || 0;
+
+    const kg = lbs * 0.4536 + oz * 0.02835;
+    const cm = inches * 2.54;
+
+    (document.getElementById("kg-out") as HTMLElement).textContent = `${kg.toFixed(2)} kg`;
+    (document.getElementById("cm-out") as HTMLElement).textContent = `${cm.toFixed(1)} cm`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; font-family: monospace; font-size: .85rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

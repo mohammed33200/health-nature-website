@@ -1,0 +1,126 @@
+---
+// حاسبة الأقصى لمرة واحدة — One Rep Max (1RM)
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الأقصى لمرة واحدة (1RM)">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة الأقصى لمرة واحدة (1RM)</span>
+      <span data-en dir="ltr">One Rep Max (1RM)</span>
+    </h1>
+    <p class="credit-line">Epley Formula, 1985</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تقدّر أقصى وزن يمكنك رفعه لتكرار واحد فقط، من وزن ومجموعة تكرارات رفعتها بالفعل، دون الحاجة لتجربة الرفع الأقصى الفعلي وما يحمله من خطر إصابة.</span>
+      <span data-en dir="ltr">Estimates the maximum weight you could lift for a single rep, from a weight and rep count you've already performed, without the injury risk of actually testing your true max.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>أساس تخطيط برامج القوة، إذ تُحسب أوزان التمرين عادة كنسبة مئوية من الـ1RM (مثلًا 70% للتضخيم، 90% لبناء القوة القصوى).</span>
+      <span data-en dir="ltr">The foundation of strength program design — training weights are usually set as a percentage of 1RM (e.g. 70% for hypertrophy, 90% for max strength work).</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="rm-form">
+    <label>
+      <span data-ar>الوزن المرفوع (كجم)</span><span data-en dir="ltr">Weight lifted (kg)</span>
+      <input type="number" id="weight" min="1" max="500" step="0.5" required />
+    </label>
+    <label>
+      <span data-ar>عدد التكرارات</span><span data-en dir="ltr">Reps performed</span>
+      <input type="number" id="reps" min="1" max="15" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>الأقصى المقدّر (1RM): </span>
+      <strong id="rm-out"></strong> kg
+    </p>
+    <table class="rm-table">
+      <thead><tr><th>%1RM</th><th><span data-ar>الوزن</span><span data-en dir="ltr">Weight</span></th></tr></thead>
+      <tbody id="rm-table-body"></tbody>
+    </table>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>المعادلة</span><span data-en dir="ltr">Formula</span></h2>
+    <p class="formula">1RM = Weight × (1 + Reps / 30)</p>
+    <p class="note">
+      <span data-ar>الدقة تنخفض كلما زاد عدد التكرارات عن 10-12؛ الأداة الأدق للاختبار الفعلي هي أقل من 5 تكرارات.</span>
+      <span data-en dir="ltr">Accuracy drops as reps exceed 10–12; the formula is most accurate when tested with fewer than 5 reps.</span>
+    </p>
+  </article>
+
+  <a class="back-link" href="/fittness/">
+    <span data-ar>← رجوع لمجال اللياقة</span>
+    <span data-en dir="ltr">← Back to Fitness</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("rm-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    const reps = Number((document.getElementById("reps") as HTMLInputElement).value);
+    if (!weight || !reps) return;
+
+    const rm = weight * (1 + reps / 30);
+    (document.getElementById("rm-out") as HTMLElement).textContent = rm.toFixed(1);
+
+    const tbody = document.getElementById("rm-table-body") as HTMLElement;
+    tbody.innerHTML = "";
+    [95, 90, 85, 80, 75, 70, 60, 50].forEach((pct) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${pct}%</td><td>${(rm * pct / 100).toFixed(1)} kg</td>`;
+      tbody.appendChild(row);
+    });
+
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .9rem; margin-bottom: .5rem; }
+  .note { font-size: .85rem; opacity: .75; }
+  .note [data-en] { display: block; margin-top: .2rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0 .75rem; }
+  .rm-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  .rm-table th, .rm-table td { padding: .3rem .5rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,.08); }
+  .rm-table th [data-en] { display: block; font-size: .8em; opacity: .6; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

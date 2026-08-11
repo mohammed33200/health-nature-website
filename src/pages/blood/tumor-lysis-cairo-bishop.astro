@@ -1,0 +1,181 @@
+---
+// حاسبة خطر انحلال الورم — Tumor Lysis Syndrome (Cairo-Bishop)
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة خطر انحلال الورم">
+  <ToolsShell>
+    <section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة خطر انحلال الورم</span>
+      <span data-en>Tumor Lysis Syndrome</span>
+    </h1>
+    <p class="credit-line">Cairo-Bishop Criteria, 2004</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تطبّق معايير Cairo-Bishop لتشخيص متلازمة انحلال الورم — وهي انطلاق مفاجئ لمحتويات الخلايا السرطانية المتحللة إلى الدم بعد العلاج الكيميائي — بالاعتماد على تغيّر 4 قيم مخبرية (حمض اليوريك، البوتاسيوم، الفوسفات، الكالسيوم) ووجود أعراض سريرية.</span>
+      <span data-en>Applies the Cairo-Bishop criteria to diagnose tumor lysis syndrome — the sudden release of dying cancer cell contents into the blood after chemotherapy — based on changes in 4 lab values (uric acid, potassium, phosphate, calcium) and the presence of clinical symptoms.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>التشخيص المبكر (خصوصًا "المختبري" قبل ظهور الأعراض) يسمح ببدء العلاج الوقائي (سوائل وريدية، أدوية خافضة لحمض اليوريك) قبل تطور فشل كلوي حاد أو اضطراب نظم قلبي قد يهدد الحياة.</span>
+      <span data-en>Early diagnosis — especially the "laboratory" stage before symptoms appear — allows starting preventive treatment (IV fluids, urate-lowering drugs) before acute kidney injury or a life-threatening arrhythmia develops.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="tls-form">
+    <p class="form-hint">
+      <span data-ar>أدخل القيمة الحالية، والقيمة الأساسية قبل العلاج إن توفرت (اختياري، لحساب نسبة التغير):</span>
+      <span data-en>Enter the current value, and the pre-treatment baseline if available (optional, to check % change):</span>
+    </p>
+    <div class="lab-grid">
+      <div class="lab-row">
+        <span class="lab-name" data-ar>حمض اليوريك (مجم/دل)</span><span class="lab-name" data-en>Uric acid (mg/dL)</span>
+        <input type="number" id="uaCurrent" placeholder="حالي / current" step="0.1" />
+        <input type="number" id="uaBaseline" placeholder="أساسي / baseline" step="0.1" />
+      </div>
+      <div class="lab-row">
+        <span class="lab-name" data-ar>البوتاسيوم (ملي مكافئ/لتر)</span><span class="lab-name" data-en>Potassium (mmol/L)</span>
+        <input type="number" id="kCurrent" placeholder="حالي / current" step="0.1" />
+        <input type="number" id="kBaseline" placeholder="أساسي / baseline" step="0.1" />
+      </div>
+      <div class="lab-row">
+        <span class="lab-name" data-ar>الفوسفات (مجم/دل)</span><span class="lab-name" data-en>Phosphate (mg/dL)</span>
+        <input type="number" id="phosCurrent" placeholder="حالي / current" step="0.1" />
+        <input type="number" id="phosBaseline" placeholder="أساسي / baseline" step="0.1" />
+      </div>
+      <div class="lab-row">
+        <span class="lab-name" data-ar>الكالسيوم (مجم/دل)</span><span class="lab-name" data-en>Calcium (mg/dL)</span>
+        <input type="number" id="caCurrent" placeholder="حالي / current" step="0.1" />
+        <input type="number" id="caBaseline" placeholder="أساسي / baseline" step="0.1" />
+      </div>
+    </div>
+
+    <label class="checkbox-label">
+      <input type="checkbox" id="pediatric" />
+      <span data-ar>مريض طفل (يرفع حد الفوسفات إلى 6.5)</span><span data-en>Pediatric patient (raises phosphate threshold to 6.5)</span>
+    </label>
+
+    <p class="form-hint">
+      <span data-ar>علامات سريرية (لتحديد "انحلال ورم سريري"):</span>
+      <span data-en>Clinical signs (to determine "clinical" TLS):</span>
+    </p>
+    <label class="checkbox-label"><input type="checkbox" id="crea" /> <span data-ar>ارتفاع الكرياتينين ≥1.5 مثل الحد الأعلى الطبيعي</span><span data-en>Creatinine ≥1.5× upper limit of normal</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="arrhythmia" /> <span data-ar>اضطراب نظم قلبي أو موت مفاجئ</span><span data-en>Cardiac arrhythmia or sudden death</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="seizure" /> <span data-ar>نوبة تشنجية</span><span data-en>Seizure</span></label>
+
+    <button type="submit">
+      <span data-ar>قيّم</span>
+      <span data-en>Assess</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>المعايير المخبرية المستوفاة: </span><span data-en>Lab criteria met: </span>
+      <strong id="lab-count-out"></strong> / 4
+    </p>
+    <p class="result-line">
+      <span data-ar>التشخيص: </span><span data-en>Diagnosis: </span>
+      <strong id="diagnosis-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعايير</span><span data-en>Reference criteria</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>انحلال ورم مخبري: معياران أو أكثر من الأربعة خلال 3 أيام قبل العلاج وحتى 7 أيام بعده</span><span data-en>Laboratory TLS: ≥2 of the 4 criteria within 3 days before to 7 days after treatment</span></li>
+      <li><span data-ar>انحلال ورم سريري: انحلال ورم مخبري + عرض سريري واحد على الأقل</span><span data-en>Clinical TLS: laboratory TLS + at least one clinical sign</span></li>
+    </ul>
+  </article>
+
+ <a class="back-link" href="/blood/">
+    <span data-ar>← رجوع لمجال تحاليل الدم</span>
+    <span data-en>← Back to Blood Tests &amp; Diagnostics</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("tls-form") as HTMLFormElement;
+
+  function pctChange(current: number, baseline: number) {
+    if (!baseline) return 0;
+    return ((current - baseline) / baseline) * 100;
+  }
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const val = (id: string) => Number((document.getElementById(id) as HTMLInputElement).value) || 0;
+    const pediatric = (document.getElementById("pediatric") as HTMLInputElement).checked;
+
+    const ua = val("uaCurrent"), uaBase = val("uaBaseline");
+    const k = val("kCurrent"), kBase = val("kBaseline");
+    const phos = val("phosCurrent"), phosBase = val("phosBaseline");
+    const ca = val("caCurrent"), caBase = val("caBaseline");
+
+    let labCriteria = 0;
+    if (ua >= 8 || pctChange(ua, uaBase) >= 25) labCriteria++;
+    if (k >= 6 || pctChange(k, kBase) >= 25) labCriteria++;
+    const phosThreshold = pediatric ? 6.5 : 4.5;
+    if (phos >= phosThreshold || pctChange(phos, phosBase) >= 25) labCriteria++;
+    if (ca > 0 && (ca <= 7 || pctChange(ca, caBase) <= -25)) labCriteria++;
+
+    const clinicalSigns = [
+      (document.getElementById("crea") as HTMLInputElement).checked,
+      (document.getElementById("arrhythmia") as HTMLInputElement).checked,
+      (document.getElementById("seizure") as HTMLInputElement).checked,
+    ].filter(Boolean).length;
+
+    const labTLS = labCriteria >= 2;
+    let diagnosisAr = "", diagnosisEn = "";
+    if (labTLS && clinicalSigns >= 1) { diagnosisAr = "انحلال ورم سريري"; diagnosisEn = "Clinical TLS"; }
+    else if (labTLS) { diagnosisAr = "انحلال ورم مخبري"; diagnosisEn = "Laboratory TLS"; }
+    else { diagnosisAr = "لا يستوفي المعايير حاليًا"; diagnosisEn = "Criteria not currently met"; }
+
+    (document.getElementById("lab-count-out") as HTMLElement).textContent = String(labCriteria);
+    (document.getElementById("diagnosis-out") as HTMLElement).textContent = `${diagnosisAr} / ${diagnosisEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 44rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero .lang-en { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 .lang-en { opacity: .6; font-weight: 500; }
+  .info-block .lang-en { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list .lang-en { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .form-hint { font-size: .8rem; opacity: .7; margin: 0; }
+  .form-hint .lang-en { display: block; margin-top: .2rem; }
+  .lab-grid { display: grid; gap: .6rem; }
+  .lab-row { display: grid; grid-template-columns: 1fr auto auto; gap: .5rem; align-items: center; font-size: .85rem; }
+  .lab-row input { padding: .4rem .5rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; width: 7rem; }
+  .lab-name.lang-en { display: none; }
+  .checkbox-label { display: flex; align-items: center; gap: .5rem; font-size: .85rem; }
+  .checkbox-label .lang-en { opacity: .6; font-size: .85em; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button .lang-en { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line .lang-en { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

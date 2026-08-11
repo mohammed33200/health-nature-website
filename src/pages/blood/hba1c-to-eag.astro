@@ -1,0 +1,132 @@
+---
+// حاسبة تحويل السكر التراكمي لمتوسط السكر اليومي — HbA1c to eAG
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة تحويل السكر التراكمي لمتوسط السكر اليومي">
+  <ToolsShell>
+    <section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة تحويل السكر التراكمي لمتوسط السكر اليومي</span>
+      <span data-en>HbA1c to eAG</span>
+    </h1>
+    <p class="credit-line">ADAG Study, 2008</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تحوّل نسبة الهيموجلوبين السكري (HbA1c%) إلى متوسط تقديري لجلوكوز الدم اليومي (eAG) بوحدة mg/dL أو mmol/L، وهي الوحدة التي يفهمها معظم المرضى المعتادين على قراءة جهاز السكر المنزلي.</span>
+      <span data-en>Converts HbA1c% into an estimated average daily blood glucose (eAG) in mg/dL or mmol/L — the unit most patients are already used to reading from a home glucose meter.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>HbA1c يعكس متوسط السكر خلال 2-3 أشهر الماضية، لكنه رقم مجرد لا يعني الكثير لغير المتخصصين. تحويله لمتوسط سكر يومي يجعله قابلاً للمقارنة المباشرة مع قراءات الجهاز المنزلي، ويساعد على تقييم مدى ضبط السكري بشكل عملي.</span>
+      <span data-en>HbA1c reflects average glucose over the past 2–3 months, but as an abstract number it means little to non-specialists. Converting it to a daily average glucose makes it directly comparable to home meter readings and helps gauge diabetes control practically.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="hba1c-form" novalidate>
+    <label>
+      <span data-ar>نسبة HbA1c (%)</span><span data-en>HbA1c (%)</span>
+      <input type="number" id="hba1c" min="3" max="20" step="0.1" required />
+    </label>
+    <div class="form-actions">
+      <button type="submit">
+        <span data-ar>احسب</span>
+        <span data-en>Calculate</span>
+      </button>
+      <button type="reset" class="btn-secondary">
+        <span data-ar>إعادة تعيين</span>
+        <span data-en>Reset</span>
+      </button>
+    </div>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>متوسط السكر اليومي: </span><span data-en>Estimated average glucose: </span>
+      <strong id="eag-mgdl-out"></strong> mg/dL (<strong id="eag-mmol-out"></strong> mmol/L)
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula &amp; reference</span></h2>
+    <p class="formula">eAG (mg/dL) = 28.7 × HbA1c − 46.7</p>
+    <ul class="ref-list">
+      <li><span data-ar>طبيعي: HbA1c أقل من 5.7% (eAG ≈ 117 mg/dL)</span><span data-en>Normal: HbA1c &lt;5.7% (eAG ≈117 mg/dL)</span></li>
+      <li><span data-ar>ما قبل السكري: 5.7% – 6.4%</span><span data-en>Prediabetes: 5.7%–6.4%</span></li>
+      <li><span data-ar>سكري: 6.5% فأعلى</span><span data-en>Diabetes: ≥6.5%</span></li>
+      <li><span data-ar>الهدف الشائع لمعظم مرضى السكري: أقل من 7%</span><span data-en>Common target for most diabetics: &lt;7%</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/blood/">
+    <span data-ar>← رجوع لمجال تحاليل الدم</span>
+    <span data-en>← Back to Blood Tests &amp; Diagnostics</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("hba1c-form") as HTMLFormElement | null;
+  const hba1cInput = document.getElementById("hba1c") as HTMLInputElement | null;
+  const resultBox = document.getElementById("result") as HTMLElement | null;
+  const eagMgdlOut = document.getElementById("eag-mgdl-out") as HTMLElement | null;
+  const eagMmolOut = document.getElementById("eag-mmol-out") as HTMLElement | null;
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!hba1cInput || !resultBox || !eagMgdlOut || !eagMmolOut) return;
+
+    const hba1c = Number(hba1cInput.value);
+    if (!hba1c) return; // Basic validation
+
+    const eagMgdl = 28.7 * hba1c - 46.7;
+    const eagMmol = eagMgdl / 18;
+
+    eagMgdlOut.textContent = eagMgdl.toFixed(0);
+    eagMmolOut.textContent = eagMmol.toFixed(1);
+    resultBox.hidden = false;
+  });
+
+  form?.addEventListener("reset", () => {
+    if (!resultBox) return;
+    resultBox.hidden = true;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero .lang-en { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 .lang-en { opacity: .6; font-weight: 500; }
+  .info-block .lang-en { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .9rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list .lang-en { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.1); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .form-actions { display: flex; gap: 0.75rem; align-items: center; }
+  .calc-form button { padding: .6rem 1.5rem; border: none; border-radius: .5rem; font-weight: 600; cursor: pointer; }
+  .calc-form button[type="submit"] { background: #1d6f5c; color: #fff; }
+  .calc-form button.btn-secondary { background: rgba(0,0,0,.08); color: inherit; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line .lang-en { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

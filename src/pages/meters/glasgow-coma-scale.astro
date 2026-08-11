@@ -1,0 +1,143 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ToolsShell from "../../layouts/ToolsShell.astro";
+// مقياس غلاسكو للوعي — Glasgow Coma Scale (GCS)
+---
+
+<Layout title="مقياس غلاسكو للوعي">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>مقياس غلاسكو للوعي</span>
+      <span data-en dir="ltr">Glasgow Coma Scale (GCS)</span>
+    </h1>
+    <p class="credit-line">Teasdale &amp; Jennett, 1974</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هو؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>يقيّم مستوى الوعي عبر 3 محاور: فتح العين، الاستجابة اللفظية، والاستجابة الحركية، ليعطي رقمًا موحدًا من 3 إلى 15 يصف حالة المريض العصبية.</span>
+      <span data-en dir="ltr">Assesses level of consciousness across 3 domains: eye opening, verbal response, and motor response, giving a standardized score from 3 to 15 describing the patient's neurological state.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا يهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>لغة موحدة عالميًا بين الأطباء والممرضين لوصف الوعي بدقة، تُستخدم في إصابات الرأس، الجلطات، والتسمم، ومتابعة تدهور أو تحسن الحالة عبر الزمن بدل أوصاف غير دقيقة مثل "نائم" أو "مشوش".</span>
+      <span data-en dir="ltr">A globally standardized language between doctors and nurses to describe consciousness precisely, used in head injuries, strokes, and poisoning, tracking deterioration or improvement over time instead of vague descriptions like "drowsy" or "confused".</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="gcs-form">
+    <label>
+      <span data-ar>فتح العين</span><span data-en dir="ltr">Eye opening</span>
+      <select id="eye">
+        <option value="4">تلقائي / Spontaneous (4)</option>
+        <option value="3">استجابة للصوت / To voice (3)</option>
+        <option value="2">استجابة للألم / To pain (2)</option>
+        <option value="1">لا استجابة / None (1)</option>
+      </select>
+    </label>
+    <label>
+      <span data-ar>الاستجابة اللفظية</span><span data-en dir="ltr">Verbal response</span>
+      <select id="verbal">
+        <option value="5">متجانسة / Oriented (5)</option>
+        <option value="4">محادثة مشوشة / Confused (4)</option>
+        <option value="3">كلمات غير مناسبة / Inappropriate words (3)</option>
+        <option value="2">أصوات غير مفهومة / Incomprehensible sounds (2)</option>
+        <option value="1">لا استجابة / None (1)</option>
+      </select>
+    </label>
+    <label>
+      <span data-ar>الاستجابة الحركية</span><span data-en dir="ltr">Motor response</span>
+      <select id="motor">
+        <option value="6">تنفيذ أوامر / Obeys commands (6)</option>
+        <option value="5">توضيع مكان الألم / Localizes pain (5)</option>
+        <option value="4">انسحاب من الألم / Withdraws from pain (4)</option>
+        <option value="3">انثناء غير طبيعي / Abnormal flexion (3)</option>
+        <option value="2">بسط غير طبيعي / Extension (2)</option>
+        <option value="1">لا استجابة / None (1)</option>
+      </select>
+    </label>
+    <button type="submit">
+      <span data-ar>احسب المجموع</span>
+      <span data-en dir="ltr">Calculate score</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>المجموع: </span><span data-en dir="ltr">Total score: </span>
+      <strong id="score-out"></strong> / 15
+    </p>
+    <p class="result-line">
+      <span data-ar>التصنيف: </span><span data-en dir="ltr">Category: </span>
+      <strong id="interp-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / التفسير</span><span data-en dir="ltr">Reference interpretation</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>13–15: إصابة خفيفة (أو وعي طبيعي)</span><span data-en dir="ltr">13–15: mild injury (or normal consciousness)</span></li>
+      <li><span data-ar>9–12: إصابة متوسطة</span><span data-en dir="ltr">9–12: moderate injury</span></li>
+      <li><span data-ar>3–8: إصابة شديدة (غيبوبة)</span><span data-en dir="ltr">3–8: severe injury (coma)</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/meters/">
+    <span data-ar>← رجوع لمجال المؤشرات التقييمية</span>
+    <span data-en dir="ltr">← Back to Assessment &amp; Risk Indices</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("gcs-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const eye = Number((document.getElementById("eye") as HTMLSelectElement).value);
+    const verbal = Number((document.getElementById("verbal") as HTMLSelectElement).value);
+    const motor = Number((document.getElementById("motor") as HTMLSelectElement).value);
+    const total = eye + verbal + motor;
+
+    let interpAr = "", interpEn = "";
+    if (total >= 13) { interpAr = "إصابة خفيفة"; interpEn = "Mild"; }
+    else if (total >= 9) { interpAr = "إصابة متوسطة"; interpEn = "Moderate"; }
+    else { interpAr = "إصابة شديدة"; interpEn = "Severe"; }
+
+    (document.getElementById("score-out") as HTMLElement).textContent = String(total);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

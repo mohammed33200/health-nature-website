@@ -1,0 +1,120 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ToolsShell from "../../layouts/ToolsShell.astro";
+// حاسبة معدل الضغط الشرياني المتوسط — MAP Calculator
+---
+
+<Layout title="حاسبة معدل الضغط الشرياني المتوسط">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة معدل الضغط الشرياني المتوسط</span>
+      <span data-en dir="ltr">MAP Calculator</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تحسب متوسط الضغط الشرياني (MAP) طوال دورة القلب الواحدة، من قراءتي الضغط الانقباضي والانبساطي. لأن القلب يقضي وقتًا أطول في الانبساط، فالـ MAP ليس المتوسط الحسابي البسيط بل يعطي وزنًا أكبر للضغط الانبساطي.</span>
+      <span data-en dir="ltr">Calculates the mean arterial pressure (MAP) across one full cardiac cycle, from systolic and diastolic readings. Since the heart spends more time in diastole, MAP isn't a simple average — it weights diastolic pressure more heavily.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>MAP هو المحدد الفعلي لتروية الأعضاء الحيوية (الدماغ، الكلى، القلب)، ويُستخدم كهدف علاجي مباشر في العناية المركزة عند إعطاء أدوية رافعة للضغط، أكثر من الاعتماد على الضغط الانقباضي وحده.</span>
+      <span data-en dir="ltr">MAP is the actual determinant of vital organ perfusion (brain, kidneys, heart), and is used as a direct treatment target in critical care when giving vasopressors — more so than relying on systolic pressure alone.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="map-form">
+    <label>
+      <span data-ar>الضغط الانقباضي (SBP)</span><span data-en dir="ltr">Systolic (SBP)</span>
+      <input type="number" id="sbp" min="40" max="260" required />
+    </label>
+    <label>
+      <span data-ar>الضغط الانبساطي (DBP)</span><span data-en dir="ltr">Diastolic (DBP)</span>
+      <input type="number" id="dbp" min="20" max="180" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>MAP: </span>
+      <strong id="map-out"></strong> mmHg
+    </p>
+    <p class="result-line">
+      <span data-ar>التفسير: </span><span data-en dir="ltr">Interpretation: </span>
+      <strong id="interp-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en dir="ltr">Formula &amp; reference</span></h2>
+    <p class="formula">MAP = DBP + ⅓ × (SBP − DBP)</p>
+    <ul class="ref-list">
+      <li><span data-ar>طبيعي: 70 – 100 mmHg</span><span data-en dir="ltr">Normal: 70–100 mmHg</span></li>
+      <li><span data-ar>الحد الأدنى المطلوب عادةً لتروية كافية للأعضاء: 60 – 65 mmHg</span><span data-en dir="ltr">Typical minimum needed for adequate organ perfusion: 60–65 mmHg</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/meters/">
+    <span data-ar>← رجوع لمجال المؤشرات التقييمية</span>
+    <span data-en dir="ltr">← Back to Assessment &amp; Risk Indices</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("map-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const sbp = Number((document.getElementById("sbp") as HTMLInputElement).value);
+    const dbp = Number((document.getElementById("dbp") as HTMLInputElement).value);
+    if (!sbp || !dbp) return;
+
+    const map = dbp + (sbp - dbp) / 3;
+    let interpAr = "", interpEn = "";
+    if (map < 60) { interpAr = "منخفض — خطر نقص تروية الأعضاء"; interpEn = "Low — risk of organ hypoperfusion"; }
+    else if (map <= 100) { interpAr = "ضمن المدى الطبيعي"; interpEn = "Within normal range"; }
+    else { interpAr = "مرتفع"; interpEn = "Elevated"; }
+
+    (document.getElementById("map-out") as HTMLElement).textContent = map.toFixed(0);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .9rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

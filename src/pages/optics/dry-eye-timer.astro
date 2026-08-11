@@ -1,0 +1,150 @@
+---
+// مؤقت جفاف العين ومعدل الرمش (Tear Break-Up Time Estimate)
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Dry Eye & Blink Rate Timer">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>مؤقت جفاف العين ومعدل الرمش</span>
+        <span data-en>Dry Eye & Blink Rate Timer</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>تقدير تقريبي لزمن استقرار طبقة الدموع على سطح القرنية قبل أن تشعر بالحاجة للرمش. كلما قصر هذا الزمن، زاد احتمال وجود جفاف في العين.</span>
+        <span data-en>A rough estimate of how long the tear film stays stable on the cornea before you feel the need to blink. The shorter this time, the higher the likelihood of dry eye.</span>
+      </p>
+    </div>
+
+    <div class="calc-card">
+      <ol class="steps">
+        <li><span data-ar>ارمش بشكل طبيعي عدة مرات أولاً حتى تشعر بارتياح.</span><span data-en>Blink normally a few times first until comfortable.</span></li>
+        <li><span data-ar>اضغط "ابدأ" وحاول إبقاء عينيك مفتوحتين دون رمش، مع النظر إلى النقطة أدناه.</span><span data-en>Press "Start" and try to keep your eyes open without blinking, looking at the dot below.</span></li>
+        <li><span data-ar>بمجرد أن تشعر برغبة قوية بالرمش أو بجفاف/وخز، اضغط "أشعر برغبة بالرمش" فوراً.</span><span data-en>As soon as you feel a strong urge to blink or dryness/stinging, press "I need to blink" immediately.</span></li>
+        <li><span data-ar>لا تُجهد نفسك أو تحاول مقاومة الرمش لفترة طويلة إن شعرت بعدم الراحة.</span><span data-en>Don't strain yourself or resist blinking for long if you feel uncomfortable.</span></li>
+      </ol>
+
+      <div class="timer-stage">
+        <div class="fixation-dot" aria-hidden="true"></div>
+        <div class="timer-display num" id="timerDisplay">0.0 s</div>
+      </div>
+
+      <div class="timer-controls">
+        <button type="button" class="btn-calc" id="startBtn"><span data-ar>ابدأ</span><span data-en>Start</span></button>
+        <button type="button" class="btn-calc" id="stopBtn" disabled><span data-ar>أشعر برغبة بالرمش</span><span data-en>I need to blink</span></button>
+        <button type="button" class="btn-ghost" id="resetBtn"><span data-ar>إعادة</span><span data-en>Reset</span></button>
+      </div>
+
+      <div class="result" id="timerResultBox">
+        <p class="reading" id="timerResultTitle"></p>
+        <span class="badge" id="timerResultBadge"></span>
+        <p id="timerResultText"></p>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>ما هو "زمن استقرار الدموع"؟</span><span data-en>What is "tear break-up time"?</span></h2>
+      <p>
+        <span data-ar>طبقة الدموع تغطي سطح القرنية وتحافظ على وضوح الرؤية ورطوبتها. مع مرور الوقت دون رمش، تبدأ هذه الطبقة بالتبخر وتظهر بقع جفاف صغيرة، فتشعر بالحاجة للرمش. القياس الطبي الدقيق (TBUT) يستخدم صبغة خاصة تحت مصباح شقي — أما هذا الاختبار فهو تقدير ذاتي تقريبي فقط.</span>
+        <span data-en>The tear film covers the cornea and keeps vision clear and moist. Without blinking, it starts to evaporate and small dry spots appear, prompting the urge to blink. The precise clinical measurement (TBUT) uses a special dye under a slit lamp — this test is only a rough self-estimate.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذا تقدير ذاتي تقريبي وغير دقيق طبياً، ويتأثر
+        بعوامل كثيرة مثل جفاف الهواء المحيط والتعب. النتيجة النهائية وتشخيص جفاف
+        العين يتطلبان فحصاً لدى طبيب عيون.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This is only a rough self-estimate, not medically precise, and
+        is affected by factors like ambient dryness and fatigue. A final result and dry eye
+        diagnosis require an exam by an eye doctor.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  const startBtn = document.getElementById('startBtn') as HTMLButtonElement;
+  const stopBtn = document.getElementById('stopBtn') as HTMLButtonElement;
+  const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
+  const display = document.getElementById('timerDisplay');
+  const box = document.getElementById('timerResultBox');
+  const title = document.getElementById('timerResultTitle');
+  const badge = document.getElementById('timerResultBadge');
+  const text = document.getElementById('timerResultText');
+
+  let startTime = null;
+  let intervalId = null;
+
+  function secLabel(elapsed) {
+    return t(getLang(), { ar: `${elapsed.toFixed(1)} ث`, en: `${elapsed.toFixed(1)} s` });
+  }
+  function tick() {
+    display.textContent = secLabel((performance.now() - startTime) / 1000);
+  }
+
+  startBtn?.addEventListener('click', () => {
+    box.classList.remove('show');
+    startTime = performance.now();
+    display.textContent = secLabel(0);
+    intervalId = setInterval(tick, 100);
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+  });
+
+  stopBtn?.addEventListener('click', () => {
+    if (!startTime) return;
+    const elapsedSeconds = (performance.now() - startTime) / 1000;
+    clearInterval(intervalId);
+    stopBtn.disabled = true;
+    startBtn.disabled = false;
+    const lang = getLang();
+
+    let cls, badgeText, resultTitle, resultText;
+    if (elapsedSeconds >= 10) {
+      cls = 'badge-ok'; badgeText = { ar: 'طبيعي', en: 'Normal' };
+      resultTitle = { ar: `${elapsedSeconds.toFixed(1)} ثانية`, en: `${elapsedSeconds.toFixed(1)} seconds` };
+      resultText = { ar: 'ضمن النطاق الطبيعي المتوقع (10 ثوانٍ فأكثر). إن راودك أي شك أو ظهرت أعراض جفاف لاحقاً، يبقى طبيب العيون هو المرجع للتأكد.', en: 'Within the expected normal range (10 seconds or more). If you have any doubt or dryness symptoms appear later, an eye doctor remains the reference to confirm.' };
+    } else if (elapsedSeconds >= 5) {
+      cls = 'badge-warn'; badgeText = { ar: 'أقل من المتوسط', en: 'Below average' };
+      resultTitle = { ar: `${elapsedSeconds.toFixed(1)} ثانية`, en: `${elapsedSeconds.toFixed(1)} seconds` };
+      resultText = { ar: 'قد يشير إلى جفاف خفيف في العين. جرّب الاختبار مرة أخرى في وقت آخر، وإن تكررت النتيجة مع أعراض جفاف، استشر طبيب عيون أو صيدلي بخصوص قطرات الترطيب.', en: 'May suggest mild dry eye. Try the test again at another time, and if it repeats along with dryness symptoms, consult an eye doctor or pharmacist about lubricating drops.' };
+    } else {
+      cls = 'badge-danger'; badgeText = { ar: 'منخفض', en: 'Low' };
+      resultTitle = { ar: `${elapsedSeconds.toFixed(1)} ثانية`, en: `${elapsedSeconds.toFixed(1)} seconds` };
+      resultText = { ar: 'نتيجة منخفضة نسبياً قد تكون مؤشراً على جفاف العين. يُنصح بمراجعة طبيب عيون لتقييم الحالة، خصوصاً مع أعراض مثل الاحمرار أو الحرقان أو تشوش الرؤية المتكرر.', en: 'A relatively low result may point to dry eye. An eye doctor visit is recommended, especially with symptoms like redness, burning, or recurring blurred vision.' };
+    }
+    badge.className = 'badge ' + cls;
+    badge.textContent = t(lang, badgeText);
+    title.textContent = t(lang, resultTitle);
+    text.textContent = t(lang, resultText);
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    clearInterval(intervalId);
+    startTime = null;
+    display.textContent = secLabel(0);
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    box.classList.remove('show');
+  });
+
+  window.addEventListener('languageChanged', () => {
+    if (!intervalId && !startTime) display.textContent = secLabel(0);
+  });
+</script>

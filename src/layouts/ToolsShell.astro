@@ -19,11 +19,12 @@
 import '../styles/global.css';
 ---
 <div class="tools-scope" data-lang="ar">
-  <div class="container lang-toggle-row">
-    <button class="lang-toggle" type="button" aria-label="Switch language">English</button>
+  <div class="container">
+    <div class="lang-toggle-row">
+      <button class="lang-toggle" type="button" aria-label="Switch language">English</button>
+    </div>
+    <slot />
   </div>
-
-  <slot />
 </div>
 
 <script>

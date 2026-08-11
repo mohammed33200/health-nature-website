@@ -1,0 +1,151 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ToolsShell from "../../layouts/ToolsShell.astro";
+// حاسبة شدة مرض الكبد المزمن — Child-Pugh Score
+---
+
+<Layout title="حاسبة شدة مرض الكبد المزمن">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة شدة مرض الكبد المزمن</span>
+      <span data-en dir="ltr">Child-Pugh Score</span>
+    </h1>
+    <p class="credit-line">Child &amp; Turcotte, 1964 / Pugh, 1973</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تصنّف شدة تليف الكبد إلى 3 درجات (A، B، C) بناءً على 5 معايير: البيليروبين، الألبومين، زمن البروثرومبين (INR)، الاستسقاء، واعتلال الدماغ الكبدي.</span>
+      <span data-en dir="ltr">Classifies cirrhosis severity into 3 classes (A, B, C) based on 5 criteria: bilirubin, albumin, prothrombin time (INR), ascites, and hepatic encephalopathy.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>توجّه قرار زراعة الكبد، تقدّر خطورة الجراحة لدى مرضى التليف، وتساعد على التنبؤ التقريبي بالبقيا، وهي لغة موحّدة بين أطباء الكبد والجراحين.</span>
+      <span data-en dir="ltr">Guides liver transplant decisions, estimates surgical risk in cirrhotic patients, helps roughly predict survival, and is a standardized language between hepatologists and surgeons.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="cp-form">
+    <label>
+      <span data-ar>البيليروبين الكلي (مجم/دل)</span><span data-en dir="ltr">Total bilirubin (mg/dL)</span>
+      <select id="bilirubin">
+        <option value="1">&lt;2 (1)</option>
+        <option value="2">2–3 (2)</option>
+        <option value="3">&gt;3 (3)</option>
+      </select>
+    </label>
+    <label>
+      <span data-ar>الألبومين (جم/دل)</span><span data-en dir="ltr">Albumin (g/dL)</span>
+      <select id="albumin">
+        <option value="1">&gt;3.5 (1)</option>
+        <option value="2">2.8–3.5 (2)</option>
+        <option value="3">&lt;2.8 (3)</option>
+      </select>
+    </label>
+    <label>
+      <span data-ar>INR</span>
+      <select id="inr">
+        <option value="1">&lt;1.7 (1)</option>
+        <option value="2">1.7–2.3 (2)</option>
+        <option value="3">&gt;2.3 (3)</option>
+      </select>
+    </label>
+    <label>
+      <span data-ar>الاستسقاء</span><span data-en dir="ltr">Ascites</span>
+      <select id="ascites">
+        <option value="1">لا يوجد / None (1)</option>
+        <option value="2">خفيف (يُضبط بأدوية) / Mild, controlled (2)</option>
+        <option value="3">متوسط-شديد (صعب الضبط) / Moderate-severe, refractory (3)</option>
+      </select>
+    </label>
+    <label>
+      <span data-ar>اعتلال الدماغ الكبدي</span><span data-en dir="ltr">Encephalopathy</span>
+      <select id="encephalopathy">
+        <option value="1">لا يوجد / None (1)</option>
+        <option value="2">درجة 1–2 (2)</option>
+        <option value="3">درجة 3–4 (3)</option>
+      </select>
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>المجموع: </span><span data-en dir="ltr">Total: </span>
+      <strong id="score-out"></strong> / 15
+    </p>
+    <p class="result-line">
+      <span data-ar>الدرجة: </span><span data-en dir="ltr">Class: </span>
+      <strong id="class-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / التصنيف</span><span data-en dir="ltr">Reference staging</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>A (5–6): تليف تعويضي، بقيا سنة واحدة ~100%</span><span data-en dir="ltr">A (5–6): compensated, ~100% 1-year survival</span></li>
+      <li><span data-ar>B (7–9): تليف غير تعويضي جزئيًا، بقيا سنة ~80%</span><span data-en dir="ltr">B (7–9): partially decompensated, ~80% 1-year survival</span></li>
+      <li><span data-ar>C (10–15): تليف غير تعويضي شديد، بقيا سنة ~45%</span><span data-en dir="ltr">C (10–15): severely decompensated, ~45% 1-year survival</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/meters/">
+    <span data-ar>← رجوع لمجال المؤشرات التقييمية</span>
+    <span data-en dir="ltr">← Back to Assessment &amp; Risk Indices</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("cp-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ids = ["bilirubin", "albumin", "inr", "ascites", "encephalopathy"];
+    const total = ids.reduce((sum, id) => sum + Number((document.getElementById(id) as HTMLSelectElement).value), 0);
+
+    let cls = "";
+    if (total <= 6) cls = "A";
+    else if (total <= 9) cls = "B";
+    else cls = "C";
+
+    (document.getElementById("score-out") as HTMLElement).textContent = String(total);
+    (document.getElementById("class-out") as HTMLElement).textContent = cls;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

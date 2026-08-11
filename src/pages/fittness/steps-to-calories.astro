@@ -1,0 +1,110 @@
+---
+// حاسبة الخطوات إلى سعرات محروقة — Steps to Calories Burned
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الخطوات إلى سعرات محروقة">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة الخطوات إلى سعرات محروقة</span>
+      <span data-en dir="ltr">Steps to Calories Burned</span>
+    </h1>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تترجم عدد الخطوات التي سجّلها ساعتك الذكية أو جوالك إلى سعرات حرارية محروقة فعليًا، بناءً على وزن الجسم.</span>
+      <span data-en dir="ltr">Translates the step count from your smartwatch or phone into actual calories burned, based on body weight.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>رقم "الخطوات" وحده لا يعني الكثير لمن يتابع سعراته اليومية؛ تحويله لسعرات يجعله قابلاً للمقارنة المباشرة مع الطعام المتناول والهدف اليومي.</span>
+      <span data-en dir="ltr">A raw "step count" means little to someone tracking daily calories; converting it to calories makes it directly comparable to food intake and daily targets.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="steps-form">
+    <label>
+      <span data-ar>عدد الخطوات</span><span data-en dir="ltr">Number of steps</span>
+      <input type="number" id="steps" min="100" max="50000" required />
+    </label>
+    <label>
+      <span data-ar>وزن الجسم (كجم)</span><span data-en dir="ltr">Body weight (kg)</span>
+      <input type="number" id="weight" min="30" max="200" step="0.1" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>السعرات المحروقة: </span><span data-en dir="ltr">Calories burned: </span>
+      <strong id="calories-out"></strong> kcal
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en dir="ltr">Formula &amp; reference</span></h2>
+    <p class="formula">Calories ≈ Steps × Weight (kg) × 0.00053</p>
+    <ul class="ref-list">
+      <li><span data-ar>مبنية على أن كل ميل مشي يحرق تقريبًا 0.53 سعرة لكل كجم من وزن الجسم، وأن الميل ≈ 2000 خطوة</span><span data-en dir="ltr">Based on ~0.53 kcal burned per kg of body weight per mile walked, and ~2000 steps per mile</span></li>
+      <li><span data-ar>10,000 خطوة لشخص وزنه 70 كجم ≈ 370 سعرة</span><span data-en dir="ltr">10,000 steps for a 70kg person ≈ 370 kcal</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/fittness/">
+    <span data-ar>← رجوع لمجال اللياقة</span>
+    <span data-en dir="ltr">← Back to Fitness</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("steps-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const steps = Number((document.getElementById("steps") as HTMLInputElement).value);
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    if (!steps || !weight) return;
+
+    const calories = steps * weight * 0.00053;
+    (document.getElementById("calories-out") as HTMLElement).textContent = calories.toFixed(0);
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

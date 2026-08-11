@@ -1,0 +1,116 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ToolsShell from "../../layouts/ToolsShell.astro";
+// حاسبة شدة الالتهاب الرئوي — CURB-65
+---
+
+<Layout title="حاسبة شدة الالتهاب الرئوي">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة شدة الالتهاب الرئوي</span>
+      <span data-en dir="ltr">CURB-65</span>
+    </h1>
+    <p class="credit-line">Lim et al., 2003</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تقيّم شدة الالتهاب الرئوي المكتسب من المجتمع عبر 5 معايير سريعة: التشوش الذهني، اليوريا، معدل التنفس، ضغط الدم، والعمر.</span>
+      <span data-en dir="ltr">Assesses the severity of community-acquired pneumonia using 5 quick criteria: confusion, urea, respiratory rate, blood pressure, and age.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>توجّه قرار العلاج: هل يمكن علاج المريض في المنزل، أم يحتاج دخول المستشفى، أم العناية المركزة؟ توحيد هذا القرار يقلل من دخول غير ضروري ومن تسريح خطر.</span>
+      <span data-en dir="ltr">Guides the treatment decision: can the patient be treated at home, or do they need hospital admission, or ICU care? Standardizing this decision reduces both unnecessary admissions and risky discharges.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="curb-form">
+    <label class="checkbox-label"><input type="checkbox" id="confusion" /> <span data-ar>تشوش ذهني جديد</span><span data-en dir="ltr">New confusion</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="urea" /> <span data-ar>يوريا الدم &gt; 7 مليمول/لتر (~19 مجم/دل)</span><span data-en dir="ltr">Blood urea &gt;7 mmol/L (~19 mg/dL)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="rr" /> <span data-ar>معدل التنفس ≥ 30/دقيقة</span><span data-en dir="ltr">Respiratory rate ≥30/min</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="bp" /> <span data-ar>ضغط انقباضي &lt;90 أو انبساطي ≤60</span><span data-en dir="ltr">Systolic &lt;90 or diastolic ≤60</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="age65" /> <span data-ar>العمر ≥ 65 سنة</span><span data-en dir="ltr">Age ≥65</span></label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>المجموع: </span><span data-en dir="ltr">Score: </span>
+      <strong id="score-out"></strong> / 5
+    </p>
+    <p class="result-line">
+      <span data-ar>التوصية: </span><span data-en dir="ltr">Recommendation: </span>
+      <strong id="interp-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / التفسير</span><span data-en dir="ltr">Reference interpretation</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>0–1: علاج منزلي غالبًا</span><span data-en dir="ltr">0–1: outpatient treatment likely</span></li>
+      <li><span data-ar>2: يُنظر في دخول المستشفى أو متابعة قريبة</span><span data-en dir="ltr">2: consider hospital admission or close follow-up</span></li>
+      <li><span data-ar>3 فأكثر: دخول المستشفى، وقد يحتاج عناية مركزة</span><span data-en dir="ltr">≥3: hospital admission, may need ICU</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/meters/">
+    <span data-ar>← رجوع لمجال المؤشرات التقييمية</span>
+    <span data-en dir="ltr">← Back to Assessment &amp; Risk Indices</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("curb-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ids = ["confusion", "urea", "rr", "bp", "age65"];
+    const total = ids.reduce((sum, id) => sum + ((document.getElementById(id) as HTMLInputElement).checked ? 1 : 0), 0);
+
+    let interpAr = "", interpEn = "";
+    if (total <= 1) { interpAr = "علاج منزلي غالبًا"; interpEn = "Outpatient treatment likely"; }
+    else if (total === 2) { interpAr = "يُنظر في دخول المستشفى"; interpEn = "Consider hospital admission"; }
+    else { interpAr = "دخول المستشفى، احتمال عناية مركزة"; interpEn = "Hospital admission, possible ICU"; }
+
+    (document.getElementById("score-out") as HTMLElement).textContent = String(total);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: .75rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .checkbox-label { display: flex; align-items: center; gap: .5rem; font-size: .9rem; }
+  .checkbox-label [data-en] { opacity: .6; font-size: .85em; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; margin-top: .5rem; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

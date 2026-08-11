@@ -1,0 +1,262 @@
+---
+// صفحة فهرس دومين "اختبارات العيون وفحص النظر المبدئي"
+// الاستخدام المتوقع في مشروعك:
+//
+//   ---
+//   import YourSiteLayout from '../layouts/YourSiteLayout.astro';
+//   import ToolsShell from '../layouts/ToolsShell.astro';
+//   import EyeTestsIndex from '../pages/eye-tests/index.astro'; // أو انسخ المحتوى مباشرة
+//   ---
+//   <YourSiteLayout title="اختبارات العيون">
+//     <ToolsShell>
+//       ...محتوى هذا الملف...
+//     </ToolsShell>
+//   </YourSiteLayout>
+
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+
+const tools = [
+  {
+    href: "/optics/visual-acuity",
+    titleAr: "اختبار حدة الإبصار (سنيلن)",
+    titleEn: "Visual Acuity Test (Snellen)",
+    descAr: "معايرة بحجم بطاقة بنكية ثم تحديد اتجاه رمز E المتحرك لتقدير حدة نظرك.",
+    descEn: "Calibrate using a bank-card size, then identify the tumbling-E direction to estimate your acuity.",
+    tagAr: "جديد",
+    tagEn: "New",
+  },
+  {
+    href: "/optics/amsler-grid",
+    titleAr: "شبكة أمسلر لفحص البقعة الصفراء",
+    titleEn: "Amsler Grid Test",
+    descAr: "كشف مبكر لأي انحناء أو تشوه أو بقع فارغة في مركز الرؤية.",
+    descEn: "Early detection of distortion, waviness, or blank spots in central vision.",
+    tagAr: "فحص سريع",
+    tagEn: "Quick check",
+  },
+  {
+    href: "/optics/color-blindness-test",
+    titleAr: "اختبار تمييز الألوان",
+    titleEn: "Color Vision Test",
+    descAr: "لوحات نقطية ملوّنة لتقدير احتمال وجود عمى ألوان جزئي.",
+    descEn: "Colored dot plates to estimate the likelihood of partial color blindness.",
+    tagAr: "الأكثر تفاعلاً",
+    tagEn: "Most interactive",
+  },
+  {
+    href: "/optics/color-vision-advanced",
+    titleAr: "اختبار عمى الألوان المتقدم",
+    titleEn: "Advanced Color Vision Test",
+    descAr: "ترتيب بطاقات لونية متدرجة لتقدير شدة صعوبة تمييز الألوان (Farnsworth D-15).",
+    descEn: "Arrange graded color chips to estimate the severity of color-discrimination difficulty (Farnsworth D-15).",
+    tagAr: "متقدم",
+    tagEn: "Advanced",
+  },
+  {
+    href: "/optics/astigmatism-test",
+    titleAr: "اختبار عجلة الاستجماتيزم",
+    titleEn: "Astigmatism Wheel Test",
+    descAr: "رسم شعاعي يكشف تفاوت وضوح الخطوط الدال على اللابؤرية.",
+    descEn: "A radial dial that reveals uneven line clarity indicating astigmatism.",
+    tagAr: "فحص سريع",
+    tagEn: "Quick check",
+  },
+  {
+    href: "/optics/contrast-sensitivity",
+    titleAr: "اختبار حساسية التباين",
+    titleEn: "Contrast Sensitivity Test",
+    descAr: "قياس قدرة العين على تمييز الأشكال الباهتة، مفيد لسائقي الليل.",
+    descEn: "Measures your eye's ability to detect faint shapes — useful for night driving.",
+    tagAr: "تفاعلي",
+    tagEn: "Interactive",
+  },
+  {
+    href: "/optics/eye-strain-calculator",
+    titleAr: "حاسبة إجهاد العين الرقمي",
+    titleEn: "Digital Eye Strain Calculator",
+    descAr: "استبيان سريع لتقييم إجهاد العين الناتج عن الشاشات ونصائح مخصصة.",
+    descEn: "A quick questionnaire to assess screen-related eye strain, with tailored tips.",
+    tagAr: "حاسبة",
+    tagEn: "Calculator",
+  },
+  {
+    href: "/optics/vertex-distance-calculator",
+    titleAr: "حاسبة تحويل مقاس النظارة إلى عدسة لاصقة",
+    titleEn: "Spectacle-to-Contact-Lens Power Calculator",
+    descAr: "تحويل دقيق لقوة النظارة حسب بُعد القمة الفعلي.",
+    descEn: "Accurate power conversion based on actual vertex distance.",
+    tagAr: "حاسبة",
+    tagEn: "Calculator",
+  },
+  {
+    href: "/optics/dry-eye-timer",
+    titleAr: "مؤقت جفاف العين ومعدل الرمش",
+    titleEn: "Dry Eye & Blink Rate Timer",
+    descAr: "تقدير زمن استقرار طبقة الدموع للكشف عن جفاف العين.",
+    descEn: "Estimates tear break-up time to help screen for dry eye.",
+    tagAr: "مؤقت",
+    tagEn: "Timer",
+  },
+  {
+    href: "/optics/night-glare-test",
+    titleAr: "اختبار الوهج والرؤية الليلية",
+    titleEn: "Night Glare & Driving Vision Test",
+    descAr: "محاكاة أضواء السيارات المقابلة لتقييم صعوبة الرؤية ليلاً.",
+    descEn: "Simulates oncoming headlights to assess night-driving vision difficulty.",
+    tagAr: "تفاعلي",
+    tagEn: "Interactive",
+  },
+];
+---
+
+<LayoutAstroComponent title="Eye Tests">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <p class="kicker">
+        <span data-ar>اختبارات العيون وفحص النظر المبدئي</span>
+        <span data-en>Eye Tests &amp; Preliminary Vision Screening</span>
+      </p>
+      <h1>
+        <span data-ar>افحص نظرك في دقائق، من مكانك</span>
+        <span data-en>Check your vision in minutes, right where you are</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>
+          مجموعة من الاختبارات البصرية التفاعلية المبنية على أسس علمية معروفة، لإعطائك
+          مؤشرات مبدئية سريعة عن صحة عينيك. هذه الأدوات لا تغني أبداً عن الفحص الطبي
+          الكامل لدى طبيب عيون.
+        </span>
+        <span data-en>
+          A set of interactive vision tests based on well-known screening principles, giving you
+          quick preliminary indicators about your eye health. These tools never replace a full
+          clinical exam by an eye doctor.
+        </span>
+      </p>
+    </div>
+
+    <div class="index-grid">
+      {tools.map((tool) => (
+        <a class="index-card" href={tool.href}>
+          <span class="icon"></span>
+          <h3>
+            <span data-ar>{tool.titleAr}</span>
+            <span data-en>{tool.titleEn}</span>
+          </h3>
+          <p>
+            <span data-ar>{tool.descAr}</span>
+            <span data-en>{tool.descEn}</span>
+          </p>
+          <span class="tag">
+            <span data-ar>{tool.tagAr}</span>
+            <span data-en>{tool.tagEn}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <div class="info-section">
+      <h2>
+        <span data-ar>دليل شامل لصحة العين: فهم الاختبارات وأهميتها</span>
+        <span data-en>A Comprehensive Guide to Eye Health: Understanding the Tests and Their Importance</span>
+      </h2>
+      <p>
+        <span data-ar>
+          تُعد صحة العين جزءاً لا يتجزأ من صحتنا العامة، إلا أنها غالباً ما تُهمل حتى تظهر مشاكل واضحة. إن فهم الاختبارات البصرية المختلفة وأهميتها يمكن أن يمكّننا من اتخاذ خطوات استباقية نحو الحفاظ على بصرنا. هذه المجموعة من الاختبارات عبر الإنترنت، رغم أنها ليست بديلاً عن الفحص الطبي المتخصص، إلا أنها تعمل كأدوات فحص أولية ممتازة لزيادة الوعي وتشجيع الكشف المبكر.
+        </span>
+        <span data-en>
+          Eye health is an integral part of our overall well-being, yet it is often neglected until noticeable problems arise. Understanding the various vision tests and their significance can empower us to take proactive steps toward preserving our sight. This collection of online tests, while not a substitute for a professional medical examination, serves as an excellent initial screening tool to raise awareness and encourage early detection.
+        </span>
+      </p>
+      <h3>
+        <span data-ar>1. حدة الإبصار: ما وراء قراءة الحروف</span>
+        <span data-en>1. Visual Acuity: Beyond Reading Letters</span>
+      </h3>
+      <p>
+        <span data-ar>
+          عندما يفكر معظم الناس في فحص العين، فإنهم يتخيلون مخطط سنيلن الكلاسيكي. يقيس اختبار حدة الإبصار قدرة العين على تمييز تفاصيل شكل من مسافة محددة. النتيجة "6/6" (أو 20/20 بالقدم) تعني أنك تستطيع رؤية ما يراه الشخص العادي من مسافة 6 أمتار. ومع ذلك، فإن حدة الإبصار هي مجرد جانب واحد من الرؤية. يمكن أن يكون لديك رؤية 6/6 ولا تزال تعاني من مشاكل بصرية أخرى. يستخدم اختبار "E" المتجه (Tumbling E) في نسختنا الرقمية لأنه عالمي ولا يتطلب معرفة القراءة والكتابة، مما يجعله مناسباً للأطفال أو الأشخاص الذين لا يعرفون الأبجدية اللاتينية.
+        </span>
+        <span data-en>
+          When most people think of an eye exam, they picture the classic Snellen chart. The visual acuity test measures the eye's ability to distinguish the details of a shape from a specific distance. A result of "20/20" (or 6/6 in meters) means you can see what an average person sees from 20 feet away. However, visual acuity is just one aspect of vision. You can have 20/20 vision and still suffer from other visual problems. The "Tumbling E" test in our digital version is used because it is universal and does not require literacy, making it suitable for children or individuals unfamiliar with the Latin alphabet.
+        </span>
+      </p>
+      <h3>
+        <span data-ar>2. شبكة أمسلر: نافذة على صحة البقعة الصفراء</span>
+        <span data-en>2. The Amsler Grid: A Window into Macular Health</span>
+      </h3>
+      <p>
+        <span data-ar>
+          البقعة الصفراء هي جزء صغير من الشبكية مسؤول عن الرؤية المركزية الحادة والمفصلة التي نحتاجها للقراءة والتعرف على الوجوه. يمكن لحالات مثل التنكس البقعي المرتبط بالعمر (AMD) أن تلحق الضرر بهذا الجزء الحيوي. اختبار شبكة أمسلر هو أداة بسيطة وفعالة لمراقبة صحة البقعة الصفراء في المنزل. من خلال النظر إلى نقطة مركزية، يمكنك اكتشاف أي تشوهات في رؤيتك، مثل الخطوط المتموجة (metamorphopsia) أو البقع العمياء (scotomas). الكشف المبكر عن هذه التغييرات أمر بالغ الأهمية لإدارة تقدم أمراض الشبكية.
+        </span>
+        <span data-en>
+          The macula is a small part of the retina responsible for the sharp, detailed central vision we need for reading and recognizing faces. Conditions like Age-related Macular Degeneration (AMD) can damage this vital area. The Amsler grid test is a simple yet effective tool for monitoring your macular health at home. By looking at a central dot, you can detect any distortions in your vision, such as wavy lines (metamorphopsia) or blind spots (scotomas). Early detection of these changes is crucial for managing the progression of retinal diseases.
+        </span>
+      </p>
+      <h3>
+        <span data-ar>3. رؤية الألوان: عالم من الأطياف</span>
+        <span data-en>3. Color Vision: A World of Spectrums</span>
+      </h3>
+      <p>
+        <span data-ar>
+          عمى الألوان، أو بشكل أدق نقص رؤية الألوان، يؤثر على عدد كبير من السكان، وخاصة الرجال. اختبار إيشيهارا، الذي تستوحى منه لوحاتنا النقطية، هو الطريقة الأكثر شيوعاً للفحص. إنه يستخدم لوحات من النقاط الملونة التي تشكل أرقاماً. يمكن للأشخاص ذوي الرؤية اللونية الطبيعية رؤية الأرقام، بينما يجد الأشخاص الذين يعانون من نقص في رؤية الألوان صعوبة في ذلك. اختبارنا المتقدم، المستوحى من Farnsworth D-15، يذهب خطوة أبعد من خلال مطالبتك بترتيب سلسلة من القبعات الملونة، مما يساعد على تحديد شدة ونوع نقص رؤية الألوان.
+        </span>
+        <span data-en>
+          Color blindness, or more accurately color vision deficiency, affects a significant portion of the population, particularly men. The Ishihara test, from which our dot plates are inspired, is the most common method for screening. It uses plates of colored dots that form numbers. People with normal color vision can see the numbers, while those with a color deficiency find it difficult. Our advanced test, inspired by the Farnsworth D-15, goes a step further by asking you to arrange a series of colored caps, which helps determine the severity and type of color deficiency.
+        </span>
+      </p>
+      <h3>
+        <span data-ar>4. الاستجماتيزم وحساسية التباين: جودة الرؤية</span>
+        <span data-en>4. Astigmatism and Contrast Sensitivity: The Quality of Vision</span>
+      </h3>
+      <p>
+        <span data-ar>
+          الاستجماتيزم هو عيب انكساري شائع ناتج عن عدم انتظام شكل القرنية أو العدسة. يؤدي هذا إلى تشوش الرؤية أو تشوهها. يكشف اختبار عجلة الاستجماتيزم عن ذلك من خلال إظهار خطوط تبدو أغمق أو أكثر وضوحاً من غيرها. من ناحية أخرى، تقيس حساسية التباين قدرتك على التمييز بين الزيادات الطفيفة في الضوء والظلام. هذه المهارة ضرورية للرؤية في الإضاءة المنخفضة، مثل القيادة ليلاً أو في الضباب. يمكن أن يكون لديك حدة إبصار 6/6 ولكن حساسية تباين ضعيفة، مما يؤثر على جودة حياتك.
+        </span>
+        <span data-en>
+          Astigmatism is a common refractive error caused by an irregularly shaped cornea or lens. This results in blurred or distorted vision. The astigmatism wheel test reveals this by showing lines that appear darker or sharper than others. Contrast sensitivity, on the other hand, measures your ability to distinguish between finer and finer increments of light versus dark. This skill is crucial for low-light vision, such as driving at night or in fog. You can have 20/20 acuity but poor contrast sensitivity, impacting your quality of life.
+        </span>
+      </p>
+      <h3>
+        <span data-ar>5. صحة السطح العيني: ما وراء الانكسار</span>
+        <span data-en>5. Ocular Surface Health: Beyond Refraction</span>
+      </h3>
+      <p>
+        <span data-ar>
+          أدوات مثل مؤقت جفاف العين وحاسبة إجهاد العين الرقمي تعالج صحة السطح العيني. جفاف العين هو حالة شائعة حيث لا توفر دموعك ترطيباً كافياً لعينيك. يقدر مؤقتنا "زمن تفكك الدموع" بشكل تقريبي، وهو مقياس لاستقرار طبقة الدموع. وفي الوقت نفسه، أصبح إجهاد العين الرقمي مصدر قلق متزايد في عالمنا الذي يعتمد على الشاشات. من خلال تقييم عاداتك وأعراضك، يمكن للحاسبة تقديم نصائح مخصصة لتقليل الانزعاج.
+        </span>
+        <span data-en>
+          Tools like the Dry Eye Timer and Digital Eye Strain Calculator address the health of the ocular surface. Dry eye is a common condition where your tears don't provide adequate lubrication for your eyes. Our timer roughly estimates your "tear break-up time," a measure of tear film stability. Meanwhile, digital eye strain has become a growing concern in our screen-dependent world. By assessing your habits and symptoms, the calculator can provide tailored advice to minimize discomfort.
+        </span>
+      </p>
+      <h3>
+        <span data-ar>الخلاصة: المعرفة قوة</span>
+        <span data-en>Conclusion: Knowledge is Power</span>
+      </h3>
+      <p>
+        <span data-ar>
+          إن استخدام هذه الاختبارات عبر الإنترنت بانتظام يمكن أن يساعدك على البقاء على دراية بصحة عينيك. إنها بمثابة نظام إنذار مبكر، يحثك على طلب الرعاية المهنية عند ظهور تغييرات. تذكر، هذه الأدوات تعليمية ولا تحل محل الفحص الشامل للعين من قبل طبيب عيون أو أخصائي بصريات. الفحوصات المنتظمة ضرورية للحفاظ على رؤية واضحة وصحية مدى الحياة.
+        </span>
+        <span data-en>
+          Regularly using these online tests can help you stay informed about your eye health. They serve as an early warning system, prompting you to seek professional care when changes arise. Remember, these tools are educational and do not replace a comprehensive eye examination by an optometrist or ophthalmologist. Regular check-ups are essential for maintaining clear, healthy vision for a lifetime.
+        </span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>تنبيه مهم:</strong> جميع الاختبارات في هذا القسم هي أدوات فحص مبدئي تقريبي
+        وذاتي (Self-Screening) لأغراض توعوية فقط، ونتائجها ليست نهائية ولا تُعد بديلاً عن
+        الفحص الإكلينيكي بأجهزة طبية متخصصة. إن أظهر أي اختبار نتيجة غير طبيعية، أو إذا
+        كانت لديك أعراض بصرية، فالنتيجة النهائية والتشخيص يتطلبان زيارة طبيب عيون مختص.
+      </span>
+      <span data-en>
+        <strong>Important notice:</strong> All tests in this section are approximate,
+        self-screening tools for awareness purposes only. Their results are not final and are
+        not a substitute for a clinical exam with specialized medical equipment. If any test shows
+        an abnormal result, or if you have visual symptoms, a final result and diagnosis require a
+        visit to a qualified eye doctor.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>

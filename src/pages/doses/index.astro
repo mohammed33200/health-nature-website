@@ -1,0 +1,164 @@
+---
+// صفحة رئيسية لمجال "جرعات الأدوية"
+// Domain hub page — Medication Dosing Calculators
+//
+// أضفت أداة واحدة مهمة جدًا غير موجودة في القائمة الأصلية: جرعات
+// الإينوكسابارين (هيبارين منخفض الوزن الجزيئي) بالوزن، لأنها الأكثر
+// استخدامًا يوميًا مقارنة بالهيبارين الوريدي التقليدي في كثير من
+// البروتوكولات الحديثة. وسمتها NEW.
+// Added one very important tool not in the original list: weight-based
+// enoxaparin (LMWH) dosing — used far more often day-to-day than
+// traditional IV heparin in many modern protocols. Flagged NEW.
+import Layout from '../../layouts/Layout.astro'; // points to YOUR site's own layout
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import Tape from '../../components/Tape.astro';
+const tools = [
+  { slug: "corticosteroid-tapering", ar: "حاسبة جدول التنازل من الكورتيزون", en: "Corticosteroid Tapering", note: "جدول أسبوعي لخفض الجرعة تدريجيًا", noteEn: "Weekly schedule for gradual dose reduction" },
+  { slug: "corticosteroid-dose-converter", ar: "حاسبة تحويل الستيرويدات", en: "Corticosteroid Dose Converter", note: "التحويل بين أنواع الستيرويدات بجرعة مكافئة", noteEn: "Convert between steroid types with equivalent doses" },
+  { slug: "levothyroxine-dosing", ar: "حاسبة جرعة الثايروكسين المبدئية", en: "Levothyroxine Dosing", note: "الجرعة اليومية المبدئية لخمول الغدة", noteEn: "Initial daily dose for hypothyroidism" },
+  { slug: "enoxaparin-dosing", ar: "حاسبة جرعات الإينوكسابارين بالوزن", en: "Enoxaparin (LMWH) Dosing", note: "علاجية ووقائية، مع تعديل كلوي", noteEn: "Therapeutic and prophylactic, with renal adjustment", isNew: true },
+  { slug: "heparin-dosing", ar: "حاسبة جرعات الهيبارين الوريدي", en: "Heparin Dosing Protocol", note: "جرعة بدء ومعدل تسريب وريدي", noteEn: "Starting dose and IV infusion rate" },
+  { slug: "rumack-matthew-nomogram", ar: "حاسبة خطورة تسمم الباراسيتامول", en: "Rumack-Matthew Nomogram", note: "الحاجة لترياق N-acetylcysteine", noteEn: "Need for N-acetylcysteine antidote", credit: "Rumack-Matthew" },
+  { slug: "adrogue-madias", ar: "حاسبة صوديوم الطوارئ ومعدل التقطير", en: "Adrogué-Madias Formula", note: "تغيّر الصوديوم المتوقع لكل لتر محلول", noteEn: "Expected sodium change per liter of fluid", credit: "Adrogué-Madias" },
+  { slug: "potassium-deficit", ar: "حاسبة عجز البوتاسيوم", en: "Potassium Deficit", note: "تقدير النقص الكلي في الجسم", noteEn: "Estimate total body potassium deficit" },
+  { slug: "water-deficit", ar: "حاسبة العجز المائي", en: "Water Deficit Calculator", note: "لترات الماء الصافي المفقودة في الجفاف", noteEn: "Liters of free water lost in dehydration" },
+  { slug: "insulin-correction", ar: "حاسبة تصحيح الإنسولين", en: "Insulin Correction Scale", note: "جرعة إضافية لتصحيح ارتفاع السكر", noteEn: "Supplemental dose to correct high glucose" },
+  { slug: "opioid-conversion", ar: "حاسبة تحويل مسكنات الأفيون", en: "Opioid Conversion", note: "التحويل بين أنواع المسكنات الأفيونية", noteEn: "Convert between different opioid types" },
+];
+---
+
+<Layout title="جرعات الأدوية">
+  <ToolsShell>
+    <section class="domain-hub">
+      <header class="domain-hero">
+        
+        <h1>
+          <span data-ar>جرعات الأدوية</span>
+          <span data-en>Medication Dosing Calculators</span>
+        </h1>
+        <p class="lead">
+          <span data-ar>
+            حاسبات جرعات دوائية تعتمد على معادلات ونسب معتمدة سريريًا، لتحويل
+            وزن المريض أو قيمة مخبرية إلى جرعة بدء أو معدل تسريب. هذا المجال
+            موجَّه للكادر الطبي، ولا يُقصد به الاستخدام الذاتي دون إشراف.
+          </span>
+          <span data-en>
+            Medication dosing calculators built on clinically established
+            equations and ratios, converting patient weight or a lab value
+            into a starting dose or infusion rate. This domain is aimed at
+            healthcare professionals and is not meant for self-directed use.
+          </span>
+        </p>
+        <p class="audience">
+          <span data-ar>👥 لمن هذا المجال: أطباء، صيادلة إكلينيكيون، وطلاب الطب والصيدلة.</span>
+          <span data-en>👥 Audience: physicians, clinical pharmacists, and medical/pharmacy students.</span>
+        </p>
+      </header>
+
+      <ul class="tool-grid">
+        {tools.map((t) => (
+          <li class="tool-card">
+            <a href={`/doses/${t.slug}`}>
+              <span class="tool-name" data-ar>{t.ar}</span>
+              <span class="tool-name" data-en>{t.en}</span>
+              <span class="tool-note" data-ar>{t.note}</span>
+              <span class="tool-note" data-en>{t.noteEn}</span>
+              <span class="badges">
+                <span class="badge badge-dosing"><span data-ar>جرعات</span><span data-en>Dosing</span></span>
+                {t.isNew && <span class="badge badge-new">NEW</span>}
+                {t.credit && <span class="badge badge-credit">{t.credit}</span>}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <article class="domain-article">
+        <h2><span data-ar>الأهمية الحاسمة لضبط جرعات الأدوية بدقة</span><span data-en>The Critical Importance of Precise Medication Dosing</span></h2>
+
+        <h3><span data-ar>مقدمة: حجر الزاوية في العلاج الدوائي</span><span data-en>Introduction: The Cornerstone of Pharmacotherapy</span></h3>
+        <p><span data-ar>في عالم الطب، يُعتبر الدواء أداة قوية يمكنها محاربة العدوى، والسيطرة على الأمراض المزمنة، وتخفيف الألم، وإنقاذ الأرواح. ومع ذلك، فإن فعالية وسلامة أي دواء لا تكمن في المادة نفسها فحسب، بل تعتمد بشكل حاسم على أحد أهم مبادئ علم الأدوية: الضبط الدقيق للجرعة. المقولة الشهيرة التي صاغها باراسيلسوس في القرن السادس عشر، 'الجرعة هي ما يصنع السم'، لا تزال حجر الزاوية في العلاجات الحديثة. إن تحديد الجرعة الصحيحة ليس مجرد اتباع لتوجيهات قياسية؛ بل هي عملية معقدة وفردية توازن بين تحقيق التأثير العلاجي المنشود وتقليل مخاطر الضرر إلى الحد الأدنى.</span><span data-en>In the world of medicine, a prescribed drug is a powerful tool. It can fight infection, manage chronic disease, alleviate pain, and save lives. However, the effectiveness and safety of any medication are not inherent to the substance alone; they are critically dependent on one of the most fundamental principles of pharmacology: precise dosing. The adage 'the dose makes the poison,' coined by Paracelsus in the 16th century, remains the cornerstone of modern therapeutics. Getting the dose right is not just a matter of following a standard guideline; it is a complex, individualized process that balances achieving the desired therapeutic effect with minimizing the risk of harm.</span></p>
+
+        <h3><span data-ar>النافذة العلاجية: موازنة دقيقة بين الفعالية والسمية</span><span data-en>The Therapeutic Window: A Delicate Balancing Act</span></h3>
+        <p><span data-ar>لكل دواء 'نافذة علاجية' أو 'مؤشر علاجي'، وهو نطاق من التركيزات في الجسم يكون فيه الدواء فعالاً دون أن يكون ساماً. تحت هذه النافذة، تكون الجرعة دون المستوى العلاجي، أي أنها منخفضة جداً لإحداث التأثير المطلوب، مما قد يؤدي إلى فشل العلاج أو تطور مقاومة للدواء، كما هو الحال مع المضادات الحيوية. فوق هذه النافذة، يصبح تركيز الدواء ساماً، مما يؤدي إلى مجموعة من التفاعلات الدوائية الضارة التي تتراوح من الانزعاج الخفيف إلى تلف الأعضاء المهدد للحياة. الهدف من تحديد الجرعة هو الحفاظ على تركيز الدواء ضمن هذه النافذة. بالنسبة للأدوية ذات النافذة العلاجية الواسعة (مثل البنسلين)، هناك هامش أمان كبير. ولكن بالنسبة للأدوية ذات النافذة العلاجية الضيقة (مثل الوارفارين، الديجوكسين، أو الليثيوم)، فإن الخط الفاصل بين الجرعة الفعالة والسامة دقيق للغاية، مما يجعل الحساب الدقيق والمراقبة اليقظة أمراً بالغ الأهمية.</span><span data-en>Every drug has a 'therapeutic window' or 'therapeutic index'—a range of concentrations in the body where it is effective without being toxic. Below this window, the dose is sub-therapeutic, meaning it's too low to produce the desired clinical effect. This can lead to treatment failure or the development of resistance, as with antibiotics. Above this window, the drug concentration becomes toxic, leading to adverse drug reactions (ADRs) that can range from mild discomfort to life-threatening organ damage. The goal of dosing is to maintain the drug's concentration squarely within this window. For drugs with a wide therapeutic window (like penicillin), there is a large margin of safety. However, for drugs with a narrow therapeutic window (like warfarin, digoxin, or lithium), the line between an effective dose and a toxic one is incredibly fine, making precise calculation and vigilant monitoring paramount.</span></p>
+
+        <h3><span data-ar>العوامل الرئيسية المؤثرة على جرعة الدواء</span><span data-en>Key Factors Influencing Drug Dosage</span></h3>
+        <p><span data-ar>نهج 'مقاس واحد يناسب الجميع' هو مغالطة خطيرة في الطب. يجب تخصيص الجرعات بناءً على مجموعة من العوامل الفريدة لكل مريض:</span><span data-en>A 'one-size-fits-all' approach to medication is a dangerous fallacy. Dosages must be individualized based on a host of unique patient factors:</span></p>
+        <ul>
+          <li><span data-ar>الوزن والعمر والجنس: وزن الجسم يؤثر بشكل مباشر على حجم توزيع الدواء في الجسم. الأطفال وكبار السن، على وجه الخصوص، لديهم عمليات أيض وتصفية مختلفة تتطلب تعديلات دقيقة في الجرعات. على سبيل المثال، غالباً ما تُحسب جرعات الأطفال بالملليجرام لكل كيلوجرام من وزن الجسم.</span><span data-en>Weight, Age, and Sex: Body weight directly impacts the volume in which a drug is distributed. Children and the elderly, in particular, have different metabolic and clearance rates that demand careful dose adjustments. Pediatric doses, for instance, are often calculated in mg per kg of body weight.</span></li>
+          <li><span data-ar>وظائف الأعضاء (الكلى والكبد): الكلى والكبد هما العضوان الرئيسيان المسؤولان عن تصفية الأدوية من الجسم. أي ضعف في وظائفهما (القصور الكلوي أو الكبدي) يمكن أن يؤدي إلى تراكم الدواء لمستويات سامة. لذلك، يجب تخفيض جرعات العديد من الأدوية لدى هؤلاء المرضى، وغالباً ما يتم ذلك بناءً على نتائج اختبارات معملية مثل معدل الترشيح الكبيبي المقدر (eGFR).</span><span data-en>Organ Function (Kidney and Liver): The kidneys and liver are the primary organs responsible for clearing drugs from the body. Any impairment in their function (renal or hepatic insufficiency) can lead to drug accumulation and toxicity. Doses for many medications must be reduced in these patients, often based on lab results like estimated glomerular filtration rate (eGFR).</span></li>
+          <li><span data-ar>علم الوراثة الدوائي: الاختلافات الجينية بين الأفراد يمكن أن تؤثر بشكل كبير على كيفية استجابتهم للأدوية. يدرس علم الوراثة الدوائي كيف يمكن لجينات الشخص أن تؤثر على استجابته للأدوية، مما يمهد الطريق للطب الشخصي حيث يتم تصميم الجرعات وفقاً للملف الجيني للفرد.</span><span data-en>Pharmacogenomics: Genetic variations between individuals can significantly affect how they respond to drugs. The field of pharmacogenomics studies how a person's genes affect their response to medications, paving the way for personalized medicine where doses are tailored to an individual's genetic profile.</span></li>
+          <li><span data-ar>التفاعلات الدوائية: عندما يتناول المريض أدوية متعددة، يمكن أن يتفاعل بعضها مع بعض، مما يغير من فعاليتها أو سميتها. يمكن لدواء أن يسرّع أو يبطئ من عملية أيض دواء آخر، مما يتطلب تعديل الجرعة لتجنب النتائج غير المرغوب فيها.</span><span data-en>Drug-Drug Interactions: When a patient takes multiple medications, they can interact with each other, altering their efficacy or toxicity. One drug can speed up or slow down the metabolism of another, requiring a dose adjustment to avoid unwanted outcomes.</span></li>
+        </ul>
+
+        <h3><span data-ar>عواقب الجرعات غير الصحيحة</span><span data-en>The Consequences of Improper Dosing</span></h3>
+        <p><span data-ar>الفشل في تخصيص الجرعات بشكل صحيح يمكن أن يكون له عواقب وخيمة:</span><span data-en>The failure to properly individualize a dose can have severe consequences:</span></p>
+        <ul>
+          <li><span data-ar>الجرعة المنخفضة (Underdosing): تؤدي إلى فشل علاجي. قد لا يتم السيطرة على العدوى، أو قد يظل ضغط الدم مرتفعاً، أو قد يستمر الألم. في حالات مثل الصرع، يمكن أن تؤدي الجرعة المنخفضة إلى نوبات اختراقية، مما يعرض المريض للخطر.</span><span data-en>Underdosing: This leads to therapeutic failure. An infection may not be controlled, blood pressure may remain high, or pain may persist. In conditions like epilepsy, an underdose can lead to breakthrough seizures, putting the patient at risk.</span></li>
+          <li><span data-ar>الجرعة الزائدة (Overdosing): تزيد من خطر التفاعلات الدوائية الضارة والسمية. يمكن أن يسبب مضاد التخثر نزيفاً خطيراً، ويمكن أن يؤدي مسكن الألم الأفيوني إلى تثبيط تنفسي مميت، ويمكن أن يسبب مضاد حيوي تلفاً في الكلى أو السمع. هذه المخاطر ليست نظرية؛ بل هي أحداث حقيقية يمكن الوقاية منها تحدث في البيئات السريرية.</span><span data-en>Overdosing: This increases the risk of ADRs and toxicity. An anticoagulant can cause major bleeding, an opioid analgesic can lead to fatal respiratory depression, and an antibiotic can cause kidney or hearing damage. These are not theoretical risks; they are preventable, real-world events.</span></li>
+        </ul>
+
+        <h3><span data-ar>دور التكنولوجيا والأدوات السريرية</span><span data-en>The Role of Technology and Clinical Tools</span></h3>
+        <p><span data-ar>نظراً لتعقيد تحديد الجرعات، يعتمد مقدمو الرعاية الصحية بشكل متزايد على التكنولوجيا لتعزيز الدقة والسلامة. توفر حاسبات الجرعات الدوائية الرقمية، مثل تلك الموجودة في هذا الموقع، دعماً حيوياً. فهي تترجم الصيغ المعقدة إلى إجابات سريعة وعملية، مما يقلل من احتمالية الخطأ البشري في الحساب. يمكن لهذه الأدوات حساب جرعات مخصصة للوزن، وتعديل الجرعات بناءً على وظائف الكلى، وتحويل الجرعات بين الأدوية المختلفة، والمزيد. من خلال أتمتة هذه الحسابات، يمكن للأطباء والصيادلة تركيز المزيد من طاقتهم المعرفية على الصورة السريرية الأوسع، مما يضمن أن الجرعة المحسوبة منطقية في سياق حالة المريض الفريدة.</span><span data-en>Given the complexity of dosing, healthcare providers increasingly rely on technology to enhance accuracy and safety. Digital drug dosing calculators, like those featured on this site, provide vital support. They translate complex formulas into quick, actionable answers, reducing the potential for human calculation error. These tools can calculate weight-based doses, adjust for renal function, convert between different drugs, and more. By automating these calculations, clinicians can focus more of their cognitive energy on the broader clinical picture, ensuring the calculated dose makes sense in the context of the unique patient.</span></p>
+
+        <h3><span data-ar>خاتمة: مسؤولية مشتركة من أجل سلامة المرضى</span><span data-en>Conclusion: A Shared Responsibility for Patient Safety</span></h3>
+        <p><span data-ar>إن الضبط الدقيق لجرعات الأدوية ليس مجرد تمرين أكاديمي؛ بل هو تطبيق عملي وحاسم للمعرفة العلمية لضمان سلامة المرضى وفعالية العلاج. إنه يتطلب فهماً عميقاً لعلم الأدوية، وتقييماً دقيقاً للمريض، واستخداماً حكيماً للأدوات السريرية. تقع المسؤولية على عاتق الفريق الصحي بأكمله - من الطبيب الذي يصف الدواء، إلى الصيدلي الذي يراجعه ويصرفه، إلى الممرض الذي يعطيه. كما يلعب المرضى دوراً حيوياً من خلال الالتزام بالجرعات الموصوفة والإبلاغ عن أي آثار جانبية. في نهاية المطاف، من خلال إعطاء الأولوية للجرعات الدقيقة والمخصصة، يمكننا تسخير القوة الهائلة للأدوية الحديثة مع احترام التوازن الدقيق اللازم لضمان أن تكون علاجاتنا شافية وليست ضارة.</span><span data-en>Precise medication dosing is not merely an academic exercise; it is a critical, practical application of scientific knowledge to ensure patient safety and therapeutic efficacy. It requires a deep understanding of pharmacology, a careful assessment of the patient, and the judicious use of clinical tools. The responsibility lies with the entire healthcare team—from the physician who prescribes, to the pharmacist who reviews and dispenses, to the nurse who administers. Patients also play a vital role by adhering to prescribed regimens and reporting side effects. Ultimately, by prioritizing accurate, individualized dosing, we can harness the immense power of modern medicine while respecting the delicate balance required to ensure our therapies heal, not harm.</span></p>
+      </article>
+
+      <p class="domain-disclaimer">
+        <span data-ar>جميع أدوات هذا المجال مرجعية وتعليمية للكادر الطبي فقط، ولا تُستخدم كأساس وحيد لأي قرار علاجي دون تحقق سريري مباشر وإشراف طبيب أو صيدلي مختص.</span>
+        <span data-en>All tools in this domain are for reference and educational use by healthcare professionals only, and must never be the sole basis for a treatment decision without direct clinical verification and physician/pharmacist supervision.</span>
+      </p>
+
+      <a class="back-to-index" href="/">
+        <span data-ar>← الرجوع للفهرس الرئيسي</span>
+        <span data-en>← Back to main index</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<style>
+  .domain-hub { padding-block: 2rem; }
+  .domain-hero { max-width: 46rem; margin: 0 auto 2rem; text-align: center; }
+  .eyebrow { letter-spacing: .04em; opacity: .7; font-size: .8rem; }
+
+  .domain-article {
+    max-width: 46rem;
+    margin: 3rem auto 2rem;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,.08);
+  }
+  .domain-article h2 { font-size: 1.75rem; margin-bottom: 1rem; }
+  .domain-article h3 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #1d6f5c; }
+  .domain-article p, .domain-article li { color: #334155; line-height: 1.8; }
+  .domain-article ul { padding-inline-start: 1.5rem; }
+
+  .domain-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .75rem; }
+  .domain-hero [data-en] { font-size: .7em; opacity: .65; font-weight: 500; }
+  .lead [data-en] { display: block; font-size: .85em; opacity: .7; margin-top: .6rem; }
+  .audience { margin-top: 1rem; font-size: .9rem; opacity: .85; }
+  .audience [data-en] { display: block; opacity: .65; margin-top: .2rem; }
+
+  .tool-grid { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .75rem; }
+  .tool-card a { display: block; padding: .85rem 1rem; border: 1px solid rgba(0,0,0,.12); border-radius: .6rem; text-decoration: none; height: 100%; }
+  .tool-name { display: block; }
+  .tool-name[data-en] { font-size: .8em; opacity: .6; margin-top: .1rem; }
+  .tool-note { display: block; font-size: .75rem; opacity: .6; margin-top: .4rem; }
+  .badges { display: block; margin-top: .5rem; }
+  .badge { display: inline-block; font-size: .65rem; margin-inline-end: .3rem; padding: .1rem .5rem; border-radius: 999px; }
+  .badge-dosing { background: rgba(180,90,0,.12); }
+  .badge-new { background: rgba(30,110,200,.14); font-weight: 700; }
+  .badge-credit { background: rgba(0,0,0,.06); font-style: italic; }
+
+  .domain-disclaimer { margin-top: 2rem; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .domain-disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+  .back-to-index { display: inline-block; margin-top: 1.5rem; font-size: .85rem; text-decoration: none; }
+  
+  .tool-name[data-en], .tool-note[data-en] { display: none; }
+  .tools-scope[data-lang="en"] .tool-name[data-ar], .tools-scope[data-lang="en"] .tool-note[data-ar] { display: none; }
+  .tools-scope[data-lang="en"] .tool-name[data-en], .tools-scope[data-lang="en"] .tool-note[data-en] { display: block; }
+  .tools-scope[data-lang="ar"] .tool-name[data-ar], .tools-scope[data-lang="ar"] .tool-note[data-ar] { display: block; }
+</style>

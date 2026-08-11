@@ -1,0 +1,116 @@
+---
+// مقسّم نسب الماكروز — Macro Ratio Splitter
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="مقسّم نسب الماكروز">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>مقسّم نسب الماكروز</span>
+          <span data-en>Macro Ratio Splitter</span>
+        </h1>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحوّل جرامات البروتين والكربوهيدرات والدهون في وجبة أو نظام غذائي إلى النسبة المئوية لكل منها وإجمالي السعرات.</span>
+          <span data-en>Converts the grams of protein, carbs, and fat in a meal or diet plan into the percentage share of each and total calories.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>من يتابع نظامًا غذائيًا (كيتو، عالي البروتين...) يحتاج معرفة النسب الفعلية لوجبته وليس الجرامات فقط، للتأكد من مطابقتها لخطته.</span>
+          <span data-en>Someone following a diet plan (keto, high-protein...) needs to know the actual ratios of their meal, not just the grams, to confirm it matches their plan.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="macro-form">
+        <label>
+          <span data-ar>البروتين (جرام)</span><span data-en>Protein (g)</span>
+          <input type="number" id="protein" min="0" max="500" required />
+        </label>
+        <label>
+          <span data-ar>الكربوهيدرات (جرام)</span><span data-en>Carbs (g)</span>
+          <input type="number" id="carbs" min="0" max="500" required />
+        </label>
+        <label>
+          <span data-ar>الدهون (جرام)</span><span data-en>Fat (g)</span>
+          <input type="number" id="fat" min="0" max="500" required />
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>إجمالي السعرات: </span><span data-en>Total calories: </span>
+          <strong id="total-out"></strong> kcal
+        </p>
+        <p class="result-line">
+          <span data-ar>بروتين: </span><strong id="protein-pct-out"></strong> — <span data-ar>كارب: </span><strong id="carbs-pct-out"></strong> — <span data-ar>دهون: </span><strong id="fat-pct-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>المعادلة</span><span data-en>Formula</span></h2>
+        <p class="formula">Calories = Protein×4 + Carbs×4 + Fat×9</p>
+      </article>
+
+      <a class="back-link" href="/fittness/">
+        <span data-ar>← رجوع لمجال اللياقة المتقدمة</span>
+        <span data-en>← Back to Advanced Fitness</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("macro-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const protein = Number((document.getElementById("protein") as HTMLInputElement).value) || 0;
+    const carbs = Number((document.getElementById("carbs") as HTMLInputElement).value) || 0;
+    const fat = Number((document.getElementById("fat") as HTMLInputElement).value) || 0;
+
+    const proteinCal = protein * 4;
+    const carbsCal = carbs * 4;
+    const fatCal = fat * 9;
+    const total = proteinCal + carbsCal + fatCal;
+    if (!total) return;
+
+    (document.getElementById("total-out") as HTMLElement).textContent = total.toFixed(0);
+    (document.getElementById("protein-pct-out") as HTMLElement).textContent = `${((proteinCal / total) * 100).toFixed(0)}%`;
+    (document.getElementById("carbs-pct-out") as HTMLElement).textContent = `${((carbsCal / total) * 100).toFixed(0)}%`;
+    (document.getElementById("fat-pct-out") as HTMLElement).textContent = `${((fatCal / total) * 100).toFixed(0)}%`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

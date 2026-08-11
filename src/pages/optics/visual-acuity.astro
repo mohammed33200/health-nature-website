@@ -1,0 +1,271 @@
+---
+// اختبار حدة الإبصار (سنيلن) بمعايرة بطاقة بنكية — بدون كاميرا
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Visual Acuity Test">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>اختبار حدة الإبصار (سنيلن)</span>
+        <span data-en>Visual Acuity Test (Snellen)</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>نسخة رقمية من اختبار سنيلن الكلاسيكي باستخدام رمز "E" المتحرك، الذي لا يتطلب معرفة القراءة أو لغة معينة. يبدأ الاختبار بخطوة معايرة بسيطة باستخدام بطاقة حقيقية (بنكية أو هوية) بدلاً من الكاميرا.</span>
+        <span data-en>A digital version of the classic Snellen test using the "tumbling E" symbol, which needs no literacy or specific language. The test starts with a simple calibration step using a real card (bank or ID card) instead of a camera.</span>
+      </p>
+    </div>
+
+    <!-- خطوة 1: المعايرة -->
+    <div class="calc-card" id="calibrationStep">
+      <h2><span data-ar>الخطوة 1: معايرة حجم الشاشة</span><span data-en>Step 1: Calibrate your screen size</span></h2>
+
+      <ol class="steps">
+        <li><span data-ar>أمسك بطاقة بنكية أو هوية حقيقية (كل البطاقات القياسية بنفس الحجم تقريباً: 85.6×54 مم).</span><span data-en>Hold a real bank card or ID card (all standard cards are about the same size: 85.6×54 mm).</span></li>
+        <li><span data-ar>ضعها فوق أو بجانب المستطيل أدناه مباشرة على الشاشة.</span><span data-en>Place it directly on or next to the rectangle below, on the screen.</span></li>
+        <li><span data-ar>حرّك المؤشر حتى يتطابق حجم المستطيل تماماً مع حجم بطاقتك الحقيقية.</span><span data-en>Move the slider until the rectangle exactly matches the size of your real card.</span></li>
+      </ol>
+
+      <div class="calib-stage">
+        <div class="calib-card" id="calibCard"><span data-ar>بطاقة</span><span data-en>Card</span></div>
+      </div>
+
+      <div class="field">
+        <label for="calibSlider"><span data-ar>حجم المستطيل</span><span data-en>Rectangle size</span></label>
+        <input type="range" id="calibSlider" min="50" max="200" value="100" />
+      </div>
+
+      <div class="calib-tips">
+        <p><strong><span data-ar>إضاءة ومسافة الاختبار:</span><span data-en>Lighting & test distance:</span></strong></p>
+        <ul>
+          <li><span data-ar>أجرِ الاختبار في إضاءة غرفة جيدة ومتساوية، بدون وهج مباشر على الشاشة.</span><span data-en>Test in good, even room lighting, with no direct glare on the screen.</span></li>
+          <li><span data-ar>اجعل سطوع الشاشة على المستوى المعتاد (ليس أعلى سطوع ممكن).</span><span data-en>Keep screen brightness at your usual level (not maximum).</span></li>
+          <li><span data-ar>إن كنت تلبس نظارة أو عدسات للنظر البعيد، أبقها على عينيك أثناء الاختبار.</span><span data-en>If you wear glasses or contacts for distance vision, keep them on during the test.</span></li>
+        </ul>
+      </div>
+
+      <div class="field">
+        <label for="distanceSelect"><span data-ar>اختر مسافة وقوفك عن الشاشة</span><span data-en>Choose your distance from the screen</span></label>
+        <select id="distanceSelect">
+          <option value="2" data-ar-label="مترين (لمساحة صغيرة)" data-en-label="2 meters (small space)">مترين (لمساحة صغيرة)</option>
+          <option value="3" selected data-ar-label="3 أمتار (موصى به)" data-en-label="3 meters (recommended)">3 أمتار (موصى به)</option>
+          <option value="4" data-ar-label="4 أمتار" data-en-label="4 meters">4 أمتار</option>
+          <option value="6" data-ar-label="6 أمتار (المسافة القياسية الكاملة)" data-en-label="6 meters (full standard distance)">6 أمتار (المسافة القياسية الكاملة)</option>
+        </select>
+        <p style="font-size:.85rem; color:var(--ink-soft);">
+          <span data-ar>قِس المسافة فعلياً بخطوات أو شريط قياس قبل البدء، ثم قف/اجلس على هذا البعد بالضبط من الشاشة.</span>
+          <span data-en>Actually measure the distance with steps or a tape before starting, then stand/sit exactly that far from the screen.</span>
+        </p>
+      </div>
+
+      <button type="button" class="btn-calc" id="startTestBtn">
+        <span data-ar>تم المعايرة — ابدأ الاختبار</span><span data-en>Calibration done — start test</span>
+      </button>
+    </div>
+
+    <!-- خطوة 2: الاختبار -->
+    <div class="calc-card" id="testStep" hidden>
+      <p id="lineCounter"></p>
+
+      <div class="tumbling-stage">
+        <div class="tumbling-e" id="tumblingE">E</div>
+      </div>
+
+      <p class="center-text">
+        <span data-ar>إلى أي اتجاه تشير أرجل الحرف؟</span>
+        <span data-en>Which direction do the letter's prongs point?</span>
+      </p>
+
+      <div class="direction-pad" id="directionPad">
+        <button type="button" class="dir-btn dir-up" data-dir="up" aria-label="up">▲</button>
+        <button type="button" class="dir-btn dir-left" data-dir="left" aria-label="left">◀</button>
+        <button type="button" class="dir-btn dir-right" data-dir="right" aria-label="right">▶</button>
+        <button type="button" class="dir-btn dir-down" data-dir="down" aria-label="down">▼</button>
+      </div>
+    </div>
+
+    <div class="result" id="acuityResultBox">
+      <p class="reading" id="acuityResultTitle"></p>
+      <span class="badge" id="acuityResultBadge"></span>
+      <p id="acuityResultText"></p>
+      <button type="button" class="btn-ghost" id="acuityRetry" style="margin-top:10px;">
+        <span data-ar>إعادة الاختبار</span><span data-en>Retry</span>
+      </button>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>لماذا نستخدم بطاقة بدل الكاميرا؟</span><span data-en>Why a card instead of a camera?</span></h2>
+      <p>
+        <span data-ar>حجم النصوص على الشاشات يختلف بشكل كبير حسب الجهاز ودقة العرض. مطابقة حجم عنصر على الشاشة مع بطاقة حقيقية (مقاسها القياسي 85.6×54 مم) يعطي معايرة دقيقة لحجم البكسل الفعلي على شاشتك، بدون الحاجة لصلاحيات كاميرا.</span>
+        <span data-en>Text size on screens varies a lot by device and resolution. Matching an on-screen element to a real card (the universal 85.6×54 mm size) gives an accurate calibration of your exact screen's pixel size, without needing camera permissions.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذا اختبار تقريبي للفحص الذاتي المبدئي فقط، ودقته
+        تعتمد على مدى دقة معايرتك، وقياس المسافة، وجودة شاشتك وإضاءة الغرفة. النتيجة
+        هنا ليست نتيجة نهائية بأي شكل، ولا تُستخدم لأغراض تشخيصية أو قانونية (مثل
+        اختبارات القيادة). أي قراءة غير طبيعية، أو نتيجة نهائية دقيقة وتشخيص، تتطلب
+        زيارة طبيب عيون أو أخصائي بصريات لإجراء فحص حدة إبصار كامل بالأجهزة المناسبة.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This is only an approximate preliminary self-screening test.
+        Its accuracy depends on how precisely you calibrate, measure distance, and on your screen
+        quality and room lighting. The result here is not a final result in any way, and must not
+        be used for diagnostic or legal purposes (such as driving tests). Any abnormal reading, or
+        a final accurate result and diagnosis, require a visit to an eye doctor or optometrist for
+        a complete visual acuity exam with proper equipment.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  // <option> لا يدعم عناصر span متداخلة، فنبدّل نصه مباشرة عبر JS
+  function applyOptionLabels() {
+    const lang = getLang();
+    document.querySelectorAll<HTMLOptionElement>('option[data-ar-label]').forEach((opt) => {
+      opt.textContent = lang === 'en' ? opt.dataset.enLabel : opt.dataset.arLabel;
+    });
+  }
+  applyOptionLabels();
+  window.addEventListener('languageChanged', applyOptionLabels);
+
+  const CARD_WIDTH_MM = 85.6;
+  const BASE_CARD_PX = 320;
+
+  const calibCard = document.getElementById('calibCard') as HTMLDivElement;
+  const calibSlider = document.getElementById('calibSlider') as HTMLInputElement;
+  const startTestBtn = document.getElementById('startTestBtn');
+  const calibrationStep = document.getElementById('calibrationStep');
+  const testStep = document.getElementById('testStep');
+  const distanceSelect = document.getElementById('distanceSelect') as HTMLSelectElement;
+
+  let pxPerMm = BASE_CARD_PX / CARD_WIDTH_MM;
+
+  calibSlider?.addEventListener('input', () => {
+    const scaleVal = parseInt(calibSlider.value, 10) / 100;
+    const widthPx = BASE_CARD_PX * scaleVal;
+    calibCard.style.width = `${widthPx}px`;
+    calibCard.style.height = `${widthPx * (53.98 / 85.6)}px`;
+    pxPerMm = widthPx / CARD_WIDTH_MM;
+  });
+
+  const lineCounter = document.getElementById('lineCounter');
+  const tumblingEEl = document.getElementById('tumblingE') as HTMLDivElement;
+  const directionPad = document.getElementById('directionPad');
+  const resultBox = document.getElementById('acuityResultBox');
+  const resultTitle = document.getElementById('acuityResultTitle');
+  const resultBadge = document.getElementById('acuityResultBadge');
+  const resultText = document.getElementById('acuityResultText');
+  const retryBtn = document.getElementById('acuityRetry');
+
+  const rotationForDirection = { right: 0, down: 90, left: 180, up: 270 };
+  const directions = ['up', 'down', 'left', 'right'];
+  const lines = [60, 36, 24, 18, 12, 9, 6];
+
+  let testDistanceM = 3;
+  let lineIndex = 0, trialInLine = 0, correctInLine = 0, lastPassedD = null, currentDirection = null;
+
+  function heightMmFor(D) { return testDistanceM * D * 0.2424; }
+
+  function showLineCounter() {
+    lineCounter.textContent = t(getLang(), {
+      ar: `السطر ${lineIndex + 1} من ${lines.length} — تجربة ${trialInLine + 1} من 3`,
+      en: `Line ${lineIndex + 1} of ${lines.length} — trial ${trialInLine + 1} of 3`,
+    });
+  }
+
+  function nextTrial() {
+    const D = lines[lineIndex];
+    const heightPx = heightMmFor(D) * pxPerMm;
+    currentDirection = directions[Math.floor(Math.random() * directions.length)];
+    tumblingEEl.style.fontSize = `${Math.max(10, heightPx)}px`;
+    tumblingEEl.style.transform = `rotate(${rotationForDirection[currentDirection]}deg)`;
+    showLineCounter();
+  }
+
+  function startTest() {
+    testDistanceM = parseInt(distanceSelect.value, 10) || 3;
+    calibrationStep.hidden = true;
+    testStep.hidden = false;
+    resultBox.classList.remove('show');
+    lineIndex = 0; trialInLine = 0; correctInLine = 0; lastPassedD = null;
+    nextTrial();
+  }
+
+  function finishWithResult() {
+    testStep.hidden = true;
+    const lang = getLang();
+    let cls, badgeText, title, text;
+
+    if (lastPassedD === null) {
+      cls = 'badge-danger'; badgeText = { ar: 'راجع طبيب عيون', en: 'See an eye doctor' };
+      title = { ar: 'حدة إبصار أقل من 6/60', en: 'Acuity below 6/60' };
+      text = { ar: 'لم تتمكن من قراءة حتى أكبر الرموز بشكل موثوق عند هذه المسافة. جرّب تقريب المسافة أو تكرار المعايرة أولاً، وإن استمر الأمر يُنصح بمراجعة طبيب عيون قريباً.', en: 'You could not reliably read even the largest symbols at this distance. Try moving closer or re-calibrating first; if this persists, see an eye doctor soon.' };
+    } else if (lastPassedD <= 9) {
+      cls = 'badge-ok'; badgeText = { ar: 'جيد', en: 'Good' };
+      title = { ar: `حدة إبصار تقديرية: 6/${lastPassedD}`, en: `Estimated acuity: 6/${lastPassedD}` };
+      text = { ar: 'نتيجة جيدة ضمن أو قريبة من النطاق الطبيعي (6/6). هذا مؤشر إيجابي، مع بقاء الفحص الدوري لدى طبيب عيون هو المرجع الدقيق.', en: 'A good result within or close to the normal range (6/6). This is a positive sign, though regular exams with an eye doctor remain the accurate reference.' };
+    } else if (lastPassedD <= 18) {
+      cls = 'badge-warn'; badgeText = { ar: 'أقل من الطبيعي', en: 'Below normal' };
+      title = { ar: `حدة إبصار تقديرية: 6/${lastPassedD}`, en: `Estimated acuity: 6/${lastPassedD}` };
+      text = { ar: 'هناك انخفاض ملحوظ عن حدة الإبصار الطبيعية (6/6) في هذا التقدير. يُفضّل إجراء فحص نظر شامل لدى طبيب عيون أو أخصائي بصريات لتحديد إن كنت بحاجة لنظارة.', en: 'This estimate shows a noticeable drop from normal acuity (6/6). A comprehensive eye exam with an eye doctor or optometrist is recommended to determine if you need glasses.' };
+    } else {
+      cls = 'badge-danger'; badgeText = { ar: 'راجع طبيب عيون', en: 'See an eye doctor' };
+      title = { ar: `حدة إبصار تقديرية: 6/${lastPassedD}`, en: `Estimated acuity: 6/${lastPassedD}` };
+      text = { ar: 'هذا التقدير يشير إلى انخفاض واضح في حدة الإبصار. يُنصح بحجز موعد مع طبيب عيون أو أخصائي بصريات في وقت قريب لإجراء فحص كامل.', en: 'This estimate points to a clear reduction in visual acuity. Booking an appointment with an eye doctor or optometrist soon for a full exam is recommended.' };
+    }
+
+    resultBadge.className = 'badge ' + cls;
+    resultBadge.textContent = t(lang, badgeText);
+    resultTitle.textContent = t(lang, title);
+    resultText.textContent = t(lang, text);
+    resultBox.classList.add('show');
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function handleAnswer(dir) {
+    const correct = dir === currentDirection;
+    if (correct) correctInLine++;
+    trialInLine++;
+
+    if (trialInLine >= 3) {
+      if (correctInLine >= 2) {
+        lastPassedD = lines[lineIndex];
+        lineIndex++; trialInLine = 0; correctInLine = 0;
+        if (lineIndex >= lines.length) { finishWithResult(); return; }
+        nextTrial();
+      } else {
+        finishWithResult();
+      }
+    } else {
+      nextTrial();
+    }
+  }
+
+  directionPad?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('.dir-btn') as HTMLButtonElement;
+    if (!btn) return;
+    handleAnswer(btn.dataset.dir as string);
+  });
+
+  startTestBtn?.addEventListener('click', startTest);
+  retryBtn?.addEventListener('click', () => {
+    resultBox.classList.remove('show');
+    calibrationStep.hidden = false;
+    testStep.hidden = true;
+  });
+</script>

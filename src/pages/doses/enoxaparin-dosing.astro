@@ -1,0 +1,141 @@
+---
+// حاسبة جرعات الإينوكسابارين بالوزن — Enoxaparin (LMWH) Dosing
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة جرعات الإينوكسابارين بالوزن">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة جرعات الإينوكسابارين بالوزن</span>
+          <span data-en>Enoxaparin (LMWH) Dosing</span>
+        </h1>
+        <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+        <span class="badge badge-new">NEW</span>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحسب جرعة الإينوكسابارين (هيبارين منخفض الوزن الجزيئي) بالوزن، سواء للاستخدام العلاجي (لجلطات موجودة) أو الوقائي (لمنع تكوّن جلطات لدى مرضى المستشفى)، مع تعديل عند ضعف وظائف الكلى.</span>
+          <span data-en>Calculates weight-based enoxaparin (low-molecular-weight heparin) dosing, for either treatment (existing clots) or prophylaxis (preventing clots in hospitalized patients), with adjustment for reduced kidney function.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>من أكثر الأدوية استخدامًا في المستشفيات للوقاية والعلاج من الجلطات الوريدية، وجرعته تعتمد كليًا على الوزن، مع ضرورة تخفيضها في القصور الكلوي الشديد لتجنب تراكم الدواء ونزيف.</span>
+          <span data-en>One of the most commonly used hospital medications for VTE prevention and treatment; its dose is entirely weight-based, and must be reduced in severe renal impairment to avoid drug accumulation and bleeding.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="enox-form">
+        <label>
+          <span data-ar>الوزن (كجم)</span><span data-en>Weight (kg)</span>
+          <input type="number" id="weight" min="30" max="200" step="0.1" required />
+        </label>
+        <label>
+          <span data-ar>الغرض</span><span data-en>Purpose</span>
+          <select id="purpose">
+            <option value="treatment">علاجي (1 مجم/كجم كل 12 ساعة) / Treatment (1mg/kg q12h)</option>
+            <option value="prophylaxis">وقائي (جرعة ثابتة) / Prophylaxis (fixed dose)</option>
+          </select>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="renal" />
+          <span data-ar>قصور كلوي شديد (CrCl &lt; 30)</span><span data-en>Severe renal impairment (CrCl &lt;30)</span>
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span>
+          <span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>الجرعة المقترحة: </span><span data-en>Suggested dose: </span>
+          <strong id="dose-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي / المرجع</span><span data-en>Reference</span></h2>
+        <ul class="ref-list">
+          <li><span data-ar>علاجي: 1 مجم/كجم تحت الجلد كل 12 ساعة (أو 1.5 مجم/كجم مرة يوميًا)</span><span data-en>Treatment: 1 mg/kg SC every 12h (or 1.5 mg/kg once daily)</span></li>
+          <li><span data-ar>وقائي: 40 مجم مرة يوميًا (30 مجم كل 12 ساعة في حالات عالية الخطورة)</span><span data-en>Prophylaxis: 40 mg once daily (30 mg q12h in high-risk cases)</span></li>
+          <li><span data-ar>قصور كلوي شديد: تخفيض الجرعة العلاجية إلى 1 مجم/كجم مرة واحدة يوميًا</span><span data-en>Severe renal impairment: reduce treatment dose to 1 mg/kg once daily</span></li>
+        </ul>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>هذه الأداة مرجعية وتعليمية للكادر الطبي فقط، ولا تغني عن التحقق من بروتوكول المستشفى وحالة المريض الفردية (الوزن الشديد، الحمل، إلخ).</span>
+        <span data-en>This tool is for reference and educational use by healthcare professionals only, and does not replace checking the hospital protocol and individual patient factors (extreme weight, pregnancy, etc.).</span>
+      </p>
+
+      <a class="back-link" href="/doses/">
+        <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+        <span data-en>← Back to Medication Dosing</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("enox-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    const purpose = (document.getElementById("purpose") as HTMLSelectElement).value;
+    const renal = (document.getElementById("renal") as HTMLInputElement).checked;
+    if (!weight) return;
+
+    let doseText = "";
+    if (purpose === "treatment") {
+      if (renal) {
+        doseText = `${(weight * 1).toFixed(0)} mg SC مرة يوميًا / once daily (تعديل كلوي / renal adjustment)`;
+      } else {
+        doseText = `${(weight * 1).toFixed(0)} mg SC كل 12 ساعة / every 12h`;
+      }
+    } else {
+      doseText = renal ? "30 mg SC مرة يوميًا (تعديل كلوي) / once daily (renal adjustment)" : "40 mg SC مرة يوميًا / once daily";
+    }
+
+    (document.getElementById("dose-out") as HTMLElement).textContent = doseText;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; } .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing, .badge-new { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; }
+  .badge-dosing { background: rgba(180,90,0,.12); }
+  .badge-new { background: rgba(30,110,200,.14); font-weight: 700; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; } .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .checkbox-label { display: flex; align-items: center; gap: .5rem; font-size: .9rem; }
+  .checkbox-label [data-en] { opacity: .6; font-size: .85em; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .disclaimer { margin: 1.5rem 0; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

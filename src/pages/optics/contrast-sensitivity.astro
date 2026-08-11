@@ -1,0 +1,150 @@
+---
+// اختبار حساسية التباين (Contrast Sensitivity)
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Contrast Sensitivity Test">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>اختبار حساسية التباين</span>
+        <span data-en>Contrast Sensitivity Test</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>
+          يقيس قدرة عينك على تمييز الأشكال ذات التباين المنخفض عن الخلفية — مهارة
+          مختلفة عن حدة الإبصار العادية، ومهمة جداً للقيادة الليلية والرؤية في
+          الإضاءة الخافتة أو الضبابية.
+        </span>
+        <span data-en>
+          Measures your eye's ability to distinguish low-contrast shapes from the background — a
+          different skill from ordinary visual acuity, and important for night driving and vision
+          in dim or foggy light.
+        </span>
+      </p>
+    </div>
+
+    <div class="calc-card">
+      <ol class="steps">
+        <li><span data-ar>اضبط سطوع شاشتك على المستوى المعتاد (ليس أعلى سطوع ممكن).</span><span data-en>Set your screen to its usual brightness (not maximum).</span></li>
+        <li><span data-ar>إن كنت تلبس نظارة، أبقها على عينيك.</span><span data-en>If you wear glasses, keep them on.</span></li>
+        <li><span data-ar>اجلس على بُعد ذراع تقريباً من الشاشة، في إضاءة غرفة عادية.</span><span data-en>Sit about an arm's length away, in normal room lighting.</span></li>
+        <li><span data-ar>انظر إلى الصفوف من الأعلى إلى الأسفل، واضغط على آخر صف لا يزال بإمكانك تمييز الحرف فيه بوضوح.</span><span data-en>Look at the rows top to bottom, and tap the last row where you can still clearly make out the letter.</span></li>
+      </ol>
+
+      <div id="contrastRows" class="contrast-rows"></div>
+
+      <div class="result" id="contrastResultBox">
+        <p class="reading" id="contrastResultTitle"></p>
+        <span class="badge" id="contrastResultBadge"></span>
+        <p id="contrastResultText"></p>
+        <button type="button" class="btn-ghost" id="contrastRetry" style="margin-top:10px;">
+          <span data-ar>إعادة الاختبار</span><span data-en>Retry</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>لماذا حساسية التباين مهمة؟</span><span data-en>Why does contrast sensitivity matter?</span></h2>
+      <p>
+        <span data-ar>يمكن لشخص يملك حدة إبصار ممتازة (6/6) أن يعاني في الوقت نفسه من ضعف في حساسية التباين، فيجد صعوبة في رؤية الدرج في إضاءة خافتة، أو قراءة لافتة باهتة، أو القيادة تحت المطر ليلاً.</span>
+        <span data-en>Someone with excellent visual acuity (6/6) can still have poor contrast sensitivity — struggling to see stairs in dim light, read a faded sign, or drive in rain at night.</span>
+      </p>
+      <h2><span data-ar>أسباب شائعة لضعف حساسية التباين</span><span data-en>Common causes of poor contrast sensitivity</span></h2>
+      <p>
+        <span data-ar>بدايات الساد (الكتاراكت)، جفاف العين أو عدم انتظام سطح القرنية، وبعض أمراض الشبكية أو العصب البصري.</span>
+        <span data-en>Early cataracts, dry eye or an irregular corneal surface, and certain retinal or optic nerve conditions.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> نتيجة هذا الاختبار تقريبية وتتأثر بنوع الشاشة
+        وسطوعها وإضاءة الغرفة، وليست قياساً طبياً دقيقاً أو نتيجة نهائية. أي قلق حول
+        الرؤية الليلية يستدعي زيارة طبيب عيون.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This result is approximate and affected by your screen type,
+        brightness, and room lighting — it is not a precise medical measurement or a final result.
+        Any concern about night vision warrants a visit to an eye doctor.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  // رموز عالمية موحّدة لكلا اللغتين (حروف Sloan العشرة المستخدمة عالمياً في لوحات فحص النظر)
+  const letters = ['C', 'D', 'H', 'K', 'N', 'O', 'R', 'S', 'V', 'Z'];
+  const opacities = [1, 0.75, 0.55, 0.4, 0.28, 0.19, 0.12, 0.08, 0.05, 0.03];
+
+  const container = document.getElementById('contrastRows');
+  const box = document.getElementById('contrastResultBox');
+  const title = document.getElementById('contrastResultTitle');
+  const badge = document.getElementById('contrastResultBadge');
+  const text = document.getElementById('contrastResultText');
+  const retryBtn = document.getElementById('contrastRetry');
+
+  function levelLabel(i) {
+    return t(getLang(), { ar: `المستوى ${i + 1} من ${opacities.length}`, en: `Level ${i + 1} of ${opacities.length}` });
+  }
+
+  function render() {
+    if (!container) return;
+    container.innerHTML = '';
+    box.classList.remove('show');
+    opacities.forEach((op, i) => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'contrast-row';
+      row.innerHTML = `
+        <span class="contrast-letter" style="color: rgba(30,45,42,${op});">${letters[i]}</span>
+        <span class="contrast-level num">${levelLabel(i)}</span>
+      `;
+      row.addEventListener('click', () => showResult(i + 1));
+      container.appendChild(row);
+    });
+  }
+
+  function showResult(level) {
+    const lang = getLang();
+    let cls, badgeText, resultTitle, resultText;
+    if (level >= 8) {
+      cls = 'badge-ok'; badgeText = { ar: 'ممتاز', en: 'Excellent' };
+      resultTitle = { ar: 'حساسية تباين ممتازة', en: 'Excellent contrast sensitivity' };
+      resultText = { ar: 'تمكّنت من تمييز حروف منخفضة التباين جداً — وهذا مؤشر جيد على حساسية تباين قوية. يبقى الفحص الدوري لدى طبيب عيون هو الوسيلة الدقيقة للتأكد من ذلك.', en: 'You could make out very low-contrast letters — a good sign of strong contrast sensitivity. Regular exams with an eye doctor remain the accurate way to confirm this.' };
+    } else if (level >= 5) {
+      cls = 'badge-ok'; badgeText = { ar: 'جيد', en: 'Good' };
+      resultTitle = { ar: 'حساسية تباين جيدة', en: 'Good contrast sensitivity' };
+      resultText = { ar: 'نتيجتك ضمن النطاق الطبيعي المتوقع لمعظم الأشخاص. إن راودك أي شك، يمكن لطبيب عيون تأكيد ذلك بجهاز فحص متخصص.', en: 'Your result is within the normal expected range for most people. If you have any doubt, an eye doctor can confirm this with specialized equipment.' };
+    } else if (level >= 3) {
+      cls = 'badge-warn'; badgeText = { ar: 'أقل من المتوسط', en: 'Below average' };
+      resultTitle = { ar: 'حساسية تباين أقل من المتوسط', en: 'Below-average contrast sensitivity' };
+      resultText = { ar: 'قد يكون لديك بعض الصعوبة في الرؤية بالإضاءة الخافتة أو ليلاً. إن كانت لديك أعراض مثل صعوبة القيادة ليلاً، يُفضّل فحص شامل لدى طبيب عيون.', en: 'You may have some difficulty seeing in dim or night lighting. If you notice trouble driving at night, a comprehensive eye exam is recommended.' };
+    } else {
+      cls = 'badge-danger'; badgeText = { ar: 'منخفض', en: 'Low' };
+      resultTitle = { ar: 'حساسية تباين منخفضة', en: 'Low contrast sensitivity' };
+      resultText = { ar: 'يُنصح بمراجعة طبيب عيون لتقييم السبب المحتمل، خصوصاً إذا كنت تعاني من صعوبة واضحة في الرؤية الليلية أو في الإضاءة المنخفضة.', en: 'An eye doctor visit is recommended to evaluate the possible cause, especially if you have clear difficulty with night or low-light vision.' };
+    }
+    badge.className = 'badge ' + cls;
+    badge.textContent = t(lang, badgeText);
+    title.textContent = t(lang, resultTitle);
+    text.textContent = t(lang, resultText);
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  retryBtn?.addEventListener('click', render);
+  window.addEventListener('languageChanged', render);
+  render();
+</script>

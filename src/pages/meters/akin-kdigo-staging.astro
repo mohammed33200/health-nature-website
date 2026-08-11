@@ -1,0 +1,156 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ToolsShell from "../../layouts/ToolsShell.astro";
+// حاسبة مؤشر خطر الفشل الكلوي الحاد — AKIN / KDIGO Staging
+---
+
+<Layout title="حاسبة مؤشر خطر الفشل الكلوي الحاد">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة مؤشر خطر الفشل الكلوي الحاد</span>
+      <span data-en dir="ltr">AKIN / KDIGO Staging</span>
+    </h1>
+    <p class="credit-line">KDIGO Clinical Practice Guideline, 2012</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تحدد مرحلة الإصابة الكلوية الحادة (AKI) اعتمادًا على معيارين: نسبة ارتفاع الكرياتينين مقارنة بالقيمة الأساسية، ومعدل إخراج البول خلال فترة زمنية محددة.</span>
+      <span data-en dir="ltr">Stages acute kidney injury (AKI) based on two criteria: the rise in creatinine relative to baseline, and urine output over a defined time period.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>تصنيف موحّد لشدة الإصابة الكلوية الحادة يساعد على المتابعة، تعديل جرعات الأدوية المطروحة كلويًا، وتحديد الحاجة لغسيل الكلى المبكر في الحالات الشديدة.</span>
+      <span data-en dir="ltr">A standardized AKI severity grade helps guide monitoring, adjust doses of renally-cleared drugs, and determine the need for early dialysis in severe cases.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="akin-form">
+    <label>
+      <span data-ar>الكرياتينين الأساسي (مجم/دل)</span><span data-en dir="ltr">Baseline creatinine (mg/dL)</span>
+      <input type="number" id="baseline" min="0.1" max="10" step="0.01" required />
+    </label>
+    <label>
+      <span data-ar>الكرياتينين الحالي (مجم/دل)</span><span data-en dir="ltr">Current creatinine (mg/dL)</span>
+      <input type="number" id="current" min="0.1" max="15" step="0.01" required />
+    </label>
+    <label>
+      <span data-ar>مخرج البول (مل/كجم/ساعة) — اختياري</span><span data-en dir="ltr">Urine output (mL/kg/h) — optional</span>
+      <input type="number" id="uo" min="0" max="5" step="0.01" />
+    </label>
+    <label>
+      <span data-ar>مدة انخفاض البول (ساعات) — اختياري</span><span data-en dir="ltr">Duration of low output (hours) — optional</span>
+      <input type="number" id="uoHours" min="0" max="72" />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en dir="ltr">Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>نسبة ارتفاع الكرياتينين: </span><span data-en dir="ltr">Creatinine ratio: </span>
+      <strong id="ratio-out"></strong>×
+    </p>
+    <p class="result-line">
+      <span data-ar>المرحلة (حسب الكرياتينين): </span><span data-en dir="ltr">Stage (by creatinine): </span>
+      <strong id="crea-stage-out"></strong>
+    </p>
+    <p class="result-line" id="uo-line" hidden>
+      <span data-ar>المرحلة (حسب مخرج البول): </span><span data-en dir="ltr">Stage (by urine output): </span>
+      <strong id="uo-stage-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>المرحلة النهائية (الأسوأ من الاثنين): </span><span data-en dir="ltr">Final stage (worse of the two): </span>
+      <strong id="final-stage-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / التصنيف</span><span data-en dir="ltr">Normal reference / staging</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>المرحلة 1: كرياتينين 1.5–1.9× الأساسي أو ارتفاع ≥0.3، وبول &lt;0.5 مل/كجم/ساعة لـ 6–12 ساعة</span><span data-en dir="ltr">Stage 1: creatinine 1.5–1.9× baseline or rise ≥0.3, UO &lt;0.5 mL/kg/h for 6–12h</span></li>
+      <li><span data-ar>المرحلة 2: كرياتينين 2.0–2.9× الأساسي، وبول &lt;0.5 لأكثر من 12 ساعة</span><span data-en dir="ltr">Stage 2: creatinine 2.0–2.9× baseline, UO &lt;0.5 for &gt;12h</span></li>
+      <li><span data-ar>المرحلة 3: كرياتينين ≥3× الأساسي أو ≥4.0 مجم/دل، أو بول &lt;0.3 لأكثر من 24 ساعة أو انقطاع تام 12 ساعة</span><span data-en dir="ltr">Stage 3: creatinine ≥3× baseline or ≥4.0 mg/dL, or UO &lt;0.3 for &gt;24h or anuria for 12h</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/meters/">
+    <span data-ar>← رجوع لمجال المؤشرات التقييمية</span>
+    <span data-en dir="ltr">← Back to Assessment &amp; Risk Indices</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("akin-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const baseline = Number((document.getElementById("baseline") as HTMLInputElement).value);
+    const current = Number((document.getElementById("current") as HTMLInputElement).value);
+    const uo = (document.getElementById("uo") as HTMLInputElement).value;
+    const uoHours = Number((document.getElementById("uoHours") as HTMLInputElement).value) || 0;
+    if (!baseline || !current) return;
+
+    const ratio = current / baseline;
+    let creaStage = 0;
+    if (ratio >= 3 || current >= 4.0) creaStage = 3;
+    else if (ratio >= 2) creaStage = 2;
+    else if (ratio >= 1.5 || (current - baseline) >= 0.3) creaStage = 1;
+
+    let uoStage = 0;
+    const uoLine = document.getElementById("uo-line") as HTMLElement;
+    if (uo) {
+      const uoVal = Number(uo);
+      if (uoVal < 0.3 && uoHours >= 24) uoStage = 3;
+      else if (uoVal === 0 && uoHours >= 12) uoStage = 3;
+      else if (uoVal < 0.5 && uoHours >= 12) uoStage = 2;
+      else if (uoVal < 0.5 && uoHours >= 6) uoStage = 1;
+      (document.getElementById("uo-stage-out") as HTMLElement).textContent = uoStage > 0 ? String(uoStage) : "0";
+      uoLine.hidden = false;
+    } else {
+      uoLine.hidden = true;
+    }
+
+    const finalStage = Math.max(creaStage, uoStage);
+
+    (document.getElementById("ratio-out") as HTMLElement).textContent = ratio.toFixed(2);
+    (document.getElementById("crea-stage-out") as HTMLElement).textContent = creaStage > 0 ? String(creaStage) : "0 (لا إصابة حادة)";
+    (document.getElementById("final-stage-out") as HTMLElement).textContent = finalStage > 0 ? String(finalStage) : "0";
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

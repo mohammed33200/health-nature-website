@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
 ---
 
 <Layout title="Published Health Apps | SHYM365.ORG">
@@ -12,6 +14,27 @@ import Layout from '../layouts/Layout.astro';
 
 		<section class="apps-listing">
 			<div class="app-cards">
+				<a class="app-card" href="/fittness">
+					<img src="/icon/fittness-icon.png" alt="Advanced Fitness Tests" width="72" height="72" loading="lazy" />
+					<div>
+						<h3 data-i18n data-en="Advanced Fitness" data-ar="اللياقة المتقدمة">اللياقة المتقدمة</h3>
+						<p data-i18n data-en="Advanced tools for athletes to assess performance, nutrition, and fitness." data-ar="أدوات متقدمة للرياضيين لتقييم الأداء والتغذية واللياقة البدنية.">أدوات متقدمة للرياضيين لتقييم الأداء والتغذية واللياقة البدنية.</p>
+					</div>
+				</a>
+				<a class="app-card" href="/meters">
+					<img src="/icon/meters-icon.png" alt="Assessment & Risk Indices" width="72" height="72" loading="lazy" />
+					<div>
+						<h3 data-i18n data-en="Assessment & Risk Indices" data-ar="المؤشرات التقييمية للمخاطر">المؤشرات التقييمية للمخاطر</h3>
+						<p data-i18n data-en="Quick clinical scores to help triage cases and identify who needs urgent intervention." data-ar="مقاييس سريرية سريعة تساعد على فرز الحالات وتحديد من يحتاج تدخلًا عاجلًا.">مقاييس سريرية سريعة تساعد على فرز الحالات وتحديد من يحتاج تدخلًا عاجلًا.</p>
+					</div>
+				</a>
+				<a class="app-card" href="/optics">
+					<img src="/icon/optics-icon.png" alt="Visual Tests" width="72" height="72" loading="lazy" />
+					<div>
+						<h3 data-i18n data-en="Visual Tests" data-ar="الاختبارات البصرية">الاختبارات البصرية</h3>
+						<p data-i18n data-en="A set of interactive vision tests for preliminary screening of acuity, color vision, and more." data-ar="مجموعة اختبارات بصرية تفاعلية للفحص المبدئي لحدّة الإبصار، تمييز الألوان، وغيرها.">مجموعة اختبارات بصرية تفاعلية للفحص المبدئي لحدّة الإبصار، تمييز الألوان، وغيرها.</p>
+					</div>
+				</a>
 				<a class="app-card" href="/bmr">
 					<img src="/icon/full-body-metrics-icon.png" alt="Body Metrics & Ideal Weight" width="72" height="72" loading="lazy" />
 					<div>
@@ -19,65 +42,61 @@ import Layout from '../layouts/Layout.astro';
 						<p data-i18n data-en="A set of precise clinical body-measurement calculators: BMI, fat, water, metabolism, muscle and body surface area." data-ar="مجموعة حاسبات طبية دقيقة لقياس الجسم: كتلة الجسم، الدهون، الماء، الأيض، العضلات ومساحة الجسم.">مجموعة حاسبات طبية دقيقة لقياس الجسم: كتلة الجسم، الدهون، الماء، الأيض، العضلات ومساحة الجسم.</p>
 					</div>
 				</a>
-			<a class="app-card app-card--cta" href="/mother&child">
-				<img src="/icon/mother&child-icon.png" alt="Maternity & Pediatrics" width="72" height="72" loading="lazy" />
-				<div>
-					<h3 data-i18n data-en="Maternity & Pediatrics" data-ar="الأمومة والطفولة">الأمومة والطفولة</h3>
-					<p data-i18n data-en="Explore maternity and child health calculators like Bishop Score, APGAR, and pediatric dosing." data-ar="استكشف حاسبات الأمومة والطفولة مثل مؤشر بيشوب، أبغار، وجرعات الأطفال.">استكشف حاسبات الأمومة والطفولة مثل مؤشر بيشوب، أبغار، وجرعات الأطفال.</p>
-				</div>
-			</a>
-		</div>
-	</section>
+				<a class="app-card" href="/blood">
+					<img src="/icon/blood-tests-icon.png" alt="Blood Tests & Calculators" width="72" height="72" loading="lazy" />
+					<div>
+						<h3 data-i18n data-en="Blood Tests & Calculators" data-ar="اختبارات الدم ومعادلاتها">اختبارات الدم ومعادلاتها</h3>
+						<p data-i18n data-en="Translate lab results like eGFR, Anion Gap, and HbA1c into clear clinical meaning." data-ar="ترجمة نتائج التحاليل مثل eGFR، فجوة الأنيون، و HbA1c إلى معنى سريري واضح.">ترجمة نتائج التحاليل مثل eGFR، فجوة الأنيون، و HbA1c إلى معنى سريري واضح.</p>
+					</div>
+				</a>
+				<a class="app-card app-card--cta" href="/mother&child">
+					<img src="/icon/mother&child-icon.png" alt="Maternity & Pediatrics" width="72" height="72" loading="lazy" />
+					<div>
+						<h3 data-i18n data-en="Maternity & Pediatrics" data-ar="الأمومة والطفولة">الأمومة والطفولة</h3>
+						<p data-i18n data-en="Explore maternity and child health calculators like Bishop Score, APGAR, and pediatric dosing." data-ar="استكشف حاسبات الأمومة والطفولة مثل مؤشر بيشوب، أبغار، وجرعات الأطفال.">استكشف حاسبات الأمومة والطفولة مثل مؤشر بيشوب، أبغار، وجرعات الأطفال.</p>
+					</div>
+				</a>
+				<a class="app-card" href="/doses">
+					<img src="/icon/drug-doses-icon.png" alt="Drug Doses & Calculators" width="72" height="72" loading="lazy" />
+					<div>
+						<h3 data-i18n data-en="Drug Doses & Calculators" data-ar="الجرعات الدوائية والحاسبات">الجرعات الدوائية والحاسبات</h3>
+						<p data-i18n data-en="Calculate drug dosages, conversions, and therapeutic drug monitoring with clinical precision." data-ar="احسب الجرعات الدوائية، التحويلات، والمراقبة العلاجية للدواء بدقة طبية.">احسب الجرعات الدوائية، التحويلات، والمراقبة العلاجية للدواء بدقة طبية.</p>
+					</div>
+				</a>
+			</div>
+		</section>
 
-	<article class="featured-article">
-		<div class="article-content">
-			<h2 data-i18n data-en="Privacy-First, Free, and Trusted Health Tools" data-ar="أدوات صحية مجانية تحمي خصوصيتك وتكسب ثقتك">أدوات صحية مجانية تحمي خصوصيتك وتكسب ثقتك</h2>
-			<p data-i18n data-en="At 'Health & Nature', we have chosen a fundamentally different path—a path that prioritizes user dignity, time, and absolute privacy above all else." data-ar="في منصتنا 'الصحة والطبيعة'، قررنا أن نسلك مساراً مختلفاً تماماً.. مساراً يضع كرامة المستخدم، ووقته، وخصوصيته فوق أي اعتبار آخر.">في منصتنا 'الصحة والطبيعة'، قررنا أن نسلك مساراً مختلفاً تماماً.. مساراً يضع كرامة المستخدم، ووقته، وخصوصيته فوق أي اعتبار آخر.</p>
-				<ul>
-					<li data-i18n data-en="100% Direct Use: No registration, no email submissions, and no password management required." data-ar="استخدام مباشر 100%: لا نطلب منك إنشاء حساب، ولا إدخال بريد إلكتروني، ولا حفظ كلمة مرور جديدة.">استخدام مباشر 100%: لا نطلب منك إنشاء حساب، ولا إدخال بريد إلكتروني، ولا حفظ كلمة مرور جديدة.</li>
-					<li data-i18n data-en="No Identity Tracking: You can open the app or website and utilize every tool available immediately without signing up." data-ar="بدون تتبع للهوية: يمكنك فتح التطبيق أو الموقع واستخدام كافة الأدوات المتاحة فوراً دون أي حاجة للتسجيل.">بدون تتبع للهوية: يمكنك فتح التطبيق أو الموقع واستخدام كافة الأدوات المتاحة فوراً دون أي حاجة للتسجيل.</li>
-					<li data-i18n data-en="Respect for Your Time: We value your time by removing administrative barriers between you and the health insights you seek." data-ar="احترام وقتك: نحن نقدر وقتك الثمين؛ ولذا نلغي كل العقبات الإدارية التي تقف بينك وبين المعلومة أو الخدمة التي تبحث عنها.">احترام وقتك: نحن نقدر وقتك الثمين؛ ولذا نلغي كل العقبات الإدارية التي تقف بينك وبين المعلومة أو الخدمة التي تبحث عنها.</li>
-				</ul>
-				
-				<h3 data-i18n data-en="2. Absolute Privacy: Your Data Belongs Solely to You" data-ar="2. الخصوصية المطلقة: بياناتك ملك لك وحدك">2. الخصوصية المطلقة: بياناتك ملك لك وحدك</h3>
-				
-				<p data-i18n data-en="Privacy has become a rare commodity in the modern web landscape, where apps constantly collect user data, monitor activity, and monetize sensitive information through third-party ad networks." data-ar="أصبحت الخصوصية في وقتنا الحالي نادرة الوجود، حيث تقوم الكثير من التطبيقات بجمع بيانات المستخدمين، وتتبع أسرارهم، وحتى بيع هذه البيانات لشركات التسويق والإعلانات.">أصبحت الخصوصية في وقتنا الحالي نادرة الوجود، حيث تقوم الكثير من التطبيقات بجمع بيانات المستخدمين، وتتبع أسرارهم، وحتى بيع هذه البيانات لشركات التسويق والإعلانات.</p>
-				
-				<p data-i18n data-en="Our privacy philosophy is simple and direct: The best way to protect your data is never to collect it in the first place!" data-ar="فلسفتنا في حماية البيانات صريحة ومباشرة: أفضل طريقة لحماية بياناتك هي عدم جمعها من الأساس!">فلسفتنا في حماية البيانات صريحة ومباشرة: أفضل طريقة لحماية بياناتك هي عدم جمعها من الأساس!</p>
-				
-				<ul>
-					<li data-i18n data-en="Zero Personal Data Collection: Because we do not require account creation, we do not know your name, email, or phone number." data-ar="لا نجمع بيانات شخصية: نظراً لأننا لا نطلب تسجيل الدخول، فإننا لا نعرف اسمك، ولا بريدك الإلكتروني، ولا رقم هاتفك.">لا نجمع بيانات شخصية: نظراً لأننا لا نطلب تسجيل الدخول، فإننا لا نعرف اسمك، ولا بريدك الإلكتروني، ولا رقم هاتفك.</li>
-					<li data-i18n data-en="Local Data Processing: All calculations, measurements, and biometric inputs performed within our tools are processed locally on your device (within your browser or phone). They are never transmitted to external servers." data-ar="معالجة البيانات محلياً (Local Processing): جميع المدخلات والقياسات الحيوية التي تجريها داخل أدواتنا وحاسباتنا يتم حسابها ومعالجتها داخل جهازك أنت (على متصفحك أو هاتفك) ولا تُرسل إطلاقاً إلى خوادم خارجية.">معالجة البيانات محلياً (Local Processing): جميع المدخلات والقياسات الحيوية التي تجريها داخل أدواتنا وحاسباتنا يتم حسابها ومعالجتها داخل جهازك أنت (على متصفحك أو هاتفك) ولا تُرسل إطلاقاً إلى خوادم خارجية.</li>
-					<li data-i18n data-en="Confidential Health Metrics: Your health records and calculation histories remain strictly on your device. We never store, view, or aggregate your personal data in any database." data-ar="سرية أرقامك الصحية: نتائج قياساتك وسجلات استهلاكك تبقى ملكاً لك وحدك على جهازك، ولن نطلع عليها أو نحفظها في قاعدة بياناتنا إطلاقاً.">سرية أرقامك الصحية: نتائج قياساتك وسجلات استهلاكك تبقى ملكاً لك وحدك على جهازك، ولن نطلع عليها أو نحفظها في قاعدة بياناتنا إطلاقاً.</li>
-				</ul>
-				
-				<h3 data-i18n data-en="3. Subscription-Free Model: Complete Utilities Free for All" data-ar="3. بدون اشتراكات مدفوعة: كل الأدوات مجانية للجميع">3. بدون اشتراكات مدفوعة: كل الأدوات مجانية للجميع</h3>
-				
-				<p data-i18n data-en="Recurring monthly subscription fees have become a heavy burden for families everywhere. We firmly believe that digital tools helping individuals understand their well-being and monitor family health are a fundamental resource, not an exclusive luxury reserved only for those who can pay." data-ar="لقد أصبح نمط 'الاشتراكات الشهرية' يثقل كاهل الأسر والأفراد في كل مكان. نحن نرى أن الأدوات الرقمية التي تساعد الإنسان على فهم صحته ومتابعة نمو أطفاله والعناية بعائلته هي حق أساسي وليست رفاهية مخصصة لمن يستطيع الدفع فقط.">لقد أصبح نمط 'الاشتراكات الشهرية' يثقل كاهل الأسر والأفراد في كل مكان. نحن نرى أن الأدوات الرقمية التي تساعد الإنسان على فهم صحته ومتابعة نمو أطفاله والعناية بعائلته هي حق أساسي وليست رفاهية مخصصة لمن يستطيع الدفع فقط.</p>
-				
-				<ul>
-					<li data-i18n data-en="No Paywalls: Every feature and utility is fully available to all users without restrictions." data-ar="لا وجود للجدران المدفوعة (No Paywalls): جميع الميزات والأدوات متوفرة بشكل كامل للجميع دون أي قيود.">لا وجود للجدران المدفوعة (No Paywalls): جميع الميزات والأدوات متوفرة بشكل كامل للجميع دون أي قيود.</li>
-					<li data-i18n data-en="No Credit Card Required: You will never encounter 'free trials' that silently transition into auto-renewing charges." data-ar="لا نطلب بيانات بطاقتك الائتمانية: لن تجد لدينا خيارات 'تجربة مجانية ثم دفع تلقائي' أو مطالبات مالية للاستمرار في الاستخدام.">لا نطلب بيانات بطاقتك الائتمانية: لن تجد لدينا خيارات 'تجربة مجانية ثم دفع تلقائي' أو مطالبات مالية للاستمرار في الاستخدام.</li>
-					<li data-i18n data-en="Continuously Free Innovation: All future tools, enhancements, and updates will always be provided free of charge to everyone." data-ar="تطوير مستمر مجاني: كافة التحديثات والأدوات الجديدة التي نطورها باستمرار ستظل مهدتة ومتاحة مجاناً للجميع.">تطوير مستمر مجاني: كافة التحديثات والأدوات الجديدة التي نطورها باستمرار ستظل مهدتة ومتاحة مجاناً للجميع.</li>
-				</ul>
-				
-				<h3 data-i18n data-en="4. Quiet, Non-Intrusive Advertising: Focus on What Matters" data-ar="4. إعلانات هادئة وغير مزعجة: التركيز على ما يهمك">4. إعلانات هادئة وغير مزعجة: التركيز على ما يهمك</h3>
-				
-				<p data-i18n data-en="To maintain absolute transparency, running server infrastructure and software engineering involves ongoing technical costs. To cover these baseline operational expenses, we may display light advertising. However, we draw a clear line between sustainable funding ads and intrusive, user-hostile advertisements." data-ar="كما أوضحنا بشفافية، لتغطية التكاليف التشغيلية الأساسية للسيرفرات والتطوير، قد نلجأ لنشر بعض الإعلانات. لكننا نعي تماماً الفارق بين الإعلان الذي يمول الخدمة وبين الإعلان الذي يدمر تجربة الاستخدام.">كما أوضحنا بشفافية، لتغطية التكاليف التشغيلية الأساسية للسيرفرات والتطوير، قد نلجأ لنشر بعض الإعلانات. لكننا نعي تماماً الفارق بين الإعلان الذي يمول الخدمة وبين الإعلان الذي يدمر تجربة الاستخدام.</p>
-				
-				<p data-i18n data-en="Our direct pledge regarding advertising:" data-ar="تعهدنا المباشر بشأن الإعلانات:">تعهدنا المباشر بشأن الإعلانات:</p>
-				
-				<ul>
-					<li data-i18n data-en="Zero Pop-ups: You will never encounter forced pop-ups or countdown timers interrupting your experience." data-ar="خالية تماماً من النوافذ المنبثقة (No Pop-ups): لن تفاجأ بإعلانات تقفز في وجهك أو تجبرك على الانتظار لثوانٍ قبل إغلاقها.">خالية تماماً من النوافذ المنبثقة (No Pop-ups): لن تفاجأ بإعلانات تقفز في وجهك أو تجبرك على الانتظار لثوانٍ قبل إغلاقها.</li>
-					<li data-i18n data-en="Unobtrusive Placement: Advertisements are strictly contained within peripheral layout areas, far removed from reading and tool interfaces." data-ar="تصميم هادئ وغير متطفل: الإعلانات توضع في الهوامش وأماكن مخصصة بعيدة تماماً عن مساحة العمل والقراءة.">تصميم هادئ وغير متطفل: الإعلانات توضع في الهوامش وأماكن مخصصة بعيدة تماماً عن مساحة العمل والقراءة.</li>
-					<li data-i18n data-en="Optimized Performance: Ads will never degrade page loading speed or compromise the computational efficiency of our interactive tools." data-ar="لا تؤثر على سرعة الاستخدام: نضمن ألا تتسبب المواد الإعلانية في بطء تحميل الأدوات أو التأثير على كفاءة البرمجيات التي نطورها.">لا تؤثر على سرعة الاستخدام: نضمن ألا تتسبب المواد الإعلانية في بطء تحميل الأدوات أو التأثير على كفاءة البرمجيات التي نطورها.</li>
-				</ul>
-				
-				<h3 data-i18n data-en="Our Commitment to You" data-ar="عهدنا لكم">عهدنا لكم</h3>
-				
-				<p data-i18n data-en="Building lasting trust with our community is our greatest asset. We build these tools and platforms to serve as a safe, lightweight, and genuinely helpful digital space for every family seeking health awareness without technical complications or privacy exploitation." data-ar="إن بناء الثقة بيننا وبين مجتمعنا المتابع هو رأس مالنا الحقيقي. نحن نبني هذه المنصة والتطبيقات لتكون ملاذاً رقمياً أميناً، خفيفاً، ومفيداً لكل أسرة وكل فرد يبحث عن المعرفة والصحة دون تعقيدات تقنية أو استغلال مادي.">إن بناء الثقة بيننا وبين مجتمعنا المتابع هو رأس مالنا الحقيقي. نحن نبني هذه المنصة والتطبيقات لتكون ملاذاً رقمياً أميناً، خفيفاً، ومفيداً لكل أسرة وكل فرد يبحث عن المعرفة والصحة دون تعقيدات تقنية أو استغلال مادي.</p>
-				
-				<p class="article-closing" data-i18n data-en="Thank you for your trust and support. We promise to continue engineering innovative tools that simplify your life while safeguarding your privacy every step of the way." data-ar="نشكركم على ثقتكم ودعمكم. نعدكم بأن نواصل تطوير أدوات مبتكرة تُسهل حياتكم وتصون خصوصيتكم دائماً.">نشكركم على ثقتكم ودعمكم. نعدكم بأن نواصل تطوير أدوات مبتكرة تُسهل حياتكم وتصون خصوصيتكم دائماً.</p>
+		<article class="featured-article">
+			<div class="article-content">
+				<h2 data-i18n data-en="Privacy-First, Free, and Trusted Health Tools" data-ar="أدوات صحية مجانية تحمي خصوصيتك وتكسب ثقتك">أدوات صحية مجانية تحمي خصوصيتك وتكسب ثقتك</h2>
+				<p data-i18n data-en="At 'Health & Nature', we have chosen a fundamentally different path—a path that prioritizes user dignity, time, and absolute privacy above all else." data-ar="في منصتنا 'الصحة والطبيعة'، قررنا أن نسلك مساراً مختلفاً تماماً.. مساراً يضع كرامة المستخدم، ووقته، وخصوصيته فوق أي اعتبار آخر.">في منصتنا 'الصحة والطبيعة'، قررنا أن نسلك مساراً مختلفاً تماماً.. مساراً يضع كرامة المستخدم، ووقته، وخصوصيته فوق أي اعتبار آخر.</p>
+					<ul>
+						<li data-i18n data-en="100% Direct Use: No registration, no email submissions, and no password management required." data-ar="استخدام مباشر 100%: لا نطلب منك إنشاء حساب، ولا إدخال بريد إلكتروني، ولا حفظ كلمة مرور جديدة.">استخدام مباشر 100%: لا نطلب منك إنشاء حساب، ولا إدخال بريد إلكتروني، ولا حفظ كلمة مرور جديدة.</li>
+						<li data-i18n data-en="No Identity Tracking: You can open the app or website and utilize every tool available immediately without signing up." data-ar="بدون تتبع للهوية: يمكنك فتح التطبيق أو الموقع واستخدام كافة الأدوات المتاحة فوراً دون أي حاجة للتسجيل.">بدون تتبع للهوية: يمكنك فتح التطبيق أو الموقع واستخدام كافة الأدوات المتاحة فوراً دون أي حاجة للتسجيل.</li>
+						<li data-i18n data-en="Respect for Your Time: We value your time by removing administrative barriers between you and the health insights you seek." data-ar="احترام وقتك: نحن نقدر وقتك الثمين؛ ولذا نلغي كل العقبات الإدارية التي تقف بينك وبين المعلومة أو الخدمة التي تبحث عنها.">احترام وقتك: نحن نقدر وقتك الثمين؛ ولذا نلغي كل العقبات الإدارية التي تقف بينك وبين المعلومة أو الخدمة التي تبحث عنها.</li>
+					</ul>
+					
+					<h3 data-i18n data-en="2. Absolute Privacy: Your Data Belongs Solely to You" data-ar="2. الخصوصية المطلقة: بياناتك ملك لك وحدك">2. الخصوصية المطلقة: بياناتك ملك لك وحدك</h3>
+					
+					<p data-i18n data-en="Privacy has become a rare commodity in the modern web landscape, where apps constantly collect user data, monitor activity, and monetize sensitive information through third-party ad networks." data-ar="أصبحت الخصوصية في وقتنا الحالي نادرة الوجود، حيث تقوم الكثير من التطبيقات بجمع بيانات المستخدمين، وتتبع أسرارهم، وحتى بيع هذه البيانات لشركات التسويق والإعلانات.">أصبحت الخصوصية في وقتنا الحالي نادرة الوجود، حيث تقوم الكثير من التطبيقات بجمع بيانات المستخدمين، وتتبع أسرارهم، وحتى بيع هذه البيانات لشركات التسويق والإعلانات.</p>
+					
+					<p data-i18n data-en="Our privacy philosophy is simple and direct: The best way to protect your data is never to collect it in the first place!" data-ar="فلسفتنا في حماية البيانات صريحة ومباشرة: أفضل طريقة لحماية بياناتك هي عدم جمعها من الأساس!">فلسفتنا في حماية البيانات صريحة ومباشرة: أفضل طريقة لحماية بياناتك هي عدم جمعها من الأساس!</p>
+					
+					<ul>
+						<li data-i18n data-en="Zero Personal Data Collection: Because we do not require account creation, we do not know your name, email, or phone number." data-ar="لا نجمع بيانات شخصية: نظراً لأننا لا نطلب تسجيل الدخول، فإننا لا نعرف اسمك، ولا بريدك الإلكتروني، ولا رقم هاتفك.">لا نجمع بيانات شخصية: نظراً لأننا لا نطلب تسجيل الدخول، فإننا لا نعرف اسمك، ولا بريدك الإلكتروني، ولا رقم هاتفك.</li>
+						<li data-i18n data-en="Local Data Processing: All calculations, measurements, and biometric inputs performed within our tools are processed locally on your device (within your browser or phone). They are never transmitted to external servers." data-ar="معالجة البيانات محلياً (Local Processing): جميع المدخلات والقياسات الحيوية التي تجريها داخل أدواتنا وحاسباتنا يتم حسابها ومعالجتها داخل جهازك أنت (على متصفحك أو هاتفك) ولا تُرسل إطلاقاً إلى خوادم خارجية.">معالجة البيانات محلياً (Local Processing): جميع المدخلات والقياسات الحيوية التي تجريها داخل أدواتنا وحاسباتنا يتم حسابها ومعالجتها داخل جهازك أنت (على متصفحك أو هاتفك) ولا تُرسل إطلاقاً إلى خوادم خارجية.</li>
+						<li data-i18n data-en="Confidential Health Metrics: Your health records and calculation histories remain strictly on your device. We never store, view, or aggregate your personal data in any database." data-ar="سرية أرقامك الصحية: نتائج قياساتك وسجلات استهلاكك تبقى ملكاً لك وحدك على جهازك، ولن نطلع عليها أو نحتفظ بها في أي قاعدة بيانات.">سرية أرقامك الصحية: نتائج قياساتك وسجلات استهلاكك تبقى ملكاً لك وحدك على جهازك، ولن نطلع عليها أو نحتفظ بها في أي قاعدة بيانات.</li>
+					</ul>
+					
+					<h3 data-i18n data-en="3. No Hidden Costs or Data Monetization" data-ar="3. لا توجد رسوم خفية أو بيع للبيانات">3. لا توجد رسوم خفية أو بيع للبيانات</h3>
+					
+					<p data-i18n data-en="We firmly believe that health tools should be accessible to everyone, regardless of their financial situation." data-ar="نحن نؤمن بشدة أن الأدوات الصحية يجب أن تكون متاحة للجميع، بغض النظر عن وضعهم المالي.">نحن نؤمن بشدة أن الأدوات الصحية يجب أن تكون متاحة للجميع، بغض النظر عن وضعهم المالي.</p>
+					
+					<ul>
+						<li data-i18n data-en="Completely Free: All our health calculators and tools are provided without any fees, subscriptions, or premium tiers." data-ar="مجانية بالكامل: جميع حاسباتنا الصحية وأدواتنا متاحة بدون أي رسوم، اشتراكات، أو مستويات مدفوعة.">مجانية بالكامل: جميع حاسباتنا الصحية وأدواتنا متاحة بدون أي رسوم، اشتراكات، أو مستويات مدفوعة.</li>
+						<li data-i18n data-en="No Data Selling: We never sell, rent, or share your information with third parties for advertising or any other purpose." data-ar="لا بيع للبيانات: نحن لا نبيع ولا نؤجر ولا نشارك معلوماتك مع أي طرف ثالث لأغراض إعلانية أو أي غرض آخر.">لا بيع للبيانات: نحن لا نبيع ولا نؤجر ولا نشارك معلوماتك مع أي طرف ثالث لأغراض إعلانية أو أي غرض آخر.</li>
+						<li data-i18n data-en="Transparent and Trustworthy: Our commitment to privacy and free access is not a marketing slogan—it's the foundation of our service." data-ar="شفافة وجديرة بالثقة: التزامنا بالخصوصية والوصول المجاني ليس شعاراً تسويقياً - إنه أساس خدمتنا.">شفافة وجديرة بالثقة: التزامنا بالخصوصية والوصول المجاني ليس شعاراً تسويقياً - إنه أساس خدمتنا.</li>
+					</ul>
 			</div>
 		</article>
 	</article>
@@ -85,158 +104,152 @@ import Layout from '../layouts/Layout.astro';
 
 <style>
 	.apps-page {
-		max-width: 980px;
+		max-width: 960px;
 		margin: 0 auto;
-		padding: 32px 0 48px;
+		padding: 3rem 1.5rem;
+		font-family: system-ui, -apple-system, sans-serif;
+		line-height: 1.6;
+		color: #1a1a1a;
 	}
 
 	.page-head {
 		text-align: center;
-		padding: 48px 32px;
-		margin-bottom: 32px;
-		border-radius: 32px;
-		background: linear-gradient(135deg, rgba(232, 247, 236, 0.95), rgba(255, 255, 255, 0.98));
-		box-shadow: 0 32px 80px rgba(15, 23, 42, 0.08);
+		margin-bottom: 3rem;
 	}
 
 	.eyebrow {
-		margin: 0 0 12px;
-		font-size: 0.85rem;
-		font-weight: 700;
-		letter-spacing: 0.14em;
+		font-size: 0.875rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
 		text-transform: uppercase;
-		color: #16603f;
+		color: #2d6a4f;
+		margin-bottom: 0.75rem;
 	}
 
-	.page-head h1 {
-		margin: 0 0 16px;
-		font-size: clamp(2rem, 3vw, 3rem);
-		color: #134e39;
+	h1 {
+		font-size: 2.5rem;
+		font-weight: 800;
+		margin: 0 0 1rem;
+		line-height: 1.2;
+		color: #1a1a1a;
 	}
 
 	.lead {
-		margin: 0;
-		font-size: 1.15rem;
-		line-height: 1.8;
-		color: #475569;
-		max-width: 640px;
-		margin-left: auto;
-		margin-right: auto;
+		font-size: 1.125rem;
+		color: #666;
+		max-width: 600px;
+		margin: 0 auto;
 	}
 
 	.apps-listing {
-		margin-bottom: 48px;
+		margin-bottom: 4rem;
 	}
 
 	.app-cards {
 		display: grid;
-		gap: 16px;
-	}
-
-	.featured-article {
-		margin-top: 24px;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1.5rem;
 	}
 
 	.app-card {
 		display: flex;
-		align-items: center;
-		gap: 18px;
-		padding: 18px 20px;
-		border-radius: 20px;
-		border: 1px solid rgba(56, 132, 81, 0.12);
-		background: rgba(255, 255, 255, 0.96);
-		box-shadow: 0 24px 60px rgba(15, 23, 42, 0.06);
+		align-items: flex-start;
+		gap: 1rem;
+		padding: 1.5rem;
+		background: #fff;
+		border: 1px solid #e5e5e5;
+		border-radius: 12px;
 		text-decoration: none;
 		color: inherit;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-	}
-
-	[dir='rtl'] .app-card {
-		flex-direction: row-reverse;
-		text-align: right;
+		transition: all 0.2s ease;
 	}
 
 	.app-card:hover {
+		border-color: #2d6a4f;
 		transform: translateY(-2px);
-		box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	}
 
 	.app-card img {
-		width: 72px;
-		height: 72px;
-		border-radius: 18px;
 		flex-shrink: 0;
+		border-radius: 8px;
 	}
 
 	.app-card h3 {
-		margin: 0 0 6px;
-		font-size: 1.15rem;
-		color: #134e39;
+		font-size: 1.125rem;
+		font-weight: 700;
+		margin: 0 0 0.5rem;
+		color: #1a1a1a;
 	}
 
 	.app-card p {
+		font-size: 0.875rem;
+		color: #666;
 		margin: 0;
-		font-size: 0.95rem;
-		color: #475569;
-		line-height: 1.6;
+		line-height: 1.5;
+	}
+
+	.app-card--cta {
+		background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 100%);
+		border-color: #2d6a4f;
 	}
 
 	.featured-article {
-		padding: 32px;
-		border-radius: 28px;
-		background: rgba(255, 255, 255, 0.96);
-		box-shadow: 0 24px 60px rgba(15, 23, 42, 0.06);
+		background: #f8f9fa;
+		border-radius: 16px;
+		padding: 2.5rem;
+		margin-bottom: 3rem;
 	}
 
-	.featured-article h2 {
-		margin: 0 0 24px;
-		font-size: 1.8rem;
-		color: #134e39;
+	.article-content {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	.article-content h2 {
+		font-size: 1.75rem;
+		font-weight: 700;
+		margin: 0 0 1rem;
+		color: #1a1a1a;
 	}
 
 	.article-content h3 {
-		margin: 28px 0 14px;
-		font-size: 1.35rem;
-		color: #16603f;
+		font-size: 1.25rem;
+		font-weight: 600;
+		margin: 1.5rem 0 0.75rem;
+		color: #1a1a1a;
 	}
 
 	.article-content p {
-		margin: 0 0 16px;
-		line-height: 1.85;
-		color: #334155;
+		color: #444;
+		margin-bottom: 1rem;
 	}
 
 	.article-content ul {
-		margin: 0 0 18px;
-		padding-left: 24px;
-		color: #334155;
-	}
-
-	[dir='rtl'] .article-content ul {
-		padding-left: 0;
-		padding-right: 24px;
+		margin: 1rem 0;
+		padding-left: 1.5rem;
 	}
 
 	.article-content li {
-		margin-bottom: 10px;
-		line-height: 1.8;
+		margin-bottom: 0.5rem;
+		color: #444;
 	}
 
-	.article-closing {
-		margin-top: 24px;
-		padding-top: 20px;
-		border-top: 1px solid rgba(56, 132, 81, 0.15);
-		font-weight: 600;
-		color: #134e39;
-	}
+	@media (max-width: 640px) {
+		.apps-page {
+			padding: 2rem 1rem;
+		}
 
-	@media (max-width: 780px) {
-		.page-head {
-			padding: 32px 20px;
+		h1 {
+			font-size: 2rem;
+		}
+
+		.app-cards {
+			grid-template-columns: 1fr;
 		}
 
 		.featured-article {
-			padding: 24px 20px;
+			padding: 1.5rem;
 		}
 	}
 </style>

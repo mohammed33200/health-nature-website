@@ -1,0 +1,183 @@
+---
+// شبكة أمسلر — فحص مبدئي للبقعة الصفراء (Amsler Grid)
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Amsler Grid Test">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>شبكة أمسلر لفحص البقعة الصفراء</span>
+        <span data-en>Amsler Grid Test</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>
+          اختبار بصري بسيط يُستخدم عالمياً للكشف المبكر عن مشاكل مركز الشبكية
+          (البقعة الصفراء)، مثل الاعتلال البقعي المرتبط بالعمر (AMD).
+        </span>
+        <span data-en>
+          A simple visual test used worldwide for early detection of central retina (macula)
+          problems, such as age-related macular degeneration (AMD).
+        </span>
+      </p>
+    </div>
+
+    <div class="calc-card">
+      <ol class="steps">
+        <li><span data-ar>إن كنت تلبس نظارة قراءة، أبقها على عينيك.</span><span data-en>If you wear reading glasses, keep them on.</span></li>
+        <li><span data-ar>اجلس على بُعد حوالي 30-40 سم من الشاشة.</span><span data-en>Sit about 30-40 cm from the screen.</span></li>
+        <li><span data-ar>غطِّ عينك اليسرى، وانظر بعينك اليمنى فقط إلى النقطة السوداء في المنتصف.</span><span data-en>Cover your left eye and look only with your right eye at the black dot in the center.</span></li>
+        <li><span data-ar>لاحظ: هل كل الخطوط مستقيمة ومتساوية؟ وهل ترى الشبكة كاملة بدون بقع مفقودة؟</span><span data-en>Notice: are all lines straight and even? Can you see the whole grid without missing patches?</span></li>
+        <li><span data-ar>كرر نفس الخطوات مع العين الأخرى (بتغطية اليمنى هذه المرة).</span><span data-en>Repeat with the other eye (covering the right one this time).</span></li>
+      </ol>
+
+      <div class="amsler-grid" role="img" aria-label="Amsler grid: crossing lines with a central dot">
+        <div class="amsler-dot"></div>
+      </div>
+
+      <form id="amslerForm">
+        <fieldset class="quiz-item">
+          <legend>
+            <span data-ar>بعد التركيز على النقطة المركزية بكل عين على حدة، اختر ما رأيته:</span>
+            <span data-en>After focusing on the central dot with each eye separately, choose what you saw:</span>
+          </legend>
+          <div class="quiz-options">
+            <label class="quiz-option">
+              <input type="radio" name="amslerResult" value="normal" />
+              <span data-ar>كل الخطوط مستقيمة وواضحة</span><span data-en>All lines are straight and clear</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="amslerResult" value="wavy" />
+              <span data-ar>بعض الخطوط متموجة أو منحنية</span><span data-en>Some lines look wavy or bent</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="amslerResult" value="blank" />
+              <span data-ar>توجد بقعة فارغة أو باهتة</span><span data-en>There is a blank or faded patch</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="amslerResult" value="blurry" />
+              <span data-ar>الخطوط غير واضحة بشكل عام</span><span data-en>Lines are generally unclear</span>
+            </label>
+          </div>
+        </fieldset>
+        <button type="submit" class="btn-calc">
+          <span data-ar>عرض التفسير</span><span data-en>Show interpretation</span>
+        </button>
+      </form>
+
+      <div class="result" id="amslerResultBox">
+        <p class="reading" id="amslerResultTitle"></p>
+        <span class="badge" id="amslerResultBadge"></span>
+        <p id="amslerResultText"></p>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>لماذا هذا الاختبار مهم؟</span><span data-en>Why does this test matter?</span></h2>
+      <p>
+        <span data-ar>
+          البقعة الصفراء هي المسؤولة عن الرؤية المركزية الدقيقة (القراءة، التعرف على
+          الوجوه). أي تشوه في الخطوط المستقيمة أثناء هذا الاختبار قد يكون علامة مبكرة
+          على مشكلة في الشبكية، ويُنصح باكتشافها مبكراً قدر الإمكان.
+        </span>
+        <span data-en>
+          The macula is responsible for sharp central vision (reading, recognizing faces). Any
+          distortion of straight lines during this test could be an early sign of a retinal
+          problem, and early detection is recommended whenever possible.
+        </span>
+      </p>
+      <h2><span data-ar>من يستفيد أكثر؟</span><span data-en>Who benefits most?</span></h2>
+      <p>
+        <span data-ar>الأشخاص فوق سن الخمسين، مرضى السكري الخاضعون لمتابعة دورية، وأي شخص يشعر بتغيّر مفاجئ في وضوح الرؤية المركزية.</span>
+        <span data-en>People over 50, diabetic patients under regular monitoring, and anyone noticing a sudden change in central vision clarity.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذا فحص ذاتي تقريبي فقط وليس بديلاً عن فحص قاع
+        العين لدى طبيب مختص. أياً كانت النتيجة هنا، فالنتيجة النهائية والتشخيص الدقيق
+        يتطلبان زيارة طبيب عيون. في حال ملاحظة أي تموّج أو بقعة، يُرجى حجز الموعد في
+        أقرب وقت ممكن.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This is only an approximate self-screening test and not a
+        substitute for a dilated retinal exam by a specialist. Whatever the result shown here, a
+        final result and accurate diagnosis require a visit to an eye doctor. If you notice any
+        waviness or blank patch, please book an appointment as soon as possible.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  const form = document.getElementById('amslerForm');
+  const box = document.getElementById('amslerResultBox');
+  const title = document.getElementById('amslerResultTitle');
+  const badge = document.getElementById('amslerResultBadge');
+  const text = document.getElementById('amslerResultText');
+
+  const outcomes = {
+    normal: {
+      cls: 'badge-ok',
+      badge: { ar: 'طبيعي', en: 'Normal' },
+      title: { ar: 'النتيجة تبدو طبيعية', en: 'Result looks normal' },
+      text: {
+        ar: 'رؤيتك للشبكة كانت منتظمة في هذا الفحص المبدئي. يُنصح مع ذلك بإعادة هذا الفحص دورياً (خصوصاً بعد سن الأربعين)، وبزيارة طبيب عيون بشكل دوري لتأكيد سلامة الشبكية بأجهزة الفحص المناسبة.',
+        en: 'Your view of the grid was even in this preliminary check. Still, repeat this test periodically (especially after age 40), and see an eye doctor regularly to confirm retinal health with proper equipment.',
+      },
+    },
+    wavy: {
+      cls: 'badge-danger',
+      badge: { ar: 'راجع طبيب عيون', en: 'See an eye doctor' },
+      title: { ar: 'يُنصح بمراجعة طبيب عيون', en: 'An eye doctor visit is recommended' },
+      text: {
+        ar: 'رؤية خطوط متموجة أو منحنية قد تكون مؤشراً على تغيّر في شكل الشبكية. يُرجى حجز موعد فحص قاع عين في أقرب وقت ممكن، خاصة إن كانت الملاحظة جديدة أو مفاجئة.',
+        en: 'Seeing wavy or bent lines could indicate a change in retinal shape. Please book a dilated eye exam as soon as possible, especially if this observation is new or sudden.',
+      },
+    },
+    blank: {
+      cls: 'badge-danger',
+      badge: { ar: 'راجع طبيب عيون فوراً', en: 'See an eye doctor promptly' },
+      title: { ar: 'يُنصح بمراجعة طبيب عيون فوراً', en: 'See an eye doctor promptly' },
+      text: {
+        ar: 'وجود بقعة فارغة أو باهتة في مجال الرؤية المركزي يستدعي تقييماً طبياً عاجلاً لاستبعاد أي مشكلة في البقعة الصفراء.',
+        en: 'A blank or faded patch in your central vision warrants prompt medical evaluation to rule out a macular problem.',
+      },
+    },
+    blurry: {
+      cls: 'badge-warn',
+      badge: { ar: 'غير حاسم', en: 'Inconclusive' },
+      title: { ar: 'النتيجة غير حاسمة', en: 'Inconclusive result' },
+      text: {
+        ar: 'عدم وضوح الخطوط بشكل عام قد يكون بسبب مشكلة في النظر تحتاج تصحيحاً بالنظارة، وليس بالضرورة مشكلة في الشبكية. يُفضّل زيارة طبيب عيون أو أخصائي بصريات لإجراء فحص نظر شامل والتأكد من السبب.',
+        en: 'General blurriness may be due to a refractive error needing glasses, not necessarily a retinal issue. It is best to see an eye doctor or optometrist for a comprehensive exam to confirm the cause.',
+      },
+    },
+  };
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const selected = form.querySelector('input[name="amslerResult"]:checked') as HTMLInputElement;
+    if (!selected) return;
+    const outcome = outcomes[selected.value];
+    const lang = getLang();
+    badge.className = 'badge ' + outcome.cls;
+    badge.textContent = t(lang, outcome.badge);
+    title.textContent = t(lang, outcome.title);
+    text.textContent = t(lang, outcome.text);
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>

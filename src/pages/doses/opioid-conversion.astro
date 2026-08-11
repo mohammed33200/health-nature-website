@@ -1,0 +1,146 @@
+---
+// حاسبة تحويل مسكنات الأفيون — Opioid Conversion
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة تحويل مسكنات الأفيون">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة تحويل مسكنات الأفيون</span>
+          <span data-en>Opioid Conversion</span>
+        </h1>
+        <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحوّل جرعة مسكن أفيوني معيّن إلى الجرعة المكافئة من نوع آخر، عبر تحويل كليهما إلى "معادل المورفين الفموي" (OME) كوحدة مرجعية مشتركة.</span>
+          <span data-en>Converts a dose of one opioid to the equivalent dose of another, by converting both through "oral morphine equivalents" (OME) as a shared reference unit.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>التبديل بين المسكنات الأفيونية شائع (تغيير الدواء، التحويل من وريدي لفموي)، والخطأ في الحساب قد يسبب جرعة زائدة خطرة (تثبيط تنفسي) أو ألمًا غير مسيطر عليه — لذلك يُنصح دائمًا بتخفيض الجرعة المحوَّلة 25-50% كإجراء أمان (التحمل غير الكامل بين الأدوية).</span>
+          <span data-en>Switching between opioids is common (changing medication, converting IV to oral), and a calculation error can cause a dangerous overdose (respiratory depression) or uncontrolled pain — so the converted dose is usually reduced by 25–50% as a safety measure (incomplete cross-tolerance).</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="opioid-form">
+        <label>
+          <span data-ar>الدواء الحالي</span><span data-en>Current drug</span>
+          <select id="fromDrug">
+            <option value="1">مورفين فموي / Oral morphine (×1)</option>
+            <option value="3">مورفين وريدي / IV morphine (×3)</option>
+            <option value="1.5">أوكسيكودون فموي / Oral oxycodone (×1.5)</option>
+            <option value="4">هيدرومورفون فموي / Oral hydromorphone (×4)</option>
+            <option value="0.13">ترامادول فموي / Oral tramadol (×0.13)</option>
+            <option value="0.3">كودايين فموي / Oral codeine (×0.3)</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>الجرعة الحالية اليومية (مجم)</span><span data-en>Current daily dose (mg)</span>
+          <input type="number" id="dose" min="1" max="2000" step="0.5" required />
+        </label>
+        <label>
+          <span data-ar>الدواء المستهدف</span><span data-en>Target drug</span>
+          <select id="toDrug">
+            <option value="1">مورفين فموي / Oral morphine (×1)</option>
+            <option value="3">مورفين وريدي / IV morphine (×3)</option>
+            <option value="1.5">أوكسيكودون فموي / Oral oxycodone (×1.5)</option>
+            <option value="4">هيدرومورفون فموي / Oral hydromorphone (×4)</option>
+            <option value="0.13">ترامادول فموي / Oral tramadol (×0.13)</option>
+            <option value="0.3">كودايين فموي / Oral codeine (×0.3)</option>
+          </select>
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>معادل المورفين الفموي (OME): </span>
+          <strong id="ome-out"></strong> mg
+        </p>
+        <p class="result-line">
+          <span data-ar>الجرعة المحوَّلة (كاملة): </span><span data-en>Full converted dose: </span>
+          <strong id="full-out"></strong>
+        </p>
+        <p class="result-line">
+          <span data-ar>الجرعة الموصى بها للبدء (بعد خفض 25–50% أمانًا): </span><span data-en>Recommended starting dose (after 25–50% safety reduction): </span>
+          <strong id="safe-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>المعادلة</span><span data-en>Formula</span></h2>
+        <p class="formula">OME = Dose × Conversion Factor</p>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>هذه أداة مرجعية تعليمية فقط، ولا تُستخدم كأساس وحيد لتحويل جرعة مريض فعلي دون تقييم طبي مباشر ومراقبة عن كثب بعد أي تحويل.</span>
+        <span data-en>This is a reference/educational tool only, and must not be the sole basis for converting an actual patient's dose without direct clinical evaluation and close monitoring after any conversion.</span>
+      </p>
+
+      <a class="back-link" href="/doses/">
+        <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+        <span data-en>← Back to Medication Dosing</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("opioid-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fromFactor = Number((document.getElementById("fromDrug") as HTMLSelectElement).value);
+    const toFactor = Number((document.getElementById("toDrug") as HTMLSelectElement).value);
+    const dose = Number((document.getElementById("dose") as HTMLInputElement).value);
+    if (!dose) return;
+
+    const ome = dose * fromFactor;
+    const fullConverted = ome / toFactor;
+    const safeLow = fullConverted * 0.5;
+    const safeHigh = fullConverted * 0.75;
+
+    (document.getElementById("ome-out") as HTMLElement).textContent = ome.toFixed(1);
+    (document.getElementById("full-out") as HTMLElement).textContent = `${fullConverted.toFixed(1)} mg`;
+    (document.getElementById("safe-out") as HTMLElement).textContent = `${safeLow.toFixed(1)} – ${safeHigh.toFixed(1)} mg`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(180,90,0,.12); }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .85rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .disclaimer { margin: 1.5rem 0; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

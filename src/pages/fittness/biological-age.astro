@@ -1,0 +1,164 @@
+---
+// حاسبة العمر البيولوجي الشامل — Comprehensive Biological Age
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة العمر البيولوجي الشامل">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة العمر البيولوجي الشامل</span>
+          <span data-en>Comprehensive Biological Age</span>
+        </h1>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تقدّر "عمر جسدك الداخلي" مقارنة بعمرك الحقيقي، بناءً على خمسة عوامل نمط حياة: ساعات النوم، مستوى التوتر، جودة الأكل، النشاط البدني، والتدخين.</span>
+          <span data-en>Estimates your body's "internal age" compared to your actual age, based on five lifestyle factors: sleep hours, stress level, diet quality, physical activity, and smoking.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>تربط عادات يومية ملموسة برقم واحد سهل الفهم، فتحفّز على تحسين نمط الحياة عندما يظهر العمر البيولوجي أكبر من الحقيقي، وتعزز الشعور الإيجابي عندما يكون أصغر.</span>
+          <span data-en>Connects tangible daily habits to one easy-to-understand number, motivating lifestyle improvement when biological age comes out higher than actual, and reinforcing positive habits when it's lower.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="bioage-form">
+        <label>
+          <span data-ar>العمر الحقيقي (سنة)</span><span data-en>Actual age (years)</span>
+          <input type="number" id="age" min="15" max="100" required />
+        </label>
+        <label>
+          <span data-ar>متوسط ساعات النوم</span><span data-en>Average sleep hours</span>
+          <select id="sleep">
+            <option value="3">أقل من 6 ساعات / &lt;6h</option>
+            <option value="1">6–7 ساعات / 6–7h</option>
+            <option value="0" selected>7–9 ساعات / 7–9h</option>
+            <option value="1">أكثر من 9 ساعات / &gt;9h</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>مستوى التوتر</span><span data-en>Stress level</span>
+          <select id="stress">
+            <option value="0">منخفض / Low</option>
+            <option value="2">متوسط / Moderate</option>
+            <option value="4">مرتفع / High</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>جودة الأكل</span><span data-en>Diet quality</span>
+          <select id="diet">
+            <option value="3">ضعيفة / Poor</option>
+            <option value="1">متوسطة / Average</option>
+            <option value="-1">جيدة / Good</option>
+            <option value="-2">ممتازة / Excellent</option>
+          </select>
+        </label>
+        <label>
+          <span data-ar>النشاط البدني</span><span data-en>Physical activity</span>
+          <select id="activity">
+            <option value="3">خامل / Sedentary</option>
+            <option value="1">نشاط خفيف / Light</option>
+            <option value="-1">نشاط متوسط / Moderate</option>
+            <option value="-3">نشط جدًا / Very active</option>
+          </select>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="smoking" />
+          <span data-ar>مدخّن حاليًا</span><span data-en>Currently smokes</span>
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span><span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>العمر البيولوجي التقديري: </span><span data-en>Estimated biological age: </span>
+          <strong id="bioage-out"></strong>
+        </p>
+        <p class="result-line">
+          <span data-ar>الفرق عن العمر الحقيقي: </span><span data-en>Difference from actual age: </span>
+          <strong id="diff-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي</span><span data-en>Normal reference</span></h2>
+        <ul class="ref-list">
+          <li><span data-ar>فرق ضمن ±2 سنة: نمط حياة متوازن نسبيًا</span><span data-en>Difference within ±2 years: relatively balanced lifestyle</span></li>
+          <li><span data-ar>فرق أكبر من ذلك موجب: مؤشر على عادات قد تستفيد من تحسين (نوم، توتر، نشاط)</span><span data-en>A larger positive difference: signals habits that could benefit from improvement (sleep, stress, activity)</span></li>
+        </ul>
+        <p class="note">
+          <span data-ar>هذا تقدير تحفيزي مبسّط وليس قياسًا طبيًا دقيقًا للشيخوخة البيولوجية الفعلية.</span>
+          <span data-en>This is a simplified motivational estimate, not a precise medical measure of actual biological aging.</span>
+        </p>
+      </article>
+
+      <a class="back-link" href="/fittness/">
+        <span data-ar>← رجوع لمجال اللياقة المتقدمة</span>
+        <span data-en>← Back to Advanced Fitness</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("bioage-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const age = Number((document.getElementById("age") as HTMLInputElement).value);
+    if (!age) return;
+
+    const sleep = Number((document.getElementById("sleep") as HTMLSelectElement).value);
+    const stress = Number((document.getElementById("stress") as HTMLSelectElement).value);
+    const diet = Number((document.getElementById("diet") as HTMLSelectElement).value);
+    const activity = Number((document.getElementById("activity") as HTMLSelectElement).value);
+    const smoking = (document.getElementById("smoking") as HTMLInputElement).checked ? 5 : 0;
+
+    const adjustment = sleep + stress + diet + activity + smoking;
+    const bioAge = age + adjustment;
+
+    (document.getElementById("bioage-out") as HTMLElement).textContent = `${bioAge} ${bioAge===1 ? "سنة" : "سنة"}`;
+    const diffText = adjustment === 0 ? "مطابق للعمر الحقيقي / matches actual age"
+      : adjustment > 0 ? `+${adjustment} (أكبر / older)` : `${adjustment} (أصغر / younger)`;
+    (document.getElementById("diff-out") as HTMLElement).textContent = diffText;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: 1.5rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+  .note { font-size: .85rem; opacity: .75; margin-top: .75rem; }
+  .note [data-en] { display: block; margin-top: .2rem; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input, .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .checkbox-label { display: flex; align-items: center; gap: .5rem; font-size: .9rem; }
+  .checkbox-label [data-en] { opacity: .6; font-size: .85em; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

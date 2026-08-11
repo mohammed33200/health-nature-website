@@ -1,0 +1,166 @@
+---
+// عجلة الاستجماتيزم (Astigmatism Dial)
+import "../../styles/eye-tests.css";
+import LayoutAstroComponent from "../../layouts/Layout.astro";
+import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
+---
+
+<LayoutAstroComponent title="Astigmatism Test">
+  <ToolsShellAstroComponent>
+    <div class="tool-hero">
+      <a href="/optics/" class="back-link">
+        <span data-ar>‹ العودة إلى كل الاختبارات</span>
+        <span data-en>‹ Back to all tests</span>
+      </a>
+      <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
+      <h1>
+        <span data-ar>اختبار عجلة الاستجماتيزم</span>
+        <span data-en>Astigmatism Wheel Test</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>
+          رسم شعاعي بخطوط متساوية السُمك واللون. تفاوت وضوح هذه الخطوط عند النظر
+          إليها قد يدل على وجود اللابؤرية (الاستجماتيزم) — حالة انكسار غير منتظم
+          للعين شائعة جداً وسهلة التصحيح بالنظارة.
+        </span>
+        <span data-en>
+          A radial dial of evenly-spaced, equal-thickness lines. Uneven clarity between the lines
+          may indicate astigmatism — a very common, easily corrected irregular refraction of the eye.
+        </span>
+      </p>
+    </div>
+
+    <div class="calc-card">
+      <ol class="steps">
+        <li><span data-ar>إن كنت تلبس نظارة، أبقها على عينيك.</span><span data-en>If you wear glasses, keep them on.</span></li>
+        <li><span data-ar>اجلس على بُعد حوالي 40-50 سم من الشاشة.</span><span data-en>Sit about 40-50 cm from the screen.</span></li>
+        <li><span data-ar>غطِّ عينك اليسرى وانظر بعينك اليمنى فقط إلى مركز العجلة.</span><span data-en>Cover your left eye and look only with your right eye at the center of the dial.</span></li>
+        <li><span data-ar>لاحظ: هل كل الخطوط تبدو بنفس الدرجة من الوضوح والسواد؟</span><span data-en>Notice: do all the lines look equally sharp and dark?</span></li>
+        <li><span data-ar>كرر مع العين الأخرى.</span><span data-en>Repeat with the other eye.</span></li>
+      </ol>
+
+      <svg class="dial-svg" viewBox="0 0 300 300" role="img" aria-label="Radial line dial for astigmatism screening">
+        <circle cx="150" cy="150" r="148" fill="#fff" stroke="var(--line)" stroke-width="2" />
+        <g id="spokes" stroke="var(--ink)" stroke-width="2.4"></g>
+        <circle cx="150" cy="150" r="4" fill="var(--danger)" />
+      </svg>
+
+      <form id="astigForm">
+        <fieldset class="quiz-item">
+          <legend><span data-ar>ماذا لاحظت؟</span><span data-en>What did you notice?</span></legend>
+          <div class="quiz-options">
+            <label class="quiz-option">
+              <input type="radio" name="astigResult" value="even" />
+              <span data-ar>كل الخطوط متساوية الوضوح</span><span data-en>All lines are equally clear</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="astigResult" value="uneven" />
+              <span data-ar>بعض الخطوط أغمق أو أوضح من غيرها</span><span data-en>Some lines are darker or clearer than others</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="astigResult" value="unsure" />
+              <span data-ar>غير متأكد / صعب التمييز</span><span data-en>Not sure / hard to tell</span>
+            </label>
+          </div>
+        </fieldset>
+        <button type="submit" class="btn-calc">
+          <span data-ar>عرض التفسير</span><span data-en>Show interpretation</span>
+        </button>
+      </form>
+
+      <div class="result" id="astigResultBox">
+        <p class="reading" id="astigResultTitle"></p>
+        <span class="badge" id="astigResultBadge"></span>
+        <p id="astigResultText"></p>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2><span data-ar>ما هي اللابؤرية؟</span><span data-en>What is astigmatism?</span></h2>
+      <p>
+        <span data-ar>تحدث عندما يكون سطح القرنية أو العدسة غير كروي بشكل مثالي، فتنكسر الأشعة الضوئية بشكل غير متساوٍ في الاتجاهات المختلفة، مما يجعل بعض الخطوط تبدو أوضح من غيرها حسب اتجاهها.</span>
+        <span data-en>It happens when the cornea or lens surface isn't perfectly spherical, so light rays refract unevenly in different directions — making some lines appear sharper than others depending on their orientation.</span>
+      </p>
+      <h2><span data-ar>هل هي خطيرة؟</span><span data-en>Is it serious?</span></h2>
+      <p>
+        <span data-ar>اللابؤرية شائعة جداً ولا تُعد حالة خطيرة، وعادة ما تُصحَّح بسهولة بنظارة أو عدسات لاصقة مناسبة بعد فحص دقيق لدى أخصائي بصريات.</span>
+        <span data-en>Astigmatism is very common and not a dangerous condition. It is usually corrected easily with the right glasses or contact lenses after a proper exam by an optometrist.</span>
+      </p>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        <strong>إخلاء مسؤولية:</strong> هذا فحص مبدئي تقريبي فقط، ولا يحدد درجة اللابؤرية
+        أو محورها. القياس الدقيق والنتيجة النهائية يتطلبان جهاز فحص انكسار العين لدى
+        طبيب عيون أو أخصائي بصريات.
+      </span>
+      <span data-en>
+        <strong>Disclaimer:</strong> This is only an approximate preliminary check and does not
+        determine the degree or axis of astigmatism. An accurate measurement and final result
+        require a refraction exam by an eye doctor or optometrist.
+      </span>
+    </div>
+  </ToolsShellAstroComponent>
+</LayoutAstroComponent>
+
+<script>
+  const scope = document.querySelector('.tools-scope');
+  function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
+  function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const group = document.getElementById('spokes');
+  const cx = 150, cy = 150, rInner = 14, rOuter = 145, count = 24;
+  if (group) {
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count;
+      const line = document.createElementNS(NS, 'line');
+      line.setAttribute('x1', (cx + rInner * Math.cos(angle)).toFixed(2));
+      line.setAttribute('y1', (cy + rInner * Math.sin(angle)).toFixed(2));
+      line.setAttribute('x2', (cx + rOuter * Math.cos(angle)).toFixed(2));
+      line.setAttribute('y2', (cy + rOuter * Math.sin(angle)).toFixed(2));
+      group.appendChild(line);
+    }
+  }
+
+  const form = document.getElementById('astigForm');
+  const box = document.getElementById('astigResultBox');
+  const title = document.getElementById('astigResultTitle');
+  const badge = document.getElementById('astigResultBadge');
+  const text = document.getElementById('astigResultText');
+
+  const outcomes = {
+    even: {
+      cls: 'badge-ok',
+      badge: { ar: 'طبيعي', en: 'Normal' },
+      title: { ar: 'لا توجد مؤشرات على اللابؤرية', en: 'No signs of astigmatism' },
+      text: { ar: 'رؤيتك للخطوط كانت متساوية في هذا الفحص المبدئي، وهذا مؤشر جيد. يبقى الفحص الدوري لدى طبيب عيون أو أخصائي بصريات هو المرجع الدقيق.', en: 'The lines appeared even in this preliminary check — a good sign. Regular exams with an eye doctor or optometrist remain the accurate reference.' },
+    },
+    uneven: {
+      cls: 'badge-warn',
+      badge: { ar: 'مؤشر محتمل', en: 'Possible sign' },
+      title: { ar: 'مؤشر محتمل على اللابؤرية', en: 'Possible sign of astigmatism' },
+      text: { ar: 'تفاوت وضوح الخطوط قد يشير إلى وجود لابؤرية (استجماتيزم). هذه حالة شائعة وسهلة التصحيح — يُنصح بزيارة طبيب عيون أو أخصائي بصريات لفحص انكسار العين وتحديد المقاس المناسب إن لزم.', en: 'Uneven line clarity may suggest astigmatism. This is common and easily corrected — visit an eye doctor or optometrist for a refraction exam and the right prescription if needed.' },
+    },
+    unsure: {
+      cls: 'badge-warn',
+      badge: { ar: 'غير حاسم', en: 'Inconclusive' },
+      title: { ar: 'النتيجة غير حاسمة', en: 'Inconclusive result' },
+      text: { ar: 'إن كان من الصعب التمييز، جرّب الاختبار في إضاءة أفضل وعلى مسافة مريحة من الشاشة. إذا استمر عدم اليقين، يُفضّل فحص شامل لدى طبيب عيون أو أخصائي بصريات.', en: 'If it was hard to tell, try again in better lighting and at a comfortable distance from the screen. If uncertainty continues, a comprehensive exam with an eye doctor or optometrist is best.' },
+    },
+  };
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const selected = form.querySelector('input[name="astigResult"]:checked') as HTMLInputElement;
+    if (!selected) return;
+    const outcome = outcomes[selected.value];
+    const lang = getLang();
+    badge.className = 'badge ' + outcome.cls;
+    badge.textContent = t(lang, outcome.badge);
+    title.textContent = t(lang, outcome.title);
+    text.textContent = t(lang, outcome.text);
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>

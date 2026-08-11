@@ -1,0 +1,143 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ToolsShell from "../../layouts/ToolsShell.astro";
+// حاسبة خطر السكتة في الرجفان الأذيني — CHA2DS2-VASc Score
+---
+
+<Layout title="حاسبة خطر السكتة في الرجفان الأذيني">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة خطر السكتة في الرجفان الأذيني</span>
+      <span data-en dir="ltr">CHA₂DS₂-VASc Score</span>
+    </h1>
+    <span class="badge badge-new">NEW</span>
+    <p class="credit-line">Lip et al., 2010</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تقدّر خطر السكتة الدماغية سنويًا لدى مرضى الرجفان الأذيني غير الصمامي، من خلال 8 عوامل خطر (قصور قلب، ارتفاع ضغط، عمر، سكري، سكتة سابقة، مرض وعائي، جنس).</span>
+      <span data-en dir="ltr">Estimates annual stroke risk in patients with non-valvular atrial fibrillation, using 8 risk factors (heart failure, hypertension, age, diabetes, prior stroke, vascular disease, sex).</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>هي الأداة القياسية عالميًا لاتخاذ قرار البدء بمضادات التجلط الفموية لدى مرضى الرجفان الأذيني للوقاية من السكتة الدماغية، بدل الاعتماد على تقدير شخصي غير موحّد.</span>
+      <span data-en dir="ltr">The globally standard tool for deciding whether to start oral anticoagulation in atrial fibrillation patients to prevent stroke, instead of relying on unstandardized personal judgment.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="cha-form">
+    <label class="checkbox-label"><input type="checkbox" id="chf" data-points="1" /> <span data-ar>قصور قلب / خلل وظيفة البطين الأيسر (1)</span><span data-en dir="ltr">Congestive heart failure / LV dysfunction (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="htn" data-points="1" /> <span data-ar>ارتفاع ضغط الدم (1)</span><span data-en dir="ltr">Hypertension (1)</span></label>
+    <label>
+      <span data-ar>العمر</span><span data-en dir="ltr">Age</span>
+      <select id="age">
+        <option value="0">&lt;65 (0)</option>
+        <option value="1">65–74 (1)</option>
+        <option value="2">≥75 (2)</option>
+      </select>
+    </label>
+    <label class="checkbox-label"><input type="checkbox" id="diabetes" data-points="1" /> <span data-ar>سكري (1)</span><span data-en dir="ltr">Diabetes (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="stroke" data-points="2" /> <span data-ar>سكتة/نوبة إقفارية عابرة/جلطة سابقة (2)</span><span data-en dir="ltr">Prior stroke/TIA/thromboembolism (2)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="vascular" data-points="1" /> <span data-ar>مرض وعائي (احتشاء سابق، مرض شرايين محيطية...) (1)</span><span data-en dir="ltr">Vascular disease (prior MI, PAD...) (1)</span></label>
+    <label>
+      <span data-ar>الجنس</span><span data-en dir="ltr">Sex</span>
+      <select id="sex">
+        <option value="male">ذكر / Male</option>
+        <option value="female">أنثى / Female (+1)</option>
+      </select>
+    </label>
+    <button type="submit">
+      <span data-ar>احسب المجموع</span>
+      <span data-en dir="ltr">Calculate score</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>المجموع: </span><span data-en dir="ltr">Total score: </span>
+      <strong id="score-out"></strong> / 9
+    </p>
+    <p class="result-line">
+      <span data-ar>التوصية العامة: </span><span data-en dir="ltr">General guidance: </span>
+      <strong id="interp-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / التفسير</span><span data-en dir="ltr">Reference interpretation</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>0 (ذكر) أو 1 (أنثى): خطر منخفض، غالبًا لا حاجة لمضادات تجلط</span><span data-en dir="ltr">0 (male) or 1 (female): low risk, anticoagulation usually not needed</span></li>
+      <li><span data-ar>1 (ذكر): يُناقش مع المريض حسب عوامل أخرى</span><span data-en dir="ltr">1 (male): discuss with patient based on other factors</span></li>
+      <li><span data-ar>2 فأكثر (ذكر) أو 3 فأكثر (أنثى): تُوصى مضادات التجلط الفموية غالبًا</span><span data-en dir="ltr">≥2 (male) or ≥3 (female): oral anticoagulation generally recommended</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/meters/">
+    <span data-ar>← رجوع لمجال المؤشرات التقييمية</span>
+    <span data-en dir="ltr">← Back to Assessment &amp; Risk Indices</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("cha-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    let total = 0;
+    document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((cb) => {
+      if (cb.checked) total += Number(cb.dataset.points);
+    });
+    total += Number((document.getElementById("age") as HTMLSelectElement).value);
+    const sex = (document.getElementById("sex") as HTMLSelectElement).value;
+    if (sex === "female") total += 1;
+
+    let interpAr = "", interpEn = "";
+    const lowThreshold = sex === "female" ? 1 : 0;
+    const highThreshold = sex === "female" ? 3 : 2;
+    if (total <= lowThreshold) { interpAr = "خطر منخفض"; interpEn = "Low risk"; }
+    else if (total < highThreshold) { interpAr = "يُناقش حسب الحالة"; interpEn = "Case-by-case discussion"; }
+    else { interpAr = "خطر يستدعي مضادات تجلط غالبًا"; interpEn = "Risk generally warrants anticoagulation"; }
+
+    (document.getElementById("score-out") as HTMLElement).textContent = String(total);
+    (document.getElementById("interp-out") as HTMLElement).textContent = `${interpAr} / ${interpEn}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: .3rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-new { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(30,110,200,.14); font-weight: 700; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; width: 100%; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: .75rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form select { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .checkbox-label { display: flex; align-items: center; gap: .5rem; font-size: .9rem; }
+  .checkbox-label [data-en] { opacity: .6; font-size: .85em; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; margin-top: .5rem; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

@@ -1,0 +1,127 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ToolsShell from "../../layouts/ToolsShell.astro";
+// حاسبة تقييم خطورة جلطة الرئة — Wells Score for PE
+---
+
+<Layout title="حاسبة تقييم خطورة جلطة الرئة">
+  <ToolsShell>
+    <section class="tools-scope tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة تقييم خطورة جلطة الرئة</span>
+      <span data-en dir="ltr">Wells Score for PE</span>
+    </h1>
+    <p class="credit-line">Wells et al., 2000</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en dir="ltr">What is it?</span></h2>
+    <p>
+      <span data-ar>تحوّل معايير سريرية بسيطة (علامات جلطة الأوردة، معدل النبض، تاريخ مرضي...) إلى درجة تقدّر احتمال وجود جلطة رئوية (Pulmonary Embolism) قبل إجراء فحوصات التصوير.</span>
+      <span data-en dir="ltr">Converts simple clinical criteria (signs of DVT, heart rate, medical history...) into a score estimating the pre-test probability of a pulmonary embolism, before imaging is ordered.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en dir="ltr">Why it matters</span></h2>
+    <p>
+      <span data-ar>توجّه القرار: هل يكفي فحص D-dimer لاستبعاد الجلطة، أم يلزم التصوير المقطعي المباشر (CT Pulmonary Angiography)؟ هذا يوفر وقتًا وإشعاعًا غير ضروري للمرضى منخفضي الاحتمال.</span>
+      <span data-en dir="ltr">Guides the decision: is a D-dimer test enough to rule out PE, or is direct CT pulmonary angiography needed? This saves time and unnecessary radiation for low-probability patients.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="wells-form">
+    <label class="checkbox-label"><input type="checkbox" id="dvt" data-points="3" /> <span data-ar>علامات سريرية لجلطة أوردة عميقة (3)</span><span data-en dir="ltr">Clinical signs of DVT (3)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="alt" data-points="3" /> <span data-ar>الجلطة الرئوية هي التشخيص الأرجح أو المساوي (3)</span><span data-en dir="ltr">PE is #1 diagnosis or equally likely (3)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="hr" data-points="1.5" /> <span data-ar>معدل النبض &gt; 100 (1.5)</span><span data-en dir="ltr">Heart rate &gt;100 (1.5)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="immob" data-points="1.5" /> <span data-ar>تثبيت أو عملية جراحية خلال 4 أسابيع (1.5)</span><span data-en dir="ltr">Immobilization or surgery in past 4 weeks (1.5)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="prevPe" data-points="1.5" /> <span data-ar>تاريخ سابق لجلطة رئوية أو وريدية (1.5)</span><span data-en dir="ltr">Previous PE or DVT (1.5)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="hemoptysis" data-points="1" /> <span data-ar>نفث دم (1)</span><span data-en dir="ltr">Hemoptysis (1)</span></label>
+    <label class="checkbox-label"><input type="checkbox" id="malignancy" data-points="1" /> <span data-ar>ورم خبيث نشط (1)</span><span data-en dir="ltr">Active malignancy (1)</span></label>
+    <button type="submit">
+      <span data-ar>احسب المجموع</span>
+      <span data-en dir="ltr">Calculate score</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>المجموع: </span><span data-en dir="ltr">Total score: </span>
+      <strong id="score-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>التصنيف ثلاثي المستويات: </span><span data-en dir="ltr">3-tier: </span>
+      <strong id="tier3-out"></strong>
+    </p>
+    <p class="result-line">
+      <span data-ar>التصنيف الثنائي: </span><span data-en dir="ltr">2-tier: </span>
+      <strong id="tier2-out"></strong>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / التفسير</span><span data-en dir="ltr">Reference interpretation</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>ثلاثي: أقل من 2 منخفض / 2–6 متوسط / أكثر من 6 مرتفع</span><span data-en dir="ltr">3-tier: &lt;2 low / 2–6 moderate / &gt;6 high</span></li>
+      <li><span data-ar>ثنائي: 4 فأقل "جلطة مستبعدة"، أكثر من 4 "جلطة محتملة"</span><span data-en dir="ltr">2-tier: ≤4 "PE unlikely", &gt;4 "PE likely"</span></li>
+    </ul>
+  </article>
+
+  <a class="back-link" href="/meters/">
+    <span data-ar>← رجوع لمجال المؤشرات التقييمية</span>
+    <span data-en dir="ltr">← Back to Assessment &amp; Risk Indices</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("wells-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    let total = 0;
+    document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((cb) => {
+      if (cb.checked) total += Number(cb.dataset.points);
+    });
+
+    let tier3Ar = "", tier3En = "";
+    if (total < 2) { tier3Ar = "منخفض"; tier3En = "Low"; }
+    else if (total <= 6) { tier3Ar = "متوسط"; tier3En = "Moderate"; }
+    else { tier3Ar = "مرتفع"; tier3En = "High"; }
+
+    const tier2Ar = total <= 4 ? "جلطة مستبعدة" : "جلطة محتملة";
+    const tier2En = total <= 4 ? "PE unlikely" : "PE likely";
+
+    (document.getElementById("score-out") as HTMLElement).textContent = String(total);
+    (document.getElementById("tier3-out") as HTMLElement).textContent = `${tier3Ar} / ${tier3En}`;
+    (document.getElementById("tier2-out") as HTMLElement).textContent = `${tier2Ar} / ${tier2En}`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .3rem; }
+  .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: .75rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .checkbox-label { display: flex; align-items: center; gap: .5rem; font-size: .9rem; }
+  .checkbox-label [data-en] { opacity: .6; font-size: .85em; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; margin-top: .5rem; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

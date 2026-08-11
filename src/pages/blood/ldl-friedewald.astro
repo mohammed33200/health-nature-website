@@ -1,0 +1,129 @@
+---
+// حاسبة الكوليسترول الضار (LDL) — Friedewald Formula
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة الكوليسترول الضار (LDL)">
+  <ToolsShell>
+    <section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة الكوليسترول الضار (LDL)</span>
+      <span data-en>LDL Cholesterol</span>
+    </h1>
+    <span class="badge badge-new">NEW</span>
+    <p class="credit-line">Friedewald Formula, 1972</p>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تحسب مستوى الكوليسترول الضار (LDL) من نتائج تحليل الدهون الأساسي — الكوليسترول الكلي، الكوليسترول الجيد HDL، والدهون الثلاثية — دون الحاجة لتحليل LDL المباشر الأغلى ثمنًا.</span>
+      <span data-en>Calculates LDL cholesterol from a standard lipid panel — total cholesterol, HDL, and triglycerides — without needing the more expensive direct LDL assay.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>LDL هو الهدف الرئيسي لعلاج ارتفاع الكوليسترول والوقاية من أمراض القلب والشرايين، وتقييمه الدوري يوجّه قرار بدء أو تعديل جرعة أدوية الستاتين.</span>
+      <span data-en>LDL is the primary treatment target for high cholesterol and cardiovascular disease prevention, and tracking it guides decisions to start or adjust statin therapy.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="ldl-form">
+    <label>
+      <span data-ar>الكوليسترول الكلي (مجم/دل)</span><span data-en>Total cholesterol (mg/dL)</span>
+      <input type="number" id="total" min="50" max="500" required />
+    </label>
+    <label>
+      <span data-ar>الكوليسترول الجيد HDL (مجم/دل)</span><span data-en>HDL (mg/dL)</span>
+      <input type="number" id="hdl" min="10" max="150" required />
+    </label>
+    <label>
+      <span data-ar>الدهون الثلاثية (مجم/دل)</span><span data-en>Triglycerides (mg/dL)</span>
+      <input type="number" id="tg" min="10" max="1000" required />
+    </label>
+    <button type="submit">
+      <span data-ar>احسب</span>
+      <span data-en>Calculate</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <p class="result-line">
+      <span data-ar>LDL: </span>
+      <strong id="ldl-out"></strong> mg/dL
+    </p>
+    <p class="result-line warning" id="warning" hidden>
+      <span data-ar>⚠ الدهون الثلاثية مرتفعة جدًا (&gt;400)، المعادلة غير دقيقة هنا — يلزم تحليل LDL مباشر.</span>
+      <span data-en>⚠ Triglycerides too high (&gt;400) — the formula is unreliable here; a direct LDL assay is needed.</span>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي / المعادلة</span><span data-en>Formula &amp; reference</span></h2>
+    <p class="formula">LDL = Total Cholesterol − HDL − (Triglycerides / 5)</p>
+    <ul class="ref-list">
+      <li><span data-ar>مثالي: أقل من 100 مجم/دل</span><span data-en>Optimal: &lt;100 mg/dL</span></li>
+      <li><span data-ar>قريب من المثالي: 100–129</span><span data-en>Near optimal: 100–129</span></li>
+      <li><span data-ar>حدّي مرتفع: 130–159</span><span data-en>Borderline high: 130–159</span></li>
+      <li><span data-ar>مرتفع: 160–189 / مرتفع جدًا: 190 فأكثر</span><span data-en>High: 160–189 / Very high: ≥190</span></li>
+    </ul>
+  </article>
+
+ <a class="back-link" href="/blood/">
+    <span data-ar>← رجوع لمجال تحاليل الدم</span>
+    <span data-en>← Back to Blood Tests &amp; Diagnostics</span>
+  </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("ldl-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const total = Number((document.getElementById("total") as HTMLInputElement).value);
+    const hdl = Number((document.getElementById("hdl") as HTMLInputElement).value);
+    const tg = Number((document.getElementById("tg") as HTMLInputElement).value);
+    if (!total || !hdl || !tg) return;
+
+    const ldl = total - hdl - tg / 5;
+    (document.getElementById("ldl-out") as HTMLElement).textContent = ldl.toFixed(0);
+    (document.getElementById("warning") as HTMLElement).hidden = tg <= 400;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: .3rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; }
+  .tool-hero .lang-en { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-new { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(30,110,200,.14); font-weight: 700; }
+  .credit-line { font-size: .75rem; opacity: .5; font-style: italic; margin-bottom: 1.2rem; width: 100%; }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; }
+  .info-block h2 .lang-en { opacity: .6; font-weight: 500; }
+  .info-block .lang-en { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .formula { font-family: monospace; background: rgba(0,0,0,.04); padding: .6rem .8rem; border-radius: .4rem; font-size: .9rem; margin-bottom: .75rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list .lang-en { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button .lang-en { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line .lang-en { opacity: .7; }
+  .warning { color: #a05a00; font-size: .85rem; }
+  .warning .lang-en { display: block; opacity: .85; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

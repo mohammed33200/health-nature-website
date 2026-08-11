@@ -1,0 +1,141 @@
+---
+// حاسبة جدول التنازل من الكورتيزون — Corticosteroid Tapering
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة جدول التنازل من الكورتيزون">
+<ToolsShell>
+<section class="tool-page">
+  <header class="tool-hero">
+    <h1>
+      <span data-ar>حاسبة جدول التنازل من الكورتيزون</span>
+      <span data-en>Corticosteroid Tapering</span>
+    </h1>
+    <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+  </header>
+
+  <article class="info-block">
+    <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+    <p>
+      <span data-ar>تولّد جدولًا أسبوعيًا لتخفيض جرعة الكورتيزون تدريجيًا بدلًا من الإيقاف المفاجئ، بناءً على الجرعة الحالية ومقدار التخفيض المطلوب في كل خطوة.</span>
+      <span data-en>Generates a step-by-step schedule to gradually reduce a corticosteroid dose instead of stopping abruptly, based on the current dose and the reduction amount per step.</span>
+    </p>
+  </article>
+
+  <article class="info-block">
+    <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+    <p>
+      <span data-ar>الاستخدام الطويل للكورتيزون يُثبّط الغدة الكظرية عن إنتاج الكورتيزول الطبيعي؛ الإيقاف المفاجئ قد يسبب قصورًا كظريًا حادًا مهددًا للحياة. التنازل التدريجي يمنح الغدة وقتًا لاستعادة نشاطها.</span>
+      <span data-en>Prolonged corticosteroid use suppresses the adrenal gland's own cortisol production; abrupt discontinuation can cause life-threatening acute adrenal insufficiency. A gradual taper gives the gland time to recover.</span>
+    </p>
+  </article>
+
+  <form class="calc-form" id="taper-form">
+    <label>
+      <span data-ar>الجرعة الحالية (مجم بريدنيزولون/يوم)</span><span data-en>Current dose (mg prednisolone/day)</span>
+      <input type="number" id="current" min="1" max="200" required />
+    </label>
+    <label>
+      <span data-ar>مقدار التخفيض كل أسبوع (مجم)</span><span data-en>Reduction per week (mg)</span>
+      <input type="number" id="step" min="1" max="50" value="5" required />
+    </label>
+    <button type="submit">
+      <span data-ar>ولّد الجدول</span>
+      <span data-en>Generate schedule</span>
+    </button>
+  </form>
+
+  <div class="result-box" id="result" hidden>
+    <table class="taper-table">
+      <thead>
+        <tr>
+          <th><span data-ar>الأسبوع</span><span data-en>Week</span></th>
+          <th><span data-ar>الجرعة اليومية (مجم)</span><span data-en>Daily dose (mg)</span></th>
+        </tr>
+      </thead>
+      <tbody id="taper-body"></tbody>
+    </table>
+    <p class="note" id="physio-note" hidden>
+      <span data-ar>وصلت لمستوى قريب من الجرعة الفسيولوجية الطبيعية (~5 مجم) — يُفضَّل استشارة الطبيب قبل الاستمرار بالتخفيض.</span>
+      <span data-en>Reached near the physiologic replacement level (~5 mg) — consult a physician before continuing to taper further.</span>
+    </p>
+  </div>
+
+  <article class="info-block">
+    <h2><span data-ar>القياس الطبيعي</span><span data-en>Normal reference</span></h2>
+    <ul class="ref-list">
+      <li><span data-ar>الإفراز الفسيولوجي الطبيعي للكورتيزول يعادل تقريبًا 5 مجم بريدنيزولون/يوم</span><span data-en>Normal physiologic cortisol output is roughly equivalent to 5 mg prednisolone/day</span></li>
+      <li><span data-ar>التنازل عادة أبطأ كلما اقتربت الجرعة من هذا المستوى</span><span data-en>Tapering is typically slower the closer the dose gets to this level</span></li>
+    </ul>
+  </article>
+
+  <p class="disclaimer">
+    <span data-ar>هذا جدول عام مبسّط؛ سرعة التنازل الفعلية تعتمد على مدة العلاج والجرعة الأصلية والحالة المرضية، ويجب أن يحدده الطبيب المعالج.</span>
+    <span data-en>This is a simplified general schedule; the actual taper speed depends on treatment duration, original dose, and the underlying condition, and should be set by the treating physician.</span>
+  </p>
+
+  <a class="back-link" href="/doses/">
+    <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+    <span data-en>← Back to Medication Dosing</span>
+  </a>
+</section>
+</ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("taper-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    let current = Number((document.getElementById("current") as HTMLInputElement).value);
+    const step = Number((document.getElementById("step") as HTMLInputElement).value);
+    if (!current || !step) return;
+
+    const tbody = document.getElementById("taper-body") as HTMLElement;
+    tbody.innerHTML = "";
+    let week = 1;
+    let reachedPhysio = false;
+    while (current > 0 && week <= 26) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${week}</td><td>${current.toFixed(1)}</td>`;
+      tbody.appendChild(row);
+      if (current <= 5 && !reachedPhysio) reachedPhysio = true;
+      current = Math.max(0, current - step);
+      week++;
+    }
+
+    (document.getElementById("physio-note") as HTMLElement).hidden = !reachedPhysio;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; } .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(180,90,0,.12); }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; } .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .taper-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  .taper-table th, .taper-table td { padding: .4rem .6rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,.08); }
+  .taper-table th [data-en] { display: block; font-size: .8em; opacity: .6; }
+  .note { font-size: .85rem; opacity: .8; margin-top: 1rem; }
+  .note [data-en] { display: block; margin-top: .2rem; }
+
+  .disclaimer { margin: 1.5rem 0; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

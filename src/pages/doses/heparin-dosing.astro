@@ -1,0 +1,120 @@
+---
+// حاسبة جرعات الهيبارين الوريدي — Heparin Dosing Protocol
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة جرعات الهيبارين الوريدي">
+  <ToolsShell>
+    <section class="tool-page">
+      <header class="tool-hero">
+        <h1>
+          <span data-ar>حاسبة جرعات الهيبارين الوريدي</span>
+          <span data-en>Heparin Dosing Protocol</span>
+        </h1>
+        <span class="badge badge-dosing"><span data-ar>جرعات دوائية</span><span data-en>Dosing</span></span>
+      </header>
+
+      <article class="info-block">
+        <h2><span data-ar>ما هي؟</span><span data-en>What is it?</span></h2>
+        <p>
+          <span data-ar>تحسب جرعة البدء (Bolus) ومعدل التسريب الوريدي المستمر للهيبارين غير المجزأ بالوزن، حسب بروتوكول قياسي شائع لعلاج الجلطات الوريدية والشريانية الحادة.</span>
+          <span data-en>Calculates the weight-based initial bolus and continuous IV infusion rate for unfractionated heparin, following a common standard protocol for treating acute venous and arterial thromboembolism.</span>
+        </p>
+      </article>
+
+      <article class="info-block">
+        <h2><span data-ar>لماذا تهم؟</span><span data-en>Why it matters</span></h2>
+        <p>
+          <span data-ar>الهيبارين الوريدي سريع المفعول وسريع الزوال، مما يجعله الخيار المفضل في الحالات الحرجة أو عند الحاجة لإيقاف مؤقت سريع (كقبل جراحة عاجلة)؛ لكن نافذته العلاجية ضيقة وتحتاج متابعة دورية بفحص aPTT وتعديل الجرعة وفق نوموغرام المستشفى.</span>
+          <span data-en>IV heparin acts and wears off quickly, making it preferred in critical situations or when rapid temporary reversal is needed (e.g. before urgent surgery); but it has a narrow therapeutic window requiring regular aPTT monitoring and dose adjustment per the hospital's nomogram.</span>
+        </p>
+      </article>
+
+      <form class="calc-form" id="heparin-form">
+        <label>
+          <span data-ar>الوزن (كجم)</span><span data-en>Weight (kg)</span>
+          <input type="number" id="weight" min="30" max="200" step="0.1" required />
+        </label>
+        <button type="submit">
+          <span data-ar>احسب</span>
+          <span data-en>Calculate</span>
+        </button>
+      </form>
+
+      <div class="result-box" id="result" hidden>
+        <p class="result-line">
+          <span data-ar>جرعة البدء (Bolus): </span><span data-en>Initial bolus: </span>
+          <strong id="bolus-out"></strong>
+        </p>
+        <p class="result-line">
+          <span data-ar>معدل التسريب المستمر: </span><span data-en>Continuous infusion rate: </span>
+          <strong id="infusion-out"></strong>
+        </p>
+      </div>
+
+      <article class="info-block">
+        <h2><span data-ar>القياس الطبيعي / المرجع</span><span data-en>Reference</span></h2>
+        <ul class="ref-list">
+          <li><span data-ar>جرعة البدء الشائعة: 80 وحدة/كجم دفعة واحدة</span><span data-en>Common bolus: 80 units/kg IV once</span></li>
+          <li><span data-ar>معدل البدء الشائع: 18 وحدة/كجم/ساعة تسريبًا مستمرًا</span><span data-en>Common starting rate: 18 units/kg/h continuous</span></li>
+          <li><span data-ar>يُعدَّل المعدل لاحقًا حسب نتيجة aPTT ونوموغرام المستشفى المحدد</span><span data-en>Rate is subsequently adjusted per aPTT result and the hospital's specific nomogram</span></li>
+        </ul>
+      </article>
+
+      <p class="disclaimer">
+        <span data-ar>هذه أرقام بدء عامة فقط؛ البروتوكولات تختلف بين المستشفيات، ويجب اتباع النوموغرام المعتمد محليًا مع مراقبة aPTT.</span>
+        <span data-en>These are general starting figures only; protocols vary between hospitals, and the locally approved nomogram with aPTT monitoring must be followed.</span>
+      </p>
+
+      <a class="back-link" href="/doses/">
+        <span data-ar="← رجوع لمجال جرعات الأدوية">← رجوع لمجال جرعات الأدوية</span>
+        <span data-en>← Back to Medication Dosing</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<script>
+  const form = document.getElementById("heparin-form") as HTMLFormElement;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const weight = Number((document.getElementById("weight") as HTMLInputElement).value);
+    if (!weight) return;
+
+    const bolus = weight * 80;
+    const rate = weight * 18;
+
+    (document.getElementById("bolus-out") as HTMLElement).textContent = `${bolus.toFixed(0)} units`;
+    (document.getElementById("infusion-out") as HTMLElement).textContent = `${rate.toFixed(0)} units/h`;
+    (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+</script>
+
+<style>
+  .tool-page { padding-block: 2rem; max-width: 42rem; margin-inline: auto; }
+  .tool-hero { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .tool-hero h1 { display: flex; flex-direction: column; gap: .15rem; } .tool-hero [data-en] { font-size: .65em; opacity: .6; font-weight: 500; }
+  .badge-dosing { font-size: .7rem; padding: .2rem .6rem; border-radius: 999px; background: rgba(180,90,0,.12); }
+  .info-block { margin-bottom: 1.5rem; }
+  .info-block h2 { display: flex; gap: .5rem; font-size: 1rem; margin-bottom: .4rem; } .info-block h2 [data-en] { opacity: .6; font-weight: 500; }
+  .info-block [data-en] { display: block; font-size: .9em; opacity: .7; margin-top: .3rem; }
+  .ref-list { list-style: none; padding: 0; display: grid; gap: .4rem; }
+  .ref-list li { padding: .5rem .75rem; background: rgba(0,0,0,.04); border-radius: .4rem; }
+  .ref-list [data-en] { display: block; font-size: .85em; opacity: .65; }
+
+  .calc-form { display: grid; gap: 1rem; margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(0,0,0,.12); border-radius: .75rem; }
+  .calc-form label { display: grid; gap: .3rem; font-size: .9rem; }
+  .calc-form input { padding: .5rem .6rem; border: 1px solid rgba(0,0,0,.2); border-radius: .4rem; font-size: 1rem; }
+  .calc-form button { justify-self: start; padding: .6rem 1.5rem; border: none; border-radius: .5rem; background: #1d6f5c; color: #fff; font-weight: 600; cursor: pointer; }
+  .calc-form button [data-en] { display: block; font-size: .75em; opacity: .85; }
+
+  .result-box { padding: 1.25rem; border-radius: .75rem; background: rgba(29,111,92,.08); margin-bottom: 1.5rem; }
+  .result-line { margin: .3rem 0; }
+  .result-line [data-en] { opacity: .7; }
+
+  .disclaimer { margin: 1.5rem 0; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .disclaimer [data-en] { display: block; margin-top: .4rem; opacity: .8; }
+
+  .back-link { display: inline-block; font-size: .85rem; text-decoration: none; }
+</style>

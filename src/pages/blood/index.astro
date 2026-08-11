@@ -1,0 +1,141 @@
+---
+// صفحة رئيسية لمجال "تحاليل الدم والفحوصات التشخيصية"
+// Domain hub page — Blood Tests & Diagnostics
+//
+// أضفت أداتين مهمتين غير موجودتين في القائمة الأصلية لأنهما من أكثر
+// حاسبات المختبر استخدامًا في الممارسة اليومية: حاسبة LDL (فريدفالد)
+// وحاسبة FeNa (لتفريق أسباب الفشل الكلوي الحاد). وسمتهما NEW.
+// Added 2 tools not in the original list — LDL (Friedewald) and FeNa
+// (differentiating causes of acute kidney injury) — among the most
+// commonly used lab calculators in daily practice. Flagged NEW.
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+const tools = [
+  { slug: "hba1c-to-eag", ar: "حاسبة تحويل السكر التراكمي لمتوسط السكر اليومي", en: "HbA1c to eAG", note: "ترجمة HbA1c إلى جلوكوز يومي تقريبي", noteEn: "Converts HbA1c to estimated average glucose" },
+  { slug: "egfr-ckd-epi", ar: "حاسبة تصفية الكليتين", en: "eGFR (CKD-EPI 2021)", note: "تقييم وظائف الكلى ومرحلة القصور الكلوي", noteEn: "Kidney function assessment and CKD staging", credit: "CKD-EPI 2021" },
+  { slug: "corrected-calcium", ar: "حاسبة تصحيح الكالسيوم مع الألبومين", en: "Corrected Calcium", note: "الكالسيوم الحقيقي عند انخفاض الألبومين", noteEn: "True calcium when albumin is low" },
+  { slug: "corrected-sodium", ar: "حاسبة الصوديوم المصححة في السكري", en: "Corrected Sodium", note: "الصوديوم الحقيقي عند ارتفاع الجلوكوز الحاد", noteEn: "True sodium when glucose is acutely elevated" },
+  { slug: "ldl-friedewald", ar: "حاسبة الكوليسترول الضار (LDL)", en: "LDL Cholesterol (Friedewald)", note: "من الكوليسترول الكلي والدهون الثلاثية و HDL", noteEn: "From total cholesterol, triglycerides, and HDL", credit: "Friedewald Formula", isNew: true },
+  { slug: "osmolar-gap", ar: "حاسبة الفجوة الأسمولية", en: "Osmolar Gap Calculator", note: "كشف مواد غير مقاسة في الدم", noteEn: "Detects unmeasured substances in blood" },
+  { slug: "qtc-bazett", ar: "حاسبة تصحيح فترة QT", en: "QTc (Bazett)", note: "تصحيح فترة QT حسب معدل ضربات القلب", noteEn: "Corrects QT interval for heart rate", credit: "Bazett's Formula" },
+  { slug: "abg-analyzer", ar: "مفسر ومحلل غازات الدم الشرياني", en: "ABG Analyzer", note: "تشخيص اضطرابات الحمض والقاعدة", noteEn: "Diagnoses acid-base disturbances" },
+  { slug: "anion-gap", ar: "حاسبة الفجوة الأنيونية", en: "Anion Gap Calculator", note: "تمييز أسباب الحموضة الاستقلابية", noteEn: "Distinguishes metabolic acidosis causes" },
+  { slug: "fena", ar: "حاسبة الإخراج الجزئي للصوديوم (FeNa)", en: "Fractional Excretion of Sodium (FeNa)", note: "تفريق سبب الفشل الكلوي الحاد: ما قبل الكلوي أم داخلي", noteEn: "Differentiates AKI causes: prerenal vs intrinsic", isNew: true },
+  { slug: "tumor-lysis-cairo-bishop", ar: "حاسبة خطر انحلال الورم", en: "Tumor Lysis Syndrome", note: "معايير مختبرية وسريرية بعد العلاج الكيميائي", noteEn: "Lab and clinical criteria after chemotherapy", credit: "Cairo-Bishop" },
+];
+---
+
+<Layout title="اختبارات الدم ومعادلاتها">
+  <ToolsShell>
+    <section class="container domain-hub">
+      <header class="domain-hero">
+        
+        <h1>
+          <span data-ar>تحاليل الدم والفحوصات التشخيصية</span>
+          <span data-en>Blood Tests & Diagnostics</span>
+        </h1>
+        <p class="lead">
+          <span data-ar>حاسبات تترجم نتيجة تحليل دم مفردة (كالكرياتينين أو الصوديوم أو غازات الدم) إلى معنى سريري واضح — تشخيص، مرحلة، أو تصحيح رقمي — بدل ترك الرقم الخام بلا تفسير.</span>
+          <span data-en>Calculators that translate a single lab value (creatinine, sodium, blood gases) into clear clinical meaning — a diagnosis, a stage, or a corrected number — instead of leaving a raw figure uninterpreted.</span>
+        </p>
+        <p class="audience">
+          <span data-ar>👥 لمن هذا المجال: مرضى يتابعون تحاليلهم، ممارسون صحيون، وطلاب الطب.</span>
+          <span data-en>👥 Audience: patients tracking their labs, healthcare practitioners, and medical students.</span>
+        </p>
+      </header>
+
+      <ul class="tool-grid">
+        {tools.map((t) => (
+          <li class="tool-card">
+            <a href={`/blood/${t.slug}`}>
+              <span class="tool-name" data-ar set:html={t.ar} />
+              <span class="tool-name" data-en set:html={t.en} />
+              <span class="tool-note" data-ar>{t.note}</span>
+              <span class="tool-note" data-en>{t.noteEn}</span>
+              <span class="badges">
+                {t.isNew && <span class="badge badge-new">NEW</span>}
+                {t.credit && <span class="badge badge-credit">{t.credit}</span>}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <article class="domain-article">
+        <h2><span data-ar>ما وراء الأرقام: قوة المعادلات التشخيصية في تفسير التحاليل</span><span data-en>Beyond the Numbers: The Power of Diagnostic Equations in Lab Interpretation</span></h2>
+
+        <h3><span data-ar>مقدمة: من رقم خام إلى رؤية سريرية</span><span data-en>Introduction: From Raw Number to Clinical Insight</span></h3>
+        <p><span data-ar>في الطب السريري، نادرًا ما تكون نتيجة التحليل مجرد رقم. فبينما يقدم الرقم الخام لمحة سريعة، غالبًا ما يكون معناه الحقيقي مخفيًا حتى يتم وضعه في سياق الحالة الفسيولوجية الفريدة للمريض. هنا تبرز أهمية المعادلات التشخيصية والتصحيحية كأدوات لا غنى عنها. إنها تعمل كمترجم سريري، حيث تحول البيانات الأولية إلى رؤى قابلة للتنفيذ من خلال مراعاة المتغيرات التي يمكن أن تخفي أو تشوه الصورة الحقيقية. من تصحيح مستويات البروتين إلى حساب الفجوات المعقدة، تعد هذه الصيغ أساسية للانتقال من مجرد رقم إلى تشخيص دقيق وخطة علاج آمنة.</span><span data-en>In clinical medicine, a laboratory result is rarely just a number. While a raw value provides a snapshot, its true meaning is often hidden until placed within the patient's unique physiological context. This is where diagnostic and correction equations become indispensable tools. They act as clinical interpreters, translating raw data into actionable insights by accounting for variables that can mask or distort the real picture. From correcting for protein levels to calculating complex gaps, these formulas are fundamental to moving from a simple number to an accurate diagnosis and a safe treatment plan.</span></p>
+
+        <h3><span data-ar>لماذا التصحيح ضروري؟ كشف القيمة الحقيقية</span><span data-en>The "Why" of Correction: Unmasking the True Value</span></h3>
+        <p><span data-ar>جسم المريض نظام ديناميكي، والعديد من قيم التحاليل مترابطة. يمكن أن يؤدي الفشل في حساب هذه التفاعلات إلى استنتاجات خاطئة. مثالان شائعان يوضحان ذلك:</span><span data-en>A patient's body is a dynamic system, and many lab values are interdependent. Failing to account for these interactions can lead to erroneous conclusions. Two common examples illustrate this perfectly:</span></p>
+        <ul>
+          <li><strong><span data-ar>الكالسيوم المصحح:</span><span data-en>Corrected Calcium:</span></strong><span data-ar> يرتبط حوالي نصف الكالسيوم في الدم ببروتين يسمى الألبومين. في المرضى الذين يعانون من انخفاض الألبومين (وهو أمر شائع في أمراض الكبد أو سوء التغذية)، سيبدو إجمالي الكالسيوم المقاس منخفضًا بشكل خاطئ. ومع ذلك، فإن الكالسيوم المتأين "الحر" هو النشط فسيولوجيًا. تقوم معادلة الكالسيوم المصحح بتقدير مستوى الكالسيوم كما لو كان الألبومين طبيعيًا، مما يمنع التشخيص الخاطئ لنقص كالسيوم الدم والعلاج غير الضروري.</span><span data-en>About half the calcium in the blood is bound to a protein called albumin. In patients with low albumin (common in liver disease or malnutrition), the measured total calcium will appear falsely low. However, it's the "free," ionized calcium that is physiologically active. The corrected calcium formula estimates what the calcium level would be if albumin were normal, preventing a misdiagnosis of hypocalcemia and unnecessary treatment.</span></li>
+          <li><strong><span data-ar>الصوديوم المصحح:</span><span data-en>Corrected Sodium:</span></strong><span data-ar> في حالات ارتفاع السكر الشديد في الدم (كما في الحماض الكيتوني السكري)، تسحب جزيئات الجلوكوز الزائدة الماء إلى مجرى الدم، مما يخفف تركيز الصوديوم ويؤدي إلى نقص صوديوم الدم الكاذب. تقوم معادلة الصوديوم المصحح بحساب مستوى الصوديوم الحقيقي عن طريق إزالة هذا التأثير التخفيفي، مما يوفر تقييمًا دقيقًا لحالة السوائل والأملاح لدى المريض.</span><span data-en>In severe hyperglycemia (as seen in diabetic ketoacidosis), the excess glucose molecules draw water into the bloodstream, diluting the sodium concentration and creating a "pseudohyponatremia." The corrected sodium formula calculates the true sodium level by removing this dilutional effect, providing an accurate assessment of the patient's fluid and electrolyte status.</span></li>
+        </ul>
+
+        <h3><span data-ar>ما بعد التصحيح: معادلات تولد قيمة تشخيصية جديدة</span><span data-en>Beyond Correction: Equations That Generate New Diagnostic Value</span></h3>
+        <p><span data-ar>تذهب بعض المعادلات إلى أبعد من مجرد تعديل قيمة موجودة؛ فهي تدمج متغيرات متعددة لإنشاء مؤشر تشخيصي جديد تمامًا.</span><span data-en>Some equations go beyond simply adjusting an existing value; they integrate multiple variables to create an entirely new diagnostic marker.</span></p>
+        <ul>
+          <li><strong><span data-ar>معدل الترشيح الكبيبي المقدر (eGFR):</span><span data-en>Estimated Glomerular Filtration Rate (eGFR):</span></strong><span data-ar> يصعب تفسير قيمة الكرياتينين الخام وحدها، حيث تتأثر بالكتلة العضلية والعمر والجنس. تدمج معادلة CKD-EPI هذه العوامل لتقديم مقياس موحد لوظائف الكلى. إن eGFR، وليس الكرياتينين وحده، هو الذي يستخدم لتصنيف مراحل مرض الكلى المزمن وتعديل جرعات الأدوية التي تفرزها الكلى.</span><span data-en>A raw creatinine value is difficult to interpret alone, as it's affected by muscle mass, age, and sex. The CKD-EPI equation integrates these factors to provide a standardized measure of kidney function. It is the eGFR, not creatinine alone, that is used to stage chronic kidney disease and adjust doses for renally-cleared drugs.</span></li>
+          <li><strong><span data-ar>فجوة الأنيون:</span><span data-en>Anion Gap:</span></strong><span data-ar> هذه ليست قيمة مقاسة مباشرة، بل هي قيمة محسوبة (صوديوم - (كلوريد + بيكربونات)). في مريض يعاني من الحماض الأيضي، فإن وجود فجوة أنيونية عالية يوجه التشخيص بقوة نحو أسباب محددة (مثل الحماض الكيتوني، الحماض اللبني، أو التسمم بالمواد السامة)، مما يضيق بشكل كبير قائمة التشخيصات التفريقية.</span><span data-en>This isn't a directly measured value but a calculated one (Na - (Cl + HCO3)). In a patient with metabolic acidosis, a high anion gap strongly points towards specific causes (like ketoacidosis, lactic acidosis, or toxic ingestions), dramatically narrowing the differential diagnosis.</span></li>
+        </ul>
+
+        <h3><span data-ar>دور الحاسبات السريرية في الممارسة الحديثة</span><span data-en>The Role of Clinical Calculators in Modern Practice</span></h3>
+        <p><span data-ar>في بيئة الرعاية الصحية سريعة الخطى، يعد الوقت والدقة أمرين جوهريين. إن إجراء هذه الحسابات يدويًا لا يستهلك وقتًا ثمينًا فحسب، بل يزيد أيضًا من خطر الأخطاء. توفر الحاسبات السريرية الرقمية، مثل تلك الموجودة في هذا الموقع، دعمًا حيويًا. فهي تترجم الصيغ المعقدة إلى إجابات فورية وموثوقة، مما يقلل من الأخطاء البشرية ويسمح للأطباء بالتركيز على الصورة السريرية الأكبر. من خلال أتمتة هذه المهام، تضمن هذه الأدوات تطبيق المبادئ السريرية القائمة على الأدلة باستمرار وأمان عند سرير المريض.</span><span data-en>In a fast-paced healthcare environment, time and accuracy are of the essence. Performing these calculations manually not only consumes valuable time but also introduces the risk of errors. Digital clinical calculators, like those on this site, provide vital support. They translate complex formulas into instant, reliable answers, reducing human error and allowing clinicians to focus on the bigger picture. By automating these tasks, these tools ensure that evidence-based clinical principles are applied consistently and safely at the bedside.</span></p>
+
+        <h3><span data-ar>خاتمة: فن وعلم تفسير التحاليل</span><span data-en>Conclusion: The Art and Science of Lab Interpretation</span></h3>
+        <p><span data-ar>إن تفسير نتائج المختبر هو فن وعلم في آن واحد. العلم يكمن في دقة القياس، والفن يكمن في القدرة على رؤية ما وراء الرقم. تمثل معادلات التصحيح والتشخيص الجسر بين هذين العالمين. إنها تمكن مقدمي الرعاية الصحية من تجاوز البيانات الأولية، وتجميع صورة سريرية متماسكة، واتخاذ قرارات مستنيرة تعطي الأولوية لسلامة المرضى وفعالية العلاج. في الطب الحديث، فهم وتطبيق هذه المعادلات ليس مجرد مهارة مفيدة - بل هو جزء أساسي من تقديم رعاية عالية الجودة.</span><span data-en>Interpreting lab results is both an art and a science. The science lies in the precision of the measurement, and the art lies in the ability to see beyond the number. Correction and diagnostic equations are the bridge between these two worlds. They empower healthcare providers to move past raw data, assemble a coherent clinical picture, and make informed decisions that prioritize patient safety and therapeutic efficacy. In modern medicine, understanding and applying these formulas is not just a helpful skill—it is a fundamental part of delivering high-quality care.</span></p>
+      </article>
+
+      <p class="domain-disclaimer">
+        <span data-ar>هذه الحاسبات مرجعية وتعليمية، ولا تُغني عن تفسير الطبيب المعالج لنتائج التحاليل ضمن السياق السريري الكامل للمريض.</span>
+        <span data-en>These calculators are for reference and educational use, and do not replace a treating physician's interpretation of lab results within the patient's full clinical context.</span>
+      </p>
+
+      <a class="back-to-index" href="/published-apps">
+        <span data-ar>← الرجوع للتطبيقات المنشورة</span>
+        <span data-en>← Back to Published Apps</span>
+      </a>
+    </section>
+  </ToolsShell>
+</Layout>
+
+<style>
+  .domain-hub { padding-block: 2rem; }
+  .domain-hero { max-width: 46rem; margin: 0 auto 2rem; text-align: center; }
+  .eyebrow { letter-spacing: .04em; opacity: .7; font-size: .8rem; }
+  .domain-hero h1 { margin-bottom: .75rem; }
+  .audience { margin-top: 1rem; font-size: .9rem; opacity: .85; }
+  
+  .domain-article {
+    max-width: 46rem;
+    margin: 3rem auto 2rem;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .domain-article h2 { font-size: 1.75rem; margin-bottom: 1rem; }
+  .domain-article h3 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--secondary-dark); }
+  .domain-article p, .domain-article li { color: var(--ink-soft); line-height: 1.8; }
+  .domain-article ul { padding-inline-start: 1.5rem; }
+
+  .tool-grid { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .75rem; }
+  .tool-card a { display: block; padding: .85rem 1rem; border: 1px solid var(--line); border-radius: .6rem; text-decoration: none; height: 100%; background: #fff; transition: all .2s ease; }
+  .tool-card a:hover { border-color: var(--green-soft); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.05); }
+  .tool-name { display: block; }
+  .tool-note { display: block; font-size: .75rem; color: var(--ink-soft); margin-top: .4rem; }
+  .badges { display: block; margin-top: .5rem; }
+  
+  .tool-name[data-en], .tool-note[data-en] { display: none; }
+  .tools-scope[data-lang="en"] .tool-name[data-ar], .tools-scope[data-lang="en"] .tool-note[data-ar] { display: none; }
+  .tools-scope[data-lang="en"] .tool-name[data-en], .tools-scope[data-lang="en"] .tool-note[data-en] { display: block; }
+  .tools-scope[data-lang="ar"] .tool-name[data-ar], .tools-scope[data-lang="ar"] .tool-note[data-ar] { display: block; }
+  .badge { display: inline-block; font-size: .65rem; margin-inline-end: .3rem; padding: .1rem .5rem; border-radius: 999px; }
+  .badge-new { background: rgba(30,110,200,.14); font-weight: 700; }
+  .badge-credit { background: var(--paper-alt); font-style: italic; }
+
+  .domain-disclaimer { margin-top: 2rem; padding: 1rem 1.2rem; border-inline-start: 3px solid currentColor; font-size: .85rem; opacity: .85; }
+  .back-to-index { display: inline-block; margin-top: 1.5rem; font-size: .85rem; text-decoration: none; }
+</style>
