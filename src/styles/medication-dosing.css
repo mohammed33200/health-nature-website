@@ -1,0 +1,45 @@
+/* medication-dosing.css
+   يُستورد فقط من صفحات مجال جرعات الأدوية.
+   لا يعيد تعريف أي شيء موجود في global.css (.container, .tool-hero, .calc-card,
+   .field, .field-grid, .result, .badge, .info-section, .disclaimer, .num, إلخ) —
+   يضيف فقط ما يخص هذا المجال تحديداً.
+*/
+
+.tools-scope {
+  /* في حال --warn غير معرّف في global.css بعد (أضافه مجال eye-tests محلياً فقط) */
+  --warn: #b5720b;
+  --warn-bg: #fdf3dd;
+}
+
+.result-figure {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-dark, var(--secondary-dark, inherit));
+  margin: 6px 0 2px;
+}
+
+.badge-danger {
+  background: color-mix(in srgb, var(--danger) 12%, white);
+  color: var(--danger);
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, white);
+  display: block;
+  font-weight: 600;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+
+.badge-warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+  border: 1px solid color-mix(in srgb, var(--warn) 35%, white);
+  display: block;
+  font-weight: 600;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.badge-info {
+  background: color-mix(in srgb, var(--secondary, var(--accent)) 14%, white);
+  color: var(--secondary-dark, var(--accent-dark));
+  font-weight: 700;
+}

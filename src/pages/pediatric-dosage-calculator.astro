@@ -1,0 +1,379 @@
+---
+// src/pages/tools/medication-dosing/pediatric-dosage-calculator.astro
+// صفحة "فقط محتوى" — لا تُنشئ .tools-scope ولا زر تبديل لغة ولا نظام i18n خاص بها.
+// ToolsShell.astro هو من يرسم .tools-scope وزر اللغة ويملك آلية اللغة بالكامل.
+import Layout from "../layouts/Layout.astro";
+import ToolsShell from "../layouts/ToolsShell.astro";
+import drugs from "../data/pediatricDrugs.json";
+import "../styles/medication-dosing.css";
+
+const pageTitle = "حاسبة جرعات أدوية الأطفال";
+const pageDescription = "احسب جرعة أشهر أدوية الأطفال الفموية بناءً على الوزن والعمر، مع خيار إدخال تركيز الشراب لحساب حجم الجرعة بدقة.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+<ToolsShell>
+  <div class="container">
+
+    <section class="tool-hero">
+      <p class="kicker" data-ar="أدوات الجرعات" data-en="Dosing Tools"></p>
+      <h1>
+        <span data-ar>حاسبة جرعات أدوية الأطفال</span>
+        <span data-en>Pediatric Medication Dosage Calculator</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>أداة مرجعية للوزن والعمر — للأطباء والصيادلة والأهل</span>
+        <span data-en>Weight & age-based reference tool — for clinicians, pharmacists, and parents</span>
+      </p>
+    </section>
+
+    <div class="calc-card">
+      <div class="field">
+        <label for="pd-drug">
+          <span data-ar>اختر الدواء</span>
+          <span data-en>Select medication</span>
+        </label>
+        <select id="pd-drug"></select>
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="pd-weight">
+            <span data-ar>وزن الطفل (كغ)</span>
+            <span data-en>Child's weight (kg)</span>
+          </label>
+          <input type="number" id="pd-weight" inputmode="decimal" min="0" step="0.1" />
+        </div>
+        <div class="field">
+          <label for="pd-age">
+            <span data-ar>عمر الطفل (بالأشهر)</span>
+            <span data-en>Child's age (months)</span>
+          </label>
+          <input type="number" id="pd-age" inputmode="numeric" min="0" step="1" />
+        </div>
+      </div>
+
+      <div class="field" id="pd-conc-field" hidden>
+        <label for="pd-conc">
+          <span data-ar>لدقة أعلى (اختياري): تركيز الشراب الذي تستخدمه</span>
+          <span data-en>For higher precision (optional): the syrup concentration you have</span>
+        </label>
+        <p class="field-hint" id="pd-conc-hint"></p>
+        <input type="number" id="pd-conc" inputmode="decimal" min="0" step="0.1" />
+      </div>
+    </div>
+
+    <div class="result" id="pd-result">
+      <div class="reading" id="pd-reading"></div>
+      <div id="pd-result-body"></div>
+    </div>
+
+    <div class="disclaimer">
+      <span data-ar>
+        هذه الحاسبة لأغراض مرجعية وتعليمية فقط ولا تغني عن تقييم الطبيب أو الصيدلي المباشر. الجرعات مبنية على
+        إرشادات FDA/AAP العامة وقد تختلف حسب تركيز المستحضر التجاري المحدد — تحقق دائماً من العبوة. وإذا اختلفت
+        الجرعة المحسوبة هنا عن جرعة وصفها الطبيب لطفلك، فالتزم بجرعة الطبيب — فهو يأخذ في الاعتبار حالة طفلك الخاصة.
+      </span>
+      <span data-en>
+        This calculator is for educational/reference use only and does not replace direct clinical judgment by a
+        doctor or pharmacist. Doses are based on general FDA/AAP guidance and may vary by product concentration —
+        always check the label. If the calculated dose differs from what your child's doctor prescribed, follow the
+        doctor's dose — they account for your child's specific condition.
+      </span>
+    </div>
+
+    <div class="info-section">
+      <h2>
+        <span data-ar>مقال: أهمية الدقة في جرعات أدوية الأطفال</span>
+        <span data-en>Article: The Critical Importance of Accurate Pediatric Dosing</span>
+      </h2>
+      <p>
+        <span data-ar>عندما يتعلق الأمر بإعطاء الدواء للأطفال، فإن الدقة ليست مجرد تفصيل ثانوي، بل هي حجر الزاوية في العلاج الآمن والفعال. قد يبدو من المغري اعتبار الأطفال "بالغين صغار الحجم"، لكن هذا المفهوم خاطئ وخطير. فأجسامهم النامية تتعامل مع الأدوية بطرق مختلفة تمامًا، مما يجعل حساب الجرعة بدقة أمرًا حيويًا.</span>
+        <span data-en>When it comes to giving medication to children, accuracy isn't just a minor detail—it's the cornerstone of safe and effective treatment. It might be tempting to think of children as "small adults," but this is a dangerous misconception. Their developing bodies process medications in fundamentally different ways, making precise dosage calculation absolutely critical.</span>
+      </p>
+
+      <h3>
+        <span data-ar>لماذا الأطفال ليسوا "بالغين صغار"؟</span>
+        <span data-en>Why Children Aren't "Mini-Adults"</span>
+      </h3>
+      <p>
+        <span data-ar>تختلف أجسام الأطفال عن البالغين في عدة جوانب رئيسية تؤثر على كيفية امتصاص الدواء، توزيعه، استقلابه، وإخراجه. أولاً، وظائف الكبد والكلى، وهما العضوان الرئيسيان المسؤولان عن تفكيك الأدوية والتخلص منها، لا تكون مكتملة النضج عند الرضع والأطفال الصغار. هذا يعني أن الدواء قد يبقى في أجسامهم لفترة أطول أو بتركيزات أعلى، مما يزيد من خطر السمية. ثانيًا، تختلف نسبة الماء والدهون في أجسامهم، مما يؤثر على كيفية توزيع الدواء في الجسم. وأخيرًا، تتغير هذه العوامل بسرعة مع نمو الطفل، مما يعني أن الجرعة التي كانت آمنة قبل بضعة أشهر قد لا تكون مناسبة اليوم. لهذا السبب، يعتمد أطباء الأطفال بشكل أساسي على الوزن، وأحيانًا العمر، لتحديد الجرعة الأنسب.</span>
+        <span data-en>Children's bodies differ from adults' in several key ways that affect how they absorb, distribute, metabolize, and excrete drugs. First, the liver and kidneys—the primary organs responsible for breaking down and clearing medications—are not fully mature in infants and young children. This means a drug might stay in their system longer or at higher concentrations, increasing the risk of toxicity. Second, their body composition, including the ratio of water to fat, is different, which affects how a drug is distributed throughout the body. Finally, these factors change rapidly as a child grows, meaning a dose that was safe a few months ago may not be appropriate today. This is why pediatricians primarily rely on weight, and sometimes age, to determine the most suitable dose.</span>
+      </p>
+
+      <h3>
+        <span data-ar>مخاطر الجرعات غير الدقيقة</span>
+        <span data-en>The Dangers of Inaccurate Dosing</span>
+      </h3>
+      <p>
+        <span data-ar>الخطأ في الجرعة يمكن أن يسير في اتجاهين، وكلاهما محفوف بالمخاطر:</span>
+        <span data-en>A dosing error can go in two directions, both of which are fraught with risk:</span>
+      </p>
+      <ul>
+        <li>
+          <span data-ar><strong>الجرعة المنخفضة (Underdosing):</strong> قد تبدو أقل خطورة، لكنها يمكن أن تؤدي إلى فشل العلاج. إذا كان الدواء مضادًا حيويًا، فإن الجرعة المنخفضة قد لا تقضي على العدوى بالكامل، مما يؤدي إلى انتكاسة المرض أو، الأسوأ من ذلك، تطور مقاومة البكتيريا للمضادات الحيوية. هذا لا يضر بالطفل فقط، بل يساهم في مشكلة صحية عالمية.</span>
+          <span data-en><strong>Underdosing:</strong> This might seem less dangerous, but it can lead to treatment failure. If the medication is an antibiotic, an insufficient dose may not completely eradicate the infection, leading to a relapse or, worse, the development of antibiotic-resistant bacteria. This not only harms the child but also contributes to a global health crisis.</span>
+        </li>
+        <li>
+          <span data-ar><strong>الجرعة الزائدة (Overdosing):</strong> هذا هو الخطر الأكثر وضوحًا. حتى الزيادة الطفيفة في جرعة بعض الأدوية يمكن أن تسبب آثارًا جانبية خطيرة أو سمية. على سبيل المثال، جرعة زائدة من الباراسيتامول (الأسيتامينوفين)، وهو خافض حرارة شائع، يمكن أن تسبب تلفًا حادًا في الكبد. الجرعة الزائدة من أدوية أخرى يمكن أن تؤثر على القلب، الجهاز العصبي، أو الجهاز التنفسي، وقد تكون قاتلة في بعض الحالات.</span>
+          <span data-en><strong>Overdosing:</strong> This is the more obvious danger. Even a slight excess of some medications can cause serious side effects or toxicity. For example, an overdose of paracetamol (acetaminophen), a common fever reducer, can cause severe liver damage. An overdose of other drugs can affect the heart, nervous system, or respiratory system, and can be fatal in some cases.</span>
+        </li>
+      </ul>
+
+      <h3>
+        <span data-ar>دور الأهل ومقدمي الرعاية</span>
+        <span data-en>The Role of Parents and Caregivers</span>
+      </h3>
+      <p>
+        <span data-ar>بينما يقوم الطبيب بوصف الجرعة الصحيحة، تقع مسؤولية إعطائها بدقة على عاتق الأهل. إليك بعض النصائح الأساسية:</span>
+        <span data-en>While the doctor prescribes the correct dose, the responsibility for administering it accurately falls on the parents. Here are some essential tips:</span>
+      </p>
+      <ul>
+        <li>
+          <span data-ar><strong>استخدم أداة القياس الصحيحة:</strong> لا تستخدم أبدًا ملاعق المطبخ. فهي غير دقيقة على الإطلاق. استخدم دائمًا السرنجة الفموية (oral syringe)، أو كوب القياس، أو القطارة التي تأتي مع الدواء. هذه الأدوات مصممة لقياس الجرعات الصغيرة بدقة بالمليلتر (mL).</span>
+          <span data-en><strong>Use the Right Measuring Tool:</strong> Never use kitchen spoons. They are notoriously inaccurate. Always use the oral syringe, measuring cup, or dropper that comes with the medication. These tools are designed to measure small doses accurately in milliliters (mL).</span>
+        </li>
+        <li>
+          <span data-ar><strong>اعرف التركيز:</strong> الأدوية السائلة تأتي بتركيزات مختلفة (مثل 120 ملغ/5 مل أو 250 ملغ/5 مل). التركيز هو كمية الدواء الموجودة في حجم معين من السائل. تأكد من أنك تعرف التركيز الذي تستخدمه، فهذا ضروري لحساب الحجم الصحيح للجرعة. أدوات مثل هذه الحاسبة يمكن أن تساعد في تحويل الجرعة بالملغ (mg) إلى الحجم بالملل (mL) بناءً على التركيز.</span>
+          <span data-en><strong>Know the Concentration:</strong> Liquid medications come in different concentrations (e.g., 120 mg/5 mL or 250 mg/5 mL). The concentration is the amount of drug in a specific volume of liquid. Ensure you know the concentration you are using, as this is essential for calculating the correct volume for the dose. Tools like this calculator can help convert the dose in mg to the volume in mL based on the concentration.</span>
+        </li>
+        <li>
+          <span data-ar><strong>اقرأ الملصق بعناية:</strong> تحقق دائمًا من اسم الدواء والجرعة والتركيز وتاريخ انتهاء الصلاحية على العبوة قبل كل استخدام.</span>
+          <span data-en><strong>Read the Label Carefully:</strong> Always double-check the drug name, dose, concentration, and expiration date on the package before every use.</span>
+        </li>
+        <li>
+          <span data-ar><strong>احتفظ بسجل:</strong> عند إعطاء جرعات متكررة، خاصة للحمى أو الألم، قم بتدوين وقت كل جرعة لتجنب إعطاء الجرعة التالية في وقت مبكر جدًا أو نسيانها.</span>
+          <span data-en><strong>Keep a Log:</strong> When giving repeated doses, especially for fever or pain, write down the time of each dose to avoid giving the next one too early or forgetting it.</span>
+        </li>
+      </ul>
+
+      <h3>
+        <span data-ar>الخلاصة: السلامة أولاً</span>
+        <span data-en>Conclusion: Safety First</span>
+      </h3>
+      <p>
+        <span data-ar>إن حساب جرعات أدوية الأطفال هو عملية دقيقة تتطلب الانتباه والحرص. أدوات مثل "حاسبة جرعات أدوية الأطفال" هي موارد قيمة للمساعدة في التحقق من الجرعات المعتمدة على الوزن، ولكنها لا تغني أبدًا عن استشارة الطبيب أو الصيدلي. هم المرجع النهائي لحالة طفلك الصحية الخاصة. تذكر دائمًا: عند الشك، اسأل. فبضع دقائق من التحقق يمكن أن تمنع خطأً قد يكون خطيرًا، وتضمن أن طفلك يتلقى الرعاية الأفضل والأكثر أمانًا.</span>
+        <span data-en>Calculating pediatric drug doses is a precise process that requires attention and care. Tools like this Pediatric Dosage Calculator are valuable resources for helping to verify weight-based doses, but they never replace consultation with a doctor or pharmacist. They are the ultimate authority on your child's specific health condition. Always remember: when in doubt, ask. A few moments of verification can prevent a potentially serious error and ensure your child receives the best and safest care possible.</span>
+      </p>
+    </div>
+
+  </div>
+
+</ToolsShell>
+</Layout>
+
+<script define:vars={{ drugsData: drugs }}>
+  const DRUGS = drugsData;
+  const scope = document.querySelector(".tools-scope");
+
+  function currentLang() {
+    return (scope && scope.dataset.lang) || "ar";
+  }
+
+  const STR = {
+    ar: {
+      rx: "بوصفة طبية", forms: "الشكل الصيدلاني", perDay: "إجمالي يومي",
+      hardBlock: "تحذير: هذا الدواء غير مناسب لهذا العمر. لا تُعطِ أي جرعة واستشر الطبيب.",
+      needWeight: "أدخل وزن الطفل لحساب الجرعة", needAge: "أدخل عمر الطفل بالأشهر لهذا الدواء",
+      volLabel: "الجرعة بالحجم (حسب التركيز المُدخل)", placeholder: "أدخل بيانات الطفل لعرض الجرعة",
+    },
+    en: {
+      rx: "Prescription only", forms: "Dosage form", perDay: "total daily",
+      hardBlock: "Warning: this medication is not suitable for this age. Do not give any dose — consult a doctor.",
+      needWeight: "Enter the child's weight to calculate the dose", needAge: "Enter the child's age in months for this medication",
+      volLabel: "Dose by volume (based on entered concentration)", placeholder: "Enter the child's details to see the dose",
+    },
+  };
+
+  const drugSelect = document.getElementById("pd-drug");
+  const weightInput = document.getElementById("pd-weight");
+  const ageInput = document.getElementById("pd-age");
+  const concField = document.getElementById("pd-conc-field");
+  const concHint = document.getElementById("pd-conc-hint");
+  const concInput = document.getElementById("pd-conc");
+  const resultEl = document.getElementById("pd-result");
+  const readingEl = document.getElementById("pd-reading");
+  const bodyEl = document.getElementById("pd-result-body");
+
+  function populateDrugOptions() {
+    const grouped = {};
+    DRUGS.forEach((d) => {
+      const key = d.categoryAr; // grouping key stable regardless of language
+      (grouped[key] ||= { ar: d.categoryAr, en: d.categoryEn, items: [] }).items.push(d);
+    });
+    drugSelect.innerHTML = "";
+    Object.values(grouped).forEach((g) => {
+      const og = document.createElement("optgroup");
+      og.setAttribute("data-ar-label", g.ar);
+      og.setAttribute("data-en-label", g.en);
+      g.items.forEach((d) => {
+        const opt = document.createElement("option");
+        opt.value = d.id;
+        opt.setAttribute("data-ar-label", d.nameAr);
+        opt.setAttribute("data-en-label", d.nameEn);
+        og.appendChild(opt);
+      });
+      drugSelect.appendChild(og);
+    });
+    applyOptionLabels();
+  }
+
+  function applyOptionLabels() {
+    const lang = currentLang();
+    drugSelect.querySelectorAll("optgroup").forEach((og) => {
+      og.label = og.getAttribute(lang === "ar" ? "data-ar-label" : "data-en-label") || "";
+    });
+    drugSelect.querySelectorAll("option").forEach((opt) => {
+      opt.textContent = opt.getAttribute(lang === "ar" ? "data-ar-label" : "data-en-label") || "";
+    });
+  }
+
+  function getDrug() {
+    return DRUGS.find((d) => d.id === drugSelect.value);
+  }
+
+  function fmt(n) {
+    return Math.round(n * 100) / 100;
+  }
+
+  function updateConcField() {
+    const drug = getDrug();
+    const lang = currentLang();
+    if (drug && drug.hasLiquidConc) {
+      concField.hidden = false;
+      concHint.textContent = (lang === "ar" ? drug.commonConcAr : drug.commonConcEn) || "";
+    } else {
+      concField.hidden = true;
+    }
+  }
+
+  function compute() {
+    const lang = currentLang();
+    const s = STR[lang];
+    const drug = getDrug();
+    const weight = parseFloat(weightInput.value);
+    const age = parseFloat(ageInput.value);
+    const conc = parseFloat(concInput.value);
+    if (!drug) return;
+
+    const ageEntered = !isNaN(age);
+    const belowMinAge = ageEntered && drug.minAgeMonths != null && age < drug.minAgeMonths;
+
+    const name = lang === "ar" ? drug.nameAr : drug.nameEn;
+    const forms = lang === "ar" ? drug.formsAr : drug.formsEn;
+
+    readingEl.textContent = name;
+    let html = "";
+    if (drug.prescriptionOnly) html += `<span class="badge">${s.rx}</span>`;
+    if (forms) html += `<p class="field-hint">${s.forms}: ${forms}</p>`;
+
+    if (belowMinAge) {
+      html += `<p class="badge badge-danger">⚠ ${s.hardBlock}</p>`;
+      bodyEl.innerHTML = html;
+      resultEl.classList.add("show");
+      return;
+    }
+
+    const warningTxt = lang === "ar" ? drug.warningAr : drug.warningEn;
+    if (warningTxt && !ageEntered) html += `<p class="badge badge-warn">⚠ ${warningTxt}</p>`;
+
+    const needsWeight = ["weight", "weight-volume", "weight-range-label"].includes(drug.doseType);
+    if (needsWeight && (isNaN(weight) || weight <= 0)) {
+      html += `<p class="field-hint">${s.needWeight}</p>`;
+      bodyEl.innerHTML = html;
+      resultEl.classList.add("show");
+      return;
+    }
+
+    const simpleFreq = lang === "ar" ? drug.dosesPerDayAr : drug.dosesPerDayEn;
+    let perDoseLow = null, perDoseHigh = null;
+
+    if (drug.doseType === "weight") {
+      const totalLow = drug.mgPerKgLow * weight;
+      const totalHigh = drug.mgPerKgHigh * weight;
+      if (drug.perDoseOrDay === "day") {
+        const dLow = drug.dosesPerDayHigh || drug.dosesPerDayLow || 1;
+        const dHigh = drug.dosesPerDayLow || drug.dosesPerDayHigh || 1;
+        perDoseLow = totalLow / dLow;
+        perDoseHigh = totalHigh / dHigh;
+        const rangeDaily = fmt(totalLow) === fmt(totalHigh) ? `${fmt(totalLow)} mg` : `${fmt(totalLow)} - ${fmt(totalHigh)} mg`;
+        html += `<p class="num result-figure">${rangeDaily}</p><p class="field-hint">${s.perDay}</p>`;
+      } else {
+        perDoseLow = totalLow;
+        perDoseHigh = totalHigh;
+        const range = fmt(totalLow) === fmt(totalHigh) ? `${fmt(totalLow)} mg` : `${fmt(totalLow)} - ${fmt(totalHigh)} mg`;
+        const freq = lang === "ar" ? drug.frequencyAr : drug.frequencyEn;
+        html += `<p class="num result-figure">${range}</p><p class="field-hint">${freq || ""}</p>`;
+      }
+      if (simpleFreq) html += `<p class="badge badge-info">${simpleFreq}</p>`;
+      const maxNote = lang === "ar" ? drug.maxNoteAr : drug.maxNoteEn;
+      if (maxNote) html += `<p class="field-hint">${maxNote}</p>`;
+
+      if (drug.hasLiquidConc && !isNaN(conc) && conc > 0 && perDoseLow != null) {
+        const mgPerMl = conc / 5;
+        const volLow = fmt(perDoseLow / mgPerMl);
+        const volHigh = fmt(perDoseHigh / mgPerMl);
+        const volRange = volLow === volHigh ? `${volLow} mL` : `${volLow} - ${volHigh} mL`;
+        html += `<div class="info-section"><p class="field-hint">${s.volLabel}</p><p class="num result-figure">${volRange}</p>${simpleFreq ? `<p class="field-hint">${simpleFreq}</p>` : ""}</div>`;
+      }
+    } else if (drug.doseType === "weight-volume") {
+      const low = fmt(drug.mgPerKgLow * weight);
+      const high = fmt(drug.mgPerKgHigh * weight);
+      const unit = drug.unitLabel || "mL";
+      const range = low === high ? `${low} ${unit}` : `${low} - ${high} ${unit}`;
+      const freq = lang === "ar" ? drug.frequencyAr : drug.frequencyEn;
+      html += `<p class="num result-figure">${range}</p><p class="field-hint">${freq || ""}</p>`;
+    } else if (drug.doseType === "weight-range-label") {
+      const ranges = lang === "ar" ? drug.rangesAr : drug.rangesEn;
+      const freq = lang === "ar" ? drug.frequencyAr : drug.frequencyEn;
+      html += `<p class="num result-figure">${fmt(drug.mgPerKgLow * weight)} - ${fmt(drug.mgPerKgHigh * weight)} mg</p><p class="field-hint">${freq || ""}</p>`;
+      if (simpleFreq) html += `<p class="badge badge-info">${simpleFreq}</p>`;
+      if (ranges) html += `<p class="field-hint">${ranges.join(" · ")}</p>`;
+    } else if (drug.doseType === "age-tiered") {
+      if (!ageEntered) {
+        html += `<p class="field-hint">${s.needAge}</p>`;
+      } else {
+        const tier = drug.tiers.find((t) => age >= t.minMonths && (t.maxMonths == null || age < t.maxMonths));
+        if (tier) {
+          const doseTxt = lang === "ar" ? tier.doseAr : tier.doseEn;
+          html += `<p class="num result-figure">${doseTxt}</p>`;
+          if (drug.hasLiquidConc && !isNaN(conc) && conc > 0) {
+            const match = doseTxt.match(/(\d+(\.\d+)?)\s*(ملغ|mg)/);
+            if (match) {
+              const mg = parseFloat(match[1]);
+              const vol = fmt(mg / (conc / 5));
+              html += `<div class="info-section"><p class="field-hint">${s.volLabel}</p><p class="num result-figure">${vol} mL</p></div>`;
+            }
+          }
+        } else {
+          html += `<p class="field-hint">${s.needAge}</p>`;
+        }
+      }
+    } else if (drug.doseType === "fixed") {
+      const doseTxt = lang === "ar" ? drug.fixedDoseAr : drug.fixedDoseEn;
+      const freq = lang === "ar" ? drug.frequencyAr : drug.frequencyEn;
+      html += `<p class="num result-figure">${doseTxt}</p><p class="field-hint">${freq || ""}</p>`;
+      if (simpleFreq) html += `<p class="badge badge-info">${simpleFreq}</p>`;
+    }
+
+    const notes = lang === "ar" ? drug.notesAr : drug.notesEn;
+    if (notes) html += `<p class="field-hint">${notes}</p>`;
+
+    bodyEl.innerHTML = html;
+    resultEl.classList.add("show");
+  }
+
+  populateDrugOptions();
+  updateConcField();
+
+  drugSelect.addEventListener("change", () => { updateConcField(); compute(); });
+  weightInput.addEventListener("input", compute);
+  ageInput.addEventListener("input", compute);
+  concInput.addEventListener("input", compute);
+
+  window.addEventListener("languageChanged", () => {
+    applyOptionLabels();
+    updateConcField();
+    compute();
+  });
+</script>
