@@ -33,7 +33,7 @@ import Tape from '../../components/Tape.astro';
           <option value="female">أنثى / Female</option>
         </select>
       </div>
-      <div class="field">
+      <div class="field" data-measure="length">
         <label for="ulna" data-ar>طول الساعد (سم)</label>
         <label for="ulna" data-en hidden>Ulna length (cm)</label>
         <input id="ulna" type="number" inputmode="decimal" placeholder="26" min="15" max="35" />
@@ -58,7 +58,7 @@ import Tape from '../../components/Tape.astro';
         <span data-ar>الطول التقديري:</span>
         <span data-en hidden>Estimated height:</span>
         <span class="reading" id="heightValue">—</span>
-        <span data-ar>سم</span><span data-en hidden>cm</span>
+        <span data-ar data-unit-label="height">سم</span><span data-en hidden data-unit-label="height">cm</span>
       </p>
     </div>
   </section>
@@ -113,6 +113,8 @@ import Tape from '../../components/Tape.astro';
   </section>
 
   <script>
+    import { setHeightOutput } from '../../scripts/measure-units';
+
     const genderEl = document.getElementById('gender') as HTMLSelectElement;
     const ulnaEl = document.getElementById('ulna') as HTMLInputElement;
     const resultEl = document.getElementById('result') as HTMLDivElement;
@@ -125,7 +127,7 @@ import Tape from '../../components/Tape.astro';
 
       const height = isMale ? 79.2 + 3.6 * ulna : 68.1 + 4.29 * ulna;
 
-      heightEl.textContent = height.toFixed(0);
+      setHeightOutput(heightEl, height);
       resultEl.classList.add('show');
     }
 

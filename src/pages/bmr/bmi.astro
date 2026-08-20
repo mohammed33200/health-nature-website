@@ -33,12 +33,12 @@ import Tape from '../../components/Tape.astro';
           <option value="female" data-ar="أنثى" data-en="Female">[Female]</option>
         </select>
       </div>
-      <div class="field">
+      <div class="field" data-measure="height">
         <label for="height" data-ar>الطول (سم)</label>
         <label for="height" data-en hidden>Height (cm)</label>
         <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="weight">
         <label for="weight" data-ar>الوزن (كجم)</label>
         <label for="weight" data-en hidden>Weight (kg)</label>
         <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
@@ -61,7 +61,7 @@ import Tape from '../../components/Tape.astro';
         <span data-ar>وزنك المثالي التقديري:</span>
         <span data-en hidden>Estimated ideal weight:</span>
         <span class="reading" id="idealValue">—</span>
-        <span data-ar>كجم</span><span data-en hidden>kg</span>
+        <span data-ar data-unit-label="weight">كجم</span><span data-en hidden data-unit-label="weight">kg</span>
       </p>
       <p style="color:var(--ink-soft); font-size:0.85rem;">
         <span data-ar>(المدى بين معادلات Devine وHamwi وMiller: </span>
@@ -125,6 +125,8 @@ import Tape from '../../components/Tape.astro';
   </section>
 
   <script>
+    import { setWeightOutput, setWeightRangeOutput } from '../../scripts/measure-units';
+
     const genderEl = document.getElementById('gender') as HTMLSelectElement;
     const heightEl = document.getElementById('height') as HTMLInputElement;
     const weightEl = document.getElementById('weight') as HTMLInputElement;
@@ -168,8 +170,8 @@ import Tape from '../../components/Tape.astro';
       bmiValueEl.textContent = bmi.toFixed(1);
       bmiBadgeEl.textContent = lang === 'ar' ? cat.ar : cat.en;
       bmiBadgeEl.style.background = cat.color;
-      idealValueEl.textContent = avg.toFixed(1);
-      idealRangeEl.textContent = `${min.toFixed(1)}–${max.toFixed(1)}`;
+      setWeightOutput(idealValueEl, avg);
+      setWeightRangeOutput(idealRangeEl, min, max);
 
       resultEl.classList.add('show');
     }

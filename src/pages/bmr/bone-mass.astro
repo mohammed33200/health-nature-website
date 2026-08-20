@@ -33,27 +33,27 @@ import Tape from '../../components/Tape.astro';
           <option value="female">أنثى / Female</option>
         </select>
       </div>
-      <div class="field">
+      <div class="field" data-measure="height">
         <label for="height" data-ar>الطول (سم)</label>
         <label for="height" data-en hidden>Height (cm)</label>
         <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="weight">
         <label for="weight" data-ar>الوزن (كجم)</label>
         <label for="weight" data-en hidden>Weight (kg)</label>
         <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="length">
         <label for="neck" data-ar>محيط الرقبة (سم)</label>
         <label for="neck" data-en hidden>Neck circumference (cm)</label>
         <input id="neck" type="number" inputmode="decimal" placeholder="38" min="20" max="60" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="length">
         <label for="waist" data-ar>محيط الخصر (سم)</label>
         <label for="waist" data-en hidden>Waist circumference (cm)</label>
         <input id="waist" type="number" inputmode="decimal" placeholder="85" min="40" max="200" />
       </div>
-      <div class="field" id="hipField">
+      <div class="field" id="hipField" data-measure="length">
         <label for="hip" data-ar>محيط الورك (سم) — للنساء فقط</label>
         <label for="hip" data-en hidden>Hip circumference (cm) — women only</label>
         <input id="hip" type="number" inputmode="decimal" placeholder="95" min="40" max="200" />
@@ -70,7 +70,7 @@ import Tape from '../../components/Tape.astro';
         <span data-ar>كتلة العظام التقريبية:</span>
         <span data-en hidden>Approximate bone mass:</span>
         <span class="reading" id="boneValue">—</span>
-        <span data-ar>كجم</span><span data-en hidden>kg</span>
+        <span data-ar data-unit-label="weight">كجم</span><span data-en hidden data-unit-label="weight">kg</span>
       </p>
     </div>
   </section>
@@ -125,6 +125,8 @@ import Tape from '../../components/Tape.astro';
   </section>
 
   <script>
+    import { setWeightOutput } from '../../scripts/measure-units';
+
     const genderEl = document.getElementById('gender') as HTMLSelectElement;
     const heightEl = document.getElementById('height') as HTMLInputElement;
     const weightEl = document.getElementById('weight') as HTMLInputElement;
@@ -159,7 +161,7 @@ import Tape from '../../components/Tape.astro';
       const lbm = weight * (1 - bfPct / 100);
       const boneMass = lbm * (isMale ? 0.15 : 0.12);
 
-      boneEl.textContent = boneMass.toFixed(1);
+      setWeightOutput(boneEl, boneMass);
       resultEl.classList.add('show');
     }
 

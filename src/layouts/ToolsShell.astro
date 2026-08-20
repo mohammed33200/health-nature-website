@@ -28,6 +28,8 @@ import '../styles/global.css';
 </div>
 
 <script>
+  import { initMeasureUnits } from '../scripts/measure-units';
+
   // Scoped to elements with .tools-scope so it never touches the host
   // page's own <html> lang/dir or any lang-toggle buttons outside this
   // section.
@@ -64,4 +66,7 @@ import '../styles/global.css';
       window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: nextLang } }));
     });
   });
+
+  initMeasureUnits();
+  document.addEventListener('DOMContentLoaded', () => initMeasureUnits());
 </script>

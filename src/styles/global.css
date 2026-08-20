@@ -103,7 +103,56 @@
 .tools-scope .lang-toggle-row {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   padding-block: 0.75rem;
+}
+.tools-scope .units-toggle {
+  display: inline-flex;
+  margin-inline-end: auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+}
+.tools-scope .units-toggle[hidden] { display: none; }
+.tools-scope .units-toggle-btn {
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.tools-scope .units-toggle-btn.is-active {
+  background: var(--secondary);
+  color: #fff;
+}
+.tools-scope .measure-canonical[hidden],
+.tools-scope .measure-imperial[hidden],
+.tools-scope .measure-ftin[hidden] {
+  display: none !important;
+}
+.tools-scope .measure-ftin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.tools-scope .measure-ftin-part {
+  display: grid;
+  gap: 0.2rem;
+}
+.tools-scope .measure-ftin-hint {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+.tools-scope .calc-form input.measure-imperial {
+  width: 100%;
+}
+.tools-scope[data-units="imperial"] [data-ar][data-unit-label="height"],
+.tools-scope[data-units="imperial"] [data-en][data-unit-label="height"] {
+  display: none !important;
 }
 .tools-scope .lang-toggle {
   border: 1px solid var(--ink);

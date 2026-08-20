@@ -39,12 +39,12 @@ import Tape from '../../components/Tape.astro';
         <label for="age" data-en hidden>Age (years)</label>
         <input id="age" type="number" inputmode="numeric" placeholder="30" min="1" max="110" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="height">
         <label for="height" data-ar>الطول (سم)</label>
         <label for="height" data-en hidden>Height (cm)</label>
         <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="weight">
         <label for="weight" data-ar>الوزن (كجم)</label>
         <label for="weight" data-en hidden>Weight (kg)</label>
         <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
@@ -61,7 +61,7 @@ import Tape from '../../components/Tape.astro';
         <span data-ar>كتلة العضلات الهيكلية:</span>
         <span data-en hidden>Skeletal muscle mass:</span>
         <span class="reading" id="smValue">—</span>
-        <span data-ar>كجم</span><span data-en hidden>kg</span>
+        <span data-ar data-unit-label="weight">كجم</span><span data-en hidden data-unit-label="weight">kg</span>
       </p>
       <p>
         <span data-ar>نسبتها من وزنك:</span>
@@ -123,6 +123,8 @@ import Tape from '../../components/Tape.astro';
   </section>
 
   <script>
+    import { setWeightOutput } from '../../scripts/measure-units';
+
     const genderEl = document.getElementById('gender') as HTMLSelectElement;
     const ageEl = document.getElementById('age') as HTMLInputElement;
     const heightEl = document.getElementById('height') as HTMLInputElement;
@@ -143,7 +145,7 @@ import Tape from '../../components/Tape.astro';
       const sm = 0.244 * weight + 7.8 * heightM - 0.098 * age + 6.6 * sex - 3.3;
       const pct = (sm / weight) * 100;
 
-      smEl.textContent = sm.toFixed(1);
+      setWeightOutput(smEl, sm);
       smPctEl.textContent = pct.toFixed(1);
       resultEl.classList.add('show');
     }

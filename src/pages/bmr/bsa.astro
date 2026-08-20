@@ -25,12 +25,12 @@ import Tape from '../../components/Tape.astro';
 
   <section class="container calc-card">
     <div class="field-grid">
-      <div class="field">
+      <div class="field" data-measure="height">
         <label for="height" data-ar>الطول (سم)</label>
         <label for="height" data-en hidden>Height (cm)</label>
         <input id="height" type="number" inputmode="decimal" placeholder="170" min="40" max="230" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="weight">
         <label for="weight" data-ar>الوزن (كجم)</label>
         <label for="weight" data-en hidden>Weight (kg)</label>
         <input id="weight" type="number" inputmode="decimal" placeholder="70" min="2" max="300" />

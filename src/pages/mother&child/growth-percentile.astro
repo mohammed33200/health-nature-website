@@ -37,7 +37,7 @@ import ToolsShell from '../../layouts/ToolsShell.astro';
           <span data-ar>العمر (أشهر)</span><span data-en hidden>Age (months)</span>
           <input type="number" id="age" min="0" max="60" required />
         </label>
-        <label>
+        <label data-measure="weight">
           <span data-ar>الوزن الحالي (كجم)</span><span data-en hidden>Current weight (kg)</span>
           <input type="number" id="weight" min="1" max="40" step="0.1" required />
         </label>
@@ -51,6 +51,7 @@ import ToolsShell from '../../layouts/ToolsShell.astro';
         <p>
           <span data-ar>الوزن المتوسط لهذا العمر: </span><span data-en hidden>Median weight for age: </span>
           <strong id="median-out" class="reading"></strong>
+          <span data-ar data-unit-label="weight">كجم</span><span data-en hidden data-unit-label="weight">kg</span>
         </p>
         <p>
           <span data-ar>التقدير التقريبي للنسبة المئوية: </span><span data-en hidden>Approximate percentile: </span>
@@ -80,6 +81,8 @@ import ToolsShell from '../../layouts/ToolsShell.astro';
 </Layout>
 
 <script>
+  import { setWeightOutput } from '../../scripts/measure-units';
+
   // نقاط مرجعية مبسّطة (متوسط الوزن بالكجم) من معايير منظمة الصحة العالمية
   // Simplified reference points (median weight in kg) from WHO standards
   const medians: Record<string, number[]> = {
@@ -125,7 +128,7 @@ import ToolsShell from '../../layouts/ToolsShell.astro';
     const percentile = Math.round(50 * (1 + erf(z / Math.SQRT2)));
     const clamped = Math.min(99, Math.max(1, percentile));
 
-    (document.getElementById("median-out") as HTMLElement).textContent = `${median.toFixed(1)} kg`;
+    setWeightOutput(document.getElementById("median-out") as HTMLElement, median);
     (document.getElementById("pct-out") as HTMLElement).textContent = `~${clamped}%`;
 
     (document.getElementById("result") as HTMLElement).classList.add('show');

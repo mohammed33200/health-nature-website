@@ -32,7 +32,7 @@ import ToolsShell from '../../layouts/ToolsShell.astro';
   </article>
 
   <form class="calc-form" id="rm-form">
-    <label>
+    <label data-measure="weight">
       <span data-ar>الوزن المرفوع (كجم)</span><span data-en dir="ltr">Weight lifted (kg)</span>
       <input type="number" id="weight" min="1" max="500" step="0.5" required />
     </label>
@@ -49,7 +49,8 @@ import ToolsShell from '../../layouts/ToolsShell.astro';
   <div class="result-box" id="result" hidden>
     <p class="result-line">
       <span data-ar>الأقصى المقدّر (1RM): </span>
-      <strong id="rm-out"></strong> kg
+      <strong id="rm-out"></strong>
+      <span data-ar data-unit-label="weight">كجم</span><span data-en dir="ltr" data-unit-label="weight">kg</span>
     </p>
     <table class="rm-table">
       <thead><tr><th>%1RM</th><th><span data-ar>الوزن</span><span data-en dir="ltr">Weight</span></th></tr></thead>
@@ -75,6 +76,23 @@ import ToolsShell from '../../layouts/ToolsShell.astro';
 </Layout>
 
 <script>
+  import { setWeightOutput, formatWeight, unitLabel } from '../../scripts/measure-units';
+
+  let lastRm = NaN;
+
+  function renderRm(rm: number) {
+    lastRm = rm;
+    setWeightOutput(document.getElementById("rm-out") as HTMLElement, rm);
+    const tbody = document.getElementById("rm-table-body") as HTMLElement;
+    tbody.innerHTML = "";
+    const unit = unitLabel('weight');
+    [95, 90, 85, 80, 75, 70, 60, 50].forEach((pct) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${pct}%</td><td>${formatWeight(rm * pct / 100)} ${unit}</td>`;
+      tbody.appendChild(row);
+    });
+  }
+
   const form = document.getElementById("rm-form") as HTMLFormElement;
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -82,18 +100,12 @@ import ToolsShell from '../../layouts/ToolsShell.astro';
     const reps = Number((document.getElementById("reps") as HTMLInputElement).value);
     if (!weight || !reps) return;
 
-    const rm = weight * (1 + reps / 30);
-    (document.getElementById("rm-out") as HTMLElement).textContent = rm.toFixed(1);
-
-    const tbody = document.getElementById("rm-table-body") as HTMLElement;
-    tbody.innerHTML = "";
-    [95, 90, 85, 80, 75, 70, 60, 50].forEach((pct) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${pct}%</td><td>${(rm * pct / 100).toFixed(1)} kg</td>`;
-      tbody.appendChild(row);
-    });
-
+    renderRm(weight * (1 + reps / 30));
     (document.getElementById("result") as HTMLElement).hidden = false;
+  });
+
+  window.addEventListener('measureUnitsChanged', () => {
+    if (Number.isFinite(lastRm)) renderRm(lastRm);
   });
 </script>
 

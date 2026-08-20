@@ -38,27 +38,27 @@ import Tape from '../../components/Tape.astro';
         <label for="age" data-en hidden>Age (years)</label>
         <input id="age" type="number" inputmode="numeric" placeholder="30" min="1" max="110" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="height">
         <label for="height" data-ar>الطول (سم)</label>
         <label for="height" data-en hidden>Height (cm)</label>
         <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="weight">
         <label for="weight" data-ar>الوزن (كجم)</label>
         <label for="weight" data-en hidden>Weight (kg)</label>
         <input id="weight" type="number" inputmode="decimal" placeholder="70" min="30" max="300" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="length">
         <label for="neck" data-ar>محيط الرقبة (سم)</label>
         <label for="neck" data-en hidden>Neck circumference (cm)</label>
         <input id="neck" type="number" inputmode="decimal" placeholder="38" min="20" max="60" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="length">
         <label for="waist" data-ar>محيط الخصر (سم)</label>
         <label for="waist" data-en hidden>Waist circumference (cm)</label>
         <input id="waist" type="number" inputmode="decimal" placeholder="85" min="40" max="200" />
       </div>
-      <div class="field" id="hipField">
+      <div class="field" id="hipField" data-measure="length">
         <label for="hip" data-ar>محيط الورك (سم) — للنساء فقط</label>
         <label for="hip" data-en hidden>Hip circumference (cm) — women only</label>
         <input id="hip" type="number" inputmode="decimal" placeholder="95" min="40" max="200" />
@@ -74,12 +74,12 @@ import Tape from '../../components/Tape.astro';
       <p>
         <span data-ar>كتلة العضلات:</span> <span data-en hidden>Muscle mass:</span>
         <span class="reading" id="smValue">—</span>
-        <span data-ar>كجم</span><span data-en hidden>kg</span>
+        <span data-ar data-unit-label="weight">كجم</span><span data-en hidden data-unit-label="weight">kg</span>
       </p>
       <p>
         <span data-ar>كتلة الدهون:</span> <span data-en hidden>Fat mass:</span>
         <span class="reading" id="fatValue">—</span>
-        <span data-ar>كجم</span><span data-en hidden>kg</span>
+        <span data-ar data-unit-label="weight">كجم</span><span data-en hidden data-unit-label="weight">kg</span>
       </p>
       <p>
         <span data-ar>نسبة العضلات إلى الدهون:</span>
@@ -140,6 +140,8 @@ import Tape from '../../components/Tape.astro';
   </section>
 
   <script>
+    import { setWeightOutput } from '../../scripts/measure-units';
+
     const genderEl = document.getElementById('gender') as HTMLSelectElement;
     const ageEl = document.getElementById('age') as HTMLInputElement;
     const heightEl = document.getElementById('height') as HTMLInputElement;
@@ -191,8 +193,8 @@ import Tape from '../../components/Tape.astro';
       const cat = category(ratio);
       const lang = resultEl.closest('.tools-scope')?.getAttribute('data-lang') || 'ar';
 
-      smEl.textContent = muscle.toFixed(1);
-      fatEl.textContent = fatMass.toFixed(1);
+      setWeightOutput(smEl, muscle);
+      setWeightOutput(fatEl, fatMass);
       ratioEl.textContent = ratio.toFixed(2);
       ratioBadgeEl.textContent = lang === 'ar' ? cat.ar : cat.en;
       ratioBadgeEl.style.background = cat.color;

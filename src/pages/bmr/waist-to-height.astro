@@ -25,12 +25,12 @@ import Tape from '../../components/Tape.astro';
 
   <section class="container calc-card">
     <div class="field-grid">
-      <div class="field">
+      <div class="field" data-measure="height">
         <label for="height" data-ar>الطول (سم)</label>
         <label for="height" data-en hidden>Height (cm)</label>
         <input id="height" type="number" inputmode="decimal" placeholder="170" min="100" max="230" />
       </div>
-      <div class="field">
+      <div class="field" data-measure="length">
         <label for="waist" data-ar>محيط الخصر (سم)</label>
         <label for="waist" data-en hidden>Waist circumference (cm)</label>
         <input id="waist" type="number" inputmode="decimal" placeholder="85" min="40" max="200" />
