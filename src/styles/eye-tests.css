@@ -328,6 +328,43 @@
 }
 .tools-scope .back-link:hover { text-decoration: underline; }
 
+/* ---------- أزرار الإجراءات (طباعة/embed) ---------- */
+.tools-scope .page-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.tools-scope .action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1rem;
+  background: var(--paper-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tools-scope .action-btn:hover {
+  background: var(--paper);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.tools-scope .action-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 560px) {
   .tools-scope .calib-stage { padding: 12px; }
 }

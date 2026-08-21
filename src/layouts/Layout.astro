@@ -6,13 +6,18 @@ interface Props {
 	title?: string;
 	description?: string;
 	lang?: 'ar' | 'en';
+	embed?: boolean;
 }
 
-const { title = 'SHYM356.ORG', description = "Discover our free, privacy-first health applications and tools.", lang = 'ar' } = Astro.props;
+const { title = 'SHYM356.ORG', description = "Discover our free, privacy-first health applications and tools.", lang = 'ar', embed = false } = Astro.props;
+
+// Check for embed mode via URL parameter
+const url = new URL(Astro.request.url);
+const isEmbed = embed || url.searchParams.get('embed') === 'true';
 ---
 
 <!doctype html>
-<html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+<html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'} class={isEmbed ? 'embed-mode' : ''}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="description" content={description} />
@@ -21,12 +26,62 @@ const { title = 'SHYM356.ORG', description = "Discover our free, privacy-first h
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<slot name="head" />
+		<style is:inline>
+			/* Embed mode styles */
+			.embed-mode body {
+				margin: 0;
+				padding: 0;
+				overflow-x: hidden;
+			}
+			.embed-mode header,
+			.embed-mode footer {
+				display: none !important;
+			}
+			.embed-mode main {
+				margin: 0;
+				padding: 20px;
+				max-width: 100%;
+			}
+			.embed-mode .site-footer {
+				display: none !important;
+			}
+
+			/* Print styles */
+			@media print {
+				header, footer, .site-footer, .back-link, .et-hero, .info-section, .disclaimer {
+					display: none !important;
+				}
+				body {
+					background: white !important;
+					color: black !important;
+				}
+				main {
+					margin: 0 !important;
+					padding: 0 !important;
+				}
+				.calc-card, .result {
+					page-break-inside: avoid;
+					border: 1px solid #ccc !important;
+					box-shadow: none !important;
+				}
+				.et-result {
+					display: block !important;
+					background: white !important;
+					border: 2px solid #000 !important;
+					padding: 20px !important;
+					margin: 20px 0 !important;
+				}
+				button, input[type="button"], .btn-calc, .btn-ghost {
+					display: none !important;
+				}
+			}
+		</style>
 	</head>
 	<body>
-		<Header />
+		{!isEmbed && <Header />}
 		<main>
 			<slot />
 		</main>
-		<Footer />
+		{!isEmbed && <Footer />}
 	</body>
 </html>

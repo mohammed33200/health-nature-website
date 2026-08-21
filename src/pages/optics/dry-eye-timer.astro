@@ -12,6 +12,24 @@ import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
         <span data-ar>‹ العودة إلى كل الاختبارات</span>
         <span data-en>‹ Back to all tests</span>
       </a>
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
       <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
       <h1>
         <span data-ar>مؤقت جفاف العين ومعدل الرمش</span>
@@ -77,14 +95,14 @@ import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
   function getLang() { return scope?.getAttribute('data-lang') || 'ar'; }
   function t(lang, s) { return lang === 'en' ? s.en : s.ar; }
 
-  const startBtn = document.getElementById('startBtn') as HTMLButtonElement;
-  const stopBtn = document.getElementById('stopBtn') as HTMLButtonElement;
-  const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
-  const display = document.getElementById('timerDisplay');
-  const box = document.getElementById('timerResultBox');
-  const title = document.getElementById('timerResultTitle');
-  const badge = document.getElementById('timerResultBadge');
-  const text = document.getElementById('timerResultText');
+  const startBtn = document.getElementById('startBtn') as HTMLButtonElement | null;
+  const stopBtn = document.getElementById('stopBtn') as HTMLButtonElement | null;
+  const resetBtn = document.getElementById('resetBtn') as HTMLButtonElement | null;
+  const display = document.getElementById('timerDisplay') as HTMLElement | null;
+  const box = document.getElementById('timerResultBox') as HTMLElement | null;
+  const title = document.getElementById('timerResultTitle') as HTMLElement | null;
+  const badge = document.getElementById('timerResultBadge') as HTMLElement | null;
+  const text = document.getElementById('timerResultText') as HTMLElement | null;
 
   let startTime = null;
   let intervalId = null;
@@ -109,8 +127,8 @@ import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
     if (!startTime) return;
     const elapsedSeconds = (performance.now() - startTime) / 1000;
     clearInterval(intervalId);
-    stopBtn.disabled = true;
-    startBtn.disabled = false;
+    if (stopBtn) stopBtn.disabled = true;
+    if (startBtn) startBtn.disabled = false;
     const lang = getLang();
 
     let cls, badgeText, resultTitle, resultText;
@@ -127,21 +145,21 @@ import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
       resultTitle = { ar: `${elapsedSeconds.toFixed(1)} ثانية`, en: `${elapsedSeconds.toFixed(1)} seconds` };
       resultText = { ar: 'نتيجة منخفضة نسبياً قد تكون مؤشراً على جفاف العين. يُنصح بمراجعة طبيب عيون لتقييم الحالة، خصوصاً مع أعراض مثل الاحمرار أو الحرقان أو تشوش الرؤية المتكرر.', en: 'A relatively low result may point to dry eye. An eye doctor visit is recommended, especially with symptoms like redness, burning, or recurring blurred vision.' };
     }
-    badge.className = 'badge ' + cls;
-    badge.textContent = t(lang, badgeText);
-    title.textContent = t(lang, resultTitle);
-    text.textContent = t(lang, resultText);
-    box.classList.add('show');
-    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (badge) badge.className = 'badge ' + cls;
+    if (badge) badge.textContent = t(lang, badgeText);
+    if (title) title.textContent = t(lang, resultTitle);
+    if (text) text.textContent = t(lang, resultText);
+    if (box) box.classList.add('show');
+    if (box) box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 
   resetBtn?.addEventListener('click', () => {
     clearInterval(intervalId);
     startTime = null;
-    display.textContent = secLabel(0);
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-    box.classList.remove('show');
+    if (display) display.textContent = secLabel(0);
+    if (startBtn) startBtn.disabled = false;
+    if (stopBtn) stopBtn.disabled = true;
+    if (box) box.classList.remove('show');
   });
 
   window.addEventListener('languageChanged', () => {

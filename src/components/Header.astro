@@ -15,7 +15,25 @@
 		</ul>
 	</nav>
 
-	<button id="language-toggle" type="button" aria-label="Toggle language">عربي</button>
+	<div class="header-actions">
+		<div class="search-container">
+			<input 
+				type="search" 
+				id="site-search" 
+				placeholder="Search..." 
+				data-i18n-placeholder data-en="Search..." data-ar="بحث..."
+				aria-label="Search site"
+			/>
+			<button id="search-toggle" type="button" aria-label="Toggle search">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="11" cy="11" r="8"></circle>
+					<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+				</svg>
+			</button>
+			<div id="search-results" class="search-results"></div>
+		</div>
+		<button id="language-toggle" type="button" aria-label="Toggle language">عربي</button>
+	</div>
 </header>
 
 <script>
@@ -31,6 +49,10 @@
 			const text = node.dataset[lang];
 			if (text) node.textContent = text;
 		});
+		document.querySelectorAll<HTMLElement>('[data-i18n-placeholder]').forEach((node) => {
+			const text = node.dataset[lang + 'Placeholder'];
+			if (text) node.setAttribute('placeholder', text);
+		});
 		const toggle = document.getElementById('language-toggle');
 		if (toggle) toggle.textContent = lang === 'ar' ? 'EN' : 'عربي';
 		localStorage.setItem('siteLang', lang);
@@ -38,6 +60,248 @@
 			window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: lang } }));
 		}
 	};
+
+	// Site search functionality
+	// Simple fuzzy search with error tolerance
+	const fuzzyMatch = (text: string, query: string): boolean => {
+		if (text.includes(query)) return true;
+		
+		// Check for simple character substitutions (Arabic)
+		const arabicSubstitutions: Record<string, string> = {
+			'ا': 'أإآ',
+			'ه': 'ة',
+			'ي': 'يىئ',
+			'و': 'ؤو',
+		};
+		
+		// Check for simple character substitutions (English)
+		const englishSubstitutions: Record<string, string> = {
+			'c': 'ckq',
+			's': 'z',
+			'k': 'ckq',
+			'f': 'ph',
+			'ph': 'f',
+		};
+		
+		// Try substitution matching
+		let modifiedQuery = query;
+		for (const [key, replacements] of Object.entries(arabicSubstitutions)) {
+			if (/[أإآءةىئؤ]/.test(query)) {
+				for (const char of replacements) {
+					modifiedQuery = modifiedQuery.replace(new RegExp(char, 'g'), key);
+				}
+			}
+		}
+		
+		if (text.includes(modifiedQuery)) return true;
+		
+		// Check for partial matches (at least 60% of characters match)
+		if (query.length >= 3) {
+			let matchCount = 0;
+			for (const char of query) {
+				if (text.includes(char)) matchCount++;
+			}
+			if (matchCount / query.length >= 0.6) return true;
+		}
+		
+		return false;
+	};
+
+	const sitePages = [
+		{ titleAr: 'الرئيسية', titleEn: 'Home', url: '/' },
+		{ titleAr: 'التطبيقات الصحية المنشورة', titleEn: 'Published Health Apps', url: '/published-apps' },
+		{ titleAr: 'المقالات الطبية', titleEn: 'Medical Articles', url: '/articles' },
+		{ titleAr: 'عن الموقع', titleEn: 'About Us', url: '/about' },
+		{ titleAr: 'دعمنا', titleEn: 'Support Us', url: '/support' },
+		{ titleAr: 'اتصل بنا', titleEn: 'Contact Us', url: '/contact' },
+		{ titleAr: 'سياسة الخصوصية', titleEn: 'Privacy Policy', url: '/privacy-policy' },
+		{ titleAr: 'شروط الاستخدام', titleEn: 'Terms of Service', url: '/terms-of-service' },
+		{ titleAr: 'حاسبة مؤشر كتلة الجسم', titleEn: 'BMI Calculator', url: '/bmr/bmi' },
+		{ titleAr: 'حاسبة السعر الحراري الأساسي', titleEn: 'BMR Calculator', url: '/bmr/bmr' },
+		{ titleAr: 'حاسبة دهان الدهون', titleEn: 'Body Fat Calculator', url: '/bmr/body-fat' },
+		{ titleAr: 'حاسبة مؤشر كتلة العضلات', titleEn: 'Muscle Mass Calculator', url: '/bmr/muscle-mass' },
+		{ titleAr: 'حاسبة نسبة الماء في الجسم', titleEn: 'Body Water Calculator', url: '/bmr/water' },
+		{ titleAr: 'حاسبة النسبة العضل إلى الدهون', titleEn: 'Muscle to Fat Ratio', url: '/bmr/muscle-to-fat' },
+		{ titleAr: 'حاسبة العمر الأيضي', titleEn: 'Metabolic Age Calculator', url: '/bmr/metabolic-age' },
+		{ titleAr: 'حاسبة معدل ضربات القلب المستهدف', titleEn: 'Target Heart Rate Calculator', url: '/bmr/target-heart-rate' },
+		{ titleAr: 'حاسبة المساحة السطحية للجسم', titleEn: 'BSA Calculator', url: '/bmr/bsa' },
+		{ titleAr: 'حاسبة الاحتياج اليومي من الماء', titleEn: 'Daily Water Need Calculator', url: '/bmr/daily-water-need' },
+		{ titleAr: 'حاسبة نسبة الخصر إلى الطول', titleEn: 'Waist to Height Ratio', url: '/bmr/waist-to-height' },
+		{ titleAr: 'حاسبة كتلة العظم', titleEn: 'Bone Mass Calculator', url: '/bmr/bone-mass' },
+		{ titleAr: 'حاسبة توزيع الدهون عند النساء', titleEn: 'Fat Distribution Women Calculator', url: '/bmr/fat-distribution-women' },
+		{ titleAr: 'حاسبة الطول من الساعد', titleEn: 'Height from Forearm Calculator', url: '/bmr/height-from-forearm' },
+		{ titleAr: 'تحليل غازات الدم الشرياني', titleEn: 'ABG Analyzer', url: '/blood/abg-analyzer' },
+		{ titleAr: 'حاسبة فجوة الأنيون', titleEn: 'Anion Gap Calculator', url: '/blood/anion-gap' },
+		{ titleAr: 'حاسبة الكالسيوم المصحح', titleEn: 'Corrected Calcium Calculator', url: '/blood/corrected-calcium' },
+		{ titleAr: 'حاسبة الصوديوم المصحح', titleEn: 'Corrected Sodium Calculator', url: '/blood/corrected-sodium' },
+		{ titleAr: 'حاسبة معدل الترشيح الكلوي (eGFR)', titleEn: 'eGFR CKD-EPI Calculator', url: '/blood/egfr-ckd-epi' },
+		{ titleAr: 'حاسبة إفراز الصوديوم (FENa)', titleEn: 'FENa Calculator', url: '/blood/fena' },
+		{ titleAr: 'حاسبة HbA1c إلى متوسط السكر', titleEn: 'HbA1c to eAG Calculator', url: '/blood/hba1c-to-eag' },
+		{ titleAr: 'حاسبة LDL (فريدوالد)', titleEn: 'LDL Friedewald Calculator', url: '/blood/ldl-friedewald' },
+		{ titleAr: 'حاسبة فجوة الأسمولية', titleEn: 'Osmolar Gap Calculator', url: '/blood/osmolar-gap' },
+		{ titleAr: 'حاسبة فترة QT المصححة (بازيت)', titleEn: 'QTc Bazett Calculator', url: '/blood/qtc-bazett' },
+		{ titleAr: 'حاسبة انحلال اللمفا (كايرو-بيشوب)', titleEn: 'Tumor Lysis Cairo-Bishop Calculator', url: '/blood/tumor-lysis-cairo-bishop' },
+		{ titleAr: 'جدول دوسية نوبات اللابرون', titleEn: 'Adrogue-Madias', url: '/doses/adrogue-madias' },
+		{ titleAr: 'حاسبة تحويل دواء الكورتيكوستيرويد', titleEn: 'Corticosteroid Dose Converter', url: '/doses/corticosteroid-dose-converter' },
+		{ titleAr: 'حاسبة تقليل دواء الكورتيكوستيرويد', titleEn: 'Corticosteroid Tapering', url: '/doses/corticosteroid-tapering' },
+		{ titleAr: 'حاسبة جرعة الإينوكسابارين', titleEn: 'Enoxaparin Dosing', url: '/doses/enoxaparin-dosing' },
+		{ titleAr: 'حاسبة جرعة الهيبارين', titleEn: 'Heparin Dosing', url: '/doses/heparin-dosing' },
+		{ titleAr: 'حاسبة تصحيح الأنسولين', titleEn: 'Insulin Correction', url: '/doses/insulin-correction' },
+		{ titleAr: 'حاسبة جرعة الليفوثيروكسين', titleEn: 'Levothyroxine Dosing', url: '/doses/levothyroxine-dosing' },
+		{ titleAr: 'حاسبة تحويل الأفيون', titleEn: 'Opioid Conversion', url: '/doses/opioid-conversion' },
+		{ titleAr: 'حاسبة عجز البوتاسيوم', titleEn: 'Potassium Deficit', url: '/doses/potassium-deficit' },
+		{ titleAr: 'حاسبة نوم-ماثيو (للتسمم)', titleEn: 'Rumack-Matthew Nomogram', url: '/doses/rumack-matthew-nomogram' },
+		{ titleAr: 'حاسبة عجز الماء', titleEn: 'Water Deficit', url: '/doses/water-deficit' },
+		{ titleAr: 'حاسبة العمر البيولوجي', titleEn: 'Biological Age Calculator', url: '/fittness/biological-age' },
+		{ titleAr: 'حاسبة تحويل السعرات إلى ماركوز', titleEn: 'Calorie to Macros', url: '/fittness/calorie-to-macros' },
+		{ titleAr: 'حاسبة تقسيم الماركوز', titleEn: 'Macro Ratio Splitter', url: '/fittness/macro-ratio-splitter' },
+		{ titleAr: 'حاسبة METs وحرق السعرات', titleEn: 'METS Calorie Calculator', url: '/fittness/mets-calorie-calculator' },
+		{ titleAr: 'حاسبة تكرار الضربة القصوى', titleEn: 'One Rep Max Calculator', url: '/fittness/one-rep-max' },
+		{ titleAr: 'حاسبة وحدات الأطفال الطبية', titleEn: 'Pediatric Unit Converter', url: '/fittness/pediatric-unit-converter' },
+		{ titleAr: 'حاسبة السعرات المستهدفة السريعة', titleEn: 'Quick Calorie Target', url: '/fittness/quick-calorie-target' },
+		{ titleAr: 'حاسبة وتيرة الجري', titleEn: 'Running Pace Calculator', url: '/fittness/running-pace' },
+		{ titleAr: 'حاسبة حرق السعرات أثناء النوم', titleEn: 'Sleep Calorie Burn', url: '/fittness/sleep-calorie-burn' },
+		{ titleAr: 'حاسبة الخطوات إلى السعرات', titleEn: 'Steps to Calories', url: '/fittness/steps-to-calories' },
+		{ titleAr: 'حاسبة الشوارد والترطيب الكهارلية', titleEn: 'Sweat Hydration Electrolytes', url: '/fittness/sweat-hydration-electrolytes' },
+		{ titleAr: 'حاسبة استهلاك الأكسجين أثناء التمرين', titleEn: 'VO2 Max Estimate', url: '/fittness/vo2max-estimate' },
+		{ titleAr: 'مقياس شدة قنوات الأكي (AKI-DKD)', titleEn: 'AKI-KDGO Staging', url: '/meters/akin-kdigo-staging' },
+		{ titleAr: 'مقياس سنتور (Centor Score)', titleEn: 'Centor Score', url: '/meters/centor-score' },
+		{ titleAr: 'مقياس خطر تجلط الدم (CHA2DS2-VASc)', titleEn: 'CHA2DS2-VASc', url: '/meters/cha2ds2-vasc' },
+		{ titleAr: 'مقياس فشل الكبد لدى الأطفال (Child-Pugh)', titleEn: 'Child-Pugh Score', url: '/meters/child-pugh' },
+		{ titleAr: 'مقياس شدة الالتهاب الرئوي (CURB-65)', titleEn: 'CURB-65', url: '/meters/curb-65' },
+		{ titleAr: 'مقياس غيبوبة الوعي (GCS)', titleEn: 'Glasgow Coma Scale', url: '/meters/glasgow-coma-scale' },
+		{ titleAr: 'مقياس خطر النزيف (HAS-BLED)', titleEn: 'HAS-BLED', url: '/meters/has-bled' },
+		{ titleAr: 'مقياس ضغط الدم المتوسط (MAP)', titleEn: 'MAP Calculator', url: '/meters/map-calculator' },
+		{ titleAr: 'مقياس نوبات الصدمة (qSOFA)', titleEn: 'qSOFA', url: '/meters/qsofa' },
+		{ titleAr: 'مقياس خطر الإصابة الجلطية الرئوية (Wells)', titleEn: 'Wells PE Score', url: '/meters/wells-score-pe' },
+		{ titleAr: 'فحص وظائف الكلى للمخدر والطفل', titleEn: 'Multi-Intelligence Test', url: '/multi-intelligence-test' },
+		{ titleAr: 'نقاطر أبيار (APGAR)', titleEn: 'APGAR Score', url: '/mother&child/apgar-score' },
+		{ titleAr: 'مقياس بيشوب (Bishop Score)', titleEn: 'Bishop Score', url: '/mother&child/bishop-score' },
+		{ titleAr: 'حساب العمر المصحح للموالد الخدج', titleEn: 'Corrected Age Preterm', url: '/mother&child/corrected-age-premature' },
+		{ titleAr: 'مقياس نمو الطفل', titleEn: 'Growth Percentile', url: '/mother&child/growth-percentile' },
+		{ titleAr: 'مقياس حروق لوند-برودر للطفل', titleEn: 'Lund-Browder Burns', url: '/mother&child/lund-browder-burns' },
+		{ titleAr: 'حاسبة التبويض', titleEn: 'Ovulation Calculator', url: '/mother&child/ovulation' },
+		{ titleAr: 'مقياس باركليد للمحروق', titleEn: 'Parkland Formula', url: '/mother&child/parkland-formula' },
+		{ titleAr: 'حاسبة جرعة خافض الحرارة للأطفال', titleEn: 'Pediatric Antipyretic Dosing', url: '/mother&child/pediatric-antipyretic-dosing' },
+		{ titleAr: 'حاسبة موعد الولادة', titleEn: 'Pregnancy Due Date', url: '/mother&child/pregnancy-due-date' },
+		{ titleAr: 'اختبارات العيون', titleEn: 'Eye Tests', url: '/optics' },
+		{ titleAr: 'شبكة أمسلر لفحص البقعة الصفراء', titleEn: 'Amsler Grid Test', url: '/optics/amsler-grid' },
+		{ titleAr: 'اختبار عجلة الاستجماتيزم', titleEn: 'Astigmatism Wheel Test', url: '/optics/astigmatism-test' },
+		{ titleAr: 'اختبار تمييز الألوان', titleEn: 'Color Vision Test', url: '/optics/color-blindness-test' },
+		{ titleAr: 'اختبار عمى الألوان المتقدم', titleEn: 'Advanced Color Vision Test', url: '/optics/color-vision-advanced' },
+		{ titleAr: 'اختبار حساسية التباين', titleEn: 'Contrast Sensitivity Test', url: '/optics/contrast-sensitivity' },
+		{ titleAr: 'مؤقت جفاف العين ومعدل الرمش', titleEn: 'Dry Eye & Blink Rate Timer', url: '/optics/dry-eye-timer' },
+		{ titleAr: 'حاسبة إجهاد العين الرقمي', titleEn: 'Digital Eye Strain Calculator', url: '/optics/eye-strain-calculator' },
+		{ titleAr: 'اختبار الوهج والرؤية الليلية', titleEn: 'Night Glare & Driving Vision Test', url: '/optics/night-glare-test' },
+		{ titleAr: 'حاسبة تحويل مقاس النظارة إلى عدسة لاصقة', titleEn: 'Spectacle-to-Contact-Lens Power Calculator', url: '/optics/vertex-distance-calculator' },
+		{ titleAr: 'اختبار حدة الإبصار (سنيلن)', titleEn: 'Visual Acuity Test (Snellen)', url: '/optics/visual-acuity' },
+		{ titleAr: 'الاختبارات النفسية', titleEn: 'Psychological Tests', url: '/psychological-tests' },
+		{ titleAr: 'مقياس القلق والضغط', titleEn: 'Anxiety & Stress Scale', url: '/psychological-tests/anxiety-stress' },
+		{ titleAr: 'مقياس نمط التعلق', titleEn: 'Attachment Style Test', url: '/psychological-tests/attachment-style' },
+		{ titleAr: 'مقياس ثقة الجسم', titleEn: 'Body Image Confidence', url: '/psychological-tests/body-image-confidence' },
+		{ titleAr: 'مقياس حل النزاعات', titleEn: 'Conflict Resolution', url: '/psychological-tests/conflict-resolution' },
+		{ titleAr: 'مقياس التواصل الزوجي', titleEn: 'Couple Communication', url: '/psychological-tests/couple-communication' },
+		{ titleAr: 'مقياس السلوك الجنسي القهري', titleEn: 'CSBI', url: '/psychological-tests/csbi-compulsive-sexual-behavior' },
+		{ titleAr: 'مقياس الذكاء العاطفي', titleEn: 'Emotional Intelligence', url: '/psychological-tests/emotional-intelligence' },
+		{ titleAr: 'مقياس التوافق المالي', titleEn: 'Financial Compatibility', url: '/psychological-tests/financial-compatibility' },
+		{ titleAr: 'مقياس المسامحة', titleEn: 'Forgiveness Scale', url: '/psychological-tests/forgiveness-scale' },
+		{ titleAr: 'مقياس الوظيفة الجنسية للنساء', titleEn: 'FSFI', url: '/psychological-tests/fsfi-female-sexual-function' },
+		{ titleAr: 'مقياس الرضا الجنسي العام', titleEn: 'General Sexual Satisfaction', url: '/psychological-tests/general-sexual-satisfaction' },
+		{ titleAr: 'مقياس الفرسان الأربعة', titleEn: 'Gottman Four Horsemen', url: '/psychological-tests/gottman-four-horsemen' },
+		{ titleAr: 'مقياس فرط النشاط الجنسي', titleEn: 'Hypersexuality Scale', url: '/psychological-tests/hypersexuality-scale' },
+		{ titleAr: 'مقياس الوظيفة الجنسية للرجال', titleEn: 'IIEF', url: '/psychological-tests/iief-male-sexual-function' },
+		{ titleAr: 'مقياس الاندفاعالية', titleEn: 'Impulsivity Test', url: '/psychological-tests/impulsivity-test' },
+		{ titleAr: 'مقياس حدود الأصهار', titleEn: 'In-Laws Boundaries', url: '/psychological-tests/inlaws-boundaries' },
+		{ titleAr: 'مقياس العادات الحميمة', titleEn: 'Intimacy Habits', url: '/psychological-tests/intimacy-habits' },
+		{ titleAr: 'مقياس الغيرة', titleEn: 'Jealousy Scale', url: '/psychological-tests/jealousy-scale' },
+		{ titleAr: 'مقياس لغات الحب', titleEn: 'Love Languages', url: '/psychological-tests/love-languages' },
+		{ titleAr: 'مقياس التوازن الزوجي', titleEn: 'Marital Balance', url: '/psychological-tests/marital-balance' },
+		{ titleAr: 'مقياس الرضا الزوجي', titleEn: 'Marital Satisfaction', url: '/psychological-tests/marital-satisfaction' },
+		{ titleAr: 'مقياس توافق أنماط التربية', titleEn: 'Parenting Styles Compatibility', url: '/psychological-tests/parenting-styles-compatibility' },
+		{ titleAr: 'مقياس القذف المبكر (PEDT)', titleEn: 'PEDT', url: '/psychological-tests/pedt-premature-ejaculation' },
+		{ titleAr: 'مقياس عادات الهاتف والوسائط الاجتماعي', titleEn: 'Phone Social Media Habits', url: '/psychological-tests/phone-social-media-habits' },
+		{ titleAr: 'مقياس إدمان الإباحية', titleEn: 'Pornography Addiction', url: '/psychological-tests/pornography-addiction' },
+		{ titleAr: 'مقياس فحص إدمان الجنس', titleEn: 'SAST', url: '/psychological-tests/sast-sex-addiction-screening' },
+		{ titleAr: 'مقياس الثقة', titleEn: 'Trust Scale', url: '/psychological-tests/trust-scale' },
+		{ titleAr: 'مقياس التوازن بين العمل والزواج', titleEn: 'Work-Life Marriage Balance', url: '/psychological-tests/work-life-marriage-balance' },
+		{ titleAr: 'مقياس اكتئابية الذاكرة (ASRS)', titleEn: 'ASRS', url: '/tests/asrs' },
+		{ titleAr: 'مقياس اكتئابية الكحول (AUDIT-C)', titleEn: 'AUDIT-C', url: '/tests/audit-c' },
+		{ titleAr: 'مقياس كاج (CAGE)', titleEn: 'CAGE', url: '/tests/cage' },
+		{ titleAr: 'مقياس القلق والاكتئاب والاكتئاب (DASS-21)', titleEn: 'DASS-21', url: '/tests/dass21' },
+		{ titleAr: 'مقياس القلق المعمم (GAD-7)', titleEn: 'GAD-7', url: '/tests/gad7' },
+		{ titleAr: 'مقياس اضطراب ما بعد الصدمة (PCL-5)', titleEn: 'PCL-5', url: '/tests/pcl5' },
+		{ titleAr: 'مقياس اضطراب ما بعد الصدمة (PC-PTSD-5)', titleEn: 'PC-PTSD-5', url: '/tests/pcptsd5' },
+		{ titleAr: 'مقياس الاكتئاب (PHQ-9)', titleEn: 'PHQ-9', url: '/tests/phq9' },
+		{ titleAr: 'مقياس الإجهاد المدني (PSS-10)', titleEn: 'PSS-10', url: '/tests/pss10' },
+		{ titleAr: 'مقياس تقدير الذات (روزنبرغ)', titleEn: 'Rosenberg', url: '/tests/rosenberg' },
+		{ titleAr: 'مقياس اضطراب الأكل (SCOFF)', titleEn: 'SCOFF', url: '/tests/scoff' },
+		{ titleAr: 'مقياس رفاهية منظمة الصحة العالمية (WHO-5)', titleEn: 'WHO-5', url: '/tests/who5' },
+		{ titleAr: 'تنظيف الروابط', titleEn: 'URL Cleaner', url: '/url-cleaner' },
+		{ titleAr: 'حاسبة جرعة الأدوية للأطفال', titleEn: 'Pediatric Dosage Calculator', url: '/pediatric-dosage-calculator' },
+	];
+
+	const searchInput = document.getElementById('site-search') as HTMLInputElement | null;
+	const searchToggle = document.getElementById('search-toggle') as HTMLButtonElement | null;
+	const searchResults = document.getElementById('search-results') as HTMLElement | null;
+	let searchExpanded = false;
+
+	if (searchToggle && searchInput && searchResults) {
+		searchToggle.addEventListener('click', () => {
+			searchExpanded = !searchExpanded;
+			if (searchExpanded) {
+				searchInput.classList.add('active');
+				searchInput.focus();
+			} else {
+				searchInput.classList.remove('active');
+				searchResults.classList.remove('active');
+				searchResults.innerHTML = '';
+			}
+		});
+
+		searchInput.addEventListener('input', (e) => {
+			const query = (e.target as HTMLInputElement).value.trim();
+			if (query.length < 2) {
+				searchResults.innerHTML = '';
+				searchResults.classList.remove('active');
+				return;
+			}
+
+			const currentLang = document.documentElement.lang;
+			const results = sitePages.filter(page => {
+				const titleToSearch = currentLang === 'ar' ? page.titleAr : page.titleEn;
+				return fuzzyMatch(titleToSearch.toLowerCase(), query.toLowerCase());
+			});
+
+			if (results.length > 0) {
+				searchResults.innerHTML = results.map(page => `
+					<a href="${page.url}" class="search-result-item">
+						<span class="result-title-ar">${page.titleAr}</span>
+						<span class="result-title-en">${page.titleEn}</span>
+					</a>
+				`).join('');
+				searchResults.classList.add('active');
+			} else {
+				searchResults.innerHTML = `
+					<div class="search-no-results">
+						<span data-ar>لا توجد نتائج</span>
+						<span data-en>No results found</span>
+					</div>
+				`;
+				searchResults.classList.add('active');
+			}
+		});
+
+		// Close search when clicking outside
+		document.addEventListener('click', (e) => {
+			const target = e.target as HTMLElement;
+			if (!target.closest('.search-container')) {
+				searchExpanded = false;
+				searchInput.classList.remove('active');
+				searchResults.classList.remove('active');
+				searchInput.value = '';
+			}
+		});
+	}
 
 	window.addEventListener('DOMContentLoaded', () => {
 		const initialLang = getInitialLang();
@@ -149,6 +413,118 @@
 		box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 	}
 
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.search-container {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	#site-search {
+		width: 0;
+		padding: 0;
+		border: none;
+		background: transparent;
+		outline: none;
+		transition: width 0.3s ease, padding 0.3s ease;
+		opacity: 0;
+	}
+
+	#site-search.active {
+		width: 280px;
+		padding: 10px 16px;
+		border: 1px solid rgba(56, 132, 81, 0.18);
+		border-radius: 999px;
+		background: white;
+		opacity: 1;
+	}
+
+	#search-toggle {
+		min-width: 42px;
+		height: 42px;
+		padding: 0;
+		border: 1px solid rgba(56, 132, 81, 0.18);
+		border-radius: 999px;
+		background: white;
+		color: #1f2937;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	#search-toggle:hover,
+	#search-toggle:focus-visible {
+		transform: translateY(-1px);
+		box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+	}
+
+	.search-results {
+		position: absolute;
+		top: calc(100% + 8px);
+		right: 0;
+		width: 100%;
+		min-width: 320px;
+		max-height: 400px;
+		overflow-y: auto;
+		background: white;
+		border-radius: 16px;
+		box-shadow: 0 16px 48px rgba(15, 23, 42, 0.12);
+		border: 1px solid rgba(56, 132, 81, 0.1);
+		padding: 8px;
+		display: none;
+		z-index: 1000;
+	}
+
+	.search-results.active {
+		display: block;
+	}
+
+	[dir="rtl"] .search-results {
+		right: auto;
+		left: 0;
+	}
+
+	.search-result-item {
+		display: block;
+		padding: 12px 16px;
+		border-radius: 12px;
+		text-decoration: none;
+		transition: background 0.2s ease;
+		margin-bottom: 4px;
+	}
+
+	.search-result-item:hover {
+		background: rgba(56, 132, 81, 0.08);
+	}
+
+	.result-title-ar {
+		display: block;
+		color: #0f172a;
+		font-weight: 600;
+		font-size: 0.95rem;
+		margin-bottom: 4px;
+	}
+
+	.result-title-en {
+		display: block;
+		color: #64748b;
+		font-size: 0.85rem;
+	}
+
+	.search-no-results {
+		padding: 16px;
+		text-align: center;
+		color: #64748b;
+		font-size: 0.9rem;
+	}
+
 	@media (max-width: 820px) {
 		.site-header {
 			padding: 20px 22px;
@@ -170,6 +546,25 @@
 			justify-content: space-between;
 			width: 100%;
 			gap: 8px;
+		}
+
+		.header-actions {
+			width: 100%;
+			justify-content: flex-end;
+		}
+
+		#site-search.active {
+			width: 200px;
+		}
+
+		.search-results {
+			min-width: 200px;
+			right: 0;
+		}
+
+		[dir="rtl"] .search-results {
+			right: auto;
+			left: 0;
 		}
 	}
 </style>

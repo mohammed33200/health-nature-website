@@ -12,6 +12,24 @@ import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
         <span data-ar>‹ العودة إلى كل الاختبارات</span>
         <span data-en>‹ Back to all tests</span>
       </a>
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
       <p class="kicker"><span data-ar>اختبارات العيون</span><span data-en>Eye Tests</span></p>
       <h1>
         <span data-ar>اختبار حدة الإبصار (سنيلن)</span>
@@ -146,16 +164,17 @@ import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
   const CARD_WIDTH_MM = 85.6;
   const BASE_CARD_PX = 320;
 
-  const calibCard = document.getElementById('calibCard') as HTMLDivElement;
-  const calibSlider = document.getElementById('calibSlider') as HTMLInputElement;
-  const startTestBtn = document.getElementById('startTestBtn');
-  const calibrationStep = document.getElementById('calibrationStep');
-  const testStep = document.getElementById('testStep');
-  const distanceSelect = document.getElementById('distanceSelect') as HTMLSelectElement;
+  const calibCard = document.getElementById('calibCard') as HTMLDivElement | null;
+  const calibSlider = document.getElementById('calibSlider') as HTMLInputElement | null;
+  const startTestBtn = document.getElementById('startTestBtn') as HTMLButtonElement | null;
+  const calibrationStep = document.getElementById('calibrationStep') as HTMLElement | null;
+  const testStep = document.getElementById('testStep') as HTMLElement | null;
+  const distanceSelect = document.getElementById('distanceSelect') as HTMLSelectElement | null;
 
   let pxPerMm = BASE_CARD_PX / CARD_WIDTH_MM;
 
   calibSlider?.addEventListener('input', () => {
+    if (!calibSlider || !calibCard) return;
     const scaleVal = parseInt(calibSlider.value, 10) / 100;
     const widthPx = BASE_CARD_PX * scaleVal;
     calibCard.style.width = `${widthPx}px`;
@@ -163,14 +182,14 @@ import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
     pxPerMm = widthPx / CARD_WIDTH_MM;
   });
 
-  const lineCounter = document.getElementById('lineCounter');
-  const tumblingEEl = document.getElementById('tumblingE') as HTMLDivElement;
-  const directionPad = document.getElementById('directionPad');
-  const resultBox = document.getElementById('acuityResultBox');
-  const resultTitle = document.getElementById('acuityResultTitle');
-  const resultBadge = document.getElementById('acuityResultBadge');
-  const resultText = document.getElementById('acuityResultText');
-  const retryBtn = document.getElementById('acuityRetry');
+  const lineCounter = document.getElementById('lineCounter') as HTMLElement | null;
+  const tumblingEEl = document.getElementById('tumblingE') as HTMLDivElement | null;
+  const directionPad = document.getElementById('directionPad') as HTMLElement | null;
+  const resultBox = document.getElementById('acuityResultBox') as HTMLElement | null;
+  const resultTitle = document.getElementById('acuityResultTitle') as HTMLElement | null;
+  const resultBadge = document.getElementById('acuityResultBadge') as HTMLElement | null;
+  const resultText = document.getElementById('acuityResultText') as HTMLElement | null;
+  const retryBtn = document.getElementById('acuityRetry') as HTMLButtonElement | null;
 
   const rotationForDirection = { right: 0, down: 90, left: 180, up: 270 };
   const directions = ['up', 'down', 'left', 'right'];
@@ -257,7 +276,8 @@ import ToolsShellAstroComponent from "../../layouts/ToolsShell.astro";
   }
 
   directionPad?.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest('.dir-btn') as HTMLButtonElement;
+    const target = e.target as HTMLElement;
+    const btn = target.closest('.dir-btn') as HTMLButtonElement | null;
     if (!btn) return;
     handleAnswer(btn.dataset.dir as string);
   });
