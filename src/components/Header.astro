@@ -534,12 +534,21 @@
 			justify-content: center;
 			gap: 12px;
 		}
+
+		.header-actions {
+			gap: 8px;
+		}
 	}
 
 	@media (max-width: 640px) {
 		.site-header {
 			flex-direction: column;
 			align-items: stretch;
+			gap: 16px;
+		}
+
+		.brand {
+			justify-content: center;
 		}
 
 		nav ul {
@@ -554,11 +563,11 @@
 		}
 
 		#site-search.active {
-			width: 200px;
+			width: 160px;
 		}
 
 		.search-results {
-			min-width: 200px;
+			min-width: 160px;
 			right: 0;
 		}
 
