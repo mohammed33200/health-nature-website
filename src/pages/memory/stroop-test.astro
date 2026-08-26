@@ -1,0 +1,176 @@
+---
+// src/pages/memory-vigilance/stroop-test.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Stroop Test | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>الانتباه الانتقائي</span>
+    <span class="kicker" data-en>Selective Attention</span>
+    <h1>
+      <span data-ar>اختبار ستروب</span>
+      <span data-en>Stroop Test</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>حدّد لون الخط الذي كُتبت به الكلمة، وليس معنى الكلمة نفسها — يقيس المرونة الذهنية ومقاومة التداخل.</span>
+      <span data-en>Identify the ink color the word is printed in — not what the word says. Measures cognitive flexibility and interference control.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="mv-progress" id="stProgress"></div>
+    <div class="mv-stage mv-active" id="stStage" style="min-height:200px;">
+      <div class="mv-stroop-word" id="stWord">—</div>
+    </div>
+    <div class="mv-color-grid" id="stColorGrid"></div>
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="stStartBtn">
+        <span data-ar>ابدأ الاختبار (20 محاولة)</span>
+        <span data-en>Start Test (20 trials)</span>
+      </button>
+    </div>
+
+    <div class="result" id="stResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="stAccuracy">–</div><div class="mv-stat-label"><span data-ar>الدقة %</span><span data-en>Accuracy %</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="stMeanRt">–</div><div class="mv-stat-label"><span data-ar>متوسط الزمن (ms)</span><span data-en>Mean RT (ms)</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="stBadge">–</span>
+        <p id="stInterp" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>"تأثير ستروب" هو التأخر الطبيعي الذي يحدث عندما يتعارض معنى الكلمة مع لون خطها؛ فالدماغ يقرأ الكلمة تلقائيًا قبل معالجة اللون. الاختبار يقيس قدرتك على تثبيط الاستجابة التلقائية (القراءة) لصالح المهمة المطلوبة (تحديد اللون).</span>
+      <span data-en style="display:none">The "Stroop effect" is the natural delay that happens when a word's meaning conflicts with its ink color — the brain reads automatically before processing color. This test measures your ability to inhibit the automatic response (reading) in favor of the required task (naming the color).</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي لقياس المرونة الذهنية والتركيز، وليس أداة تشخيص لأي اضطراب معرفي.</span>
+    <span data-en style="display:none">This is an educational test of cognitive flexibility and focus, not a diagnostic tool for any cognitive disorder.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initStroop() {
+    const stage = document.getElementById('stStage');
+    const wordEl = document.getElementById('stWord');
+    const grid = document.getElementById('stColorGrid');
+    const progress = document.getElementById('stProgress');
+    const startBtn = document.getElementById('stStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('stResult');
+    if (!stage) return;
+
+    const COLORS = [
+      { ar: 'أحمر', en: 'Red', hex: '#d64545' },
+      { ar: 'أزرق', en: 'Blue', hex: '#3d6fd6' },
+      { ar: 'أخضر', en: 'Green', hex: '#3f9d5c' },
+      { ar: 'أصفر', en: 'Yellow', hex: '#d6b23d' },
+    ];
+    const TOTAL = 20;
+    let trial = 0, correct = 0, rts = [], targetHex = '', shownAt = 0, active = false;
+
+    function renderButtons() {
+      grid.innerHTML = '';
+      COLORS.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'mv-color-btn';
+        btn.style.background = c.hex;
+        btn.textContent = currentLang() === 'ar' ? c.ar : c.en;
+        (btn as HTMLElement).dataset.hex = c.hex;
+        btn.addEventListener('click', () => handleAnswer(c.hex));
+        grid.appendChild(btn);
+      });
+    }
+
+    function nextTrial() {
+      if (trial >= TOTAL) return finish();
+      const wordColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+      let inkColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+      // bias: 70% incongruent
+      if (Math.random() < 0.7) {
+        while (inkColor.hex === wordColor.hex) {
+          inkColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+        }
+      } else {
+        inkColor = wordColor;
+      }
+      targetHex = inkColor.hex;
+      wordEl.textContent = currentLang() === 'ar' ? wordColor.ar : wordColor.en;
+      wordEl.style.color = inkColor.hex;
+      progress.textContent = `${currentLang() === 'ar' ? 'المحاولة' : 'Trial'} ${trial + 1} / ${TOTAL}`;
+      shownAt = performance.now();
+      active = true;
+    }
+
+    function handleAnswer(hex) {
+      if (!active) return;
+      active = false;
+      const rt = performance.now() - shownAt;
+      rts.push(rt);
+      if (hex === targetHex) correct++;
+      trial++;
+      setTimeout(nextTrial, 250);
+    }
+
+    function finish() {
+      const acc = Math.round((correct / TOTAL) * 100);
+      const meanRt = rts.reduce((a, b) => a + b, 0) / rts.length;
+      document.getElementById('stAccuracy').textContent = String(acc);
+      document.getElementById('stMeanRt').textContent = String(Math.round(meanRt));
+
+      let tierAr, tierEn, tone;
+      if (acc >= 90 && meanRt < 1200) { tierAr = 'تحكم ممتاز في التداخل'; tierEn = 'Excellent interference control'; tone = 'ok'; }
+      else if (acc >= 75) { tierAr = 'أداء جيد'; tierEn = 'Good performance'; tone = 'ok'; }
+      else if (acc >= 60) { tierAr = 'أداء متوسط'; tierEn = 'Moderate performance'; tone = 'warn'; }
+      else { tierAr = 'صعوبة واضحة في تجاهل معنى الكلمة'; tierEn = 'Clear difficulty ignoring word meaning'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('stBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('stInterp').textContent = currentLang() === 'ar'
+        ? 'الدقة العالية مع زمن استجابة معقول يدلان على قدرة جيدة على تثبيط القراءة التلقائية والتركيز على المهمة الفعلية. تراجع الدقة مع التعب أو التشتت أمر طبيعي ولا يستدعي القلق من نتيجة واحدة.'
+        : 'High accuracy with a reasonable response time indicates good ability to inhibit automatic reading and stay on-task. Lower accuracy under fatigue or distraction is normal and shouldn\'t cause concern from a single result.';
+
+      wordEl.textContent = '';
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      trial = 0; correct = 0; rts = []; active = false;
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      renderButtons();
+      nextTrial();
+    });
+
+    renderButtons();
+  }
+
+  document.addEventListener('DOMContentLoaded', initStroop);
+  window.addEventListener('languageChanged', initStroop);
+</script>

@@ -1,0 +1,213 @@
+---
+// src/pages/memory-vigilance/visual-patterns.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Visual Patterns Test | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>السجل البصري</span>
+    <span class="kicker" data-en>Visual Memory</span>
+    <h1>
+      <span data-ar>اختبار الأنماط البصرية</span>
+      <span data-en>Visual Patterns Test</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>احفظ أماكن المربعات المظللة، ثم أعد اختيارها بعد اختفائها — يقيس السجل البصري قصير المدى.</span>
+      <span data-en>Memorize the shaded squares' positions, then re-select them after they disappear — measures short-term visual registration.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="mv-progress" id="vpProgress"></div>
+    <div class="mv-grid" id="vpGrid" style="grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);"></div>
+    <p style="text-align:center;" id="vpStatus">
+      <span data-ar>اضغط "ابدأ" لمشاهدة أول نمط</span>
+      <span data-en style="display:none">Press "Start" to see the first pattern</span>
+    </p>
+    <div style="text-align:center; margin-top:12px;">
+      <button class="btn-calc" id="vpSubmitBtn" style="display:none;">
+        <span data-ar>تأكيد الاختيار</span><span data-en>Submit selection</span>
+      </button>
+    </div>
+
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="vpStartBtn">
+        <span data-ar>ابدأ الاختبار</span>
+        <span data-en>Start Test</span>
+      </button>
+    </div>
+
+    <div class="result" id="vpResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="vpSpan">–</div><div class="mv-stat-label"><span data-ar>أقصى عدد مربعات محفوظ</span><span data-en>Max squares held</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="vpBadge">–</span>
+        <p id="vpInterp" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>على عكس اختبار Corsi (الذي يقيس تذكر تسلسل حركي)، يقيس هذا الاختبار السجل البصري الآني — قدرتك على التقاط "لقطة" لنمط ثابت وتذكر مواقعه بدون ترتيب زمني.</span>
+      <span data-en style="display:none">Unlike Corsi (which measures recall of a movement sequence), this test measures instantaneous visual registration — your ability to capture a "snapshot" of a static pattern and recall its positions without any temporal order.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي لقياس الذاكرة البصرية الآنية وليس أداة تشخيصية.</span>
+    <span data-en style="display:none">This is an educational test of instantaneous visual memory, not a diagnostic tool.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initVP() {
+    const grid = document.getElementById('vpGrid');
+    const progress = document.getElementById('vpProgress');
+    const status = document.getElementById('vpStatus');
+    const submitBtn = document.getElementById('vpSubmitBtn') as HTMLButtonElement;
+    const startBtn = document.getElementById('vpStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('vpResult');
+    if (!grid) return;
+
+    const GRID_SIZE = 16; // 4x4
+    let count = 3, target = [], selected = new Set(), longestHeld = 0, misses = 0, accepting = false;
+
+    function buildGrid() {
+      grid.innerHTML = '';
+      for (let i = 0; i < GRID_SIZE; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'mv-cell mv-vp-cell';
+        cell.dataset.idx = String(i);
+        cell.addEventListener('pointerdown', (e) => { e.preventDefault(); handleCellClick(i, cell); });
+        grid.appendChild(cell);
+      }
+    }
+
+    function cellEls() { return grid.querySelectorAll('.mv-vp-cell'); }
+
+    function setStatus(ar, en) {
+      status.innerHTML = `<span data-ar>${ar}</span><span data-en style="display:none">${en}</span>`;
+    }
+
+    function genPattern(n) {
+      const idxs = [...Array(GRID_SIZE).keys()];
+      for (let i = idxs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+      }
+      return idxs.slice(0, n);
+    }
+
+    function startRound() {
+      target = genPattern(count);
+      selected = new Set();
+      progress.textContent = `${currentLang() === 'ar' ? 'عدد المربعات' : 'Squares'}: ${count}`;
+      submitBtn.style.display = 'none';
+      accepting = false;
+      const cells = cellEls();
+      cells.forEach(c => c.classList.remove('mv-on', 'mv-sel'));
+      target.forEach(i => cells[i].classList.add('mv-on'));
+      setStatus('احفظ الأماكن...', 'Memorize the positions...');
+
+      setTimeout(() => {
+        cells.forEach(c => c.classList.remove('mv-on'));
+        accepting = true;
+        submitBtn.style.display = 'inline-block';
+        setStatus(`اختر ${count} مربعات بنفس الأماكن ثم أكّد`, `Select ${count} squares in the same spots, then submit`);
+      }, 500 + count * 350);
+    }
+
+    function handleCellClick(idx, cell) {
+      if (!accepting) return;
+      if (selected.has(idx)) {
+        selected.delete(idx);
+        cell.classList.remove('mv-sel');
+      } else {
+        if (selected.size >= count) return;
+        selected.add(idx);
+        cell.classList.add('mv-sel');
+      }
+    }
+
+    function checkAnswer() {
+      if (!accepting) return;
+      accepting = false;
+      const targetSet = new Set(target);
+      const isCorrect = selected.size === targetSet.size && [...selected].every(i => targetSet.has(i));
+      const cells = cellEls();
+      cells.forEach((c, i) => {
+        if (targetSet.has(i)) c.classList.add(selected.has(i) ? 'mv-on' : 'mv-on');
+      });
+
+      if (isCorrect) {
+        longestHeld = Math.max(longestHeld, count);
+        count++;
+        setStatus('صحيح! نمط أكبر قادم...', 'Correct! A bigger pattern is coming...');
+        setTimeout(startRound, 1300);
+      } else {
+        misses++;
+        if (misses >= 2) {
+          finish();
+        } else {
+          setStatus('غير مطابق تمامًا — محاولة أخيرة بنفس العدد', 'Not an exact match — one more try at this count');
+          setTimeout(startRound, 1400);
+        }
+      }
+    }
+
+    function finish() {
+      const vpSpan = document.getElementById('vpSpan');
+if (vpSpan) vpSpan.textContent = String(longestHeld);
+      let tierAr, tierEn, tone;
+      if (longestHeld >= 8) { tierAr = 'أعلى من المتوسط'; tierEn = 'Above average'; tone = 'ok'; }
+      else if (longestHeld >= 6) { tierAr = 'ضمن المعدل الطبيعي'; tierEn = 'Within normal range'; tone = 'ok'; }
+      else if (longestHeld >= 4) { tierAr = 'ضمن الحد الأدنى للمعدل الطبيعي'; tierEn = 'At the lower end of normal'; tone = 'warn'; }
+      else { tierAr = 'أقل من المعدل المعتاد'; tierEn = 'Below typical range'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('vpBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('vpInterp').textContent = currentLang() === 'ar'
+        ? 'معظم البالغين يحفظون بدقة بين 6-8 مربعات في لقطة واحدة. الفروق الفردية طبيعية وتتأثر بمدى التركيز وقت الاختبار.'
+        : 'Most adults can accurately hold around 6-8 squares in a single glance. Individual differences are normal and are affected by focus at the time of testing.';
+
+      submitBtn.style.display = 'none';
+      setStatus('انتهى الاختبار', 'Test complete');
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      count = 3; longestHeld = 0; misses = 0;
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      startRound();
+    });
+
+    submitBtn.addEventListener('click', checkAnswer);
+    buildGrid();
+  }
+
+  document.addEventListener('DOMContentLoaded', initVP);
+</script>

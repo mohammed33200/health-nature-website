@@ -1,0 +1,342 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ToolsShell from '../layouts/ToolsShell.astro';
+
+export const prerender = true;
+
+const query = Astro.url.searchParams.get('q') || '';
+---
+
+<Layout>
+  <ToolsShell>
+    <div class="tools-scope">
+      <div class="search-page">
+        <h1 data-ar="نتائج البحث" data-en="Search Results">نتائج البحث</h1>
+        
+        <div class="search-query">
+          <span data-ar="بحث عن:" data-en="Searching for:">بحث عن:</span>
+          <strong>{query}</strong>
+        </div>
+
+        <div id="search-results-container" class="search-results-container">
+          <div class="loading" data-ar="جاري البحث..." data-en="Searching...">جاري البحث...</div>
+        </div>
+      </div>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<style>
+  .search-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .search-page h1 {
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    font-size: var(--step-2);
+  }
+
+  .search-query {
+    background: var(--paper-alt);
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+  }
+
+  .search-query span {
+    color: var(--ink-soft);
+    margin-right: 0.5rem;
+  }
+
+  .search-query strong {
+    color: var(--accent);
+  }
+
+  .search-results-container {
+    min-height: 200px;
+  }
+
+  .loading {
+    text-align: center;
+    color: var(--ink-soft);
+    padding: 2rem;
+  }
+
+  .search-result-item {
+    display: block;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .search-result-item:hover {
+    border-color: var(--accent);
+    background: var(--paper-alt);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .result-title-ar {
+    display: block;
+    font-size: var(--step-1);
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  .result-title-en {
+    display: block;
+    font-size: var(--step-0);
+    color: var(--ink-soft);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem;
+    color: var(--ink-soft);
+  }
+
+  .no-results h2 {
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+</style>
+
+<script>
+  // Site pages data (same as in Header.astro)
+  const sitePages = [
+    { titleAr: 'الرئيسية', titleEn: 'Home', url: '/' },
+    { titleAr: 'التطبيقات الصحية المنشورة', titleEn: 'Published Health Apps', url: '/published-apps' },
+    { titleAr: 'المقالات الطبية', titleEn: 'Medical Articles', url: '/articles' },
+    { titleAr: 'عن الموقع', titleEn: 'About Us', url: '/about' },
+    { titleAr: 'دعمنا', titleEn: 'Support Us', url: '/support' },
+    { titleAr: 'اتصل بنا', titleEn: 'Contact Us', url: '/contact' },
+    { titleAr: 'سياسة الخصوصية', titleEn: 'Privacy Policy', url: '/privacy-policy' },
+    { titleAr: 'شروط الاستخدام', titleEn: 'Terms of Service', url: '/terms-of-service' },
+    { titleAr: 'حاسبة مؤشر كتلة الجسم', titleEn: 'BMI Calculator', url: '/bmr/bmi' },
+    { titleAr: 'حاسبة السعر الحراري الأساسي', titleEn: 'BMR Calculator', url: '/bmr/bmr' },
+    { titleAr: 'حاسبة دهان الدهون', titleEn: 'Body Fat Calculator', url: '/bmr/body-fat' },
+    { titleAr: 'حاسبة مؤشر كتلة العضلات', titleEn: 'Muscle Mass Calculator', url: '/bmr/muscle-mass' },
+    { titleAr: 'حاسبة نسبة الماء في الجسم', titleEn: 'Body Water Calculator', url: '/bmr/water' },
+    { titleAr: 'حاسبة النسبة العضل إلى الدهون', titleEn: 'Muscle to Fat Ratio', url: '/bmr/muscle-to-fat' },
+    { titleAr: 'حاسبة العمر الأيضي', titleEn: 'Metabolic Age Calculator', url: '/bmr/metabolic-age' },
+    { titleAr: 'حاسبة معدل ضربات القلب المستهدف', titleEn: 'Target Heart Rate Calculator', url: '/bmr/target-heart-rate' },
+    { titleAr: 'حاسبة المساحة السطحية للجسم', titleEn: 'BSA Calculator', url: '/bmr/bsa' },
+    { titleAr: 'حاسبة الاحتياج اليومي من الماء', titleEn: 'Daily Water Need Calculator', url: '/bmr/daily-water-need' },
+    { titleAr: 'حاسبة نسبة الخصر إلى الطول', titleEn: 'Waist to Height Ratio', url: '/bmr/waist-to-height' },
+    { titleAr: 'حاسبة كتلة العظم', titleEn: 'Bone Mass Calculator', url: '/bmr/bone-mass' },
+    { titleAr: 'حاسبة توزيع الدهون عند النساء', titleEn: 'Fat Distribution Women Calculator', url: '/bmr/fat-distribution-women' },
+    { titleAr: 'حاسبة الطول من الساعد', titleEn: 'Height from Forearm Calculator', url: '/bmr/height-from-forearm' },
+    { titleAr: 'تحليل غازات الدم الشرياني', titleEn: 'ABG Analyzer', url: '/blood/abg-analyzer' },
+    { titleAr: 'حاسبة فجوة الأنيون', titleEn: 'Anion Gap Calculator', url: '/blood/anion-gap' },
+    { titleAr: 'حاسبة الكالسيوم المصحح', titleEn: 'Corrected Calcium Calculator', url: '/blood/corrected-calcium' },
+    { titleAr: 'حاسبة الصوديوم المصحح', titleEn: 'Corrected Sodium Calculator', url: '/blood/corrected-sodium' },
+    { titleAr: 'حاسبة معدل الترشيح الكلوي (eGFR)', titleEn: 'eGFR CKD-EPI Calculator', url: '/blood/egfr-ckd-epi' },
+    { titleAr: 'حاسبة إفراز الصوديوم (FENa)', titleEn: 'FENa Calculator', url: '/blood/fena' },
+    { titleAr: 'حاسبة HbA1c إلى متوسط السكر', titleEn: 'HbA1c to eAG Calculator', url: '/blood/hba1c-to-eag' },
+    { titleAr: 'حاسبة LDL (فريدوالد)', titleEn: 'LDL Friedewald Calculator', url: '/blood/ldl-friedewald' },
+    { titleAr: 'حاسبة فجوة الأسمولية', titleEn: 'Osmolar Gap Calculator', url: '/blood/osmolar-gap' },
+    { titleAr: 'حاسبة فترة QT المصححة (بازيت)', titleEn: 'QTc Bazett Calculator', url: '/blood/qtc-bazett' },
+    { titleAr: 'حاسبة انحلال اللمفا (كايرو-بيشوب)', titleEn: 'Tumor Lysis Cairo-Bishop Calculator', url: '/blood/tumor-lysis-cairo-bishop' },
+    { titleAr: 'جدول دوسية نوبات اللابرون', titleEn: 'Adrogue-Madias', url: '/doses/adrogue-madias' },
+    { titleAr: 'حاسبة تحويل دواء الكورتيكوستيرويد', titleEn: 'Corticosteroid Dose Converter', url: '/doses/corticosteroid-dose-converter' },
+    { titleAr: 'حاسبة تقليل دواء الكورتيكوستيرويد', titleEn: 'Corticosteroid Tapering', url: '/doses/corticosteroid-tapering' },
+    { titleAr: 'حاسبة جرعة الإينوكسابارين', titleEn: 'Enoxaparin Dosing', url: '/doses/enoxaparin-dosing' },
+    { titleAr: 'حاسبة جرعة الهيبارين', titleEn: 'Heparin Dosing', url: '/doses/heparin-dosing' },
+    { titleAr: 'حاسبة تصحيح الأنسولين', titleEn: 'Insulin Correction', url: '/doses/insulin-correction' },
+    { titleAr: 'حاسبة جرعة الليفوثيروكسين', titleEn: 'Levothyroxine Dosing', url: '/doses/levothyroxine-dosing' },
+    { titleAr: 'حاسبة تحويل الأفيون', titleEn: 'Opioid Conversion', url: '/doses/opioid-conversion' },
+    { titleAr: 'حاسبة عجز البوتاسيوم', titleEn: 'Potassium Deficit', url: '/doses/potassium-deficit' },
+    { titleAr: 'حاسبة نوم-ماثيو (للتسمم)', titleEn: 'Rumack-Matthew Nomogram', url: '/doses/rumack-matthew-nomogram' },
+    { titleAr: 'حاسبة عجز الماء', titleEn: 'Water Deficit', url: '/doses/water-deficit' },
+    { titleAr: 'حاسبة العمر البيولوجي', titleEn: 'Biological Age Calculator', url: '/fittness/biological-age' },
+    { titleAr: 'حاسبة تحويل السعرات إلى ماركوز', titleEn: 'Calorie to Macros', url: '/fittness/calorie-to-macros' },
+    { titleAr: 'حاسبة تقسيم الماركوز', titleEn: 'Macro Ratio Splitter', url: '/fittness/macro-ratio-splitter' },
+    { titleAr: 'حاسبة METs وحرق السعرات', titleEn: 'METS Calorie Calculator', url: '/fittness/mets-calorie-calculator' },
+    { titleAr: 'حاسبة تكرار الضربة القصوى', titleEn: 'One Rep Max Calculator', url: '/fittness/one-rep-max' },
+    { titleAr: 'حاسبة وحدات الأطفال الطبية', titleEn: 'Pediatric Unit Converter', url: '/fittness/pediatric-unit-converter' },
+    { titleAr: 'حاسبة السعرات المستهدفة السريعة', titleEn: 'Quick Calorie Target', url: '/fittness/quick-calorie-target' },
+    { titleAr: 'حاسبة وتيرة الجري', titleEn: 'Running Pace Calculator', url: '/fittness/running-pace' },
+    { titleAr: 'حاسبة حرق السعرات أثناء النوم', titleEn: 'Sleep Calorie Burn', url: '/fittness/sleep-calorie-burn' },
+    { titleAr: 'حاسبة الخطوات إلى السعرات', titleEn: 'Steps to Calories', url: '/fittness/steps-to-calories' },
+    { titleAr: 'حاسبة الشوارد والترطيب الكهارلية', titleEn: 'Sweat Hydration Electrolytes', url: '/fittness/sweat-hydration-electrolytes' },
+    { titleAr: 'حاسبة استهلاك الأكسجين أثناء التمرين', titleEn: 'VO2 Max Estimate', url: '/fittness/vo2max-estimate' },
+    { titleAr: 'مقياس شدة قنوات الأكي (AKI-DKD)', titleEn: 'AKI-KDGO Staging', url: '/meters/akin-kdigo-staging' },
+    { titleAr: 'مقياس سنتور (Centor Score)', titleEn: 'Centor Score', url: '/meters/centor-score' },
+    { titleAr: 'مقياس خطر تجلط الدم (CHA2DS2-VASc)', titleEn: 'CHA2DS2-VASc', url: '/meters/cha2ds2-vasc' },
+    { titleAr: 'مقياس فشل الكبد لدى الأطفال (Child-Pugh)', titleEn: 'Child-Pugh Score', url: '/meters/child-pugh' },
+    { titleAr: 'مقياس شدة الالتهاب الرئوي (CURB-65)', titleEn: 'CURB-65', url: '/meters/curb-65' },
+    { titleAr: 'مقياس غيبوبة الوعي (GCS)', titleEn: 'Glasgow Coma Scale', url: '/meters/glasgow-coma-scale' },
+    { titleAr: 'مقياس خطر النزيف (HAS-BLED)', titleEn: 'HAS-BLED', url: '/meters/has-bled' },
+    { titleAr: 'مقياس ضغط الدم المتوسط (MAP)', titleEn: 'MAP Calculator', url: '/meters/map-calculator' },
+    { titleAr: 'مقياس نوبات الصدمة (qSOFA)', titleEn: 'qSOFA', url: '/meters/qsofa' },
+    { titleAr: 'مقياس خطر الإصابة الجلطية الرئوية (Wells)', titleEn: 'Wells PE Score', url: '/meters/wells-score-pe' },
+    { titleAr: 'فحص وظائف الكلى للمخدر والطفل', titleEn: 'Multi-Intelligence Test', url: '/multi-intelligence-test' },
+    { titleAr: 'نقاطر أبيار (APGAR)', titleEn: 'APGAR Score', url: '/mother&child/apgar-score' },
+    { titleAr: 'مقياس بيشوب (Bishop Score)', titleEn: 'Bishop Score', url: '/mother&child/bishop-score' },
+    { titleAr: 'حساب العمر المصحح للموالد الخدج', titleEn: 'Corrected Age Preterm', url: '/mother&child/corrected-age-premature' },
+    { titleAr: 'مقياس نمو الطفل', titleEn: 'Growth Percentile', url: '/mother&child/growth-percentile' },
+    { titleAr: 'مقياس حروق لوند-برودر للطفل', titleEn: 'Lund-Browder Burns', url: '/mother&child/lund-browder-burns' },
+    { titleAr: 'حاسبة التبويض', titleEn: 'Ovulation Calculator', url: '/mother&child/ovulation' },
+    { titleAr: 'مقياس باركليد للمحروق', titleEn: 'Parkland Formula', url: '/mother&child/parkland-formula' },
+    { titleAr: 'حاسبة جرعة خافض الحرارة للأطفال', titleEn: 'Pediatric Antipyretic Dosing', url: '/mother&child/pediatric-antipyretic-dosing' },
+    { titleAr: 'حاسبة موعد الولادة', titleEn: 'Pregnancy Due Date', url: '/mother&child/pregnancy-due-date' },
+    { titleAr: 'اختبارات العيون', titleEn: 'Eye Tests', url: '/optics' },
+    { titleAr: 'شبكة أمسلر لفحص البقعة الصفراء', titleEn: 'Amsler Grid Test', url: '/optics/amsler-grid' },
+    { titleAr: 'اختبار عجلة الاستجماتيزم', titleEn: 'Astigmatism Wheel Test', url: '/optics/astigmatism-test' },
+    { titleAr: 'اختبار تمييز الألوان', titleEn: 'Color Vision Test', url: '/optics/color-blindness-test' },
+    { titleAr: 'اختبار عمى الألوان المتقدم', titleEn: 'Advanced Color Vision Test', url: '/optics/color-vision-advanced' },
+    { titleAr: 'اختبار حساسية التباين', titleEn: 'Contrast Sensitivity Test', url: '/optics/contrast-sensitivity' },
+    { titleAr: 'مؤقت جفاف العين ومعدل الرمش', titleEn: 'Dry Eye & Blink Rate Timer', url: '/optics/dry-eye-timer' },
+    { titleAr: 'حاسبة إجهاد العين الرقمي', titleEn: 'Digital Eye Strain Calculator', url: '/optics/eye-strain-calculator' },
+    { titleAr: 'اختبار الوهج والرؤية الليلية', titleEn: 'Night Glare & Driving Vision Test', url: '/optics/night-glare-test' },
+    { titleAr: 'حاسبة تحويل مقاس النظارة إلى عدسة لاصقة', titleEn: 'Spectacle-to-Contact-Lens Power Calculator', url: '/optics/vertex-distance-calculator' },
+    { titleAr: 'اختبار حدة الإبصار (سنيلن)', titleEn: 'Visual Acuity Test (Snellen)', url: '/optics/visual-acuity' },
+    { titleAr: 'الاختبارات النفسية', titleEn: 'Psychological Tests', url: '/psychological-tests' },
+    { titleAr: 'مقياس القلق والضغط', titleEn: 'Anxiety & Stress Scale', url: '/psychological-tests/anxiety-stress' },
+    { titleAr: 'مقياس نمط التعلق', titleEn: 'Attachment Style Test', url: '/psychological-tests/attachment-style' },
+    { titleAr: 'مقياس ثقة الجسم', titleEn: 'Body Image Confidence', url: '/psychological-tests/body-image-confidence' },
+    { titleAr: 'مقياس حل النزاعات', titleEn: 'Conflict Resolution', url: '/psychological-tests/conflict-resolution' },
+    { titleAr: 'مقياس التواصل الزوجي', titleEn: 'Couple Communication', url: '/psychological-tests/couple-communication' },
+    { titleAr: 'مقياس السلوك الجنسي القهري', titleEn: 'CSBI', url: '/psychological-tests/csbi-compulsive-sexual-behavior' },
+    { titleAr: 'مقياس الذكاء العاطفي', titleEn: 'Emotional Intelligence', url: '/psychological-tests/emotional-intelligence' },
+    { titleAr: 'مقياس التوافق المالي', titleEn: 'Financial Compatibility', url: '/psychological-tests/financial-compatibility' },
+    { titleAr: 'مقياس المسامحة', titleEn: 'Forgiveness Scale', url: '/psychological-tests/forgiveness-scale' },
+    { titleAr: 'مقياس الوظيفة الجنسية للنساء', titleEn: 'FSFI', url: '/psychological-tests/fsfi-female-sexual-function' },
+    { titleAr: 'مقياس الرضا الجنسي العام', titleEn: 'General Sexual Satisfaction', url: '/psychological-tests/general-sexual-satisfaction' },
+    { titleAr: 'مقياس الفرسان الأربعة', titleEn: 'Gottman Four Horsemen', url: '/psychological-tests/gottman-four-horsemen' },
+    { titleAr: 'مقياس فرط النشاط الجنسي', titleEn: 'Hypersexuality Scale', url: '/psychological-tests/hypersexuality-scale' },
+    { titleAr: 'مقياس الوظيفة الجنسية للرجال', titleEn: 'IIEF', url: '/psychological-tests/iief-male-sexual-function' },
+    { titleAr: 'مقياس الاندفاعالية', titleEn: 'Impulsivity Test', url: '/psychological-tests/impulsivity-test' },
+    { titleAr: 'مقياس حدود الأصهار', titleEn: 'In-Laws Boundaries', url: '/psychological-tests/inlaws-boundaries' },
+    { titleAr: 'مقياس العادات الحميمة', titleEn: 'Intimacy Habits', url: '/psychological-tests/intimacy-habits' },
+    { titleAr: 'مقياس الغيرة', titleEn: 'Jealousy Scale', url: '/psychological-tests/jealousy-scale' },
+    { titleAr: 'مقياس لغات الحب', titleEn: 'Love Languages', url: '/psychological-tests/love-languages' },
+    { titleAr: 'مقياس التوازن الزوجي', titleEn: 'Marital Balance', url: '/psychological-tests/marital-balance' },
+    { titleAr: 'مقياس الرضا الزوجي', titleEn: 'Marital Satisfaction', url: '/psychological-tests/marital-satisfaction' },
+    { titleAr: 'مقياس توافق أنماط التربية', titleEn: 'Parenting Styles Compatibility', url: '/psychological-tests/parenting-styles-compatibility' },
+    { titleAr: 'مقياس القذف المبكر (PEDT)', titleEn: 'PEDT', url: '/psychological-tests/pedt-premature-ejaculation' },
+    { titleAr: 'مقياس عادات الهاتف والوسائط الاجتماعي', titleEn: 'Phone Social Media Habits', url: '/psychological-tests/phone-social-media-habits' },
+    { titleAr: 'مقياس إدمان الإباحية', titleEn: 'Pornography Addiction', url: '/psychological-tests/pornography-addiction' },
+    { titleAr: 'مقياس فحص إدمان الجنس', titleEn: 'SAST', url: '/psychological-tests/sast-sex-addiction-screening' },
+    { titleAr: 'مقياس الثقة', titleEn: 'Trust Scale', url: '/psychological-tests/trust-scale' },
+    { titleAr: 'مقياس التوازن بين العمل والزواج', titleEn: 'Work-Life Marriage Balance', url: '/psychological-tests/work-life-marriage-balance' },
+    { titleAr: 'زمن الاستجابة البسيط', titleEn: 'Simple Reaction Time', url: '/memory/simple-reaction-time' },
+    { titleAr: 'اليقظة الحركية (PVT)', titleEn: 'Vigilance (PVT)', url: '/memory/pvt-vigilance' },
+    { titleAr: 'النقر بالإصبع', titleEn: 'Finger Tapping', url: '/memory/finger-tapping' },
+    { titleAr: 'اختبار ستروب', titleEn: 'Stroop Test', url: '/memory/stroop-test' },
+    { titleAr: 'مدى الأرقام', titleEn: 'Digit Span', url: '/memory/digit-span' },
+    { titleAr: 'الأداء المستمر (CPT)', titleEn: 'Continuous Performance (CPT)', url: '/memory/cpt-test' },
+    { titleAr: 'N-Back', titleEn: 'N-Back', url: '/memory/n-back' },
+    { titleAr: 'الذاكرة المكانية (Corsi)', titleEn: 'Corsi Block-Tapping', url: '/memory/corsi-block' },
+    { titleAr: 'صنع المسارات', titleEn: 'Trail Making', url: '/memory/trail-making' },
+    { titleAr: 'الأنماط البصرية', titleEn: 'Visual Patterns', url: '/memory/visual-patterns' },
+    { titleAr: 'اختبارات الذاكرة واليقظة', titleEn: 'Memory, Vigilance & Attention Tests', url: '/memory' },
+    { titleAr: 'مقياس اكتئابية الذاكرة (ASRS)', titleEn: 'ASRS', url: '/tests/asrs' },
+    { titleAr: 'مقياس اكتئابية الكحول (AUDIT-C)', titleEn: 'AUDIT-C', url: '/tests/audit-c' },
+    { titleAr: 'مقياس كاج (CAGE)', titleEn: 'CAGE', url: '/tests/cage' },
+    { titleAr: 'مقياس القلق والاكتئاب والاكتئاب (DASS-21)', titleEn: 'DASS-21', url: '/tests/dass21' },
+    { titleAr: 'مقياس القلق المعمم (GAD-7)', titleEn: 'GAD-7', url: '/tests/gad7' },
+    { titleAr: 'مقياس اضطراب ما بعد الصدمة (PCL-5)', titleEn: 'PCL-5', url: '/tests/pcl5' },
+    { titleAr: 'مقياس اضطراب ما بعد الصدمة (PC-PTSD-5)', titleEn: 'PC-PTSD-5', url: '/tests/pcptsd5' },
+    { titleAr: 'مقياس الاكتئاب (PHQ-9)', titleEn: 'PHQ-9', url: '/tests/phq9' },
+    { titleAr: 'مقياس الإجهاد المدني (PSS-10)', titleEn: 'PSS-10', url: '/tests/pss10' },
+    { titleAr: 'مقياس تقدير الذات (روزنبرغ)', titleEn: 'Rosenberg', url: '/tests/rosenberg' },
+    { titleAr: 'مقياس اضطراب الأكل (SCOFF)', titleEn: 'SCOFF', url: '/tests/scoff' },
+    { titleAr: 'مقياس رفاهية منظمة الصحة العالمية (WHO-5)', titleEn: 'WHO-5', url: '/tests/who5' },
+    { titleAr: 'تنظيف الروابط', titleEn: 'URL Cleaner', url: '/url-cleaner' },
+    { titleAr: 'حاسبة جرعة الأدوية للأطفال', titleEn: 'Pediatric Dosage Calculator', url: '/pediatric-dosage-calculator' },
+  ];
+
+  // Simple exact and partial search
+  const fuzzyMatch = (text: string, query: string): boolean => {
+    if (!query || query.length < 1) return false;
+    
+    // Case-insensitive exact match (most reliable)
+    const lowerText = text.toLowerCase();
+    const lowerQuery = query.toLowerCase();
+    
+    if (lowerText.includes(lowerQuery)) return true;
+    
+    // Arabic character normalization
+    const normalizeArabic = (str: string) => {
+      return str
+        .replace(/[أإآ]/g, 'ا')
+        .replace(/[ة]/g, 'ه')
+        .replace(/[يىئ]/g, 'ي')
+        .replace(/[ؤو]/g, 'و');
+    };
+    
+    const normalizedText = normalizeArabic(lowerText);
+    const normalizedQuery = normalizeArabic(lowerQuery);
+    
+    if (normalizedText.includes(normalizedQuery)) return true;
+    
+    return false;
+  };
+
+  // Sort function
+  const sortPages = (pages: typeof sitePages) => {
+    const currentLang = document.documentElement.lang;
+    return [...pages].sort((a, b) => {
+      if (currentLang === 'ar') {
+        return a.titleAr.localeCompare(b.titleAr, 'ar');
+      } else {
+        return a.titleEn.localeCompare(b.titleEn, 'en');
+      }
+    });
+  };
+
+  // Initialize search results
+  function initSearchResults() {
+    const container = document.getElementById('search-results-container');
+    if (!container) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('q') || '';
+
+    if (!query) {
+      container.innerHTML = `
+        <div class="no-results">
+          <h2 data-ar="الرجاء إدخال كلمة بحث" data-en="Please enter a search term">الرجاء إدخال كلمة بحث</h2>
+        </div>
+      `;
+      return;
+    }
+
+    // Simple filtering logic
+    const lowerQuery = query.toLowerCase();
+    const results = sitePages.filter(page => {
+      const arMatch = page.titleAr.toLowerCase().includes(lowerQuery);
+      const enMatch = page.titleEn.toLowerCase().includes(lowerQuery);
+      return arMatch || enMatch;
+    });
+
+    if (results.length > 0) {
+      const sortedResults = sortPages(results);
+      container.innerHTML = sortedResults.map(page => `
+        <a href="${page.url}" class="search-result-item">
+          <span class="result-title-ar">${page.titleAr}</span>
+          <span class="result-title-en">${page.titleEn}</span>
+        </a>
+      `).join('');
+    } else {
+      container.innerHTML = `
+        <div class="no-results">
+          <h2 data-ar="لا توجد نتائج" data-en="No results found">لا توجد نتائج</h2>
+          <p data-ar="لم يتم العثور على نتائج مطابقة لبحثك" data-en="No matching results were found for your search">لم يتم العثور على نتائج مطابقة لبحثك</p>
+        </div>
+      `;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initSearchResults);
+</script>

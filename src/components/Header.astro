@@ -1,4 +1,99 @@
 <header class="site-header">
+	<style>
+		.search-container {
+			position: relative;
+		}
+
+		#site-search {
+			padding: 0.5rem 1rem;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			font-size: 0.9rem;
+			transition: all 0.2s ease;
+			width: 0;
+			opacity: 0;
+			overflow: hidden;
+		}
+
+		#site-search.active {
+			width: 250px;
+			opacity: 1;
+		}
+
+		#search-toggle {
+			background: none;
+			border: none;
+			cursor: pointer;
+			padding: 0.5rem;
+			color: var(--ink);
+			transition: color 0.2s ease;
+		}
+
+		#search-toggle:hover {
+			color: var(--accent);
+		}
+
+		.search-results {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			background: var(--paper);
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			margin-top: 0.5rem;
+			max-height: 400px;
+			overflow-y: auto;
+			z-index: 1000;
+			display: none;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+		}
+
+		.search-results.active {
+			display: block;
+		}
+
+		.search-result-item {
+			display: flex;
+			flex-direction: column;
+			padding: 1rem;
+			text-decoration: none;
+			border-bottom: 1px solid var(--line);
+			transition: background 0.2s ease;
+			gap: 0.25rem;
+		}
+
+		.search-result-item:last-child {
+			border-bottom: none;
+		}
+
+		.search-result-item:hover {
+			background: var(--paper-alt);
+		}
+
+		.result-title-ar {
+			color: var(--ink);
+			font-weight: 600;
+			font-size: 1rem;
+		}
+
+		.result-title-en {
+			color: var(--ink-soft);
+			font-size: 0.85rem;
+		}
+
+		.search-no-results {
+			padding: 1.5rem;
+			text-align: center;
+			color: var(--ink-soft);
+		}
+
+		[dir="rtl"] .search-results {
+			left: auto;
+			right: 0;
+		}
+	</style>
+
 	<div class="brand">
 		<img src="/logo.svg" alt="SHYM365.ORG logo" class="mark" />
 		<div>
@@ -62,47 +157,29 @@
 	};
 
 	// Site search functionality
-	// Simple fuzzy search with error tolerance
+	// Simple exact and partial search
 	const fuzzyMatch = (text: string, query: string): boolean => {
-		if (text.includes(query)) return true;
+		if (!query || query.length < 1) return false;
 		
-		// Check for simple character substitutions (Arabic)
-		const arabicSubstitutions: Record<string, string> = {
-			'ا': 'أإآ',
-			'ه': 'ة',
-			'ي': 'يىئ',
-			'و': 'ؤو',
+		// Case-insensitive exact match (most reliable)
+		const lowerText = text.toLowerCase();
+		const lowerQuery = query.toLowerCase();
+		
+		if (lowerText.includes(lowerQuery)) return true;
+		
+		// Arabic character normalization
+		const normalizeArabic = (str: string) => {
+			return str
+				.replace(/[أإآ]/g, 'ا')
+				.replace(/[ة]/g, 'ه')
+				.replace(/[يىئ]/g, 'ي')
+				.replace(/[ؤو]/g, 'و');
 		};
 		
-		// Check for simple character substitutions (English)
-		const englishSubstitutions: Record<string, string> = {
-			'c': 'ckq',
-			's': 'z',
-			'k': 'ckq',
-			'f': 'ph',
-			'ph': 'f',
-		};
+		const normalizedText = normalizeArabic(lowerText);
+		const normalizedQuery = normalizeArabic(lowerQuery);
 		
-		// Try substitution matching
-		let modifiedQuery = query;
-		for (const [key, replacements] of Object.entries(arabicSubstitutions)) {
-			if (/[أإآءةىئؤ]/.test(query)) {
-				for (const char of replacements) {
-					modifiedQuery = modifiedQuery.replace(new RegExp(char, 'g'), key);
-				}
-			}
-		}
-		
-		if (text.includes(modifiedQuery)) return true;
-		
-		// Check for partial matches (at least 60% of characters match)
-		if (query.length >= 3) {
-			let matchCount = 0;
-			for (const char of query) {
-				if (text.includes(char)) matchCount++;
-			}
-			if (matchCount / query.length >= 0.6) return true;
-		}
+		if (normalizedText.includes(normalizedQuery)) return true;
 		
 		return false;
 	};
@@ -224,6 +301,17 @@
 		{ titleAr: 'مقياس فحص إدمان الجنس', titleEn: 'SAST', url: '/psychological-tests/sast-sex-addiction-screening' },
 		{ titleAr: 'مقياس الثقة', titleEn: 'Trust Scale', url: '/psychological-tests/trust-scale' },
 		{ titleAr: 'مقياس التوازن بين العمل والزواج', titleEn: 'Work-Life Marriage Balance', url: '/psychological-tests/work-life-marriage-balance' },
+		{ titleAr: 'زمن الاستجابة البسيط', titleEn: 'Simple Reaction Time', url: '/memory/simple-reaction-time' },
+		{ titleAr: 'اليقظة الحركية (PVT)', titleEn: 'Vigilance (PVT)', url: '/memory/pvt-vigilance' },
+		{ titleAr: 'النقر بالإصبع', titleEn: 'Finger Tapping', url: '/memory/finger-tapping' },
+		{ titleAr: 'اختبار ستروب', titleEn: 'Stroop Test', url: '/memory/stroop-test' },
+		{ titleAr: 'مدى الأرقام', titleEn: 'Digit Span', url: '/memory/digit-span' },
+		{ titleAr: 'الأداء المستمر (CPT)', titleEn: 'Continuous Performance (CPT)', url: '/memory/cpt-test' },
+		{ titleAr: 'N-Back', titleEn: 'N-Back', url: '/memory/n-back' },
+		{ titleAr: 'الذاكرة المكانية (Corsi)', titleEn: 'Corsi Block-Tapping', url: '/memory/corsi-block' },
+		{ titleAr: 'صنع المسارات', titleEn: 'Trail Making', url: '/memory/trail-making' },
+		{ titleAr: 'الأنماط البصرية', titleEn: 'Visual Patterns', url: '/memory/visual-patterns' },
+		{ titleAr: 'اختبارات الذاكرة واليقظة', titleEn: 'Memory, Vigilance & Attention Tests', url: '/memory' },
 		{ titleAr: 'مقياس اكتئابية الذاكرة (ASRS)', titleEn: 'ASRS', url: '/tests/asrs' },
 		{ titleAr: 'مقياس اكتئابية الكحول (AUDIT-C)', titleEn: 'AUDIT-C', url: '/tests/audit-c' },
 		{ titleAr: 'مقياس كاج (CAGE)', titleEn: 'CAGE', url: '/tests/cage' },
@@ -240,6 +328,20 @@
 		{ titleAr: 'حاسبة جرعة الأدوية للأطفال', titleEn: 'Pediatric Dosage Calculator', url: '/pediatric-dosage-calculator' },
 	];
 
+	// Sort pages alphabetically based on current language
+	const sortPages = (pages: typeof sitePages) => {
+		const currentLang = document.documentElement.lang;
+		return [...pages].sort((a, b) => {
+			if (currentLang === 'ar') {
+				return a.titleAr.localeCompare(b.titleAr, 'ar');
+			} else {
+				return a.titleEn.localeCompare(b.titleEn, 'en');
+			}
+		});
+	};
+
+	let sortedSitePages = sortPages(sitePages);
+
 	const searchInput = document.getElementById('site-search') as HTMLInputElement | null;
 	const searchToggle = document.getElementById('search-toggle') as HTMLButtonElement | null;
 	const searchResults = document.getElementById('search-results') as HTMLElement | null;
@@ -251,6 +353,16 @@
 			if (searchExpanded) {
 				searchInput.classList.add('active');
 				searchInput.focus();
+				// Clear input and show all sorted results when search is opened
+				searchInput.value = '';
+				sortedSitePages = sortPages(sitePages);
+				searchResults.innerHTML = sortedSitePages.map(page => `
+					<a href="${page.url}" class="search-result-item">
+						<span class="result-title-ar">${page.titleAr}</span>
+						<span class="result-title-en">${page.titleEn}</span>
+					</a>
+				`).join('');
+				searchResults.classList.add('active');
 			} else {
 				searchInput.classList.remove('active');
 				searchResults.classList.remove('active');
@@ -260,20 +372,32 @@
 
 		searchInput.addEventListener('input', (e) => {
 			const query = (e.target as HTMLInputElement).value.trim();
-			if (query.length < 2) {
-				searchResults.innerHTML = '';
-				searchResults.classList.remove('active');
+			
+			// Simple filtering logic
+			if (query.length === 0) {
+				// Show all pages when search is empty
+				sortedSitePages = sortPages(sitePages);
+				searchResults.innerHTML = sortedSitePages.map(page => `
+					<a href="${page.url}" class="search-result-item">
+						<span class="result-title-ar">${page.titleAr}</span>
+						<span class="result-title-en">${page.titleEn}</span>
+					</a>
+				`).join('');
+				searchResults.classList.add('active');
 				return;
 			}
 
-			const currentLang = document.documentElement.lang;
+			// Filter pages based on search query
+			const lowerQuery = query.toLowerCase();
 			const results = sitePages.filter(page => {
-				const titleToSearch = currentLang === 'ar' ? page.titleAr : page.titleEn;
-				return fuzzyMatch(titleToSearch.toLowerCase(), query.toLowerCase());
+				const arMatch = page.titleAr.toLowerCase().includes(lowerQuery);
+				const enMatch = page.titleEn.toLowerCase().includes(lowerQuery);
+				return arMatch || enMatch;
 			});
 
 			if (results.length > 0) {
-				searchResults.innerHTML = results.map(page => `
+				const sortedResults = sortPages(results);
+				searchResults.innerHTML = sortedResults.map(page => `
 					<a href="${page.url}" class="search-result-item">
 						<span class="result-title-ar">${page.titleAr}</span>
 						<span class="result-title-en">${page.titleEn}</span>
@@ -288,6 +412,17 @@
 					</div>
 				`;
 				searchResults.classList.add('active');
+			}
+		});
+
+		// Keyboard navigation
+		searchInput.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') {
+				const query = searchInput.value.trim();
+				if (query) {
+					// Redirect to search results page with query parameter
+					window.location.href = `/search?q=${encodeURIComponent(query)}`;
+				}
 			}
 		});
 
@@ -319,6 +454,17 @@
 			const lang = customEvent.detail?.lang;
 			if (lang === 'ar' || lang === 'en') {
 				setLanguage(lang, true);
+				// Re-sort pages when language changes
+				sortedSitePages = sortPages(sitePages);
+				// Update search results if they're visible
+				if (searchExpanded && searchInput.value.trim() === '') {
+					searchResults.innerHTML = sortedSitePages.map(page => `
+						<a href="${page.url}" class="search-result-item">
+							<span class="result-title-ar">${page.titleAr}</span>
+							<span class="result-title-en">${page.titleEn}</span>
+						</a>
+					`).join('');
+				}
 			}
 		});
 	});

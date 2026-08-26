@@ -1,0 +1,196 @@
+---
+// src/pages/memory-vigilance/simple-reaction-time.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Simple Reaction Time Test | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>اختبار زمن الاستجابة</span>
+    <span class="kicker" data-en>Reaction Time Test</span>
+    <h1>
+      <span data-ar>اختبار زمن الاستجابة البسيط</span>
+      <span data-en>Simple Reaction Time Test</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>يقيس سرعة استجابتك الحسية-الحركية الأولية — الوقت بين ظهور مثير بصري وضغطك عليه.</span>
+      <span data-en>Measures raw sensorimotor speed — the time between a visual stimulus appearing and your tap.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="mv-stage mv-wait" id="srtStage" tabindex="0">
+      <span data-ar id="srtStageText">اضغط "ابدأ" ثم انتظر تحوّل المربع إلى اللون الأخضر، واضغط بأسرع ما يمكن</span>
+      <span data-en id="srtStageTextEn" style="display:none">Press "Start", wait for the box to turn green, then tap as fast as you can</span>
+    </div>
+    <div class="mv-progress" id="srtProgress"></div>
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="srtStartBtn">
+        <span data-ar>ابدأ الاختبار (5 محاولات)</span>
+        <span data-en>Start Test (5 trials)</span>
+      </button>
+    </div>
+
+    <div class="result" id="srtResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="srtMean">–</div><div class="mv-stat-label"><span data-ar>المتوسط (مللي ثانية)</span><span data-en>Mean (ms)</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="srtMedian">–</div><div class="mv-stat-label"><span data-ar>الوسيط</span><span data-en>Median</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="srtBest">–</div><div class="mv-stat-label"><span data-ar>الأفضل</span><span data-en>Best</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="srtBadge">–</span>
+        <p id="srtInterpretation" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>زمن الاستجابة البسيط هو أحد أقدم وأدق المقاييس المعملية للسرعة الذهنية-الحركية. متوسط زمن الاستجابة البصري لدى الشخص البالغ اليقظ يتراوح عادة بين 200-350 مللي ثانية. يتأثر بعوامل كثيرة: التعب، قلة النوم، التقدم في العمر، التشتت، وبعض الأدوية.</span>
+      <span data-en style="display:none">Simple reaction time is one of the oldest and most reliable lab measures of sensorimotor speed. A typical alert adult's visual RT falls around 200–350 ms. It's affected by fatigue, sleep loss, age, distraction, and certain medications.</span>
+    </p>
+    <h2><span data-ar>كيف تُجرى</span><span data-en>How to perform it</span></h2>
+    <p>
+      <span data-ar>انتظر بثبات دون الضغط المبكر. عند تحوّل المربع إلى الأخضر اضغط عليه فورًا. أي ضغط قبل ظهور اللون الأخضر يُعد "بداية مبكرة" ويُعاد تسجيل تلك المحاولة. تُحسب النتيجة من 5 محاولات صحيحة.</span>
+      <span data-en style="display:none">Wait without pressing early. When the box turns green, tap immediately. Tapping before green counts as a false start and that trial is redone. The result is based on 5 valid trials.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي لقياس سرعة الاستجابة وليس أداة تشخيصية طبية أو نفسية. النتائج تتأثر بجهاز القياس، سرعة الاتصال بالإنترنت، ونوع الشاشة، ولا تُستخدم لاتخاذ قرارات طبية أو مهنية (كالقيادة أو التشغيل).</span>
+    <span data-en style="display:none">This is an educational reaction-speed test, not a medical or psychological diagnostic tool. Results are affected by your device and screen, and should not be used for medical or safety-critical decisions (e.g. driving fitness).</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initSRT() {
+    const stage = document.getElementById('srtStage');
+    const progress = document.getElementById('srtProgress');
+    const startBtn = document.getElementById('srtStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('srtResult');
+    const meanEl = document.getElementById('srtMean');
+    const medianEl = document.getElementById('srtMedian');
+    const bestEl = document.getElementById('srtBest');
+    const badgeEl = document.getElementById('srtBadge');
+    const interpEl = document.getElementById('srtInterpretation');
+
+    if (!stage) return;
+
+    const TOTAL_TRIALS = 5;
+    let trial = 0;
+    let times = [];
+    let waitTimer = null;
+    let goAt = 0;
+    let state = 'idle'; // idle | waiting | go
+
+    function setStageText(ar, en) {
+      const arSpan = stage.querySelector('[data-ar]');
+      const enSpan = stage.querySelector('[data-en]');
+      if (arSpan) arSpan.textContent = ar;
+      if (enSpan) enSpan.textContent = en;
+    }
+
+    function startTrial() {
+      state = 'waiting';
+      stage.className = 'mv-stage mv-wait';
+      setStageText('انتظر... لا تضغط بعد', 'Wait... don\'t press yet');
+      progress.textContent = `${currentLang() === 'ar' ? 'المحاولة' : 'Trial'} ${trial + 1} / ${TOTAL_TRIALS}`;
+      const delay = 1500 + Math.random() * 3000;
+      waitTimer = setTimeout(() => {
+        state = 'go';
+        goAt = performance.now();
+        stage.className = 'mv-stage mv-go';
+        setStageText('اضغط الآن!', 'TAP NOW!');
+      }, delay);
+    }
+
+    function handlePress() {
+      if (state === 'waiting') {
+        clearTimeout(waitTimer);
+        state = 'idle';
+        stage.className = 'mv-stage mv-early';
+        setStageText('بداية مبكرة! سنعيد هذه المحاولة', 'Too early! Redoing this trial');
+        setTimeout(startTrial, 1200);
+        return;
+      }
+      if (state === 'go') {
+        const rt = performance.now() - goAt;
+        times.push(rt);
+        state = 'idle';
+        trial++;
+        stage.className = 'mv-stage mv-active';
+        setStageText(`${Math.round(rt)} ${currentLang() === 'ar' ? 'مللي ثانية' : 'ms'}`, `${Math.round(rt)} ms`);
+        if (trial >= TOTAL_TRIALS) {
+          setTimeout(finish, 900);
+        } else {
+          setTimeout(startTrial, 1100);
+        }
+      }
+    }
+
+    function finish() {
+      const sorted = [...times].sort((a, b) => a - b);
+      const mean = times.reduce((a, b) => a + b, 0) / times.length;
+      const median = sorted.length % 2 ? sorted[(sorted.length - 1) / 2]
+        : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2;
+      const best = sorted[0];
+
+      meanEl.textContent = String(Math.round(mean));
+      medianEl.textContent = String(Math.round(median));
+      bestEl.textContent = String(Math.round(best));
+
+      let tierAr, tierEn, tone;
+      if (mean < 220) { tierAr = 'ممتاز'; tierEn = 'Excellent'; tone = 'ok'; }
+      else if (mean < 280) { tierAr = 'جيد جدًا'; tierEn = 'Very good'; tone = 'ok'; }
+      else if (mean < 350) { tierAr = 'ضمن المعدل الطبيعي'; tierEn = 'Within normal range'; tone = 'warn'; }
+      else { tierAr = 'أبطأ من المتوسط'; tierEn = 'Slower than average'; tone = 'danger'; }
+
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+
+      interpEl.textContent = currentLang() === 'ar'
+        ? 'زمن الاستجابة البصري الطبيعي لدى الشخص اليقظ يتراوح غالبًا بين 200-350 مللي ثانية. النتيجة الأبطأ ليست بالضرورة مشكلة صحية — قد تعكس تعبًا أو قلة نوم أو تشتت الانتباه أثناء الاختبار.'
+        : 'Normal alert visual RT usually falls between 200-350 ms. A slower result isn\'t necessarily a health issue — it may reflect fatigue, poor sleep, or distraction during the test.';
+
+      stage.className = 'mv-stage mv-wait';
+      setStageText('انتهى الاختبار — النتائج أدناه', 'Test complete — results below');
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+      startBtn.querySelectorAll('span').forEach(s => {});
+    }
+
+    startBtn.addEventListener('click', () => {
+      trial = 0;
+      times = [];
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      startTrial();
+    });
+
+    stage.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      handlePress();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initSRT);
+  window.addEventListener('languageChanged', () => {});
+</script>

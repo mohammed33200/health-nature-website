@@ -1,0 +1,181 @@
+---
+// src/pages/memory-vigilance/n-back.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="N-Back Task | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>الذاكرة العاملة</span>
+    <span class="kicker" data-en>Working Memory</span>
+    <h1>
+      <span data-ar>اختبار N-Back</span>
+      <span data-en>N-Back Task</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>اضغط عندما يطابق الحرف الحالي الحرف الذي ظهر قبل خطوة (أو خطوتين) — يقيس سعة الذاكرة العاملة وتحديث المعلومات.</span>
+      <span data-en>Tap when the current letter matches the one shown 1 (or 2) steps back — measures working memory capacity and information updating.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="field" style="text-align:center; margin-bottom:14px;">
+      <div class="mv-badge-row">
+        <label><input type="radio" name="nbMode" value="1" checked /> 1-Back</label>
+        <label><input type="radio" name="nbMode" value="2" /> 2-Back</label>
+      </div>
+    </div>
+
+    <div class="mv-progress" id="nbProgress"></div>
+    <div class="mv-stage mv-active" style="min-height:180px;">
+      <div class="mv-stream-char" id="nbChar">–</div>
+    </div>
+    <button class="mv-nback-btn btn-calc" id="nbMatchBtn" disabled>
+      <span data-ar>مطابقة!</span>
+      <span data-en>Match!</span>
+    </button>
+
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="nbStartBtn">
+        <span data-ar>ابدأ الاختبار</span>
+        <span data-en>Start Test</span>
+      </button>
+    </div>
+
+    <div class="result" id="nbResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="nbHits">–</div><div class="mv-stat-label"><span data-ar>مطابقات صحيحة</span><span data-en>Correct matches</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="nbMisses">–</div><div class="mv-stat-label"><span data-ar>مطابقات فائتة</span><span data-en>Missed matches</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="nbFalse">–</div><div class="mv-stat-label"><span data-ar>ضغطات خاطئة</span><span data-en>False alarms</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="nbBadge">–</span>
+        <p id="nbInterp" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>N-Back من أكثر الاختبارات استخدامًا في أبحاث الذاكرة العاملة، لأنه يتطلب تخزين معلومات وتحديثها باستمرار في آن واحد. المهمة تصعب مع زيادة N (المسافة الزمنية للمطابقة)، وأداء 2-Back أصعب بوضوح من 1-Back للجميع تقريبًا.</span>
+      <span data-en style="display:none">N-Back is one of the most widely used working-memory research tasks because it requires storing and continuously updating information at the same time. It gets harder as N increases, and 2-Back is noticeably harder than 1-Back for nearly everyone.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي وليس أداة تشخيص طبي أو نفسي. الأداء يتحسن غالبًا مع التكرار (أثر التدريب) وليس بالضرورة تحسنًا في الذاكرة الأساسية.</span>
+    <span data-en style="display:none">This is an educational test, not a medical or psychological diagnostic tool. Performance often improves with repeated practice (a training effect), which doesn't necessarily reflect improved underlying memory.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initNB() {
+    const charEl = document.getElementById('nbChar');
+    const progress = document.getElementById('nbProgress');
+    const matchBtn = document.getElementById('nbMatchBtn') as HTMLButtonElement;
+    const startBtn = document.getElementById('nbStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('nbResult');
+    if (!charEl) return;
+
+    const LETTERS = ['C', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
+    const TOTAL = 30;
+    let N = 1, sequence = [], trial = 0, hits = 0, misses = 0, falseAlarms = 0, answered = false, showTimer = null;
+
+    function getN() {
+      const checked = document.querySelector('input[name="nbMode"]:checked') as HTMLInputElement;
+      return checked ? parseInt(checked.value, 10) : 1;
+    }
+
+    function isMatchAt(idx) {
+      return idx >= N && sequence[idx] === sequence[idx - N];
+    }
+
+    function nextChar() {
+      if (trial >= TOTAL) return finish();
+      answered = false;
+      // 35% chance to force a match when possible
+      let letter;
+      if (trial >= N && Math.random() < 0.35) {
+        letter = sequence[trial - N];
+      } else {
+        letter = LETTERS[Math.floor(Math.random() * LETTERS.length)];
+      }
+      sequence.push(letter);
+      charEl.textContent = letter;
+      progress.textContent = `${currentLang() === 'ar' ? 'المحاولة' : 'Trial'} ${trial + 1} / ${TOTAL}`;
+      matchBtn.disabled = trial < N;
+
+      const idx = trial;
+      showTimer = setTimeout(() => {
+        if (isMatchAt(idx) && !answered) misses++;
+        trial++;
+        charEl.textContent = '–';
+        setTimeout(nextChar, 300);
+      }, 1600);
+    }
+
+    function handleMatch() {
+      if (answered || trial < N) return;
+      answered = true;
+      if (isMatchAt(trial)) hits++;
+      else falseAlarms++;
+    }
+
+    function finish() {
+      clearTimeout(showTimer);
+      const totalMatches = hits + misses;
+      document.getElementById('nbHits').textContent = String(hits);
+      document.getElementById('nbMisses').textContent = String(misses);
+      document.getElementById('nbFalse').textContent = String(falseAlarms);
+
+      const hitRate = totalMatches ? hits / totalMatches : 0;
+      let tierAr, tierEn, tone;
+      if (hitRate >= 0.85 && falseAlarms <= 1) { tierAr = 'أداء ذاكرة عاملة ممتاز'; tierEn = 'Excellent working-memory performance'; tone = 'ok'; }
+      else if (hitRate >= 0.65 && falseAlarms <= 3) { tierAr = 'أداء جيد'; tierEn = 'Good performance'; tone = 'ok'; }
+      else if (hitRate >= 0.45) { tierAr = 'أداء متوسط — المهمة صعبة بطبيعتها'; tierEn = 'Moderate — the task is inherently hard'; tone = 'warn'; }
+      else { tierAr = 'أداء منخفض هذه المرة'; tierEn = 'Low performance this time'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('nbBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('nbInterp').textContent = currentLang() === 'ar'
+        ? `اختبار ${N}-Back من أصعب اختبارات الذاكرة العاملة، وأداء متوسط فيه أمر طبيعي تمامًا خصوصًا في أول محاولة. الأداء يتحسن غالبًا مع التكرار.`
+        : `The ${N}-Back task is among the harder working-memory tests, and a moderate score is completely normal, especially on a first attempt. Performance usually improves with practice.`;
+
+      charEl.textContent = '–';
+      matchBtn.disabled = true;
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      N = getN();
+      sequence = []; trial = 0; hits = 0; misses = 0; falseAlarms = 0;
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      nextChar();
+    });
+
+    matchBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); handleMatch(); });
+  }
+
+  document.addEventListener('DOMContentLoaded', initNB);
+</script>

@@ -1,0 +1,233 @@
+/* memory-vigilance.css
+   Domain-specific widgets for the cognitive tests section.
+   Reuses site tokens (--ink, --paper, --accent, --secondary, --ok, --danger, --warn, --line)
+   and shared classes (.container, .tool-hero, .calc-card, .btn-calc, .result, .disclaimer)
+   already defined in the site's global.css. Only adds what those don't cover. */
+
+/* ---------- generic stat row used in most result panels ---------- */
+.mv-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.mv-stat {
+  background: var(--paper-alt);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: center;
+}
+.mv-stat .mv-stat-value {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.mv-stat .mv-stat-label {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+/* ---------- big tap/click stimulus area (RT, PVT, Finger Tapping) ---------- */
+.mv-stage {
+  position: relative;
+  width: 100%;
+  min-height: 260px;
+  border-radius: 18px;
+  border: 2px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+  transition: background 0.08s ease, border-color 0.08s ease;
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+}
+.mv-stage.mv-wait { background: var(--paper-alt); }
+.mv-stage.mv-go {
+  background: var(--secondary);
+  border-color: var(--secondary-dark);
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+.mv-stage.mv-early {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.mv-stage.mv-active {
+  background: var(--paper);
+  border-style: solid;
+}
+
+.mv-counter {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ---------- Stroop word ---------- */
+.mv-stroop-word {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.mv-color-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+  max-width: 420px;
+  margin-inline: auto;
+}
+.mv-color-btn {
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #fff;
+  touch-action: manipulation;
+}
+
+/* ---------- digit / letter display ---------- */
+.mv-digit-display {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: 10px;
+  color: var(--ink);
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mv-input-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.mv-input-row input {
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.4rem;
+  letter-spacing: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ---------- Corsi / grid based tests ---------- */
+.mv-grid {
+  display: grid;
+  gap: 10px;
+  max-width: 380px;
+  margin: 20px auto;
+  aspect-ratio: 1 / 1;
+}
+.mv-cell {
+  border-radius: 10px;
+  background: var(--paper-alt);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s, transform 0.1s;
+}
+.mv-cell.mv-lit { background: var(--accent); border-color: var(--accent-dark); }
+.mv-cell.mv-correct { background: var(--ok); }
+.mv-cell.mv-wrong { background: var(--danger); }
+.mv-cell:active { transform: scale(0.96); }
+
+/* ---------- CPT / N-back stream ---------- */
+.mv-stream-char {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--ink);
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mv-nback-btn {
+  margin-top: 18px;
+  width: 100%;
+  max-width: 260px;
+  margin-inline: auto;
+  display: block;
+}
+
+/* ---------- Trail Making canvas ---------- */
+.mv-trail-wrap {
+  width: 100%;
+  max-width: 480px;
+  margin: 16px auto;
+  aspect-ratio: 4 / 3;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper-alt);
+  overflow: hidden;
+  touch-action: none;
+}
+.mv-trail-node {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  margin-left: -21px;
+  margin-top: -21px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.mv-trail-node.mv-done { background: var(--ok); color: #fff; border-color: var(--ok); }
+.mv-trail-node.mv-next { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+.mv-trail-svg { position: absolute; inset: 0; pointer-events: none; }
+.mv-trail-svg line { stroke: var(--accent); stroke-width: 3; }
+
+/* ---------- Visual Patterns grid ---------- */
+.mv-vp-cell { background: var(--paper); }
+.mv-vp-cell.mv-on { background: var(--ink); }
+.mv-vp-cell.mv-sel { background: var(--accent); }
+
+/* ---------- progress / trial indicator ---------- */
+.mv-progress {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ---------- rating badges for interpretation ---------- */
+.mv-badge-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
+
+@media (max-width: 480px) {
+  .mv-stroop-word { font-size: 2.2rem; }
+  .mv-digit-display { font-size: 2rem; letter-spacing: 6px; }
+  .mv-stream-char { font-size: 3rem; }
+  .mv-counter { font-size: 2.2rem; }
+}

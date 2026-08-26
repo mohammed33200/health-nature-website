@@ -1,0 +1,210 @@
+---
+// src/pages/memory-vigilance/corsi-block.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Corsi Block-Tapping Test | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>الذاكرة البصرية المكانية</span>
+    <span class="kicker" data-en>Visuospatial Memory</span>
+    <h1>
+      <span data-ar>اختبار الذاكرة المكانية (Corsi)</span>
+      <span data-en>Corsi Block-Tapping Test</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>راقب تسلسل إضاءة المربعات، ثم انقر عليها بنفس الترتيب — يقيس الذاكرة البصرية المكانية غير اللفظية.</span>
+      <span data-en>Watch the sequence of squares light up, then tap them in the same order — measures non-verbal visuospatial memory.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="mv-progress" id="cbProgress"></div>
+    <div class="mv-grid" id="cbGrid" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);"></div>
+    <p style="text-align:center;" id="cbStatus">
+      <span data-ar>اضغط "ابدأ" لمشاهدة التسلسل الأول</span>
+      <span data-en style="display:none">Press "Start" to see the first sequence</span>
+    </p>
+
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="cbStartBtn">
+        <span data-ar>ابدأ الاختبار</span>
+        <span data-en>Start Test</span>
+      </button>
+    </div>
+
+    <div class="result" id="cbResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="cbSpan">–</div><div class="mv-stat-label"><span data-ar>أقصى مدى محفوظ (Corsi Span)</span><span data-en>Longest span held</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="cbBadge">–</span>
+        <p id="cbInterp" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>يُستخدم اختبار Corsi إكلينيكيًا لتقييم الذاكرة البصرية المكانية بمعزل عن الذاكرة اللفظية. مدى Corsi الطبيعي لدى البالغين يتراوح غالبًا بين 5-6 مربعات.</span>
+      <span data-en style="display:none">The Corsi task is used clinically to assess visuospatial memory independent of verbal memory. A typical adult Corsi span is usually around 5-6 blocks.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي وليس بديلاً عن نسخة Corsi المعيارية المستخدمة في التقييم العصبي-النفسي.</span>
+    <span data-en style="display:none">This is an educational version, not a substitute for the standardized Corsi task used in neuropsychological assessment.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initCorsi() {
+    const grid = document.getElementById('cbGrid');
+    const progress = document.getElementById('cbProgress');
+    const status = document.getElementById('cbStatus');
+    const startBtn = document.getElementById('cbStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('cbResult');
+    if (!grid) return;
+
+    const GRID_SIZE = 9; // 3x3
+    let length = 3, sequence = [], userSeq = [], longestHeld = 0, misses = 0, accepting = false;
+
+    function buildGrid() {
+      grid.innerHTML = '';
+      for (let i = 0; i < GRID_SIZE; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'mv-cell';
+        (cell as HTMLElement).dataset.idx = String(i);
+        cell.addEventListener('pointerdown', (e) => { e.preventDefault(); handleCellClick(i, cell); });
+        grid.appendChild(cell);
+      }
+    }
+
+    function cellEls() { return grid.querySelectorAll('.mv-cell'); }
+
+    function genSequence(n) {
+      const seq = [];
+      for (let i = 0; i < n; i++) seq.push(Math.floor(Math.random() * GRID_SIZE));
+      return seq;
+    }
+
+    function setStatus(ar, en) {
+      status.innerHTML = `<span data-ar>${ar}</span><span data-en style="display:none">${en}</span>`;
+    }
+
+    function playSequence() {
+      accepting = false;
+      const cells = cellEls();
+      let i = 0;
+      const step = () => {
+        if (i > 0) cells[sequence[i - 1]].classList.remove('mv-lit');
+        if (i < sequence.length) {
+          cells[sequence[i]].classList.add('mv-lit');
+          i++;
+          setTimeout(step, 700);
+        } else {
+          setTimeout(() => {
+            cells.forEach(c => c.classList.remove('mv-lit'));
+            accepting = true;
+            userSeq = [];
+            setStatus('كررها بالنقر بنفس الترتيب', 'Repeat it by tapping in the same order');
+          }, 500);
+        }
+      };
+      setStatus('راقب التسلسل...', 'Watch the sequence...');
+      setTimeout(step, 500);
+    }
+
+    function startRound() {
+      sequence = genSequence(length);
+      userSeq = [];
+      progress.textContent = `${currentLang() === 'ar' ? 'الطول' : 'Length'}: ${length}`;
+      playSequence();
+    }
+
+    function handleCellClick(idx, cell) {
+      if (!accepting) return;
+      userSeq.push(idx);
+      const pos = userSeq.length - 1;
+      const isCorrectSoFar = sequence[pos] === idx;
+      cell.classList.add(isCorrectSoFar ? 'mv-correct' : 'mv-wrong');
+      setTimeout(() => cell.classList.remove('mv-correct', 'mv-wrong'), 350);
+
+      if (!isCorrectSoFar) {
+        accepting = false;
+        handleRoundResult(false);
+        return;
+      }
+      if (userSeq.length === sequence.length) {
+        accepting = false;
+        handleRoundResult(true);
+      }
+    }
+
+    function handleRoundResult(success) {
+      if (success) {
+        longestHeld = Math.max(longestHeld, length);
+        length++;
+        setStatus('صحيح! تسلسل أطول قادم...', 'Correct! Longer sequence coming...');
+        setTimeout(startRound, 1200);
+      } else {
+        misses++;
+        if (misses >= 2) {
+          finish();
+        } else {
+          setStatus('غير صحيح — محاولة أخيرة بنفس الطول', 'Incorrect — one more try at this length');
+          setTimeout(startRound, 1300);
+        }
+      }
+    }
+
+    function finish() {
+      document.getElementById('cbSpan').textContent = String(longestHeld);
+      let tierAr, tierEn, tone;
+      if (longestHeld >= 7) { tierAr = 'أعلى من المتوسط'; tierEn = 'Above average'; tone = 'ok'; }
+      else if (longestHeld >= 5) { tierAr = 'ضمن المعدل الطبيعي'; tierEn = 'Within normal range'; tone = 'ok'; }
+      else if (longestHeld >= 4) { tierAr = 'ضمن الحد الأدنى للمعدل الطبيعي'; tierEn = 'At the lower end of normal'; tone = 'warn'; }
+      else { tierAr = 'أقل من المعدل المعتاد'; tierEn = 'Below typical range'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('cbBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('cbInterp').textContent = currentLang() === 'ar'
+        ? 'مدى Corsi الطبيعي لدى البالغين عادة 5-6 مربعات. هذه المهارة مستقلة عن الذاكرة اللفظية (مثل مدى الأرقام)، فقد تجد نفسك أقوى في إحداهما.'
+        : 'A typical adult Corsi span is around 5-6 blocks. This skill is independent of verbal memory (like digit span), so you may find yourself stronger in one than the other.';
+
+      setStatus('انتهى الاختبار', 'Test complete');
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      length = 3; longestHeld = 0; misses = 0;
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      startRound();
+    });
+
+    buildGrid();
+  }
+
+  document.addEventListener('DOMContentLoaded', initCorsi);
+</script>

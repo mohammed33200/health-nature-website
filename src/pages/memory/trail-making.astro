@@ -1,0 +1,212 @@
+---
+// src/pages/memory-vigilance/trail-making.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Trail Making Test | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>سرعة المعالجة والمرونة</span>
+    <span class="kicker" data-en>Processing Speed & Flexibility</span>
+    <h1>
+      <span data-ar>اختبار صنع المسارات (Trail Making)</span>
+      <span data-en>Trail Making Test</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>انقر الدوائر بالترتيب التصاعدي بأسرع ما يمكن — يقيس المسح البصري وسرعة المعالجة والمرونة الذهنية.</span>
+      <span data-en>Tap the circles in ascending order as fast as possible — measures visual scanning, processing speed, and cognitive flexibility.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="field" style="text-align:center; margin-bottom:14px;">
+      <div class="mv-badge-row">
+        <label><input type="radio" name="tmMode" value="A" checked /> <span data-ar>الجزء A (أرقام فقط)</span><span data-en style="display:none">Part A (numbers only)</span></label>
+        <label><input type="radio" name="tmMode" value="B" /> <span data-ar>الجزء B (أرقام وحروف)</span><span data-en style="display:none">Part B (numbers & letters)</span></label>
+      </div>
+    </div>
+
+    <div class="mv-trail-wrap" id="tmWrap">
+      <svg class="mv-trail-svg" id="tmSvg"></svg>
+    </div>
+    <div class="mv-progress" id="tmProgress"></div>
+
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="tmStartBtn">
+        <span data-ar>ابدأ الاختبار</span>
+        <span data-en>Start Test</span>
+      </button>
+    </div>
+
+    <div class="result" id="tmResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="tmTime">–</div><div class="mv-stat-label"><span data-ar>الزمن الكلي (ثانية)</span><span data-en>Total time (sec)</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="tmErrors">–</div><div class="mv-stat-label"><span data-ar>أخطاء</span><span data-en>Errors</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="tmBadge">–</span>
+        <p id="tmInterp" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>الجزء A يقيس سرعة المسح البصري والمعالجة الأساسية. الجزء B يضيف عبء التبديل الذهني بين نظامين (أرقام وحروف)، فيقيس المرونة المعرفية والذاكرة العاملة أيضًا. الفرق بين زمن الجزء B والجزء A (B−A) مؤشر مفيد على تكلفة التبديل الذهني.</span>
+      <span data-en style="display:none">Part A measures visual scanning speed and basic processing. Part B adds mental switching load between two systems (numbers and letters), so it also measures cognitive flexibility and working memory. The B−A time difference is a useful indicator of task-switching cost.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي وليس النسخة الورقية المعيارية المستخدمة سريريًا؛ النتائج تتأثر بحجم الشاشة ونوع جهاز الإدخال.</span>
+    <span data-en style="display:none">This is an educational version, not the standardized paper form used clinically; results are affected by screen size and input device type.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initTM() {
+    const wrap = document.getElementById('tmWrap');
+    const svg = document.getElementById('tmSvg');
+    const progress = document.getElementById('tmProgress');
+    const startBtn = document.getElementById('tmStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('tmResult');
+    if (!wrap) return;
+
+    const NUM_NODES = 12; // A: 1-12 ; B: 1,A,2,B...6,F (12 nodes)
+    let nodes = [], nextIdx = 0, startTime = 0, errors = 0, mode = 'A';
+
+    function getMode() {
+      const checked = document.querySelector('input[name="tmMode"]:checked') as HTMLInputElement;
+      return checked ? checked.value : 'A';
+    }
+
+    function labelFor(i, m) {
+      if (m === 'A') return String(i + 1);
+      // Part B alternates 1, A, 2, B, 3, C ...
+      const num = Math.floor(i / 2) + 1;
+      const letter = String.fromCharCode(65 + Math.floor(i / 2));
+      return i % 2 === 0 ? String(num) : letter;
+    }
+
+    function randomPositions(n) {
+      const w = wrap.clientWidth, h = wrap.clientHeight;
+      const pts = [];
+      let attempts = 0;
+      while (pts.length < n && attempts < 2000) {
+        attempts++;
+        const x = 30 + Math.random() * (w - 60);
+        const y = 30 + Math.random() * (h - 60);
+        if (pts.every(p => Math.hypot(p.x - x, p.y - y) > 55)) pts.push({ x, y });
+      }
+      while (pts.length < n) pts.push({ x: w / 2, y: h / 2 }); // fallback
+      return pts;
+    }
+
+    function buildBoard() {
+      mode = getMode();
+      wrap.querySelectorAll('.mv-trail-node').forEach(n => n.remove());
+      svg.innerHTML = '';
+      const positions = randomPositions(NUM_NODES);
+      nodes = positions.map((p, i) => ({ ...p, label: labelFor(i, mode), done: false }));
+      nextIdx = 0;
+      errors = 0;
+
+      nodes.forEach((node, i) => {
+        const el = document.createElement('div');
+        el.className = 'mv-trail-node';
+        el.textContent = node.label;
+        el.style.left = node.x + 'px';
+        el.style.top = node.y + 'px';
+        el.dataset.idx = String(i);
+        el.addEventListener('pointerdown', (e) => { e.preventDefault(); handleNodeClick(i, el); });
+        wrap.appendChild(el);
+      });
+      updateNextHighlight();
+    }
+
+    function updateNextHighlight() {
+      wrap.querySelectorAll('.mv-trail-node').forEach((el, i) => {
+        el.classList.toggle('mv-next', i === nextIdx);
+      });
+    }
+
+    function drawLine(i, j) {
+      const a = nodes[i], b = nodes[j];
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+      line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+      svg.appendChild(line);
+    }
+
+    function handleNodeClick(i, el) {
+      if (i === nextIdx) {
+        el.classList.add('mv-done');
+        el.classList.remove('mv-next');
+        if (nextIdx > 0) drawLine(nextIdx - 1, nextIdx);
+        nextIdx++;
+        updateNextHighlight();
+        if (nextIdx >= nodes.length) finish();
+      } else if (!nodes[i].done) {
+        errors++;
+        el.style.borderColor = 'var(--danger)';
+        setTimeout(() => { el.style.borderColor = ''; }, 300);
+      }
+    }
+
+    function finish() {
+      const timeSec = ((performance.now() - startTime) / 1000);
+      document.getElementById('tmTime').textContent = timeSec.toFixed(1);
+      document.getElementById('tmErrors').textContent = String(errors);
+
+      let tierAr, tierEn, tone;
+      const thresholds = mode === 'A' ? [20, 30, 45] : [40, 60, 90];
+      if (timeSec < thresholds[0] && errors === 0) { tierAr = 'سريع جدًا ودقيق'; tierEn = 'Very fast and accurate'; tone = 'ok'; }
+      else if (timeSec < thresholds[1] && errors <= 1) { tierAr = 'أداء جيد'; tierEn = 'Good performance'; tone = 'ok'; }
+      else if (timeSec < thresholds[2]) { tierAr = 'أداء متوسط'; tierEn = 'Moderate performance'; tone = 'warn'; }
+      else { tierAr = 'أبطأ من المتوسط'; tierEn = 'Slower than average'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('tmBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('tmInterp').textContent = currentLang() === 'ar'
+        ? (mode === 'A'
+          ? 'الجزء A يعتمد أساسًا على سرعة المسح البصري. المقارنة الأهم هي مع أدائك أنت في مرات سابقة، لا مع رقم مطلق.'
+          : 'الجزء B أصعب بطبيعته لأنه يتطلب التبديل بين نظامين. زمنه الطبيعي أطول من الجزء A بمقدار كبير، وهذا متوقع وليس علامة قلق.')
+        : (mode === 'A'
+          ? 'Part A mainly reflects visual scanning speed. The most meaningful comparison is against your own past attempts, not an absolute number.'
+          : 'Part B is inherently harder since it requires switching between two systems. It normally takes noticeably longer than Part A — that\'s expected, not a red flag.');
+
+      updateNextHighlight();
+      wrap.querySelectorAll('.mv-trail-node').forEach(el => el.classList.remove('mv-next'));
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      buildBoard();
+      startTime = performance.now();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initTM);
+</script>

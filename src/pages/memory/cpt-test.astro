@@ -1,0 +1,164 @@
+---
+// src/pages/memory-vigilance/cpt-test.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Continuous Performance Test | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>الانتباه المستمر</span>
+    <span class="kicker" data-en>Sustained Attention</span>
+    <h1>
+      <span data-ar>اختبار الأداء المستمر (CPT)</span>
+      <span data-en>Continuous Performance Test (CPT)</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>اضغط فقط عندما يظهر الحرف الهدف "X"، وتجاهل باقي الحروف — يقيس التركيز المستمر وضبط الاندفاعية.</span>
+      <span data-en>Tap only when the target letter "X" appears, ignore everything else — measures sustained focus and impulse control.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <p style="text-align:center; margin-bottom:8px;">
+      <span data-ar>الحرف الهدف: <b>X</b> — اضغط الزر فور رؤيته فقط</span>
+      <span data-en style="display:none">Target letter: <b>X</b> — tap the button only when you see it</span>
+    </p>
+    <div class="mv-progress" id="cptProgress"></div>
+    <div class="mv-stage mv-active" style="min-height:180px;">
+      <div class="mv-stream-char" id="cptChar">–</div>
+    </div>
+    <button class="mv-nback-btn btn-calc" id="cptTapBtn" disabled>
+      <span data-ar>اضغط عند ظهور X</span>
+      <span data-en>Tap for X</span>
+    </button>
+
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="cptStartBtn">
+        <span data-ar>ابدأ الاختبار (~90 ثانية)</span>
+        <span data-en>Start Test (~90 seconds)</span>
+      </button>
+    </div>
+
+    <div class="result" id="cptResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="cptHits">–</div><div class="mv-stat-label"><span data-ar>إصابات صحيحة</span><span data-en>Correct hits</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="cptMisses">–</div><div class="mv-stat-label"><span data-ar>أهداف فائتة</span><span data-en>Missed targets</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="cptFalse">–</div><div class="mv-stat-label"><span data-ar>ضغطات خاطئة</span><span data-en>False alarms</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="cptBadge">–</span>
+        <p id="cptInterp" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>يُستخدم هذا النوع من الاختبارات سريريًا (بنسخ أكثر تعقيدًا) لتقييم الانتباه المستمر وضبط الاندفاعية. "الأهداف الفائتة" تشير لصعوبة في الحفاظ على التركيز، بينما "الضغطات الخاطئة" تشير لاندفاعية أو استجابة متسرعة دون تحقق كافٍ.</span>
+      <span data-en style="display:none">This test type is used clinically (in more complex versions) to assess sustained attention and impulse control. "Missed targets" suggest difficulty maintaining focus, while "false alarms" suggest impulsivity or responding without enough verification.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي مبسّط وليس نسخة معتمدة من اختبارات CPT السريرية (مثل Conners CPT)، ولا يُستخدم لتشخيص اضطراب فرط الحركة ونقص الانتباه أو أي حالة أخرى.</span>
+    <span data-en style="display:none">This is a simplified educational version, not a validated clinical CPT (such as Conners CPT), and should not be used to diagnose ADHD or any other condition.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initCPT() {
+    const charEl = document.getElementById('cptChar');
+    const progress = document.getElementById('cptProgress');
+    const tapBtn = document.getElementById('cptTapBtn') as HTMLButtonElement;
+    const startBtn = document.getElementById('cptStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('cptResult');
+    if (!charEl) return;
+
+    const LETTERS = ['A', 'B', 'E', 'H', 'K', 'M', 'P', 'R', 'T', 'X'];
+    const TOTAL_TRIALS = 45;
+    const TARGET = 'X';
+    let trial = 0, hits = 0, misses = 0, falseAlarms = 0;
+    let answered = false, showTimer = null, isTargetShown = false;
+
+    function nextChar() {
+      if (trial >= TOTAL_TRIALS) return finish();
+      trial++;
+      answered = false;
+      isTargetShown = Math.random() < 0.25;
+      const letter = isTargetShown ? TARGET : LETTERS.filter(l => l !== TARGET)[Math.floor(Math.random() * (LETTERS.length - 1))];
+      charEl.textContent = letter;
+      progress.textContent = `${currentLang() === 'ar' ? 'المحاولة' : 'Trial'} ${trial} / ${TOTAL_TRIALS}`;
+      tapBtn.disabled = false;
+
+      showTimer = setTimeout(() => {
+        if (isTargetShown && !answered) misses++;
+        charEl.textContent = '–';
+        tapBtn.disabled = true;
+        setTimeout(nextChar, 300);
+      }, 850);
+    }
+
+    function handleTap() {
+      if (answered) return;
+      answered = true;
+      if (isTargetShown) hits++;
+      else falseAlarms++;
+    }
+
+    function finish() {
+      clearTimeout(showTimer);
+      const totalTargets = hits + misses;
+      document.getElementById('cptHits').textContent = String(hits);
+      document.getElementById('cptMisses').textContent = String(misses);
+      document.getElementById('cptFalse').textContent = String(falseAlarms);
+
+      const hitRate = totalTargets ? hits / totalTargets : 0;
+      let tierAr, tierEn, tone;
+      if (hitRate >= 0.9 && falseAlarms <= 1) { tierAr = 'تركيز مستمر ممتاز'; tierEn = 'Excellent sustained focus'; tone = 'ok'; }
+      else if (hitRate >= 0.75 && falseAlarms <= 3) { tierAr = 'تركيز جيد'; tierEn = 'Good focus'; tone = 'ok'; }
+      else if (hitRate >= 0.6) { tierAr = 'تركيز متوسط'; tierEn = 'Moderate focus'; tone = 'warn'; }
+      else { tierAr = 'صعوبة واضحة في الحفاظ على الانتباه'; tierEn = 'Clear difficulty maintaining attention'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('cptBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('cptInterp').textContent = currentLang() === 'ar'
+        ? 'كثرة الأهداف الفائتة تشير لصعوبة الحفاظ على التركيز مع الوقت، بينما كثرة الضغطات الخاطئة تشير للاستعجال في الاستجابة. أداء ضعيف في محاولة واحدة قد يعكس فقط تشتتًا لحظيًا.'
+        : 'Many missed targets suggest difficulty sustaining focus over time, while many false alarms suggest rushed responding. A weak single attempt may simply reflect momentary distraction.';
+
+      charEl.textContent = '–';
+      tapBtn.disabled = true;
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      trial = 0; hits = 0; misses = 0; falseAlarms = 0;
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      nextChar();
+    });
+
+    tapBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); handleTap(); });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCPT);
+</script>

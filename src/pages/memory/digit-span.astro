@@ -1,0 +1,205 @@
+---
+// src/pages/memory-vigilance/digit-span.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Digit Span Test | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>الذاكرة العاملة</span>
+    <span class="kicker" data-en>Working Memory</span>
+    <h1>
+      <span data-ar>اختبار مدى الأرقام</span>
+      <span data-en>Digit Span Test</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>احفظ سلسلة الأرقام التي ستظهر، ثم أعد كتابتها — أمامية أو عكسية — يقيس سعة الذاكرة قصيرة المدى والعاملة.</span>
+      <span data-en>Memorize the digit sequence shown, then re-enter it — forward or backward — measuring short-term and working memory span.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="field" style="text-align:center; margin-bottom:14px;">
+      <div class="mv-badge-row">
+        <label><input type="radio" name="dsMode" value="forward" checked /> <span data-ar>أمامي</span><span data-en style="display:none">Forward</span></label>
+        <label><input type="radio" name="dsMode" value="backward" /> <span data-ar>عكسي</span><span data-en style="display:none">Backward</span></label>
+      </div>
+    </div>
+
+    <div class="mv-digit-display" id="dsDisplay">–</div>
+    <div class="mv-progress" id="dsProgress"></div>
+
+    <div class="mv-input-row" id="dsInputRow" style="display:none;">
+      <input type="tel" inputmode="numeric" id="dsInput" placeholder="0000" />
+    </div>
+    <div style="text-align:center; margin-top:12px;" id="dsSubmitWrap" style="display:none;">
+      <button class="btn-calc" id="dsSubmitBtn" style="display:none;">
+        <span data-ar>تأكيد</span><span data-en>Submit</span>
+      </button>
+    </div>
+
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="dsStartBtn">
+        <span data-ar>ابدأ الاختبار</span>
+        <span data-en>Start Test</span>
+      </button>
+    </div>
+
+    <div class="result" id="dsResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="dsSpan">–</div><div class="mv-stat-label"><span data-ar>أقصى مدى محفوظ</span><span data-en>Longest span held</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="dsBadge">–</span>
+        <p id="dsInterp" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>يبدأ الاختبار بسلسلة من 3 أرقام وتزداد بمقدار رقم بعد كل إجابة صحيحة. المدى الأمامي الطبيعي لدى البالغين هو غالبًا 6-7 أرقام (القاعدة الكلاسيكية "7 ± 2")، بينما المدى العكسي أقصر عادة بمقدار رقم أو رقمين لأنه يتطلب معالجة ذهنية إضافية (عكس الترتيب) وليس مجرد تخزين.</span>
+      <span data-en style="display:none">The test starts with a 3-digit sequence and grows by one digit after each correct answer. Typical adult forward span is around 6-7 digits (the classic "7 ± 2" rule), while backward span is usually 1-2 digits shorter since it requires extra mental manipulation (reversing order), not just storage.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي لقياس سعة الذاكرة العددية، وليس بديلاً عن تقييم عصبي-نفسي متخصص لأي اضطراب في الذاكرة.</span>
+    <span data-en style="display:none">This is an educational test of digit memory span, not a substitute for a specialized neuropsychological memory assessment.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initDS() {
+    const display = document.getElementById('dsDisplay');
+    const progress = document.getElementById('dsProgress');
+    const inputRow = document.getElementById('dsInputRow');
+    const input = document.getElementById('dsInput') as HTMLInputElement;
+    const submitBtn = document.getElementById('dsSubmitBtn') as HTMLButtonElement;
+    const startBtn = document.getElementById('dsStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('dsResult');
+    if (!display) return;
+
+    let length = 3, sequence = [], mode = 'forward', longestHeld = 0, misses = 0;
+
+    function getMode() {
+      const checked = document.querySelector('input[name="dsMode"]:checked') as HTMLInputElement;
+      return checked ? checked.value : 'forward';
+    }
+
+    function genSequence(n) {
+      const seq = [];
+      for (let i = 0; i < n; i++) seq.push(Math.floor(Math.random() * 10));
+      return seq;
+    }
+
+    function showSequence() {
+      inputRow.style.display = 'none';
+      submitBtn.style.display = 'none';
+      let i = 0;
+      display.textContent = '';
+      const showNext = () => {
+        if (i < sequence.length) {
+          display.textContent = String(sequence[i]);
+          i++;
+          setTimeout(() => { display.textContent = '•'; setTimeout(showNext, 250); }, 700);
+        } else {
+          display.textContent = currentLang() === 'ar' ? 'اكتب الآن' : 'Type now';
+          inputRow.style.display = 'flex';
+          submitBtn.style.display = 'inline-block';
+          input.value = '';
+          input.focus();
+        }
+      };
+      showNext();
+    }
+
+    function startRound() {
+      mode = getMode();
+      sequence = genSequence(length);
+      progress.textContent = `${currentLang() === 'ar' ? 'الطول' : 'Length'}: ${length}`;
+      showSequence();
+    }
+
+    function checkAnswer() {
+      const raw = input.value.trim();
+      const digits = raw.split('').filter(c => /[0-9]/.test(c)).map(Number);
+      const expected = mode === 'backward' ? [...sequence].reverse() : sequence;
+      const isCorrect = digits.length === expected.length && digits.every((d, idx) => d === expected[idx]);
+
+      if (isCorrect) {
+        longestHeld = Math.max(longestHeld, length);
+        length++;
+        display.textContent = currentLang() === 'ar' ? 'صحيح! جولة أطول...' : 'Correct! Next round...';
+        setTimeout(startRound, 1100);
+      } else {
+        misses++;
+        if (misses >= 2) {
+          finish();
+        } else {
+          display.textContent = currentLang() === 'ar' ? 'إجابة غير صحيحة، محاولة أخيرة بنفس الطول' : 'Incorrect — one more try at this length';
+          setTimeout(startRound, 1300);
+        }
+      }
+    }
+
+    function finish() {
+      document.getElementById('dsSpan').textContent = String(longestHeld);
+      let tierAr, tierEn, tone;
+      const isBackward = mode === 'backward';
+      const goodThresh = isBackward ? 5 : 7;
+      const okThresh = isBackward ? 4 : 6;
+      if (longestHeld >= goodThresh) { tierAr = 'أعلى من المتوسط'; tierEn = 'Above average'; tone = 'ok'; }
+      else if (longestHeld >= okThresh) { tierAr = 'ضمن المعدل الطبيعي'; tierEn = 'Within normal range'; tone = 'ok'; }
+      else if (longestHeld >= okThresh - 1) { tierAr = 'ضمن الحد الأدنى للمعدل الطبيعي'; tierEn = 'At the lower end of normal'; tone = 'warn'; }
+      else { tierAr = 'أقل من المعدل المعتاد'; tierEn = 'Below typical range'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('dsBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('dsInterp').textContent = currentLang() === 'ar'
+        ? (isBackward
+          ? 'المدى العكسي الطبيعي عادة 4-6 أرقام. نتيجة أقل قد تعكس فقط الإرهاق أو التشتت أثناء الاختبار وليس بالضرورة مشكلة في الذاكرة.'
+          : 'المدى الأمامي الطبيعي عادة 6-7 أرقام. نتيجة أقل قد تعكس فقط الإرهاق أو التشتت أثناء الاختبار وليس بالضرورة مشكلة في الذاكرة.')
+        : (isBackward
+          ? 'A typical backward span is around 4-6 digits. A lower score may simply reflect fatigue or distraction during testing, not necessarily a memory issue.'
+          : 'A typical forward span is around 6-7 digits. A lower score may simply reflect fatigue or distraction during testing, not necessarily a memory issue.');
+
+      display.textContent = currentLang() === 'ar' ? 'انتهى الاختبار' : 'Test complete';
+      inputRow.style.display = 'none';
+      submitBtn.style.display = 'none';
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      length = 3; longestHeld = 0; misses = 0;
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      startRound();
+    });
+
+    submitBtn.addEventListener('click', checkAnswer);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkAnswer(); });
+  }
+
+  document.addEventListener('DOMContentLoaded', initDS);
+</script>

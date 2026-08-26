@@ -1,0 +1,147 @@
+---
+// src/pages/memory-vigilance/finger-tapping.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Finger Tapping Test | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>السرعة الحركية</span>
+    <span class="kicker" data-en>Motor Speed</span>
+    <h1>
+      <span data-ar>اختبار النقر بالإصبع</span>
+      <span data-en>Finger Tapping Test</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>يقيس أقصى سرعة حركية نفسية لديك — عدد النقرات التي تستطيع تنفيذها خلال 10 ثوانٍ.</span>
+      <span data-en>Measures your maximum psychomotor speed — how many taps you can perform in 10 seconds.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="mv-stage mv-wait" id="ftStage" tabindex="0">
+      <div>
+        <div class="mv-counter" id="ftCount">0</div>
+        <div style="margin-top:8px;">
+          <span data-ar>اضغط "ابدأ" ثم انقر هنا بأقصى سرعة لمدة 10 ثوانٍ</span>
+          <span data-en style="display:none">Press "Start" then tap here as fast as possible for 10 seconds</span>
+        </div>
+      </div>
+    </div>
+    <div class="mv-progress" id="ftTimer"></div>
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="ftStartBtn">
+        <span data-ar>ابدأ (10 ثوانٍ)</span>
+        <span data-en>Start (10 seconds)</span>
+      </button>
+    </div>
+
+    <div class="result" id="ftResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="ftTaps">–</div><div class="mv-stat-label"><span data-ar>إجمالي النقرات</span><span data-en>Total taps</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="ftRate">–</div><div class="mv-stat-label"><span data-ar>نقرة/ثانية</span><span data-en>Taps/sec</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="ftBadge">–</span>
+        <p id="ftInterp" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>يُستخدم اختبار النقر بالإصبع تقليديًا لتقييم السرعة الحركية النفسية وكفاءة الجهاز العصبي الحركي. المعدل الطبيعي لليد المهيمنة لدى البالغين يتراوح تقريبًا بين 4-7 نقرات/ثانية باستخدام إصبع واحد.</span>
+      <span data-en style="display:none">Finger tapping is a classic measure of psychomotor speed and motor-neural efficiency. A typical dominant-hand rate for adults is roughly 4-7 taps/second using a single finger.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>تختلف النتيجة باختلاف نوع الشاشة (لمسية مقابل فأرة) وسرعة استجابة الجهاز، لذا استخدمه للمقارنة الذاتية عبر الزمن وليس كمقياس مطلق.</span>
+    <span data-en style="display:none">Results vary with device type (touchscreen vs. mouse) and device response speed — use this for tracking your own trend over time rather than as an absolute measure.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initFT() {
+    const stage = document.getElementById('ftStage');
+    const countEl = document.getElementById('ftCount');
+    const timerEl = document.getElementById('ftTimer');
+    const startBtn = document.getElementById('ftStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('ftResult');
+    if (!stage) return;
+
+    const DURATION = 10000;
+    let taps = 0, running = false, startTime = 0, endTimer = null, tickTimer = null;
+
+    function onTap(e) {
+      if (!running) return;
+      e.preventDefault();
+      taps++;
+      countEl.textContent = String(taps);
+    }
+
+    function tick() {
+      if (!running) return;
+      const remaining = Math.max(0, DURATION - (performance.now() - startTime));
+      timerEl.textContent = `${(remaining / 1000).toFixed(1)}s`;
+      if (remaining > 0) tickTimer = setTimeout(tick, 100);
+    }
+
+    function finish() {
+      running = false;
+      stage.className = 'mv-stage mv-wait';
+      const rate = taps / (DURATION / 1000);
+      document.getElementById('ftTaps').textContent = String(taps);
+      document.getElementById('ftRate').textContent = rate.toFixed(1);
+
+      let tierAr, tierEn, tone;
+      if (rate >= 7) { tierAr = 'سريع جدًا'; tierEn = 'Very fast'; tone = 'ok'; }
+      else if (rate >= 5) { tierAr = 'ضمن المعدل الطبيعي (مرتفع)'; tierEn = 'Normal range (high)'; tone = 'ok'; }
+      else if (rate >= 3.5) { tierAr = 'ضمن المعدل الطبيعي'; tierEn = 'Normal range'; tone = 'warn'; }
+      else { tierAr = 'أبطأ من المعتاد'; tierEn = 'Slower than typical'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('ftBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('ftInterp').textContent = currentLang() === 'ar'
+        ? 'المعدل الطبيعي التقريبي هو 4-7 نقرات/ثانية. نتيجة أبطأ بشكل ملحوظ عبر محاولات متكررة قد تستحق الانتباه إذا صاحبها تعب أو تنميل باليد، لكنها غالبًا لا تعني شيئًا بمفردها.'
+        : 'A typical rate is roughly 4-7 taps/second. A notably slower result across repeated attempts may be worth noting if paired with hand fatigue or tingling, but on its own it usually means little.';
+
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      taps = 0; countEl.textContent = '0';
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      running = true;
+      startTime = performance.now();
+      stage.className = 'mv-stage mv-active';
+      tick();
+      endTimer = setTimeout(finish, DURATION);
+    });
+
+    stage.addEventListener('pointerdown', onTap);
+  }
+
+  document.addEventListener('DOMContentLoaded', initFT);
+</script>

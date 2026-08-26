@@ -1,0 +1,176 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+
+export const prerender = true;
+
+const tests = [
+  { slug: "simple-reaction-time", ar: "زمن الاستجابة البسيط", en: "Simple Reaction Time", descAr: "سرعة استجابتك الحسية-الحركية الأولية", descEn: "Raw sensorimotor response speed" },
+  { slug: "pvt-vigilance", ar: "اليقظة الحركية (PVT)", en: "Vigilance (PVT)", descAr: "انتباهك المستمر ولحظات الغفلة", descEn: "Sustained attention and lapses" },
+  { slug: "finger-tapping", ar: "النقر بالإصبع", en: "Finger Tapping", descAr: "أقصى سرعة حركية نفسية", descEn: "Maximum psychomotor speed" },
+  { slug: "stroop-test", ar: "اختبار ستروب", en: "Stroop Test", descAr: "الانتباه الانتقائي ومقاومة التداخل", descEn: "Selective attention & interference control" },
+  { slug: "digit-span", ar: "مدى الأرقام", en: "Digit Span", descAr: "الذاكرة قصيرة المدى والعاملة", descEn: "Short-term & working memory" },
+  { slug: "cpt-test", ar: "الأداء المستمر (CPT)", en: "Continuous Performance (CPT)", descAr: "التركيز المستمر وضبط الاندفاعية", descEn: "Sustained focus & impulse control" },
+  { slug: "n-back", ar: "N-Back", en: "N-Back", descAr: "سعة الذاكرة العاملة وتحديثها", descEn: "Working memory capacity & updating" },
+  { slug: "corsi-block", ar: "الذاكرة المكانية (Corsi)", en: "Corsi Block-Tapping", descAr: "الذاكرة البصرية المكانية", descEn: "Visuospatial memory" },
+  { slug: "trail-making", ar: "صنع المسارات", en: "Trail Making", descAr: "سرعة المعالجة والمرونة الذهنية", descEn: "Processing speed & flexibility" },
+  { slug: "visual-patterns", ar: "الأنماط البصرية", en: "Visual Patterns", descAr: "السجل البصري قصير المدى", descEn: "Short-term visual registration" },
+];
+---
+
+<Layout title="Memory & Cognitive Tests | SHYM365.ORG">
+  <ToolsShell>
+    <section class="tool-hero">
+      <span class="kicker" data-ar>أدوات معرفية</span>
+      <span class="kicker" data-en>Cognitive Tools</span>
+      <h1>
+        <span data-ar>اختبارات الذاكرة واليقظة والانتباه</span>
+        <span data-en>Memory, Vigilance & Attention Tests</span>
+      </h1>
+      <p class="lead">
+        <span data-ar>مجموعة اختبارات تفاعلية قصيرة تعمل بالكامل في متصفحك — بلا تسجيل دخول وبلا رفع بيانات — لتقييم ذاتي سريع للذاكرة والانتباه وسرعة الاستجابة، بنتائج مبنية على مقاييس معتمدة علميًا.</span>
+        <span data-en style="display:none">A set of short interactive tests that run entirely in your browser — no login, no data upload — for a quick self-assessment of memory, attention, and reaction speed, with results grounded in established research measures.</span>
+      </p>
+    </section>
+
+    <div class="calc-card" style="display:grid; gap:14px;">
+      {tests.map((t) => (
+        <a class="mv-cell" href={`/memory/${t.slug}`} style="display:block; padding:16px; border-radius:14px; border:1px solid var(--line); background:var(--paper-alt); text-decoration:none;">
+          <div style="font-weight:700; color:var(--ink);">
+            <span data-ar>{t.ar}</span>
+            <span data-en style="display:none">{t.en}</span>
+          </div>
+          <div style="font-size:0.9rem; color:var(--ink-soft); margin-top:4px;">
+            <span data-ar>{t.descAr}</span>
+            <span data-en style="display:none">{t.descEn}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+<!-- بداية قسم المقال الشامل -->
+    <article class="info-section article-body" style="margin-top: 32px; line-height: 1.8;">
+      
+      <!-- 1. المقدمة / Introduction -->
+      <h2>
+        <span data-ar>أهمية اختبارات الذاكرة واليقظة والمعالجة الذهنية في العصر الرقمي</span>
+        <span data-en style="display:none">The Importance of Memory, Vigilance, and Processing Speed Tests in the Digital Age</span>
+      </h2>
+      
+      <p>
+        <span data-ar>تُعد القدرات المعرفية مثل الذاكرة العاملة، واليقظة المستمرة، وسرعة المعالجة الحسية-الحركية، الركائز الأساسية التي تعتمد عليها إنتاجيتنا وجودة حياتنا اليومية. في عصر يتميز بالتدفق المستمر للمعلومات والمشتتات الرقمية، لم تعد صحة العقل تقتصر على غياب الأمراض العصبية فحسب، بل أصبحت تتطلب تقييماً وتدريباً مستمرين للحفاظ على أعلى مستويات الأداء الذهني. توفر الاختبارات المعرفية المصممة علمياً وسيلة دقيقة وفعالة لقياس هذه الوظائف ومتابعة تغيراتها عبر الزمن.</span>
+        <span data-en style="display:none">Cognitive abilities such as working memory, sustained vigilance, and sensorimotor processing speed serve as the fundamental pillars of our daily productivity and overall quality of life. In an era characterized by continuous information flow and digital distractions, brain health is no longer defined merely by the absence of neurological disease, but by active tracking and training to maintain peak mental performance. Scientifically designed cognitive tests provide an accurate, effective way to measure these functions and monitor their progression over time.</span>
+      </p>
+
+      <p>
+        <span data-ar>يهدف هذا المقال الشامل إلى شرح الأساس العلمي لتقييم الذاكرة واليقظة، واستعراض كيفية عمل مختلف الاختبارات العصبية-النفسية، وكيف يمكن للاختبار الذاتي الدائم أن يساعد في اكتشاف علامات الإجهاد الذهني المبكر وترسيخ عادات صحية تدعم المرونة المعرفية.</span>
+        <span data-en style="display:none">This comprehensive article explores the scientific rationale behind assessing memory and vigilance, reviews how various neuropsychological tests operate, and highlights how regular self-assessment helps detect early signs of mental fatigue while promoting healthy cognitive resilience.</span>
+      </p>
+
+      <!-- 2. الوظائف المعرفية الأساسية / Core Cognitive Domains -->
+      <h2>
+        <span data-ar>الأبعاد المعرفية الأساسية وكيفية قياسها</span>
+        <span data-en style="display:none">Core Cognitive Domains and How They Are Measured</span>
+      </h2>
+
+      <p>
+        <span data-ar>تتكون المنظومة الذهنية للإنسان من عدة شبكات عصبية متكاملة يختص كل منها بوظيفة محددة. التقييم الشامل ينطوي على قياس عدة مجالات رئيسية:</span>
+        <span data-en style="display:none">Human cognition comprises interconnected neural networks, each specialized in distinct tasks. Comprehensive evaluation requires testing several primary domains:</span>
+      </p>
+
+      <ul>
+        <li>
+          <strong><span data-ar>الذاكرة قصيرة المدى والذاكرة العاملة (Working Memory):</span><span data-en style="display:none">Short-Term & Working Memory:</span></strong>
+          <span data-ar> القدرة على الاحتفاظ بالمعلومات وتحديثها معالجةً وتحليلاً في آنٍ واحد، كما في اختبارات <em>مدى الأرقام (Digit Span)</em> و <em>N-Back</em>. هذه القدرة حاسمة لاتخاذ القرارات وحل المشكلات المعقدة.</span>
+          <span data-en style="display:none"> The capacity to hold and manipulate information simultaneously, as evaluated by <em>Digit Span</em> and <em>N-Back</em> tasks. This ability is critical for decision-making and complex problem-solving.</span>
+        </li>
+        <li>
+          <strong><span data-ar>الذاكرة البصرية-المكانية (Visuospatial Memory):</span><span data-en style="display:none">Visuospatial Memory:</span></strong>
+          <span data-ar> مسؤولية تذكر الأشكال والأنماط والمواقع الجغرافية أو الحركية دون اعتماد على الأرقام والكلمات، وتتجلى في اختبارات <em>كورتسي (Corsi Block)</em> و <em>الأنماط البصرية (Visual Patterns)</em>.</span>
+          <span data-en style="display:none"> Responsible for recalling shapes, patterns, and spatial arrangements without relying on language or numbers, assessed via <em>Corsi Block</em> and <em>Visual Patterns</em> tests.</span>
+        </li>
+        <li>
+          <strong><span data-ar>اليقظة والانتباه المستمر (Sustained Attention & Vigilance):</span><span data-en style="display:none">Vigilance & Sustained Attention:</span></strong>
+          <span data-ar> القدرة على التركيز لفترات طويلة واكتشاف التغيرات الطفيفة دون السقوط في الغفلة، وهو ما يقيسه اختبار <em>اليقظة الحركية (PVT)</em> واختبار <em>الأداء المستمر (CPT)</em>.</span>
+          <span data-en style="display:none"> The ability to maintain concentration over extended periods and detect minor visual signals without lapsing, measured by the <em>Psychomotor Vigilance Test (PVT)</em> and <em>Continuous Performance Test (CPT)</em>.</span>
+        </li>
+        <li>
+          <strong><span data-ar>المرونة المعرفية وضبط الاندفاع (Executive Control & Flexibility):</span><span data-en style="display:none">Cognitive Flexibility & Impulse Control:</span></strong>
+          <span data-ar> التبديل السلس بين القواعد الذهنية وقمع الاستجابات التلقائية غير الصحيحة، كالمقاس عبر اختبار <em>ستروب (Stroop)</em> واختبار <em>صنع المسارات (Trail Making)</em>.</span>
+          <span data-en style="display:none"> Seamlessly switching between mental rules while inhibiting automatic, incorrect responses, evaluated through the <em>Stroop Test</em> and <em>Trail Making Test</em>.</span>
+        </li>
+      </ul>
+
+      <!-- 3. فوائد التقييم الذاتي الدوري / Benefits of Regular Testing -->
+      <h2>
+        <span data-ar>فوائد إجراء الاختبارات المعرفية بشكل دوري</span>
+        <span data-en style="display:none">The Benefits of Regular Cognitive Self-Assessment</span>
+      </h2>
+
+      <p>
+        <span data-ar>لا يقتصر هدف اختبارات الذاكرة والانتباه على التقييم السريري، بل يمتد ليوفر فوائد متعددة للأفراد الأصحاء في حياتهم اليومية والمهنية:</span>
+        <span data-en style="display:none">Cognitive assessments are not strictly for clinical diagnosis; they offer substantial personal and professional benefits for healthy individuals in daily life:</span>
+      </p>
+
+      <ol>
+        <li>
+          <strong><span data-ar>الكشف المبكر عن الإرهاق ونقص النوم:</span><span data-en style="display:none">Early Detection of Sleep Deprivation & Fatigue:</span></strong>
+          <span data-ar> تُعد اختبارات سرعة الاستجابة واليقظة (مثل PVT) حساسة للغاية لقلة النوم. انخفاض السرعة أو زيادة لحظات الغفلة يمنح تنبيهاً مبكراً بضرورة الحصول على الراحة قبل تراجع أداء العمل أو قيادة السيارات.</span>
+          <span data-en style="display:none"> Vigilance and reaction speed tests are highly sensitive to sleep restriction. A dip in speed or an increase in cognitive lapses serves as an objective warning to rest before occupational or driving safety is compromised.</span>
+        </li>
+        <li>
+          <strong><span data-ar>متابعة تشتت الانتباه وتأثير المشتتات:</span><span data-en style="display:none">Tracking Attention Span & Digital Distractions:</span></strong>
+          <span data-ar> يُتيح لك التقييم الدوري ملاحظة مدى تأثير الاستخدام المكثف للأجهزة الذكية والتنقل بين المهام (Multitasking) على قدرتك على التركيز العميق وضبط الاندفاعية.</span>
+          <span data-en style="display:none"> Regular testing reveals how heavy device usage and task-switching impact your deep focus capacity and behavioral impulse control over time.</span>
+        </li>
+        <li>
+          <strong><span data-ar>قياس تقدم التمارين الذهنية والنمط الصحي:</span><span data-en style="display:none">Measuring the Impact of Lifestyle & Brain Training:</span></strong>
+          <span data-ar> عند اتباع نظام غذائي جديد، أو البدء بممارسة الرياضة، أو الالتزام بتمارين الذاكرة، توفر هذه الاختبارات أرقاماً محايدة تتيح لك قياس مدى التطور الفعلي في ذاكرتك وسرعة معالجتك.</span>
+          <span data-en style="display:none"> When adopting a new diet, starting an exercise routine, or practicing memory exercises, these objective metrics offer tangible proof of improvement in processing speed and memory capacity.</span>
+        </li>
+      </ol>
+
+      <!-- 4. كيفية حماية وتعزيز صحة العقل / Supporting Brain Health -->
+      <h2>
+        <span data-ar>استراتيجيات مثبتة لعلم الأعصاب لحماية وتطوير الذاكرة</span>
+        <span data-en style="display:none">Evidence-Based Strategies to Support & Enhance Memory</span>
+      </h2>
+
+      <p>
+        <span data-ar>أظهرت الأبحاث العصبية أن الدماغ يمتلك خصائص اللدونة العصبية (Neuroplasticity)، مما يعني قدرته المستمرة على تشكيل وصلات جديدة وتطوير كفاءته. لتحقيق أقصى استفادة من قدراتك المعرفية، يُوصى بتطبيق الممارسات التالية:</span>
+        <span data-en style="display:none">Neuroscience research demonstrates that the brain retains neuroplasticity throughout life, constantly building new connections and enhancing efficiency. To optimize your cognitive longevity, consider incorporating these core habits:</span>
+      </p>
+
+      <p>
+        <span data-ar><strong>1. جودة النوم العميق:</strong> أثناء مرحلة النوم بطيء الموجة ونوم الخاطف (REM)، يقوم الدماغ بتثبيت الذكريات النهارية وتنظيف الفضلات الأيضية. الحفاظ على 7-8 ساعات من النوم المنتظم هو العامل الأول في استقرار الانتباه.</span>
+        <span data-en style="display:none"><strong>1. Prioritize Deep Sleep:</strong> During slow-wave and REM sleep, the brain consolidates memories and clears metabolic waste. Maintaining 7–8 hours of consistent sleep is the single most effective way to sustain attention.</span>
+      </p>
+
+      <p>
+        <span data-ar><strong>2. النشاط البدني المنتظم:</strong> تشير الدراسات إلى أن التمارين الهوائية (كالمشي السريع والسباحة) تحفز إفراز عامل النمو العصبي (BDNF)، مما يدعم نمو الخلايا العصبية في منطقة الحصين (Hippocampus) المسؤول الرئيسي عن الذاكرة.</span>
+        <span data-en style="display:none"><strong>2. Regular Aerobic Exercise:</strong> Physical activities like brisk walking or swimming stimulate the release of Brain-Derived Neurotrophic Factor (BDNF), supporting neurogenesis in the hippocampus—the brain's primary memory center.</span>
+      </p>
+
+      <p>
+        <span data-ar><strong>3. التحدي الذهني المستمر:</strong> تعريض العقل لمهام جديدة بانتظام — مثل تعلم لغة جديدة، أو العزف على أداة موسيقية، أو ممارسة ألعاب الذاكرة المعقدة — يبني ما يُعرف بالاحتياطي المعرفي (Cognitive Reserve) الذي يحمي الدماغ من آثار التقدم في العمر.</span>
+        <span data-en style="display:none"><strong>3. Continuous Mental Challenge:</strong> Engaging in novel skills—such as learning a language, playing a musical instrument, or taking on complex memory tests—builds cognitive reserve, protecting the brain against age-related decline.</span>
+      </p>
+
+      <!-- 5. الخاتمة / Conclusion -->
+      <h2>
+        <span data-ar>الخلاصة: اجعل التقييم المعرفي جزءاً من روتينك العافيتي</span>
+        <span data-en style="display:none">Conclusion: Integrating Cognitive Tracking into Your Wellness Routine</span>
+      </h2>
+
+      <p>
+        <span data-ar>تماماً كما نهتم بوزن الجسم وضغط الدم ونسبة اللياقة البدنية، فإن التقييم الدوري لصحة العقل واليقظة يمثل ركناً أساسياً في مفهوم العافية الشاملة. توفر لك الاختبارات المتاحة في هذه الصفحة أدوات مجانية، آمنة، وتعمل بالكامل محلياً على جهازك لتمنحك رؤية واضحة ومستمرة حول أدائك الذهني، مما يُمكّنك من اتخاذ قرارات واعية تُحافظ على حدة عقلك ومرونتك المعرفية مدى الحياة.</span>
+        <span data-en style="display:none">Just as we monitor physical weight, blood pressure, and fitness levels, tracking cognitive health and vigilance is essential to comprehensive wellness. The browser-based tools on this page provide a secure, private, and free way to gain actionable insights into your mental performance, empowering you to make informed lifestyle choices that preserve your cognitive edge for years to come.</span>
+      </p>
+
+    </article>
+    <!-- نهاية قسم المقال -->
+    <p class="disclaimer">
+      <span data-ar>كل الاختبارات في هذا القسم تثقيفية، تُجرى وتُحسب بالكامل على جهازك دون إرسال أي بيانات لأي خادم، وليست بديلاً عن تقييم طبي أو عصبي-نفسي متخصص.</span>
+      <span data-en style="display:none">All tests in this section are educational, run and scored entirely on your device with no data sent to any server, and are not a substitute for professional medical or neuropsychological assessment.</span>
+    </p>
+  </ToolsShell>
+</Layout>

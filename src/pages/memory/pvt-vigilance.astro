@@ -1,0 +1,186 @@
+---
+// src/pages/memory-vigilance/pvt-vigilance.astro
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+import "../../styles/memory-vigilance.css";
+
+export const prerender = true;
+---
+
+<Layout title="Psychomotor Vigilance Task | SHYM365.ORG">
+  <ToolsShell>
+    <div class="container">
+      <div class="back-link">
+        <a href="/memory" data-ar>← العودة إلى اختبارات الذاكرة</a>
+        <a href="/memory" data-en style="display:none">← Back to Memory Tests</a>
+      </div>
+
+      <section class="tool-hero">
+    <span class="kicker" data-ar>اختبار اليقظة</span>
+    <span class="kicker" data-en>Vigilance Test</span>
+    <h1>
+      <span data-ar>اختبار اليقظة الحركية (PVT)</span>
+      <span data-en>Psychomotor Vigilance Task (PVT)</span>
+    </h1>
+    <p class="lead">
+      <span data-ar>يقيس قدرتك على الحفاظ على انتباه مستمر عبر عدة محاولات، ويكشف "لحظات الغفلة" الناتجة عن التعب أو قلة النوم.</span>
+      <span data-en>Measures sustained attention across repeated trials and detects attention "lapses" linked to fatigue or sleep loss.</span>
+    </p>
+  </section>
+
+  <div class="calc-card">
+    <div class="mv-stage mv-wait" id="pvtStage" tabindex="0">
+      <span data-ar id="pvtText">اضغط "ابدأ"، وعندما يظهر العداد اضغط لإيقافه بأسرع ما يمكن</span>
+      <span data-en id="pvtTextEn" style="display:none">Press "Start"; when the counter appears, tap to stop it as fast as you can</span>
+    </div>
+    <div class="mv-progress" id="pvtProgress"></div>
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-calc" id="pvtStartBtn">
+        <span data-ar>ابدأ الاختبار (8 محاولات، ~دقيقتان)</span>
+        <span data-en>Start Test (8 trials, ~2 min)</span>
+      </button>
+    </div>
+
+    <div class="result" id="pvtResult">
+      <div class="mv-stats">
+        <div class="mv-stat"><div class="mv-stat-value" id="pvtMean">–</div><div class="mv-stat-label"><span data-ar>المتوسط (مللي ثانية)</span><span data-en>Mean (ms)</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="pvtLapses">–</div><div class="mv-stat-label"><span data-ar>لحظات الغفلة (&gt;500ms)</span><span data-en>Lapses (&gt;500ms)</span></div></div>
+        <div class="mv-stat"><div class="mv-stat-value" id="pvtFalse">–</div><div class="mv-stat-label"><span data-ar>بدايات مبكرة</span><span data-en>False starts</span></div></div>
+      </div>
+      <div class="reading">
+        <span class="badge" id="pvtBadge">–</span>
+        <p id="pvtInterpretation" style="margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2><span data-ar>ماذا يقيس هذا الاختبار؟</span><span data-en>What does this measure?</span></h2>
+    <p>
+      <span data-ar>PVT مقياس معملي معتمد لتقييم اليقظة والانتباه المستدام، ويُستخدم في أبحاث النوم والإرهاق. "لحظة الغفلة" هي أي استجابة أبطأ من 500 مللي ثانية، وتزداد مع التعب وقلة النوم والإرهاق الذهني.</span>
+      <span data-en style="display:none">The PVT is a well-established lab measure of sustained attention, used in sleep and fatigue research. A "lapse" is any response slower than 500 ms, and lapses increase with fatigue, sleep debt, and mental exhaustion.</span>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>هذا اختبار تثقيفي مبسّط وليس بديلاً عن اختبار PVT المعملي المعياري، ولا يُستخدم لتقييم اللياقة للقيادة أو تشغيل الآلات.</span>
+    <span data-en style="display:none">This is a simplified educational version, not a substitute for the standardized lab PVT, and should not be used to judge fitness for driving or operating machinery.</span>
+  </p>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<script>
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang : 'ar';
+  }
+
+  function initPVT() {
+    const stage = document.getElementById('pvtStage');
+    const progress = document.getElementById('pvtProgress');
+    const startBtn = document.getElementById('pvtStartBtn') as HTMLButtonElement;
+    const resultEl = document.getElementById('pvtResult');
+    if (!stage) return;
+
+    const TOTAL = 8;
+    let trial = 0, times = [], falseStarts = 0;
+    let waitTimer = null, rafId = null, goAt = 0, state = 'idle';
+
+    function setText(ar, en) {
+      const arSpan = stage.querySelector('[data-ar]');
+      const enSpan = stage.querySelector('[data-en]');
+      if (arSpan) arSpan.textContent = ar;
+      if (enSpan) enSpan.textContent = en;
+    }
+
+    function startTrial() {
+      state = 'waiting';
+      stage.className = 'mv-stage mv-wait';
+      setText('انتظر...', 'Wait...');
+      progress.textContent = `${currentLang() === 'ar' ? 'المحاولة' : 'Trial'} ${trial + 1} / ${TOTAL}`;
+      const delay = 2000 + Math.random() * 6000;
+      waitTimer = setTimeout(() => {
+        state = 'go';
+        goAt = performance.now();
+        stage.className = 'mv-stage mv-go';
+        tick();
+      }, delay);
+    }
+
+    function tick() {
+      if (state !== 'go') return;
+      const elapsed = Math.round(performance.now() - goAt);
+      stage.innerHTML = `<span class="mv-counter">${elapsed}</span>`;
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function rebuildSpans() {
+      stage.innerHTML =
+        '<span data-ar id="pvtText"></span><span data-en id="pvtTextEn" style="display:none"></span>';
+    }
+
+    function handlePress() {
+      if (state === 'waiting') {
+        clearTimeout(waitTimer);
+        state = 'idle';
+        falseStarts++;
+        stage.className = 'mv-stage mv-early';
+        rebuildSpans();
+        setText('بداية مبكرة! سنعيد هذه المحاولة', 'Too early! Redoing this trial');
+        setTimeout(() => { startTrial(); }, 1200);
+        return;
+      }
+      if (state === 'go') {
+        cancelAnimationFrame(rafId);
+        const rt = performance.now() - goAt;
+        times.push(rt);
+        state = 'idle';
+        trial++;
+        stage.className = 'mv-stage mv-active';
+        rebuildSpans();
+        setText(`${Math.round(rt)} مللي ثانية`, `${Math.round(rt)} ms`);
+        if (trial >= TOTAL) setTimeout(finish, 900);
+        else setTimeout(startTrial, 1000);
+      }
+    }
+
+    function finish() {
+      const mean = times.reduce((a, b) => a + b, 0) / times.length;
+      const lapses = times.filter(t => t > 500).length;
+      document.getElementById('pvtMean').textContent = String(Math.round(mean));
+      document.getElementById('pvtLapses').textContent = String(lapses);
+      document.getElementById('pvtFalse').textContent = String(falseStarts);
+
+      let tierAr, tierEn, tone;
+      if (lapses === 0 && mean < 300) { tierAr = 'يقظة ممتازة'; tierEn = 'Excellent alertness'; tone = 'ok'; }
+      else if (lapses <= 1 && mean < 380) { tierAr = 'يقظة جيدة'; tierEn = 'Good alertness'; tone = 'ok'; }
+      else if (lapses <= 3) { tierAr = 'انتباه متوسط — قد تكون متعبًا'; tierEn = 'Moderate attention — you may be fatigued'; tone = 'warn'; }
+      else { tierAr = 'لحظات غفلة متكررة — علامة على تعب/نعاس'; tierEn = 'Frequent lapses — a sign of fatigue/sleepiness'; tone = 'danger'; }
+
+      const badgeEl = document.getElementById('pvtBadge');
+      badgeEl.textContent = currentLang() === 'ar' ? tierAr : tierEn;
+      badgeEl.className = `badge badge-${tone}`;
+      document.getElementById('pvtInterpretation').textContent = currentLang() === 'ar'
+        ? 'عدد لحظات الغفلة (استجابات أبطأ من 500ms) هو المؤشر الأهم في هذا الاختبار — كلما زاد، زاد احتمال التعب الذهني أو الحرمان من النوم وقت إجراء الاختبار.'
+        : 'The lapse count (responses slower than 500ms) is the key indicator here — more lapses suggest greater mental fatigue or sleep deprivation at the time of testing.';
+
+      stage.className = 'mv-stage mv-wait';
+      rebuildSpans();
+      setText('انتهى الاختبار — النتائج أدناه', 'Test complete — results below');
+      resultEl.classList.add('show');
+      startBtn.disabled = false;
+    }
+
+    startBtn.addEventListener('click', () => {
+      trial = 0; times = []; falseStarts = 0;
+      resultEl.classList.remove('show');
+      startBtn.disabled = true;
+      startTrial();
+    });
+
+    stage.addEventListener('pointerdown', (e) => { e.preventDefault(); handlePress(); });
+  }
+
+  document.addEventListener('DOMContentLoaded', initPVT);
+</script>
