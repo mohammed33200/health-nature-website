@@ -164,7 +164,7 @@
 
 	// Site search functionality
 	// Simple exact and partial search
-	const fuzzyMatch = (text: string, query: string): boolean => {
+	const fuzzyMatch = (text, query) => {
 		if (!query || query.length < 1) return false;
 		
 		// Case-insensitive exact match (most reliable)
@@ -174,7 +174,7 @@
 		if (lowerText.includes(lowerQuery)) return true;
 		
 		// Arabic character normalization
-		const normalizeArabic = (str: string) => {
+		const normalizeArabic = (str) => {
 			return str
 				.replace(/[أإآ]/g, 'ا')
 				.replace(/[ة]/g, 'ه')
@@ -368,7 +368,7 @@
 	];
 
 	// Sort pages alphabetically based on current language
-	const sortPages = (pages: typeof sitePages) => {
+	const sortPages = (pages) => {
 		const currentLang = document.documentElement.lang;
 		return [...pages].sort((a, b) => {
 			if (currentLang === 'ar') {
