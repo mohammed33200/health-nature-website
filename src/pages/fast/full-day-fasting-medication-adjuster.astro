@@ -1,0 +1,535 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="تعديل مواعيد الأدوية للصيام الكامل ٢٤ ساعة" description="مثل يوم كيبور اليهودي أو بعض الصيامات الهندوسية">
+  <ToolsShell>
+    <div class="tool-hero">
+      <a href="/fast/" class="back-link">
+        <span data-ar>‹ العودة إلى أدوات الصيام</span>
+        <span data-en>‹ Back to Fasting Tools</span>
+      </a>
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
+      <p class="kicker"><span data-ar>أدوات الصيام</span><span data-en>Fasting Tools</span></p>
+      <h1>
+        <span data-ar>تعديل مواعيد الأدوية للصيام الكامل ٢٤ ساعة</span>
+        <span data-en>Full 24-Hour Fasting Medication Adjuster</span>
+      </h1>
+      <p class="lead"><span data-ar>مثل يوم كيبور اليهودي أو بعض الصيامات الهندوسية</span><span data-en>Like Yom Kippur or some Hindu fasts</span></p>
+    </div>
+
+  <script is:inline type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "هل يجوز الإفطار في يوم كيبور أو الصيام الهندوسي لضرورة الدواء؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "نعم، جميع الشرائع الدينية تُبيح بل تُلزم أحياناً بكسر الصيام عند وجود خطر صحي حقيقي — استشر طبيبك ومرجعك الديني عند الشك."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "لماذا يوجد جدولان منفصلان (يوم البداية ويوم النهاية)؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "لأن هذا النوع من الصيام يمتد عادة أكثر من 24 ساعة عبر يومين تقويميين مختلفين، فتختلف الجرعات التي تحتاج تعديلاً في كل يوم."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+  :root{
+    --warn:#c98a2c;
+    --radius:14px;
+    --shadow:0 4px 14px rgba(30,58,63,0.08);
+  }
+  .fast-nav{ display:flex; gap:8px; overflow-x:auto; padding:10px 14px; background:var(--paper-alt); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:40; -webkit-overflow-scrolling:touch; }
+    .fast-nav a{ flex:0 0 auto; padding:8px 14px; border-radius:20px; background:var(--paper); color:var(--ink-soft); text-decoration:none; font-size:.82rem; border:1px solid var(--line); white-space:nowrap; }
+    .fast-nav a.active{ background:var(--accent); color:#fff; border-color:var(--accent); font-weight:bold; }
+    .page-actions{ display:flex; gap:10px; margin-bottom:16px; }
+    .action-btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 16px; background:var(--paper); border:1px solid var(--line); border-radius:8px; color:var(--ink); text-decoration:none; font-size:.85rem; cursor:pointer; transition:background .15s; }
+    .action-btn:hover{ background:var(--paper-alt); }
+    .action-btn svg{ width:18px; height:18px; }
+    .back-link{ display:inline-block; margin-bottom:8px; color:var(--secondary-dark); text-decoration:none; font-size:.85rem; }
+    .back-link:hover{ text-decoration:underline; }
+    .kicker{ font-family:"IBM Plex Mono",monospace; font-size:.8rem; color:var(--secondary-dark); letter-spacing:.06em; margin-bottom:8px; }
+    .container{ max-width:760px; margin:14px auto 0; padding:0 14px; }
+    .calc-card{ background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 18px 20px; margin-bottom:18px; }
+    .calc-card h2{ margin:0 0 4px; font-size:1.05rem; color:var(--accent-dark); display:flex; align-items:center; gap:8px; }
+    .calc-card .sub{ margin:0 0 14px; color:var(--ink-soft); font-size:.85rem; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .field{ flex:1 1 150px; display:flex; flex-direction:column; gap:5px; }
+    .field label{ font-size:.82rem; color:var(--ink-soft); }
+    .field select, .field input{ padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:.95rem; background:#fff; color:var(--ink); font-family:inherit; }
+    .meal-row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .meal-row label{ flex:0 0 150px; font-size:.85rem; color:var(--ink-soft); display:flex; align-items:center; gap:6px; }
+    .meal-row input[type=time]{ flex:1; padding:8px; border:1px solid var(--line); border-radius:7px; font-family:inherit; }
+
+    .type-tabs{ display:flex; gap:8px; margin-bottom:6px; }
+    .type-tabs button{ flex:1; padding:9px; border-radius:8px; border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; font-size:.85rem; font-family:inherit; }
+    .type-tabs button.active{ background:var(--accent); color:#fff; border-color:var(--accent); }
+    .type-note{ font-size:.78rem; color:var(--ink-soft); margin:0 0 14px; }
+
+    .med-card{ border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:12px; background:var(--paper); position:relative; }
+    .med-card .med-remove{ position:absolute; top:10px; inset-inline-end:10px; background:none; border:none; color:var(--danger); font-size:1.1rem; cursor:pointer; }
+    .med-card h3{ margin:0 0 10px; font-size:.95rem; color:var(--accent-dark); }
+
+    .add-row-btn{ width:100%; padding:10px; border:1px dashed var(--secondary); border-radius:9px; background:#fff; color:var(--accent-dark); cursor:pointer; font-size:.9rem; margin:6px 0 4px; }
+    .add-row-btn:hover{ background:var(--paper); }
+    .btn-calc{ width:100%; padding:11px; border:none; border-radius:9px; background:var(--accent); color:#fff; font-size:.95rem; cursor:pointer; margin-top:10px; }
+    .btn-calc:hover{ background:var(--accent-dark); }
+
+    .faith-banner{ background:#eef7f2; border:1px solid var(--ok); border-radius:10px; padding:12px 16px; font-size:.85rem; color:var(--ink); margin-bottom:18px; }
+    .tips-box{ background:#fff8ea; border:1px solid var(--warn); border-radius:10px; padding:12px 16px; font-size:.85rem; margin-bottom:14px; }
+
+    .day-title{ font-weight:bold; color:var(--accent-dark); margin:16px 0 8px; font-size:.95rem; }
+    .result{ display:none; margin-top:6px; }
+    .result.show{ display:block; }
+    .dose-item{ display:flex; gap:12px; align-items:center; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+    .dose-time{ font-family:"Courier New",monospace; font-weight:bold; color:var(--accent-dark); font-size:1.1rem; min-width:60px; text-align:center; }
+    .dose-body{ flex:1; }
+    .dose-name{ font-weight:bold; font-size:.95rem; }
+    .dose-note{ font-size:.78rem; color:var(--ink-soft); }
+    .dose-moved{ font-size:.78rem; color:var(--accent-dark); margin-top:2px; }
+    .dose-warn{ font-size:.78rem; color:var(--warn); margin-top:2px; }
+    .advisory-box{ background:#fff8ea; border:1px solid var(--warn); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+    .advisory-box .dose-name{ color:var(--warn); }
+
+    .global-actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+    .global-actions button, .global-actions a{ flex:1 1 auto; text-align:center; padding:10px 10px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:.85rem; cursor:pointer; text-decoration:none; font-family:inherit; }
+    .global-actions button:hover, .global-actions a:hover{ background:var(--paper); }
+
+    .disclaimer{ max-width:760px; margin:10px auto 0; padding:0 14px; font-size:.78rem; color:var(--ink-soft); text-align:center; }
+    .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:9px 18px; border-radius:20px; font-size:.85rem; opacity:0; pointer-events:none; transition:opacity .25s; z-index:50; }
+    .toast.show{ opacity:1; }
+    #print-card{ position:fixed; top:0; left:0; z-index:-999; width:680px; background:#fff; font-family:"Tahoma","Segoe UI",Arial,sans-serif; }
+    #print-card .pc-header{ background:linear-gradient(120deg,var(--accent),var(--accent-dark)); color:#fff; padding:22px 26px; text-align:center; }
+    #print-card .pc-header h1{ margin:0 0 4px; font-size:1.3rem; }
+    #print-card .pc-body{ padding:20px 26px 26px; }
+    #print-card .pc-day{ font-weight:bold; color:var(--accent-dark); margin:14px 0 6px; }
+    #print-card .pc-row{ display:flex; align-items:center; gap:14px; border-bottom:1px solid #e4eef0; padding:10px 0; }
+    #print-card .pc-time{ font-family:"Courier New",monospace; font-weight:bold; color:var(--accent-dark); font-size:1.1rem; min-width:60px; }
+    #print-card .pc-name{ font-weight:bold; }
+    #print-card .pc-footer{ text-align:center; color:#8a7f68; font-size:.78rem; padding:10px 26px 20px; }
+  </style>
+
+  <nav class="fast-nav">
+    <a href="/fast/"><span data-ar>🗺️ الرئيسية</span><span data-en>🗺️ Home</span></a>
+    <a href="/fast/intermittent-fasting-medication-adjuster"><span data-ar>⏳ المتقطع</span><span data-en>⏳ Intermittent</span></a>
+    <a href="/fast/full-day-fasting-medication-adjuster" class="active"><span data-ar>🌗 صيام كامل ٢٤ س</span><span data-en>🌗 Full 24h</span></a>
+    <a href="/fast/orthodox-fasting-medication-adjuster"><span data-ar>✝️ الأرثوذكسي</span><span data-en>✝️ Orthodox</span></a>
+    <a href="/fast/ramadan-medication-schedule"><span data-ar>🌙 رمضان</span><span data-en>🌙 Ramadan</span></a>
+    <a href="/fast/voluntary-extended-fasting-medication-adjuster"><span data-ar>📅 تطوع متصل</span><span data-en>📅 Extended</span></a>
+    <a href="/fast/single-day-fasting-medication-adjuster"><span data-ar>☀️ يوم واحد</span><span data-en>☀️ Single Day</span></a>
+    <a href="/fast/bahai-fasting-medication-schedule"><span data-ar>🕊️ البهائي</span><span data-en>🕊️ Baháʼí</span></a>
+    <a href="/fast/jewish-minor-fast-medication-schedule"><span data-ar>✡️ يهودي أصغر</span><span data-en>✡️ Jewish Minor</span></a>
+  </nav>
+
+  <div class="container">
+
+    <div class="faith-banner">
+      <span data-ar>🕊️ يمكنك دائماً الإفطار إذا تعارض ذلك مع صحتك أو دوائك — كل الأديان ترخّص بذلك عند المرض. هذا التطبيق إرشادي فقط ولا يغني عن تعليمات طبيبك أو صيدليك، ولا "يعرف" أدويتك تحديداً بل يعتمد على تصنيف عام تختاره أنت.</span>
+      <span data-en>🕊️ You can always break your fast if it conflicts with your health or medication — all faiths permit this in illness. This tool is advisory only and does not replace your doctor's or pharmacist's instructions; it does not identify your specific medications, only a general category you select.</span>
+    </div>
+
+    <div class="tips-box">
+      <span data-ar>💡 لصيام يمتد ٢٤ ساعة أو أكثر، يُنصح عموماً بمناقشة طبيبك حول: الانتقال لأشكال دوائية طويلة المفعول أو حقن/لصقات لا تحتاج جرعة أثناء الصيام، أخذ جرعة تحميل (loading dose) قبل بدء الصيام لبعض المضادات الحيوية أو أدوية الضغط، واستشارة طبيبك تحديداً لأدوية السكري وخاصة الأنسولين قبل هذا النوع من الصيام.</span>
+      <span data-en>💡 For a fast lasting 24 hours or more, it's generally worth discussing with your doctor: switching to long-acting formulations or injections/patches that don't need a dose during the fast, a loading dose before the fast starts for some antibiotics or blood pressure medicines, and specifically consulting your doctor about diabetes medicines — especially insulin — before this type of fast.</span>
+    </div>
+
+    <div class="calc-card">
+      <h2>🕐 <span data-ar>بيانات عامة</span><span data-en>General Info</span></h2>
+      <div class="global-actions" style="margin-bottom:12px;">
+        <button onclick="saveMyData()">💾 <span data-ar>احفظ بياناتي على هذا الجهاز</span><span data-en>Save my data on this device</span></button>
+        <button onclick="clearMyData()">🗑 <span data-ar>امسح البيانات المحفوظة</span><span data-en>Clear saved data</span></button>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>موعد الاستيقاظ المعتاد</span><span data-en>Usual wake time</span></label>
+          <input type="time" id="p-wake" value="07:00">
+        </div>
+        <div class="field">
+          <label><span data-ar>موعد النوم المعتاد</span><span data-en>Usual sleep time</span></label>
+          <input type="time" id="p-sleep" value="23:00">
+        </div>
+      </div>
+      <p class="sub" style="margin:12px 0 6px;"><span data-ar>وجبتك المعتادة (تُستخدم فقط لحساب الجدول العادي قبل الصيام)</span><span data-en>Your usual meal (used only to compute the normal pre-fast schedule)</span></p>
+      <div class="meal-row">
+        <label><input type="checkbox" id="meal-breakfast-en" checked> <span data-ar>وجبة الصباح</span><span data-en>Morning meal</span></label>
+        <input type="time" id="meal-breakfast-t" value="08:00">
+      </div>
+      <div class="meal-row">
+        <label><input type="checkbox" id="meal-dinner-en" checked> <span data-ar>وجبة المساء</span><span data-en>Evening meal</span></label>
+        <input type="time" id="meal-dinner-t" value="19:00">
+      </div>
+    </div>
+
+    <div class="calc-card">
+      <h2>🌗 <span data-ar>إعدادات الصيام</span><span data-en>Fasting Settings</span></h2>
+      <div class="type-tabs">
+        <button class="active" data-v="dryfull" onclick="setFastKind('dryfull')"><span data-ar>جاف تام (لا طعام ولا ماء)</span><span data-en>Fully dry (no food or water)</span></button>
+        <button data-v="liquids" onclick="setFastKind('liquids')"><span data-ar>يسمح بالسوائل فقط (ماء/حليب)</span><span data-en>Liquids only (water/milk)</span></button>
+      </div>
+      <p class="type-note" id="type-note"></p>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>بداية الصيام (اليوم الأول)</span><span data-en>Fast start (day 1)</span></label>
+          <input type="time" id="f-start" value="18:00">
+        </div>
+        <div class="field">
+          <label><span data-ar>نهاية الصيام (اليوم التالي)</span><span data-en>Fast end (day 2)</span></label>
+          <input type="time" id="f-end" value="19:00">
+        </div>
+      </div>
+      <p class="sub">⏱ <span data-ar id="duration-note"></span><span data-en></span></p>
+    </div>
+
+    <div class="calc-card">
+      <h2>💊 <span data-ar>الأدوية</span><span data-en>Medications</span></h2>
+      <p class="sub"><span data-ar>اختر تصنيفاً عاماً لكل دواء ليتمكن التطبيق من تطبيق الإرشاد المناسب.</span><span data-en>Choose a general category for each medicine so the tool can apply the right guidance.</span></p>
+      <div id="med-list"></div>
+      <button class="add-row-btn" onclick="addMed()">+ <span data-ar>أضف دواءً</span><span data-en>Add medication</span></button>
+      <button class="btn-calc" onclick="calcSchedule()"><span data-ar>احسب الجدول</span><span data-en>Calculate Schedule</span></button>
+    </div>
+
+    <div class="calc-card result" id="res-card">
+      <h2>📋 <span data-ar>جدولك حول الصيام</span><span data-en>Your Schedule Around the Fast</span></h2>
+      <div class="day-title"><span data-ar>📆 يوم بداية الصيام</span><span data-en>📆 Fast-start day</span></div>
+      <div id="res-list-day1"></div>
+      <div class="day-title"><span data-ar>📆 يوم انتهاء الصيام</span><span data-en>📆 Fast-end day</span></div>
+      <div id="res-list-day2"></div>
+      <div class="global-actions">
+        <button onclick="copyAll()">📋 <span data-ar>نسخ الجدول</span><span data-en>Copy Schedule</span></button>
+        <a href="#" onclick="shareWhatsapp(); return false;">💬 WhatsApp</a>
+        <button onclick="downloadPdf()">📄 PDF</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="calc-card info-section">
+    <h2><span data-ar>📖 عن الصيام الكامل ٢٤ ساعة وهذه الأداة</span><span data-en>📖 About the Full 24-Hour Fast and This Tool</span></h2>
+    <div data-ar>
+
+      <p>يقصد بالصيام الكامل الامتناع التام أو شبه التام عن الطعام والشراب لمدة ٢٤ ساعة أو أكثر. من أبرز أمثلته: <strong>يوم كيبور</strong> اليهودي (حوالي ٢٥ ساعة صيام كامل عن الطعام والماء)، وبعض أنواع <strong>الصيام الهندوسي</strong> (كصيام إيكادشي أو نافراتري، وبعضها يسمح بالفاكهة أو الحليب وليس صياماً جافاً تاماً).</p>
+      <p>الأداة تحسب لك جدولين منفصلين: جدول يوم بداية الصيام (لتقديم الجرعات المتأخرة قبل بدء الصيام) وجدول يوم انتهائه (لتأجيل الجرعات المبكرة حتى الإفطار)، لأن هذا النوع من الصيام يمتد عادة على يومين تقويميين.</p>
+      <h3>نصائح مهمة قبل وبعد الصيام</h3>
+      <ul>
+        <li><strong>قبل الصيام:</strong> تناول وجبة متوازنة وغنية بالسوائل والألياف، وتجنب الأطعمة المالحة جداً (تزيد العطش) أو الثقيلة جداً قبل بدء الصيام مباشرة.</li>
+        <li><strong>بعد الصيام:</strong> أفطر تدريجياً — ابدأ بسوائل وأطعمة خفيفة قبل الوجبة الكاملة لتجنب اضطراب الجهاز الهضمي بعد فترة الامتناع الطويلة.</li>
+        <li>ناقش طبيبك حول الانتقال لأشكال دوائية طويلة المفعول أو حقن/لصقات لا تحتاج جرعة أثناء الصيام.</li>
+        <li>لمرضى السكري، استشارة الطبيب قبل هذا النوع من الصيام تحديداً أمر ضروري وليس اختيارياً.</li>
+      </ul>
+  
+    </div>
+    <div data-en>
+
+      <p>A full fast means abstaining completely (or almost completely) from food and water for 24 hours or more. Notable examples include the Jewish <strong>Yom Kippur</strong> (about 25 hours with no food or water at all), and some <strong>Hindu fasts</strong> (like Ekadashi or Navratri, some of which allow fruit or milk and aren't fully dry fasts).</p>
+      <p>The tool computes two separate schedules: one for the fast-start day (to bring forward late doses before the fast begins) and one for the fast-end day (to delay early doses until the fast breaks), since this type of fast typically spans two calendar days.</p>
+      <h3>Important tips before and after the fast</h3>
+      <ul>
+        <li><strong>Before the fast:</strong> eat a balanced, fluid- and fiber-rich meal, and avoid very salty (increases thirst) or very heavy food right before the fast starts.</li>
+        <li><strong>After the fast:</strong> break it gradually — start with fluids and light food before a full meal, to avoid upsetting your digestive system after a long abstention.</li>
+        <li>Discuss switching to long-acting formulations or injections/patches that don't need a dose during the fast with your doctor.</li>
+        <li>For diabetic patients, consulting a doctor before this specific type of fast is essential, not optional.</li>
+      </ul>
+  
+    </div>
+
+    <div data-ar>
+      <h3 style="margin-top:20px;">❓ أسئلة شائعة</h3>
+      <h4>هل يجوز الإفطار في يوم كيبور أو الصيام الهندوسي لضرورة الدواء؟</h4>
+      <p>نعم، جميع الشرائع الدينية تُبيح بل تُلزم أحياناً بكسر الصيام عند وجود خطر صحي حقيقي — استشر طبيبك ومرجعك الديني عند الشك.</p>
+      <h4>لماذا يوجد جدولان منفصلان (يوم البداية ويوم النهاية)؟</h4>
+      <p>لأن هذا النوع من الصيام يمتد عادة أكثر من ٢٤ ساعة عبر يومين تقويميين مختلفين، فتختلف الجرعات التي تحتاج تعديلاً في كل يوم.</p>
+
+    </div>
+    <div data-en>
+      <h3 style="margin-top:20px;">❓ Frequently Asked Questions</h3>
+      <h4>Is it permitted to break Yom Kippur or a Hindu fast for medication needs?</h4>
+      <p>Yes — all the religious traditions covered here permit, and sometimes require, breaking a fast when there's a real health risk. Consult your doctor and religious authority when in doubt.</p>
+      <h4>Why are there two separate schedules (start day and end day)?</h4>
+      <p>Because this type of fast typically spans more than 24 hours across two different calendar days, so the doses needing adjustment differ on each day.</p>
+
+    </div>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>⚠️ لا يحتوي هذا التطبيق على قاعدة بيانات لأسماء الأدوية أو تفاعلاتها، ولا يحسب جرعات الأنسولين أو أدوية السكري — هذه مسؤولية طبيبك المعالج فقط.</span>
+    <span data-en>⚠️ This tool has no database of drug names or interactions, and does not calculate insulin or diabetes medication doses — that remains your treating doctor's responsibility alone.</span>
+  </p>
+
+  <div class="toast" id="toast"></div>
+
+  <script is:inline src="/js/fasting-engine.js"></script>
+  <script is:inline>
+  function getScopeLang(){ const el = document.querySelector('.tools-scope'); return (el && el.dataset.lang) || 'ar'; }
+  let lang = getScopeLang();
+  window.addEventListener('languageChanged', (e) => {
+    lang = (e.detail && e.detail.lang) || getScopeLang();
+    relocalizeMedCards();
+    if (typeof lastDay1 !== 'undefined' && lastDay1.length) renderResults();
+  });
+
+  // ---------- Save/load profile + medications on this device (localStorage) ----------
+  function collectProfileForSave(){
+    return {
+      wake: document.getElementById('p-wake').value,
+      sleep: document.getElementById('p-sleep').value,
+      mealBreakfastEn: document.getElementById('meal-breakfast-en').checked,
+      mealBreakfastT: document.getElementById('meal-breakfast-t').value,
+      mealDinnerEn: document.getElementById('meal-dinner-en').checked,
+      mealDinnerT: document.getElementById('meal-dinner-t').value,
+    };
+  }
+  function applyLoadedProfile(p){
+    if (!p) return;
+    if (p.wake) document.getElementById('p-wake').value = p.wake;
+    if (p.sleep) document.getElementById('p-sleep').value = p.sleep;
+    if (typeof p.mealBreakfastEn === 'boolean') document.getElementById('meal-breakfast-en').checked = p.mealBreakfastEn;
+    if (p.mealBreakfastT) document.getElementById('meal-breakfast-t').value = p.mealBreakfastT;
+    if (typeof p.mealDinnerEn === 'boolean') document.getElementById('meal-dinner-en').checked = p.mealDinnerEn;
+    if (p.mealDinnerT) document.getElementById('meal-dinner-t').value = p.mealDinnerT;
+  }
+  function saveMyData(){
+    const ok = saveFastingData(collectProfileForSave(), serializeMedCards());
+    showToast(ok ? (lang==='ar'?'تم الحفظ على هذا الجهاز':'Saved on this device') : (lang==='ar'?'تعذر الحفظ':'Could not save'));
+  }
+  function clearMyData(){
+    clearFastingData();
+    showToast(lang==='ar'?'تم مسح البيانات المحفوظة':'Saved data cleared');
+  }
+  let dataWasRestored = false;
+  function autoLoadSavedData(){
+    if (!hasFastingSavedData()) return;
+    applyLoadedProfile(loadFastingProfile());
+    const savedMeds = loadFastingMeds();
+    if (savedMeds && savedMeds.length){
+      document.getElementById('med-list').innerHTML = '';
+      medCounter = 0;
+      restoreMedCards(savedMeds);
+      dataWasRestored = true;
+    }
+  }
+
+  let fastKind = 'dryfull';
+  function setFastKind(v){
+    fastKind = v;
+    document.querySelectorAll('.type-tabs button').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+    updateTypeNote();
+  }
+  function updateTypeNote(){
+    const el = document.getElementById('type-note');
+    el.textContent = fastKind === 'dryfull'
+      ? (lang==='ar' ? 'لا يمكن أخذ أي دواء فموي إطلاقاً أثناء الصيام حتى مع الماء — كل الجرعات أثناء الفترة تُنقل لأقرب طرف ممكن.' : 'No oral medication can be taken at all during the fast, even with water — all doses during that period move to the nearest possible edge.')
+      : (lang==='ar' ? 'بما أن السوائل مسموحة، يمكن أخذ الدواء الفموي مع الماء إذا لزم الأمر بدل الانتظار — ناقش ذلك مع طبيبك كخيار إضافي عند الحاجة.' : 'Since liquids are allowed, oral medication can be taken with water if truly necessary instead of waiting — discuss this option with your doctor if needed.');
+  }
+  function updateDurationNote(){
+    const s = document.getElementById('f-start').value, e = document.getElementById('f-end').value;
+    const el = document.getElementById('duration-note');
+    if (!s || !e){ el.textContent=''; return; }
+    const sm = timeToMin(s), em = timeToMin(e);
+    const durationH = ((em + 1440 - sm) % 1440 || 1440) / 60;
+    el.textContent = lang==='ar' ? `مدة الصيام التقريبية: ${durationH.toFixed(1)} ساعة` : `Approximate fast duration: ${durationH.toFixed(1)} hours`;
+  }
+  document.getElementById('f-start').addEventListener('input', updateDurationNote);
+  document.getElementById('f-end').addEventListener('input', updateDurationNote);
+  updateTypeNote(); updateDurationNote();
+
+  // ---------- Scheduling core ----------
+
+  let medCounter = 0;
+  function addMed(){
+    medCounter++;
+    const id = 'med-' + medCounter;
+    const div = document.createElement('div');
+    div.className = 'med-card';
+    div.id = id;
+    div.dataset.medId = id;
+    div.dataset.medNum = medCounter;
+    const catOptions = Object.keys(CATEGORY_LABELS.ar).map(k => `<option value="${k}">${CATEGORY_LABELS[lang][k]}</option>`).join('');
+    div.innerHTML = `
+      <button class="med-remove" onclick="document.getElementById('${id}').remove();">✕</button>
+      <h3><span data-ar>دواء</span><span data-en>Medication</span> #${medCounter}</h3>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>اسم الدواء (اختياري)</span><span data-en>Medicine name (optional)</span></label>
+          <input type="text" class="m-name" placeholder="${lang==='ar'?'مثال: أوجمنتين':'Ex: Augmentin'}">
+        </div>
+        <div class="field">
+          <label><span data-ar>التصنيف العام</span><span data-en>General category</span></label>
+          <select class="m-category">${catOptions}</select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>عدد مرات يومياً</span><span data-en>Times per day</span></label>
+          <select class="m-freqvalue">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+          </select>
+        </div>
+        <div class="field">
+          <label><span data-ar>علاقته بالطعام</span><span data-en>Relation to food</span></label>
+          <select class="m-food">
+            <option value="none">${lang==='ar'?'بدون علاقة':'No relation'}</option>
+            <option value="before">${lang==='ar'?'قبل الأكل':'Before food'}</option>
+            <option value="after">${lang==='ar'?'بعد الأكل':'After food'}</option>
+            <option value="with">${lang==='ar'?'مع الأكل':'With food'}</option>
+          </select>
+        </div>
+      </div>
+    `;
+    document.getElementById('med-list').appendChild(div);
+  }
+  function relocalizeMedCards(){
+    document.querySelectorAll('.med-card').forEach(card => {
+      relocalizeOptions(card.querySelector('.m-category'), Object.keys(CATEGORY_LABELS.ar).map(k => [k, CATEGORY_LABELS.ar[k], CATEGORY_LABELS.en[k]]), lang);
+      relocalizeOptions(card.querySelector('.m-food'), [['none','بدون علاقة','No relation'],['before','قبل الأكل','Before food'],['after','بعد الأكل','After food'],['with','مع الأكل','With food']], lang);
+      const nameInput = card.querySelector('.m-name');
+      if (nameInput) nameInput.placeholder = lang==='ar' ? 'مثال: أوجمنتين' : 'Ex: Augmentin';
+    });
+  }
+  autoLoadSavedData();
+  if (!dataWasRestored) addMed();
+
+  // ---------- Calculate & render ----------
+  let lastDay1 = [], lastDay2 = [];
+  function calcSchedule(){
+    const profile = {
+      wake: document.getElementById('p-wake').value,
+      sleep: document.getElementById('p-sleep').value,
+      meals: {
+        breakfast: {enabled: document.getElementById('meal-breakfast-en').checked, time: document.getElementById('meal-breakfast-t').value},
+        dinner: {enabled: document.getElementById('meal-dinner-en').checked, time: document.getElementById('meal-dinner-t').value},
+      }
+    };
+    const fastStartStr = document.getElementById('f-start').value;
+    const fastEndStr = document.getElementById('f-end').value;
+    if (!profile.wake || !profile.sleep || !fastStartStr || !fastEndStr){
+      alert(lang==='ar' ? 'الرجاء إدخال كل الأوقات المطلوبة' : 'Please enter all required times');
+      return;
+    }
+    const cards = document.querySelectorAll('.med-card');
+    const meds = [];
+    cards.forEach(card => {
+      const name = card.querySelector('.m-name').value.trim();
+      const category = card.querySelector('.m-category').value;
+      const freqValue = parseInt(card.querySelector('.m-freqvalue').value);
+      const foodRelation = card.querySelector('.m-food').value;
+      const label = (lang==='ar'?`دواء رقم ${card.dataset.medNum}`:`Medicine #${card.dataset.medNum}`) + (name?` — ${name}`:'') + ` (${CATEGORY_LABELS[lang][category]})`;
+      meds.push({id: card.dataset.medId, name: name || label, freqValue, foodRelation, category});
+    });
+    if (meds.length === 0){ alert(lang==='ar' ? 'أضف دواءً واحداً على الأقل' : 'Add at least one medication'); return; }
+
+    const base = computeBaseSchedule(profile, meds);
+    const fastStart = timeToMin(fastStartStr), fastEnd = timeToMin(fastEndStr);
+    lastDay1 = adjustDay1(base, fastStart);
+    lastDay2 = adjustDay2(base, fastEnd);
+    flagClusters(lastDay1); flagClusters(lastDay2);
+    renderResults();
+  }
+
+  function renderDoseRow(r){
+    if (DIABETES_CATS.includes(r.category)){
+      return `<div class="advisory-box"><div class="dose-name">💊 ${r.medName}</div><div class="dose-note">${lang==='ar'?'أعد ضبط الجرعة مع طبيبك المعالج تحديداً قبل هذا النوع من الصيام — لا يقترح هذا التطبيق موعداً أو جرعة محددة.':'Re-adjust the dose with your treating doctor specifically before this type of fast — this tool does not suggest a specific time or dose.'}</div></div>`;
+    }
+    let extra = '';
+    if (r.wasMoved) extra += `<div class="dose-moved">↪ ${lang==='ar'?`نُقل (كان ${minToTime(r.originalTime)}) لأنه يقع أثناء الصيام`:`Moved (was ${minToTime(r.originalTime)}) since it fell during the fast`}</div>`;
+    if (r.category === 'antibiotic' || r.category === 'bp'){
+      extra += `<div class="dose-warn">💡 ${lang==='ar'?'ناقش مع طبيبك احتمال جرعة تحميل قبل الصيام لتغطية هذه الفترة':'Discuss a possible loading dose before the fast with your doctor to cover this period'}</div>`;
+    }
+    if (r.clustered) extra += `<div class="dose-warn">⚠ ${lang==='ar'?'عدة جرعات تتجمع في نفس الوقت تقريباً — ناقش طبيبك حول تباعدها':'Several doses cluster around the same time — discuss spacing them out with your doctor'}</div>`;
+    return `<div class="dose-item"><div class="dose-time">${minToTime(r.time)}</div><div class="dose-body"><div class="dose-name">💊 ${r.medName}</div>${extra}</div></div>`;
+  }
+
+  function renderResults(){
+    document.getElementById('res-list-day1').innerHTML = lastDay1.map(renderDoseRow).join('');
+    document.getElementById('res-list-day2').innerHTML = lastDay2.map(renderDoseRow).join('');
+    const card = document.getElementById('res-card');
+    card.classList.add('show');
+    card.scrollIntoView({behavior:'smooth'});
+  }
+
+  function buildText(){
+    let text = lang==='ar' ? 'جدول الأدوية حول الصيام الكامل:\n' : 'Full-Fast Medication Schedule:\n';
+    text += (lang==='ar' ? '\nيوم بداية الصيام:\n' : '\nFast-start day:\n');
+    lastDay1.forEach(r => { text += DIABETES_CATS.includes(r.category) ? `- ${r.medName}: ${lang==='ar'?'استشر طبيبك':'consult your doctor'}\n` : `${minToTime(r.time)} — ${r.medName}\n`; });
+    text += (lang==='ar' ? '\nيوم انتهاء الصيام:\n' : '\nFast-end day:\n');
+    lastDay2.forEach(r => { text += DIABETES_CATS.includes(r.category) ? `- ${r.medName}: ${lang==='ar'?'استشر طبيبك':'consult your doctor'}\n` : `${minToTime(r.time)} — ${r.medName}\n`; });
+    return text;
+  }
+  function copyAll(){ navigator.clipboard.writeText(buildText()).then(()=>showToast(lang==='ar'?'تم النسخ':'Copied')); }
+  function shareWhatsapp(){ window.open('https://wa.me/?text='+encodeURIComponent(buildText()), '_blank'); }
+  function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+
+  async function downloadPdf(){
+    if (lastDay1.length === 0){ alert(lang==='ar'?'احسب الجدول أولاً':'Calculate the schedule first'); return; }
+    if (!window.jspdf || !window.html2canvas){ alert('PDF library failed to load'); return; }
+    showToast(lang==='ar'?'جاري التجهيز...':'Preparing...');
+    const rowHtml = r => DIABETES_CATS.includes(r.category)
+      ? `<div class="pc-row"><div class="pc-time">—</div><div><div class="pc-name">${r.medName}</div></div></div>`
+      : `<div class="pc-row"><div class="pc-time">${minToTime(r.time)}</div><div><div class="pc-name">${r.medName}</div></div></div>`;
+    const container = document.createElement('div');
+    container.id = 'print-card';
+    container.setAttribute('dir', lang==='ar'?'rtl':'ltr');
+    container.style.direction = lang==='ar'?'rtl':'ltr';
+    container.style.textAlign = lang==='ar'?'right':'left';
+    container.innerHTML = `
+      <div class="pc-header"><h1>${lang==='ar'?'جدول الأدوية للصيام الكامل':'Full-Fast Medication Schedule'}</h1></div>
+      <div class="pc-body">
+        <div class="pc-day">${lang==='ar'?'يوم بداية الصيام':'Fast-start day'}</div>
+        ${lastDay1.map(rowHtml).join('')}
+        <div class="pc-day">${lang==='ar'?'يوم انتهاء الصيام':'Fast-end day'}</div>
+        ${lastDay2.map(rowHtml).join('')}
+      </div>
+      <div class="pc-footer">${lang==='ar'?'لا يغني عن استشارة الطبيب أو الصيدلي':"Does not replace advice from your doctor or pharmacist"}</div>
+    `;
+    document.body.appendChild(container);
+    try{
+      const canvas = await html2canvas(container, {
+      scale: 2, backgroundColor: '#ffffff',
+      width: container.scrollWidth, height: container.scrollHeight,
+      windowWidth: container.scrollWidth, windowHeight: container.scrollHeight
+    });
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({unit:'px', format:[canvas.width, canvas.height]});
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save('full-fast-medication-schedule.pdf');
+    } catch(err){
+      alert(lang==='ar'?'حدث خطأ أثناء إنشاء PDF':'Error generating PDF');
+      console.error(err);
+    } finally {
+      document.body.removeChild(container);
+    }
+  }
+  </script>
+
+  </ToolsShell>
+</Layout>

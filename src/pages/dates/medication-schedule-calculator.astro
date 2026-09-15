@@ -1,0 +1,671 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة مواعيد الأدوية اليومية" description="جدول جرعات مناسب لروتينك اليومي، بدون إيقاظك من النوم">
+  <ToolsShell>
+    <div class="tool-hero">
+      <a href="/dates/" class="back-link">
+        <span data-ar>‹ العودة إلى أدوات التواريخ</span>
+        <span data-en>‹ Back to Date Tools</span>
+      </a>
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
+      <p class="kicker"><span data-ar>أدوات التواريخ الطبية</span><span data-en>Medical Date Tools</span></p>
+      <h1>
+        <span data-ar>حاسبة مواعيد الأدوية اليومية</span>
+        <span data-en>Daily Medication Schedule Calculator</span>
+      </h1>
+      <p class="lead"><span data-ar>جدول جرعات مناسب لروتينك اليومي، بدون إيقاظك من النوم</span><span data-en>A dosage schedule that fits your daily routine without waking you up</span></p>
+    </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" is:inline></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" is-inline></script>
+  <style is:inline>
+    :root{
+      --ink:#1e3a3f; --ink-soft:#4d6b70; --paper:#f4f9fa; --paper-alt:#ffffff;
+      --line:#d7e6e8; --accent:#2a7f8c; --accent-dark:#1d5c66; --secondary:#7fb3ab;
+      --ok:#2f9e6e; --warn:#c98a2c; --danger:#c65b5b; --radius:14px;
+      --shadow:0 4px 14px rgba(30,58,63,0.08); font-size:16px;
+    }
+    *{box-sizing:border-box;}
+    .tool-body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Tahoma","Segoe UI",Arial,sans-serif; line-height:1.6; padding-bottom:60px; }
+    html[dir="ltr"] .tool-body{ font-family:"Segoe UI",Tahoma,Arial,sans-serif; }
+    .tool-header{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; padding:22px 16px 30px; text-align:center; position:relative; }
+    .tool-header h1{ margin:0 0 6px; font-size:1.4rem; }
+    .tool-header p{ margin:0; opacity:.9; font-size:.92rem; }
+    .tool-header-actions{ position:absolute; top:14px; inset-inline-start:14px; display:flex; gap:8px; }
+    .back-link{ background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.5); color:#fff; padding:6px 14px; border-radius:20px; cursor:pointer; font-size:.85rem; text-decoration:none; }
+    .back-link:hover{ background:rgba(255,255,255,.3); }
+    .wrap{ max-width:760px; margin:0 auto; padding:0 14px; }
+    .card{ background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 18px 20px; margin-bottom:18px; }
+    .card h2{ margin:0 0 4px; font-size:1.05rem; color:var(--accent-dark); display:flex; align-items:center; gap:8px; }
+    .card .sub{ margin:0 0 14px; color:var(--ink-soft); font-size:.85rem; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .field{ flex:1 1 150px; display:flex; flex-direction:column; gap:5px; }
+    .field label{ font-size:.82rem; color:var(--ink-soft); }
+    .field select, .field input{ padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:.95rem; background:#fff; color:var(--ink); font-family:inherit; }
+    .meal-row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .meal-row label{ flex:0 0 110px; font-size:.85rem; color:var(--ink-soft); display:flex; align-items:center; gap:6px; }
+    .meal-row input[type=time]{ flex:1; padding:8px; border:1px solid var(--line); border-radius:7px; font-family:inherit; }
+    .precision-tabs{ display:flex; gap:8px; margin-bottom:6px; }
+    .precision-tabs button{ flex:1; padding:9px; border-radius:8px; border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; font-size:.85rem; font-family:inherit; }
+    .precision-tabs button.active{ background:var(--accent); color:#fff; border-color:var(--accent); }
+    .med-card{ border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:12px; background:var(--paper); position:relative; }
+    .med-card .med-remove{ position:absolute; top:10px; inset-inline-end:10px; background:none; border:none; color:var(--danger); font-size:1.1rem; cursor:pointer; }
+    .med-card h3{ margin:0 0 10px; font-size:.95rem; color:var(--accent-dark); }
+    .sep-list{ margin-top:6px; }
+    .sep-item{ display:flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line); border-radius:7px; padding:6px 8px; margin-bottom:6px; font-size:.8rem; }
+    .sep-item select, .sep-item input{ padding:5px 6px; border:1px solid var(--line); border-radius:5px; font-size:.8rem; font-family:inherit; }
+    .sep-item .remove-sep{ background:none; border:none; color:var(--danger); cursor:pointer; margin-inline-start:auto; }
+    .add-sep-btn{ font-size:.78rem; padding:6px 10px; border:1px dashed var(--secondary); background:#fff; border-radius:7px; color:var(--accent-dark); cursor:pointer; }
+    .add-row-btn{ width:100%; padding:10px; border:1px dashed var(--secondary); border-radius:9px; background:#fff; color:var(--accent-dark); cursor:pointer; font-size:.9rem; margin:6px 0 4px; }
+    .add-row-btn:hover{ background:var(--paper); }
+    .btn-main{ width:100%; padding:11px; border:none; border-radius:9px; background:var(--accent); color:#fff; font-size:.95rem; cursor:pointer; margin-top:10px; }
+    .btn-main:hover{ background:var(--accent-dark); }
+    .result{ display:none; margin-top:6px; }
+    .result.show{ display:block; }
+    .dose-item{ display:flex; gap:12px; align-items:center; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+    .dose-time{ font-family:"Courier New",monospace; font-weight:bold; color:var(--accent-dark); font-size:1.1rem; min-width:60px; text-align:center; }
+    .dose-body{ flex:1; }
+    .dose-name{ font-weight:bold; font-size:.95rem; }
+    .dose-note{ font-size:.78rem; color:var(--ink-soft); }
+    .dose-warn{ font-size:.78rem; color:var(--warn); margin-top:2px; }
+    .dose-conflict{ font-size:.78rem; color:var(--danger); margin-top:2px; }
+    .global-actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+    .global-actions button, .global-actions a{ flex:1 1 auto; text-align:center; padding:10px 10px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:.85rem; cursor:pointer; text-decoration:none; font-family:inherit; }
+    .disclaimer{ max-width:760px; margin:10px auto 0; padding:0 14px; font-size:.78rem; color:var(--ink-soft); text-align:center; }
+    .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:9px 18px; border-radius:20px; font-size:.85rem; opacity:0; pointer-events:none; transition:opacity .25s; z-index:50; }
+    .toast.show{ opacity:1; }
+    #print-card{ position:fixed; top:0; left:0; z-index:-999; width:680px; background:#fff; font-family:"Tahoma","Segoe UI",Arial,sans-serif; }
+    #print-card .pc-header{ background:linear-gradient(120deg,var(--accent),var(--accent-dark)); color:#fff; padding:22px 26px; text-align:center; }
+    #print-card .pc-header h1{ margin:0 0 4px; font-size:1.3rem; }
+    #print-card .pc-body{ padding:20px 26px 26px; }
+    #print-card .pc-row{ display:flex; align-items:center; gap:14px; border-bottom:1px solid #e4eef0; padding:10px 0; }
+    #print-card .pc-time{ font-family:"Courier New",monospace; font-weight:bold; color:var(--accent-dark); font-size:1.1rem; min-width:60px; }
+    #print-card .pc-name{ font-weight:bold; }
+    #print-card .pc-note{ font-size:.82rem; color:var(--ink-soft); }
+    #print-card .pc-footer{ text-align:center; color:#8a7f68; font-size:.78rem; padding:10px 26px 20px; }
+    [data-en]{ display:none; }
+    [data-ar]{ display:inline; }
+    .tools-scope[data-lang="ar"] [data-ar]{ display:inline; }
+    .tools-scope[data-lang="ar"] [data-en]{ display:none; }
+    .tools-scope[data-lang="en"] [data-ar]{ display:none; }
+    .tools-scope[data-lang="en"] [data-en]{ display:inline; }
+
+    .page-actions{ display:flex; gap:10px; margin-bottom:16px; }
+    .action-btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 16px; background:var(--paper); border:1px solid var(--line); border-radius:8px; color:var(--ink); text-decoration:none; font-size:.85rem; cursor:pointer; transition:background .15s; }
+    .action-btn:hover{ background:var(--paper-alt); }
+    .action-btn svg{ width:18px; height:18px; }
+    .back-link{ display:inline-block; margin-bottom:8px; color:var(--secondary); text-decoration:none; font-size:.85rem; }
+    .back-link:hover{ text-decoration:underline; }
+    .kicker{ font-family:"Courier New",monospace; font-size:.8rem; color:var(--accent-dark); letter-spacing:.06em; margin-bottom:8px; }
+
+    /* Article styles */
+    .tool-article{ max-width:760px; margin:20px auto 0; padding:20px; background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .tool-article h2{ color:var(--accent-dark); margin:0 0 1rem; font-size:1.3rem; text-align:center; }
+    .article-content{ max-width:720px; margin:0 auto; }
+    .article-content h3{ color:var(--accent); margin:1.5rem 0 0.75rem; font-size:1.1rem; }
+    .article-content p{ color:var(--ink-soft); line-height:1.7; margin-bottom:1rem; }
+    .article-content ul{ color:var(--ink-soft); margin:1rem 0; padding-left:1.5rem; }
+    [dir="rtl"] .article-content ul{ padding-left:0; padding-right:1.5rem; }
+    .article-content li{ margin-bottom:0.75rem; line-height:1.6; }
+    .article-note{ background:#fff3cd; border:1px solid #ffecb5; border-radius:10px; padding:12px; margin-top:1.5rem; font-size:.85rem; color:#856404; }
+  </style>
+
+  <div class="tool-body">
+    <div class="tool-header">
+      <div class="tool-header-actions">
+        <a href="/dates" class="back-link">العودة / Back</a>
+      </div>
+      <h1><span data-ar>حاسبة مواعيد الأدوية اليومية</span><span data-en>Daily Medication Schedule Calculator</span></h1>
+      <p><span data-ar>جدول جرعات مناسب لروتينك اليومي، بدون إيقاظك من النوم</span><span data-en>A dose schedule that fits your routine, without waking you up</span></p>
+    </div>
+
+    <div class="wrap">
+      <div class="card">
+        <h2>🕐 <span data-ar>بيانات عامة (تُدخل مرة واحدة)</span><span data-en>General Info (entered once)</span></h2>
+        <p class="sub"><span data-ar>تُستخدم هذه البيانات لاختيار أنسب مواعيد لجميع أدويتك</span><span data-en>Used to choose the best times for all your medications</span></p>
+        <div class="row">
+          <div class="field">
+            <label><span data-ar>موعد الاستيقاظ</span><span data-en>Wake time</span></label>
+            <input type="time" id="p-wake" value="07:00">
+          </div>
+          <div class="field">
+            <label><span data-ar>موعد النوم</span><span data-en>Sleep time</span></label>
+            <input type="time" id="p-sleep" value="23:00">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label><span data-ar>بداية العمل (اختياري)</span><span data-en>Work start (optional)</span></label>
+            <input type="time" id="p-work-start">
+          </div>
+          <div class="field">
+            <label><span data-ar>نهاية العمل (اختياري)</span><span data-en>Work end (optional)</span></label>
+            <input type="time" id="p-work-end">
+          </div>
+        </div>
+        <p class="sub" style="margin:12px 0 6px;"><span data-ar>مواعيد الوجبات</span><span data-en>Meal times</span></p>
+        <div class="meal-row">
+          <label><input type="checkbox" id="meal-breakfast-en" checked> <span data-ar>الفطور</span><span data-en>Breakfast</span></label>
+          <input type="time" id="meal-breakfast-t" value="07:30">
+        </div>
+        <div class="meal-row">
+          <label><input type="checkbox" id="meal-lunch-en" checked> <span data-ar>الغداء</span><span data-en>Lunch</span></label>
+          <input type="time" id="meal-lunch-t" value="13:30">
+        </div>
+        <div class="meal-row">
+          <label><input type="checkbox" id="meal-dinner-en" checked> <span data-ar>العشاء</span><span data-en>Dinner</span></label>
+          <input type="time" id="meal-dinner-t" value="20:00">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>💊 <span data-ar>الأدوية</span><span data-en>Medications</span></h2>
+        <p class="sub"><span data-ar>أضف كل دواء ببياناته. لا تحتوي الأداة على قاعدة تفاعلات دوائية — أدخل تعليمات الفصل كما أخبرك طبيبك أو صيدليك فقط.</span><span data-en>Add each medication's details. This tool has no built-in drug-interaction database — enter separation instructions only as told by your doctor or pharmacist.</span></p>
+        <div id="med-list"></div>
+        <button class="add-row-btn" onclick="addMed()">+ <span data-ar>أضف دواءً</span><span data-en>Add medication</span></button>
+        <button class="btn-main" onclick="calcSchedule()"><span data-ar>احسب الجدول</span><span data-en>Calculate Schedule</span></button>
+      </div>
+
+      <div class="card result" id="res-card">
+        <h2>📋 <span data-ar>جدولك اليومي</span><span data-en>Your Daily Schedule</span></h2>
+        <div id="res-list"></div>
+        <div class="global-actions">
+          <button onclick="copyAll()">📋 <span data-ar>نسخ الجدول</span><span data-en>Copy Schedule</span></button>
+          <a href="#" onclick="shareWhatsapp(); return false;">💬 WhatsApp</a>
+          <button onclick="downloadPdf()">📄 PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="disclaimer">
+      <span data-ar>⚠️ هذه الأداة تنظيمية فقط لترتيب مواعيدك حسب البيانات التي تُدخلها أنت، ولا تستبدل تعليمات الطبيب أو الصيدلي ولا تتحقق من التفاعلات الدوائية تلقائياً. أي تنبيه "تعارض" هنا مبني فقط على الفصل الذي أدخلته بنفسك.</span>
+      <span data-en>⚠️ This tool is for organizational purposes only, based on the data you enter, and does not replace your doctor's or pharmacist's instructions or automatically check drug interactions. Any "conflict" warning here is based only on the separation you entered yourself.</span>
+    </p>
+
+    <article class="tool-article">
+      <h2><span data-ar>أهمية تنظيم جدول الأدوية</span><span data-en>The Importance of Organizing Medication Schedules</span></h2>
+      
+      <div class="article-content">
+        <p><span data-ar>الالتزام بجدول الأدوية بدقة هو عنصر أساسي لنجاح العلاج وتجنب الآثار الجانبية. الأدوية مصممة لتعمل بشكل مثالي عند تناولها في الأوقات المحددة، سواء قبل الأكل أو بعده، أو في فترات زمنية محددة بين الجرعات. الفوضى في مواعيد الدواء قد تؤدي إلى انخفاض فعالية العلاج أو زيادة خطر الآثار الجانبية.</span><span data-en>Adhering to a precise medication schedule is essential for treatment success and avoiding side effects. Medications are designed to work optimally when taken at specified times, whether before or after meals, or at specific intervals between doses. Disorganization in medication timing can lead to reduced treatment effectiveness or increased risk of side effects.</span></p>
+
+        <h3><span data-ar>كيف تساعد حاسبة جدول الأدوية؟</span><span data-en>How Does the Medication Schedule Calculator Help?</span></h3>
+        
+        <p><span data-ar>تساعد هذه الأداة المرضى على تنظيم أوقات تناول الأدوية اليومية بشكل يتناسب مع نمط حياتهم. يمكن للمريض إدخال مواعيد نومه واستيقاظه وأوقات الوجبات، ثم تقوم الأداة بحساب أفضل الأوقات لتناول الأدوية دون إيقاظ المريض من النوم أو التداخل مع وجباته. كما تساعد في تجنب التداخلات بين الأدوية التي يجب فصلها زمنياً.</span><span data-en>This tool helps patients organize their daily medication intake times to fit their lifestyle. Patients can enter their sleep and wake times and meal times, and the tool calculates the best times to take medications without waking the patient or interfering with meals. It also helps avoid interactions between medications that need to be separated temporally.</span></p>
+
+        <h3><span data-ar>نصائح لتجنب نسيان الأدوية</span><span data-en>Tips to Avoid Forgetting Medications</span></h3>
+        
+        <ul>
+          <li><span data-ar>استخدم منظم حبوب دوائية أو تطبيق موبايل لتذكيرك بمواعيد الأدوية.</span><span data-en>Use a pill organizer or mobile app to remind you of medication times.</span></li>
+          <li><span data-ar>اربط تناول الدواء بنشاط يومي منتظم مثل وجبة الطعام أو وقت النوم.</span><span data-en>Link taking medication to a regular daily activity like meals or bedtime.</span></li>
+          <li><span data-ar>احتفظ بقائمة الأدوية الخاصة بك في مكان مرئي وواضح.</span><span data-en>Keep your personal medication list in a visible and clear place.</span></li>
+          <li><span data-ar>استشر طبيبك أو الصيدلي فوراً في حال نسيان جرعة أو تناولها في وقت خاطئ.</span><span data-en>Consult your doctor or pharmacist immediately if you miss a dose or take it at the wrong time.</span></li>
+        </ul>
+
+        <p class="article-note"><span data-ar>⚠️ تذكير: هذه الأداة تنظيمية فقط ولا تستبدل استشارة الطبيب. استشر دائماً طبيبك قبل إجراء أي تغييرات في جدول أدويتك.</span><span data-en>⚠️ Reminder: This tool is for organizational purposes only and does not replace medical consultation. Always consult your doctor before making any changes to your medication schedule.</span></p>
+      </div>
+    </article>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script is:inline>
+    let lang = 'ar';
+    // Initialize language on page load - get from ToolsShell
+    document.addEventListener('DOMContentLoaded', () => {
+      const toolsScope = document.querySelector('.tools-scope');
+      if (toolsScope) {
+        lang = toolsScope.getAttribute('data-lang') || 'ar';
+      }
+    });
+    
+    // Listen for language changes from ToolsShell
+    window.addEventListener('languageChanged', (event) => {
+      const customEvent = event;
+      lang = customEvent.detail?.lang || 'ar';
+      relocalizeMedCards();
+    });
+    
+    // Helper function to get current language
+    function getCurrentLang() {
+      const toolsScope = document.querySelector('.tools-scope');
+      return toolsScope?.getAttribute('data-lang') || 'ar';
+    }
+    
+    function timeToMin(hhmm){ const [h,m] = hhmm.split(':').map(Number); return h*60+m; }
+    function minToTime(mins){ mins=((mins%1440)+1440)%1440; const h=Math.floor(mins/60), m=mins%60; return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
+    function round5(mins){ return Math.round(mins/5)*5; }
+    function foodOffset(rel){ if(rel==='before') return -30; if(rel==='after') return 30; return 0; }
+
+    function computeSchedule(profile, meds){
+      const wake = timeToMin(profile.wake), sleep = timeToMin(profile.sleep);
+      const awakeLen = sleep - wake;
+      const mealKeys = ['breakfast','lunch','dinner'];
+      const enabledMeals = mealKeys.filter(k => profile.meals[k] && profile.meals[k].enabled);
+      const results = [];
+
+      meds.forEach(med => {
+        let doseTimes = [];
+        if (med.freqType === 'interval'){
+          const X = med.freqValue;
+          const doses = Math.round(24/X);
+          const medPrecision = med.precision || 'strict';
+          if (medPrecision === 'strict'){
+            const ws = (profile.workStart && profile.workEnd) ? timeToMin(profile.workStart) : null;
+            const we = (profile.workStart && profile.workEnd) ? timeToMin(profile.workEnd) : null;
+            const isAsleep = t => (t < wake || t > sleep);
+            const isAtWork = t => (ws !== null && t >= ws && t <= we);
+            let bestPhase = wake % (X*60), bestBad = Infinity, bestDist = Infinity;
+            for (let phase = 0; phase < X*60; phase += 10){
+              let bad = 0;
+              for (let i=0;i<doses;i++){
+                const t = (phase + i*X*60) % 1440;
+                if (isAsleep(t)) bad += 2;
+                else if (isAtWork(t)) bad += 1;
+              }
+              const dist = Math.min(Math.abs(phase - (wake % (X*60))), X*60 - Math.abs(phase - (wake % (X*60))));
+              if (bad < bestBad || (bad === bestBad && dist < bestDist)){
+                bestBad = bad; bestDist = dist; bestPhase = phase;
+              }
+            }
+            for (let i=0;i<doses;i++){
+              const t = (bestPhase + i*X*60) % 1440;
+              doseTimes.push({time: t, tag:null, strictSleep: isAsleep(t), strictWork: isAtWork(t)});
+            }
+          } else {
+            if (doses === 1) doseTimes.push({time: wake+60, tag:null});
+            else {
+              const step = awakeLen/(doses-1);
+              for (let i=0;i<doses;i++) doseTimes.push({time: round5(wake+i*step), tag:'flex'});
+            }
+          }
+        } else {
+          const N = med.freqValue;
+          if (N === 1){
+            let base;
+            const anchor = med.preferredAnchor || 'auto';
+            if (anchor === 'morning') base = enabledMeals.includes('breakfast') ? timeToMin(profile.meals.breakfast.time) : wake+60;
+            else if (anchor === 'noon') base = enabledMeals.includes('lunch') ? timeToMin(profile.meals.lunch.time) : wake+awakeLen/2;
+            else if (anchor === 'evening') base = enabledMeals.includes('dinner') ? timeToMin(profile.meals.dinner.time) : sleep-120;
+            else { if (med.foodRelation !== 'none' && enabledMeals.length>0) base = timeToMin(profile.meals[enabledMeals[0]].time); else base = wake+awakeLen/2; }
+            base += foodOffset(med.foodRelation);
+            doseTimes.push({time: round5(base), tag:null});
+          } else {
+            if (med.foodRelation !== 'none' && enabledMeals.length>0){
+              let anchors;
+              if (N <= enabledMeals.length){
+                anchors = [];
+                for (let i=0;i<N;i++){ const idx = Math.round(i*(enabledMeals.length-1)/(N-1||1)); anchors.push(enabledMeals[idx]); }
+              } else {
+                anchors = enabledMeals.slice();
+                const extra = N - enabledMeals.length;
+                for (let i=0;i<extra;i++){ const t = wake+(i+1)*awakeLen/(extra+1); anchors.push({customTime:t}); }
+              }
+              anchors.forEach(a => {
+                let t = typeof a === 'string' ? timeToMin(profile.meals[a].time) : a.customTime;
+                t += typeof a === 'string' ? foodOffset(med.foodRelation) : 0;
+                doseTimes.push({time: round5(t), tag: typeof a === 'string' ? a : null});
+              });
+            } else {
+              for (let i=0;i<N;i++){ const seg = awakeLen/N; const t = wake+seg*i+seg/2; doseTimes.push({time: round5(t), tag:null}); }
+            }
+          }
+        }
+        doseTimes.forEach(dt => results.push({medId: med.id, medName: med.name, time: dt.time, flex: dt.tag==='flex', mealTag: (typeof dt.tag==='string'? dt.tag: null), foodRelation: med.foodRelation, strictSleep: !!dt.strictSleep, strictWork: !!dt.strictWork}));
+      });
+
+      if (profile.workStart && profile.workEnd){
+        const ws = timeToMin(profile.workStart), we = timeToMin(profile.workEnd);
+        results.forEach(r => { r.duringWork = (r.time>=ws && r.time<=we); });
+      }
+
+      meds.forEach(med => {
+        (med.separations||[]).forEach(sep => {
+          const thisTimes = results.filter(r=>r.medId===med.id).map(r=>r.time);
+          let targetTimes = [];
+          if (sep.targetType === 'drug') targetTimes = results.filter(r=>r.medId===sep.target).map(r=>r.time);
+          else if (sep.targetType === 'meal' && enabledMeals.includes(sep.target)) targetTimes = [timeToMin(profile.meals[sep.target].time)];
+          thisTimes.forEach(t1 => {
+            targetTimes.forEach(t2 => {
+              const gapH = Math.abs(t1-t2)/60;
+              if (gapH < sep.hours){
+                results.filter(r=>r.medId===med.id && r.time===t1).forEach(r=>{
+                  r.conflicts = r.conflicts || [];
+                  r.conflicts.push({withTarget: sep.targetType==='drug' ? (meds.find(m=>m.id===sep.target)||{}).label : mealLabel(sep.target), required: sep.hours, actual:+gapH.toFixed(1)});
+                });
+              }
+            });
+          });
+        });
+      });
+
+      results.sort((a,b)=>a.time-b.time);
+      return results;
+    }
+    function mealLabel(key){
+      const map = { breakfast: getCurrentLang()==='ar'?'الفطور':'Breakfast', lunch: getCurrentLang()==='ar'?'الغداء':'Lunch', dinner: getCurrentLang()==='ar'?'العشاء':'Dinner' };
+      return map[key] || key;
+    }
+
+    let medCounter = 0;
+    function addMed(){
+      medCounter++;
+      const id = 'med-' + medCounter;
+      const div = document.createElement('div');
+      div.className = 'med-card';
+      div.id = id;
+      div.dataset.medId = id;
+      div.dataset.medNum = medCounter;
+      div.innerHTML = `
+        <button class="med-remove" onclick="document.getElementById('${id}').remove(); refreshDrugDropdowns();">✕</button>
+        <h3><span data-ar>دواء</span><span data-en>Medication</span> #${medCounter}</h3>
+        <div class="row">
+          <div class="field">
+            <label><span data-ar>اسم الدواء</span><span data-en>Medicine name</span></label>
+            <input type="text" class="m-name" placeholder="${getCurrentLang()==='ar'?'مثال: أوجمنتين':'Ex: Augmentin'}" oninput="refreshDrugDropdowns()">
+          </div>
+          <div class="field">
+            <label><span data-ar>نمط الجرعات</span><span data-en>Dosing pattern</span></label>
+            <select class="m-freqtype" onchange="onFreqTypeChange('${id}')">
+              <option value="times">${getCurrentLang()==='ar'?'عدد مرات يومياً':'Times per day'}</option>
+              <option value="interval">${getCurrentLang()==='ar'?'كل عدد ساعات':'Every X hours'}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field m-freqvalue-wrap">
+            <label class="m-freqvalue-label"><span data-ar>عدد المرات</span><span data-en>Times per day</span></label>
+            <select class="m-freqvalue">
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+            </select>
+          </div>
+          <div class="field">
+            <label><span data-ar>علاقته بالطعام</span><span data-en>Relation to food</span></label>
+            <select class="m-food">
+              <option value="none">${getCurrentLang()==='ar'?'بدون علاقة':'No relation'}</option>
+              <option value="before">${getCurrentLang()==='ar'?'قبل الأكل':'Before food'}</option>
+              <option value="after">${getCurrentLang()==='ar'?'بعد الأكل':'After food'}</option>
+              <option value="with">${getCurrentLang()==='ar'?'مع الأكل':'With food'}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row m-precision-wrap" style="display:none;">
+          <div class="field">
+            <label><span data-ar>درجة الالتزام بالدقة</span><span data-en>Precision level</span></label>
+            <select class="m-precision">
+              <option value="strict">${getCurrentLang()==='ar'?'دقيق':'Strict'}</option>
+              <option value="flexible">${getCurrentLang()==='ar'?'مرن':'Flexible'}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row m-anchor-wrap">
+          <div class="field">
+            <label><span data-ar>التوقيت المفضل</span><span data-en>Preferred timing</span></label>
+            <select class="m-anchor">
+              <option value="auto">${getCurrentLang()==='ar'?'تلقائي':'Automatic'}</option>
+              <option value="morning">${getCurrentLang()==='ar'?'صباحاً':'Morning'}</option>
+              <option value="noon">${getCurrentLang()==='ar'?'ظهراً':'Noon'}</option>
+              <option value="evening">${getCurrentLang()==='ar'?'مساءً':'Evening'}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label><span data-ar>يجب فصله عن الوجبة بمدة (ساعة)</span><span data-en>Separate from meals by (hours)</span></label>
+            <input type="number" class="m-mealsep" min="0" step="0.5" placeholder="—">
+          </div>
+        </div>
+        <p class="sub" style="margin:8px 0 4px;"><span data-ar>فصل عن دواء آخر (اختياري)</span><span data-en>Separate from another medicine (optional)</span></p>
+        <div class="sep-list"></div>
+        <button class="add-row-btn" onclick="addSepRow('${id}')">+ <span data-ar>أضف فصلاً</span><span data-en>Add separation</span></button>
+      `;
+      document.getElementById('med-list').appendChild(div);
+      onFreqTypeChange(id);
+      refreshDrugDropdowns();
+    }
+
+    function onFreqTypeChange(medId){
+      const card = document.getElementById(medId);
+      const type = card.querySelector('.m-freqtype').value;
+      const wrap = card.querySelector('.m-freqvalue-wrap');
+      const label = card.querySelector('.m-freqvalue-label');
+      const select = card.querySelector('.m-freqvalue');
+      if (type === 'interval'){
+        label.innerHTML = `<span data-ar>كل كم ساعة</span><span data-en>Every how many hours</span>`;
+        select.innerHTML = ['4','6','8','12','24'].map(v=>`<option value="${v}">${v}</option>`).join('');
+      } else {
+        label.innerHTML = `<span data-ar>عدد المرات</span><span data-en>Times per day</span>`;
+        select.innerHTML = ['1','2','3','4','5'].map(v=>`<option value="${v}">${v}</option>`).join('');
+      }
+      syncAnchorVisibility(medId);
+      select.onchange = () => syncAnchorVisibility(medId);
+    }
+    function syncAnchorVisibility(medId){
+      const card = document.getElementById(medId);
+      const type = card.querySelector('.m-freqtype').value;
+      const val = card.querySelector('.m-freqvalue').value;
+      card.querySelector('.m-anchor-wrap').style.display = (type==='times' && val==='1') ? 'flex' : 'none';
+      card.querySelector('.m-precision-wrap').style.display = (type==='interval') ? 'flex' : 'none';
+    }
+
+    function refreshDrugDropdowns(){
+      const cards = document.querySelectorAll('.med-card');
+      const drugList = [...cards].map(c => ({
+        id: c.dataset.medId,
+        num: c.dataset.medNum,
+        name: c.querySelector('.m-name').value.trim()
+      }));
+      document.querySelectorAll('.sep-target').forEach(sel => {
+        const curVal = sel.value;
+        const ownMedId = sel.closest('.med-card').dataset.medId;
+        sel.innerHTML = drugList.filter(d=>d.id!==ownMedId).map(d=>{
+          const label = (getCurrentLang()==='ar' ? `دواء رقم ${d.num}` : `Medicine #${d.num}`) + (d.name ? ` — ${d.name}` : '');
+          return `<option value="${d.id}">${label}</option>`;
+        }).join('');
+        if (curVal) sel.value = curVal;
+      });
+    }
+
+    let sepCounter = 0;
+    function addSepRow(medId){
+      sepCounter++;
+      const card = document.getElementById(medId);
+      const list = card.querySelector('.sep-list');
+      const rowId = 'sep-' + sepCounter;
+      const div = document.createElement('div');
+      div.className = 'sep-item';
+      div.id = rowId;
+      div.innerHTML = `
+        <span><span data-ar>يفصل عن</span><span data-en>Separate from</span></span>
+        <select class="sep-target"></select>
+        <span><span data-ar>بمدة</span><span data-en>by</span></span>
+        <input type="number" class="sep-hours" min="0.5" step="0.5" style="width:55px" value="2">
+        <span><span data-ar>ساعة</span><span data-en>h</span></span>
+        <button class="remove-sep" onclick="document.getElementById('${rowId}').remove()">✕</button>
+      `;
+      list.appendChild(div);
+      refreshDrugDropdowns();
+    }
+
+function relocalizeOptions(select, pairs, lang){
+      if (!select) return;
+      const curVal = select.value;
+      select.innerHTML = pairs.map(([v, ar, en]) => `<option value="${v}">${lang==='ar' ? ar : en}</option>`).join('');
+      if (curVal) select.value = curVal;
+    }
+
+    function relocalizeMedCards(){
+      const lang = getCurrentLang();
+      document.querySelectorAll('.med-card').forEach(card => {
+        relocalizeOptions(card.querySelector('.m-freqtype'), [['times','عدد مرات يومياً','Times per day'],['interval','كل عدد ساعات','Every X hours']], lang);
+        relocalizeOptions(card.querySelector('.m-food'), [['none','بدون علاقة','No relation'],['before','قبل الأكل','Before food'],['after','بعد الأكل','After food'],['with','مع الأكل','With food']], lang);
+        relocalizeOptions(card.querySelector('.m-precision'), [['strict','دقيق','Strict'],['flexible','مرن','Flexible']], lang);
+        relocalizeOptions(card.querySelector('.m-anchor'), [['auto','تلقائي','Automatic'],['morning','صباحاً','Morning'],['noon','ظهراً','Noon'],['evening','مساءً','Evening']], lang);
+        const nameInput = card.querySelector('.m-name');
+        if (nameInput) nameInput.placeholder = lang==='ar' ? 'مثال: أوجمنتين' : 'Ex: Augmentin';
+      });
+      refreshDrugDropdowns();
+    }
+
+    addMed();
+
+    let lastResults = [];
+    function calcSchedule(){
+      const profile = {
+        wake: document.getElementById('p-wake').value,
+        sleep: document.getElementById('p-sleep').value,
+        workStart: document.getElementById('p-work-start').value,
+        workEnd: document.getElementById('p-work-end').value,
+        meals: {
+          breakfast: {enabled: document.getElementById('meal-breakfast-en').checked, time: document.getElementById('meal-breakfast-t').value},
+          lunch: {enabled: document.getElementById('meal-lunch-en').checked, time: document.getElementById('meal-lunch-t').value},
+          dinner: {enabled: document.getElementById('meal-dinner-en').checked, time: document.getElementById('meal-dinner-t').value},
+        }
+      };
+      if (!profile.wake || !profile.sleep){
+        alert(getCurrentLang()==='ar' ? 'الرجاء إدخال موعد الاستيقاظ والنوم' : 'Please enter wake and sleep times');
+        return;
+      }
+
+      const cards = document.querySelectorAll('.med-card');
+      const meds = [];
+      cards.forEach(card => {
+        const name = card.querySelector('.m-name').value.trim();
+        if (!name) return;
+        const freqType = card.querySelector('.m-freqtype').value;
+        const freqValue = parseInt(card.querySelector('.m-freqvalue').value);
+        const precisionSel = card.querySelector('.m-precision');
+        const medPrecision = precisionSel ? precisionSel.value : 'strict';
+        const foodRelation = card.querySelector('.m-food').value;
+        const preferredAnchor = card.querySelector('.m-anchor').value;
+        const mealSepHours = parseFloat(card.querySelector('.m-mealsep').value);
+        const separations = [];
+        if (!isNaN(mealSepHours) && mealSepHours > 0){
+          ['breakfast','lunch','dinner'].forEach(k => separations.push({targetType:'meal', target:k, hours:mealSepHours}));
+        }
+        card.querySelectorAll('.sep-item').forEach(row => {
+          const target = row.querySelector('.sep-target').value;
+          const hours = parseFloat(row.querySelector('.sep-hours').value);
+          if (target && !isNaN(hours)) separations.push({targetType:'drug', target, hours});
+        });
+        meds.push({id: card.dataset.medId, num: card.dataset.medNum, label: (getCurrentLang()==='ar'?`دواء رقم ${card.dataset.medNum}`:`Medicine #${card.dataset.medNum}`)+(name?` — ${name}`:''), name, freqType, freqValue, foodRelation, preferredAnchor, precision: medPrecision, separations});
+      });
+
+      if (meds.length === 0){
+        alert(getCurrentLang()==='ar' ? 'أضف دواءً واحداً على الأقل' : 'Add at least one named medication');
+        return;
+      }
+
+      lastResults = computeSchedule(profile, meds);
+      renderResults();
+    }
+
+    function renderResults(){
+      let html = '';
+      lastResults.forEach(r => {
+        let note = '';
+        if (r.foodRelation === 'before') note = getCurrentLang()==='ar'?'قبل الأكل':'Before food';
+        else if (r.foodRelation === 'after') note = getCurrentLang()==='ar'?'بعد الأكل':'After food';
+        else if (r.foodRelation === 'with') note = getCurrentLang()==='ar'?'مع الأكل':'With food';
+        let extra = '';
+        if (r.strictSleep) extra += `<div class="dose-warn">🌙 ${getCurrentLang()==='ar'?'هذه الجرعة ستكون وقت نومك — حاول ترتيب مواعيدك':'This dose falls during your sleep time'}</div>`;
+        else if (r.strictWork) extra += `<div class="dose-warn">⏰ ${getCurrentLang()==='ar'?'هذه الجرعة ستكون وقت عملك':'This dose falls during your work time'}</div>`;
+        else if (r.duringWork) extra += `<div class="dose-warn">⏰ ${getCurrentLang()==='ar'?'أثناء ساعات العمل':'During work hours'}</div>`;
+        if (r.flex) extra += `<div class="dose-warn">⚠ ${getCurrentLang()==='ar'?'فاصل غير منتظم':'Interval not perfectly even'}</div>`;
+        if (r.conflicts && r.conflicts.length){
+          r.conflicts.forEach(c => {
+            extra += `<div class="dose-conflict">⛔ ${getCurrentLang()==='ar'?`تعارض مع ${c.withTarget}`: `Conflict with ${c.withTarget}`}</div>`;
+          });
+        }
+        html += `
+          <div class="dose-item">
+            <div class="dose-time">${minToTime(r.time)}</div>
+            <div class="dose-body">
+              <div class="dose-name">💊 ${r.medName}</div>
+              ${note ? `<div class="dose-note">${note}</div>` : ''}
+              ${extra}
+            </div>
+          </div>`;
+      });
+      document.getElementById('res-list').innerHTML = html;
+      const card = document.getElementById('res-card');
+      card.classList.add('show');
+      card.scrollIntoView({behavior:'smooth'});
+    }
+
+    function buildText(){
+      let text = getCurrentLang()==='ar' ? 'الجدول اليومي للأدوية:\n' : 'Daily Medication Schedule:\n';
+      lastResults.forEach(r => { text += `${minToTime(r.time)} — ${r.medName}\n`; });
+      return text;
+    }
+    function copyAll(){ navigator.clipboard.writeText(buildText()).then(()=>showToast(getCurrentLang()==='ar'?'تم النسخ':'Copied')); }
+    function shareWhatsapp(){ window.open('https://wa.me/?text='+encodeURIComponent(buildText()), '_blank'); }
+    function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+
+    async function downloadPdf(){
+      if (lastResults.length === 0){ alert(getCurrentLang()==='ar'?'احسب الجدول أولاً':'Calculate the schedule first'); return; }
+      if (!window.jspdf || !window.html2canvas){ alert('PDF library failed to load'); return; }
+      showToast(getCurrentLang()==='ar'?'جاري التجهيز...':'Preparing...');
+
+      let rowsHtml = '';
+      lastResults.forEach(r => {
+        let note = '';
+        if (r.foodRelation==='before') note = getCurrentLang()==='ar'?'قبل الأكل':'Before food';
+        else if (r.foodRelation==='after') note = getCurrentLang()==='ar'?'بعد الأكل':'After food';
+        else if (r.foodRelation==='with') note = getCurrentLang()==='ar'?'مع الأكل':'With food';
+        rowsHtml += `<div class="pc-row"><div class="pc-time">${minToTime(r.time)}</div><div><div class="pc-name">${r.medName}</div>${note?`<div class="pc-note">${note}</div>`:''}</div></div>`;
+      });
+
+      const container = document.createElement('div');
+      container.id = 'print-card';
+      container.setAttribute('dir', getCurrentLang()==='ar'?'rtl':'ltr');
+      container.style.direction = getCurrentLang()==='ar'?'rtl':'ltr';
+      container.style.textAlign = getCurrentLang()==='ar'?'right':'left';
+      container.innerHTML = `
+        <div class="pc-header">
+          <h1>${getCurrentLang()==='ar'?'جدول مواعيد الأدوية اليومي':'Daily Medication Schedule'}</h1>
+        </div>
+        <div class="pc-body">${rowsHtml}</div>
+        <div class="pc-footer">${getCurrentLang()==='ar'?'لا يغني عن استشارة الطبيب أو الصيدلي':"Does not replace advice from your doctor or pharmacist"}</div>
+      `;
+      document.body.appendChild(container);
+      try{
+        const canvas = await html2canvas(container, {
+        scale: 2, backgroundColor: '#ffffff',
+        width: container.scrollWidth, height: container.scrollHeight,
+        windowWidth: container.scrollWidth, windowHeight: container.scrollHeight
+      });
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({unit:'px', format:[canvas.width, canvas.height]});
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('medication-schedule.pdf');
+      } catch(err){
+        alert(getCurrentLang()==='ar'?'حدث خطأ أثناء إنشاء PDF':'Error generating PDF');
+        console.error(err);
+      } finally {
+        document.body.removeChild(container);
+      }
+    }
+  </script>
+  </ToolsShell>
+</Layout>

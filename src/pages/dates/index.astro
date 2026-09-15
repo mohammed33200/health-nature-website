@@ -1,0 +1,372 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+
+export const prerender = true;
+
+const apps = [
+  {
+    titleAr: 'حاسبة مواعيد التطعيمات',
+    titleEn: 'Vaccine Schedule Calculator',
+    descriptionAr: 'احسب مواعيد تطعيمات طفلك بسهولة واحجز موعدك مسبقاً',
+    descriptionEn: 'Calculate your child\'s vaccination schedule easily and book appointments in advance',
+    url: '/dates/vaccine-schedule-calculator',
+    icon: '💉'
+  },
+  {
+    titleAr: 'حاسبة جدول الأدوية',
+    titleEn: 'Medication Schedule Calculator',
+    descriptionAr: 'نظم جدول أدويتك وتتبع مواعيد الجرعات بدقة',
+    descriptionEn: 'Organize your medication schedule and track dosage times accurately',
+    url: '/dates/medication-schedule-calculator',
+    icon: '💊'
+  },
+  {
+    titleAr: 'حاسبة أيام إعادة التعبئة',
+    titleEn: 'Refill Days Calculator',
+    descriptionAr: 'احسب الموعد المناسب لإعادة تعبئة وصفاتك الطبية',
+    descriptionEn: 'Calculate the optimal date to refill your medical prescriptions',
+    url: '/dates/refill-days-calculator',
+    icon: '📅'
+  },
+  {
+    titleAr: 'محول التاريخ الهجري الطبي',
+    titleEn: 'Hijri Medical Converter',
+    descriptionAr: 'حول التواريخ بين التقويم الهجري والميلادي للاستخدامات الطبية',
+    descriptionEn: 'Convert dates between Hijri and Gregorian calendars for medical purposes',
+    url: '/dates/hijri-medical-converter',
+    icon: '🌙'
+  }
+];
+---
+
+<Layout title="أدوات التواريخ الطبية" description="مجموعة من الأدوات الطبية المفيدة لإدارة التواريخ والمواعيد">
+  <ToolsShell>
+    <div class="tools-scope">
+      <div class="dates-hub">
+        <div class="page-actions">
+          <button onclick="window.print()" class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span data-ar>طباعة</span><span data-en>Print</span>
+          </button>
+          <a href="?embed=true" class="action-btn" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h6v6"></path>
+              <path d="M10 14 21 3"></path>
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            </svg>
+            <span data-ar>تضمين</span><span data-en>Embed</span>
+          </a>
+        </div>
+        <h1><span data-ar>أدوات التواريخ الطبية</span><span data-en>Medical Date Tools</span></h1>
+        <p class="hub-description"><span data-ar>أدوات متخصصة لإدارة التواريخ والمواعيد الطبية بدقة وسهولة</span><span data-en>Specialized tools for managing medical dates and schedules with accuracy and ease</span></p>
+
+        <div class="apps-grid">
+          {apps.map(app => (
+            <a href={app.url} class="app-card">
+              <div class="app-icon">{app.icon}</div>
+              <div class="app-content">
+                <h2 class="app-title-ar"><span data-ar>{app.titleAr}</span></h2>
+                <h3 class="app-title-en"><span data-en>{app.titleEn}</span></h3>
+                <p class="app-description-ar"><span data-ar>{app.descriptionAr}</span></p>
+                <p class="app-description-en"><span data-en>{app.descriptionEn}</span></p>
+              </div>
+              <div class="app-arrow">→</div>
+            </a>
+          ))}
+        </div>
+
+        <article class="main-article">
+          <h2><span data-ar>أهمية المواعيد والوقت في العلاج الطبي</span><span data-en>The Importance of Timing and Scheduling in Medical Treatment</span></h2>
+          
+          <div class="article-content">
+            <p><span data-ar>التزام بالمواعيد الطبية الدقيقة هو أحد أهم عوامل نجاح العلاج. سواء كان الأمر يتعلق بتطعيمات الأطفال، جدول الأدوية، إعادة تعبئة الوصفات، أو مواعيد المستشفى، فإن تنظيم الوقت بشكل صحيح يلعب دوراً حاسماً في تحسين النتائج الصحية وتجنب المضاعفات.</span><span data-en>Adhering to precise medical schedules is one of the most important factors for successful treatment. Whether it involves child vaccinations, medication schedules, prescription refills, or hospital appointments, proper time management plays a crucial role in improving health outcomes and avoiding complications.</span></p>
+
+            <h3><span data-ar>لماذا يعتبر الوقت عناصراً أساسياً في العلاج؟</span><span data-en>Why is Timing Essential in Treatment?</span></h3>
+            
+            <p><span data-ar>في الطب، الوقت ليس مجرد رقم بل هو جزء من العلاج نفسه. الأدوية مصممة لتعمل بفعالية في أوقات محددة، والتطعيمات لها جداول زمنية محددة لضمان الحماية المثلى. تأخير جرعة دواء أو تفويت موعد تطعيم قد يؤدي إلى نتائج سلبية على صحة المريض.</span><span data-en>In medicine, time is not just a number but part of the treatment itself. Medications are designed to work effectively at specific times, and vaccinations have defined schedules to ensure optimal protection. Delaying a medication dose or missing a vaccination appointment can lead to negative health outcomes.</span></p>
+
+            <h3><span data-ar>كيف تساعد أدوات التواريخ الطبية المريض؟</span><span data-en>How Do Medical Date Tools Help Patients?</span></h3>
+            
+            <p><span data-ar>توفر أدوات التواريخ الطبية حلاً عملياً للمشاكل الشائعة التي يواجهها المرضى في تنظيم مواعيدهم. بدلاً من الاعتماد على الذاكرة أو الحسابات اليدوية المعقدة، يمكن للمريض استخدام هذه الأدوات لحساب المواعيد بدقة، تعيين تذكيرات، وتنظيم جدول علاج متكامل يضمن عدم تفويت أي موعد مهم.</span><span data-en>Medical date tools provide practical solutions to common problems patients face in organizing their schedules. Instead of relying on memory or complex manual calculations, patients can use these tools to accurately calculate appointments, set reminders, and organize a comprehensive treatment schedule that ensures no important appointment is missed.</span></p>
+
+            <h3><span data-ar>نصائح لتنظيم مواعيدك الطبية</span><span data-en>Tips for Organizing Your Medical Appointments</span></h3>
+            
+            <ul>
+              <li><span data-ar>استخدم التقويم الذي تستخدمه بشكل منتظم سواء كان ميلادياً أو هجرياً لضمان عدم حدوث ارتباك في التواريخ.</span><span data-en>Use the calendar you regularly use, whether Gregorian or Hijri, to ensure no confusion in dates.</span></li>
+              <li><span data-ar>احتفظ بقائمة مواعيد في مكان واحد وحددي، ويفضل أن تكون رقمية للسهولة في التعديل.</span><span data-en>Keep an appointment list in one specific place, preferably digital for easy editing.</span></li>
+              <li><span data-ar>حدد تذكيرات قبل الموعد بفترة كافية، سواء يوماً أو أسبوعاً، حسب نوع الموعد.</span><span data-en>Set reminders before the appointment with sufficient time, whether a day or a week, depending on the appointment type.</span></li>
+              <li><span data-ar>تواصل مع طبيبك أو الصيدلية في حال وجود أي غموض في مواعيد الأدوية أو إعادة التعبئة.</span><span data-en>Contact your doctor or pharmacy if there is any confusion about medication schedules or refills.</span></li>
+            </ul>
+
+            <p class="article-note"><span data-ar>⚠️ ملاحظة: هذه المقالة للأغراض التثقيفية فقط ولا تغني عن استشارة الطبيب المختص. احرص دائماً على متابعة تعليمات طبيبك والالتزام بمواعيد العلاج التي يحددها.</span><span data-en>⚠️ Note: This article is for educational purposes only and does not replace consulting a specialist doctor. Always follow your doctor's instructions and adhere to the treatment schedules they prescribe.</span></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </ToolsShell>
+</Layout>
+
+<style>
+  .dates-hub {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .dates-hub h1 {
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    font-size: var(--step-2);
+    text-align: center;
+  }
+
+  .hub-description {
+    text-align: center;
+    color: var(--ink-soft);
+    margin-bottom: 2.5rem;
+    font-size: var(--step-0);
+  }
+
+  .page-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    justify-content: flex-end;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .action-btn:hover {
+    background: var(--paper-alt);
+  }
+
+  .action-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .app-card {
+    background: var(--paper-alt);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .app-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+
+  .app-icon {
+    font-size: 3rem;
+    text-align: center;
+  }
+
+  .app-content {
+    flex: 1;
+  }
+
+  .app-title-ar {
+    color: var(--ink);
+    margin: 0 0 0.25rem 0;
+    font-size: var(--step-1);
+    font-weight: 700;
+  }
+
+  .app-title-en {
+    color: var(--ink-soft);
+    margin: 0 0 0.75rem 0;
+    font-size: var(--step-0);
+    font-weight: 500;
+  }
+
+  .app-description-ar {
+    color: var(--ink-soft);
+    margin: 0 0 0.5rem 0;
+    font-size: var(--step-0);
+    line-height: 1.5;
+  }
+
+  .app-description-en {
+    color: var(--ink-soft);
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .app-arrow {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  [data-lang="ar"] .app-arrow {
+    transform: scaleX(-1);
+  }
+
+  /* Language-specific content hiding */
+  .tools-scope[data-lang="ar"] [data-en] {
+    display: none !important;
+  }
+
+  .tools-scope[data-lang="ar"] [data-ar] {
+    display: inline !important;
+  }
+
+  .tools-scope[data-lang="en"] [data-ar] {
+    display: none !important;
+  }
+
+  .tools-scope[data-lang="en"] [data-en] {
+    display: inline !important;
+  }
+
+  /* Default state when no data-lang is set */
+  [data-en] {
+    display: none;
+  }
+
+  [data-ar] {
+    display: inline;
+  }
+
+  /* Article styles */
+  .main-article {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--paper-alt);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .main-article h2 {
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    font-size: var(--step-2);
+    text-align: center;
+  }
+
+  .article-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .article-content h3 {
+    color: var(--accent-dark);
+    margin: 2rem 0 1rem;
+    font-size: var(--step-1);
+  }
+
+  .article-content p {
+    color: var(--ink-soft);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .article-content ul {
+    color: var(--ink-soft);
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+  }
+
+  [dir="rtl"] .article-content ul {
+    padding-left: 0;
+    padding-right: 2rem;
+  }
+
+  .article-content li {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+
+  .article-note {
+    background: #fff3cd;
+    border: 1px solid #ffecb5;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #856404;
+  }
+
+  @media (max-width: 768px) {
+    .dates-hub {
+      padding: 1rem;
+    }
+
+    .apps-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Language handling
+  function currentLang() {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    return scope ? scope.dataset.lang || 'ar' : 'ar';
+  }
+
+  function setLanguage(lang: string) {
+    const scope = document.querySelector('.tools-scope') as HTMLElement;
+    if (scope) {
+      scope.dataset.lang = lang;
+    }
+    
+    // Set document direction
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+    
+    // Save to localStorage
+    localStorage.setItem('siteLang', lang);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Initialize language based on localStorage or default to Arabic
+    const savedLang = localStorage.getItem('siteLang');
+    const initialLang = savedLang === 'en' ? 'en' : 'ar';
+    setLanguage(initialLang);
+  });
+
+  // Listen for language changes
+  window.addEventListener('languageChanged', (event) => {
+    const customEvent = event as CustomEvent<{ lang: string }>;
+    const lang = customEvent.detail?.lang;
+    if (lang === 'ar' || lang === 'en') {
+      setLanguage(lang);
+    }
+  });
+</script>

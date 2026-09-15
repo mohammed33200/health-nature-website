@@ -1,0 +1,509 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة مواعيد التطعيمات" description="احسب مواعيد تطعيمات طفلك بسهولة واحجز موعدك مسبقاً">
+  <ToolsShell>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" is:inline></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" is:inline></script>
+  <style is:inline>
+    :root{
+      --ink:#1e3a3f; --ink-soft:#4d6b70; --paper:#f4f9fa; --paper-alt:#ffffff;
+      --line:#d7e6e8; --accent:#2a7f8c; --accent-dark:#1d5c66; --secondary:#7fb3ab;
+      --ok:#2f9e6e; --warn:#c98a2c; --danger:#c65b5b; --radius:14px;
+      --shadow:0 4px 14px rgba(30,58,63,0.08); font-size:16px;
+    }
+    *{box-sizing:border-box;}
+    .tool-body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Tahoma","Segoe UI",Arial,sans-serif; line-height:1.6; padding-bottom:60px; }
+    html[dir="ltr"] .tool-body{ font-family:"Segoe UI",Tahoma,Arial,sans-serif; }
+
+    .wrap{ max-width:720px; margin:0 auto; padding:0 14px; }
+    .card{ background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 18px 20px; margin-bottom:18px; }
+    .card h2{ margin:0 0 4px; font-size:1.05rem; color:var(--accent-dark); display:flex; align-items:center; gap:8px; }
+    .card .sub{ margin:0 0 14px; color:var(--ink-soft); font-size:.85rem; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .field{ flex:1 1 200px; display:flex; flex-direction:column; gap:5px; }
+    .field label{ font-size:.82rem; color:var(--ink-soft); }
+    .field select, .field input{ padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:.95rem; background:#fff; color:var(--ink); font-family:inherit; }
+    .cal-inputs{ display:flex; gap:8px; }
+    .cal-inputs input{ width:100%; text-align:center; }
+    .cal-inputs .day{ flex:1; } .cal-inputs .month{ flex:1.3; } .cal-inputs .year{ flex:1.4; }
+
+    .presets{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+    .presets button{ padding:7px 10px; border-radius:16px; border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; font-size:.78rem; font-family:inherit; }
+    .presets button:hover{ background:var(--secondary); color:#fff; border-color:var(--secondary); }
+
+    .vac-row{ display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:8px; }
+    .vac-row input[type=text]{ flex:2 1 150px; padding:8px 9px; border:1px solid var(--line); border-radius:7px; font-family:inherit; }
+    .vac-row input[type=number]{ width:70px; padding:8px 6px; border:1px solid var(--line); border-radius:7px; text-align:center; font-family:inherit; }
+    .vac-row select{ padding:8px 6px; border:1px solid var(--line); border-radius:7px; font-family:inherit; }
+    .vac-row .remove-btn{ background:none; border:none; color:var(--danger); font-size:1.1rem; cursor:pointer; padding:0 6px; }
+
+    .add-row-btn{ width:100%; padding:9px; border:1px dashed var(--secondary); border-radius:9px; background:#fff; color:var(--accent-dark); cursor:pointer; font-size:.9rem; margin:8px 0 14px; }
+    .add-row-btn:hover{ background:var(--paper); }
+
+    .reminder-opts{ display:flex; gap:14px; margin:4px 0 14px; flex-wrap:wrap; }
+    .reminder-opts label{ display:flex; align-items:center; gap:6px; font-size:.88rem; color:var(--ink-soft); cursor:pointer; }
+
+    .btn-main{ width:100%; padding:11px; border:none; border-radius:9px; background:var(--accent); color:#fff; font-size:.95rem; cursor:pointer; margin-top:4px; }
+    .btn-main:hover{ background:var(--accent-dark); }
+
+    .result{ display:none; margin-top:16px; }
+    .result.show{ display:block; }
+    .vac-item{ background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:8px; display:flex; gap:10px; align-items:flex-start; }
+    .vac-item .vbody{ flex:1; }
+    .vac-item .vname{ font-weight:bold; color:var(--accent-dark); font-size:.95rem; margin-bottom:4px; }
+    .vac-item .vline{ display:flex; justify-content:space-between; font-size:.85rem; color:var(--ink-soft); flex-wrap:wrap; gap:4px; }
+    .vac-item .vline b{ color:var(--ink); font-family:"Courier New",monospace; }
+    .status-past{ color:var(--ink-soft); }
+    .status-soon{ color:var(--warn); font-weight:bold; }
+    .status-future{ color:var(--ok); }
+    .vac-item .vactions{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+    .vac-item .vactions a{ padding:5px 10px; border:1px solid var(--line); border-radius:6px; text-decoration:none; color:var(--ink); font-size:.76rem; background:#fff; }
+    .vac-item.done .vname{ text-decoration:line-through; opacity:.6; }
+    .vac-item.done .vline{ opacity:.6; }
+    .chk-box{ width:22px; height:22px; border:2.5px solid var(--accent); border-radius:7px; flex:0 0 auto; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; font-size:14px; color:var(--accent); background:#fff; }
+    .chk-box.checked{ background:var(--ok); border-color:var(--ok); color:#fff; }
+
+    .global-actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+    .global-actions button, .global-actions a{ flex:1 1 auto; text-align:center; padding:10px 10px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:.85rem; cursor:pointer; text-decoration:none; font-family:inherit; }
+    .global-actions button:hover, .global-actions a:hover{ background:var(--paper); }
+
+    .disclaimer{ max-width:720px; margin:10px auto 0; padding:0 14px; font-size:.78rem; color:var(--ink-soft); text-align:center; }
+    .note-box{ background:#eef7f2; border:1px solid var(--ok); border-radius:10px; padding:10px 14px; font-size:.82rem; color:var(--ink); max-width:720px; margin:0 auto 14px; }
+    .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:9px 18px; border-radius:20px; font-size:.85rem; opacity:0; pointer-events:none; transition:opacity .25s; z-index:50; }
+    .toast.show{ opacity:1; }
+
+    /* Playful printable vaccination card (rendered off-screen, captured for PDF) */
+    #print-card{
+      position:fixed; top:0; left:0; z-index:-999;
+      width:720px; background:#fffdf7; padding:0; font-family:"Tahoma","Segoe UI",Arial,sans-serif;
+    }
+    #print-card .pc-header{
+      background:linear-gradient(120deg,#ffd6a5,#a5e8d0);
+      padding:22px 26px; border-radius:0 0 26px 26px; text-align:center; position:relative;
+    }
+    #print-card .pc-header .pc-emoji{ font-size:2.4rem; }
+    #print-card .pc-header h1{ margin:6px 0 2px; font-size:1.5rem; color:#3a3226; }
+    #print-card .pc-header p{ margin:0; color:#5a5040; font-size:.95rem; }
+    #print-card .pc-body{ padding:20px 26px 30px; }
+    #print-card .pc-row{
+      display:flex; align-items:center; gap:14px;
+      background:#ffffff; border:2px solid #eee0c8; border-radius:16px;
+      padding:12px 16px; margin-bottom:12px;
+    }
+    #print-card .pc-row:nth-child(3n+1){ border-color:#f7cfcf; background:#fff8f8; }
+    #print-card .pc-row:nth-child(3n+2){ border-color:#c8e8e0; background:#f6fffc; }
+    #print-card .pc-row:nth-child(3n){ border-color:#f7e2b8; background:#fffcf3; }
+    #print-card .pc-check{
+      width:32px; height:32px; border:3px solid #b9a887; border-radius:9px; flex:0 0 auto; background:#fff;
+    }
+    #print-card .pc-info{ flex:1; }
+    #print-card .pc-vname{ font-weight:bold; font-size:1.05rem; color:#3a3226; margin-bottom:2px; }
+    #print-card .pc-vdate{ font-size:.95rem; color:#5a5040; }
+    #print-card .pc-icon{ font-size:1.6rem; }
+    #print-card .pc-footer{ text-align:center; color:#8a7f68; font-size:.8rem; padding:0 26px 20px; }
+
+    [data-en]{ display:none; }
+    [data-ar]{ display:inline; }
+    .tools-scope[data-lang="ar"] [data-ar]{ display:inline; }
+    .tools-scope[data-lang="ar"] [data-en]{ display:none; }
+    .tools-scope[data-lang="en"] [data-ar]{ display:none; }
+    .tools-scope[data-lang="en"] [data-en]{ display:inline; }
+
+    .page-actions{ display:flex; gap:10px; margin-bottom:16px; }
+    .action-btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 16px; background:var(--paper); border:1px solid var(--line); border-radius:8px; color:var(--ink); text-decoration:none; font-size:.85rem; cursor:pointer; transition:background .15s; }
+    .action-btn:hover{ background:var(--paper-alt); }
+    .action-btn svg{ width:18px; height:18px; }
+    .back-link{ display:inline-block; margin-bottom:8px; color:var(--secondary); text-decoration:none; font-size:.85rem; }
+    .back-link:hover{ text-decoration:underline; }
+    .kicker{ font-family:"Courier New",monospace; font-size:.8rem; color:var(--accent-dark); letter-spacing:.06em; margin-bottom:8px; }
+
+    /* Article styles */
+    .tool-article{ max-width:720px; margin:20px auto 0; padding:20px; background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .tool-article h2{ color:var(--accent-dark); margin:0 0 1rem; font-size:1.3rem; text-align:center; }
+    .article-content{ max-width:680px; margin:0 auto; }
+    .article-content h3{ color:var(--accent); margin:1.5rem 0 0.75rem; font-size:1.1rem; }
+    .article-content p{ color:var(--ink-soft); line-height:1.7; margin-bottom:1rem; }
+    .article-content ul{ color:var(--ink-soft); margin:1rem 0; padding-left:1.5rem; }
+    [dir="rtl"] .article-content ul{ padding-left:0; padding-right:1.5rem; }
+    .article-content li{ margin-bottom:0.75rem; line-height:1.6; }
+    .article-note{ background:#fff3cd; border:1px solid #ffecb5; border-radius:10px; padding:12px; margin-top:1.5rem; font-size:.85rem; color:#856404; }
+  </style>
+
+  <div class="tool-body">
+    <div class="tool-hero">
+      <a href="/dates/" class="back-link">
+        <span data-ar>‹ العودة إلى أدوات التواريخ</span>
+        <span data-en>‹ Back to Date Tools</span>
+      </a>
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
+      <p class="kicker"><span data-ar>أدوات التواريخ الطبية</span><span data-en>Medical Date Tools</span></p>
+      <h1>
+        <span data-ar>حاسبة مواعيد التطعيمات</span>
+        <span data-en>Vaccine Schedule Calculator</span>
+      </h1>
+      <p class="lead"><span data-ar>احسب مواعيد تطعيمات طفلك بسهولة واحجز موعدك مسبقاً</span><span data-en>Easily calculate your child's vaccine dates and book ahead of time</span></p>
+    </div>
+
+    <div class="wrap">
+
+      <div class="card">
+        <h2>👶 <span data-ar>بيانات الطفل</span><span data-en>Child's Info</span></h2>
+        <div class="row">
+          <div class="field">
+            <label><span data-ar>اسم الطفل (اختياري)</span><span data-en>Child's name (optional)</span></label>
+            <input type="text" id="child-name" placeholder="مثال: يوسف / Ex: Yusuf">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field cal-inputs">
+            <input type="number" class="day" id="b-d" placeholder="يوم / Day" min="1" max="31">
+            <input type="number" class="month" id="b-m" placeholder="شهر / Month" min="1" max="12">
+            <input type="number" class="year" id="b-y" placeholder="سنة / Year" min="1990">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>💉 <span data-ar>جدول التطعيمات</span><span data-en>Vaccine Schedule</span></h2>
+        <p class="sub"><span data-ar>أضف كل تطعيم باسمه والعمر المطلوب حسب بطاقة التطعيم أو نظام بلدك — استخدم الأزرار السريعة أو أضف يدوياً</span><span data-en>Add each vaccine with its due age from your child's vaccination card or your country's schedule — use quick-add buttons or add manually</span></p>
+
+        <div class="presets">
+          <button onclick="quickAdd(0,'days')"><span data-ar>+ عند الولادة</span><span data-en>+ At birth</span></button>
+          <button onclick="quickAdd(2,'months')">+ 2 <span data-ar>شهر</span><span data-en>mo</span></button>
+          <button onclick="quickAdd(4,'months')">+ 4 <span data-ar>شهور</span><span data-en>mo</span></button>
+          <button onclick="quickAdd(6,'months')">+ 6 <span data-ar>شهور</span><span data-en>mo</span></button>
+          <button onclick="quickAdd(9,'months')">+ 9 <span data-ar>شهور</span><span data-en>mo</span></button>
+          <button onclick="quickAdd(12,'months')">+ 12 <span data-ar>شهر</span><span data-en>mo</span></button>
+          <button onclick="quickAdd(18,'months')">+ 18 <span data-ar>شهر</span><span data-en>mo</span></button>
+          <button onclick="quickAdd(2,'years')">+ 2 <span data-ar>سنة</span><span data-en>yr</span></button>
+          <button onclick="quickAdd(4,'years')">+ 4 <span data-ar>سنوات</span><span data-en>yr</span></button>
+          <button onclick="quickAdd(6,'years')">+ 6 <span data-ar>سنوات</span><span data-en>yr</span></button>
+        </div>
+
+        <div id="vac-rows"></div>
+        <button class="add-row-btn" onclick="addRow()">+ <span data-ar>أضف تطعيماً يدوياً</span><span data-en>Add vaccine manually</span></button>
+
+        <p class="sub" style="margin-bottom:6px;"><span data-ar>تذكير مبكر لكل موعد (اختياري):</span><span data-en>Early reminder for each date (optional):</span></p>
+        <div class="reminder-opts">
+          <label><input type="checkbox" id="rem3"> <span data-ar>قبلها بثلاثة أيام</span><span data-en>3 days before</span></label>
+          <label><input type="checkbox" id="rem7"> <span data-ar>قبلها بأسبوع</span><span data-en>1 week before</span></label>
+        </div>
+
+        <button class="btn-main" onclick="calcVaccines()"><span data-ar>احسب كل المواعيد</span><span data-en>Calculate All Dates</span></button>
+      </div>
+
+      <div class="card result" id="res-card">
+        <h2>📋 <span data-ar>جدول المواعيد المحسوب</span><span data-en>Calculated Schedule</span></h2>
+        <div id="res-list"></div>
+        <div class="global-actions">
+          <button onclick="copyAll()">📋 <span data-ar>نسخ الكل</span><span data-en>Copy All</span></button>
+          <a href="#" onclick="shareAllWhatsapp(); return false;">💬 WhatsApp</a>
+          <button onclick="downloadPdf()">🎈 <span data-ar>بطاقة PDF</span><span data-en>PDF Card</span></button>
+          <button onclick="downloadIcsAll()">🍎 <span data-ar>الكل لتقويم Apple</span><span data-en>All to Apple/ICS</span></button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="note-box">
+      <span data-ar>📌 ملاحظة: فارق يوم أو يومين بسيط في موعد التطعيم لن يؤثر على الطفل، فإذا صادف الموعد إجازة في بلدك يمكنك حجز اليوم التالي أو السابق مباشرة دون قلق.</span>
+      <span data-en>📌 Note: a day or two of difference in a vaccine date will not affect your child. If the date falls on a holiday in your country, you can safely book the day before or after.</span>
+    </div>
+
+    <p class="disclaimer">
+      <span data-ar>⚠️ هذه الأداة تنظيمية لمساعدتك على تذكر وحجز مواعيد التطعيمات المحددة من طبيبك أو بطاقة التطعيم الرسمية، ولا تغني عن استشارة الطبيب أو الجدول الرسمي المعتمد في بلدك.</span>
+      <span data-en>⚠️ This tool is for organizational purposes to help you remember and book the vaccine dates set by your doctor or official vaccination card, and does not replace medical advice or your country's official schedule.</span>
+    </p>
+
+    <article class="tool-article">
+      <h2><span data-ar>أهمية الالتزام بجدول التطعيمات</span><span data-en>The Importance of Adhering to Vaccination Schedules</span></h2>
+
+      <div class="article-content">
+        <p><span data-ar>التطعيمات هي إحدى أهم وسائل حماية الأطفال من الأمراض المعدية الخطيرة. الالتزام بالجدول الزمني المحدد لكل تطعيم يضمن حصول الطفل على الحماية الكاملة في الوقت المناسب، مما يقلل من خطر الإصابة بالأمراض ويحسن من مناعة المجتمع بشكل عام.</span><span data-en>Vaccinations are one of the most important means of protecting children from dangerous infectious diseases. Adhering to the specified schedule for each vaccination ensures the child receives full protection at the appropriate time, reducing the risk of disease and improving community immunity overall.</span></p>
+
+        <h3><span data-ar>كيف تعمل حاسبة مواعيد التطعيمات؟</span><span data-en>How Does the Vaccine Schedule Calculator Work?</span></h3>
+
+        <p><span data-ar>تتيح هذه الأداة للآباء إدخال تاريخ ميلاد الطفل وحساب جميع مواعيد التطعيمات الأساسية بناءً على الجدول الزمني الموصى به. يمكن أيضاً إضافة تطعيمات إضافية يدوياً إذا كان الطفل يتلقى تطعيمات إضافية خارج الجدول الأساسي.</span><span data-en>This tool allows parents to enter the child's birth date and calculate all basic vaccination appointments based on the recommended schedule. Additional vaccinations can also be added manually if the child receives extra vaccinations outside the basic schedule.</span></p>
+
+        <h3><span data-ar>نصائح مهمة للآباء</span><span data-en>Important Tips for Parents</span></h3>
+
+        <ul>
+          <li><span data-ar>احرص على تسجيل كل موعد تطعيم في مكان واحد وحددي، سواء تقويم ورقي أو تطبيق رقمي.</span><span data-en>Make sure to record every vaccination appointment in one specific place, whether a paper calendar or a digital app.</span></li>
+          <li><span data-ar>حدد تذكيرات قبل موعد التطعيم بأيام قليلة للتأكد من عدم نسيان الموعد.</span><span data-en>Set reminders a few days before the vaccination appointment to ensure you don't forget the date.</span></li>
+          <li><span data-ar>تأكد من إحضار بطاقة التطعيم الرسمية للطفل في كل زيارة.</span><span data-en>Make sure to bring the child's official vaccination card to every visit.</span></li>
+          <li><span data-ar>استشر طبيب الأطفال دائماً قبل إجراء أي تغييرات في جدول التطعيمات.</span><span data-en>Always consult your pediatrician before making any changes to the vaccination schedule.</span></li>
+        </ul>
+
+        <p class="article-note"><span data-ar>⚠️ تذكير: هذه الأداة تعتمد على الجداول العامة وقد تختلف عن الجدول المحدد في بلدك أو من قبل طبيبك. اتبع دائماً تعليمات طبيبك المختص.</span><span data-en>⚠️ Reminder: This tool relies on general schedules and may differ from the schedule specified in your country or by your doctor. Always follow the instructions of your specialist doctor.</span></p>
+      </div>
+    </article>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script is:inline>
+    let lang = 'ar';
+    // Initialize language on page load - get from ToolsShell
+    document.addEventListener('DOMContentLoaded', () => {
+      const toolsScope = document.querySelector('.tools-scope');
+      if (toolsScope) {
+        lang = toolsScope.getAttribute('data-lang') || 'ar';
+      }
+    });
+
+    // Listen for language changes from ToolsShell
+    window.addEventListener('languageChanged', (event) => {
+      const customEvent = event;
+      lang = customEvent.detail?.lang || 'ar';
+    });
+
+    let rowCounter = 0;
+    function addRow(name, value, unit){
+      rowCounter++;
+      const id = 'row-' + rowCounter;
+      const div = document.createElement('div');
+      div.className = 'vac-row';
+      div.id = id;
+      div.innerHTML = `
+        <input type="text" placeholder="${lang==='ar'?'اسم التطعيم':'Vaccine name'}" class="vname-input" value="${name||''}">
+        <input type="number" min="0" class="vval-input" value="${value!=null?value:''}" placeholder="${lang==='ar'?'العمر':'Age'}">
+        <select class="vunit-input">
+          <option value="days" ${unit==='days'?'selected':''}>${lang==='ar'?'يوم':'days'}</option>
+          <option value="weeks" ${unit==='weeks'?'selected':''}>${lang==='ar'?'أسبوع':'weeks'}</option>
+          <option value="months" ${unit==='months'?'selected':''}>${lang==='ar'?'شهر':'months'}</option>
+          <option value="years" ${unit==='years'?'selected':''}>${lang==='ar'?'سنة':'years'}</option>
+        </select>
+        <button class="remove-btn" onclick="document.getElementById('${id}').remove()">✕</button>
+      `;
+      document.getElementById('vac-rows').appendChild(div);
+    }
+    function quickAdd(value, unit){
+      addRow('', value, unit);
+    }
+    // start with one empty row
+    addRow();
+
+    function ageToDate(birth, value, unit){
+      const d = new Date(birth);
+      if (unit === 'days') d.setDate(d.getDate() + value);
+      else if (unit === 'weeks') d.setDate(d.getDate() + value*7);
+      else if (unit === 'months') d.setMonth(d.getMonth() + value);
+      else if (unit === 'years') d.setFullYear(d.getFullYear() + value);
+      return d;
+    }
+
+    const gMonthsAr = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    const gMonthsEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const weekdaysAr = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const weekdaysEn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    function fmtG(date){
+      const months = lang === 'ar' ? gMonthsAr : gMonthsEn;
+      return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+    function weekdayName(date){ return (lang === 'ar' ? weekdaysAr : weekdaysEn)[date.getDay()]; }
+    function dayDiff(d1,d2){ return Math.round((d2-d1)/86400000); }
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function icsDateStr(d){ return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`; }
+
+    let computedList = [];
+
+    function calcVaccines(){
+      const bd = parseInt(document.getElementById('b-d').value);
+      const bm = parseInt(document.getElementById('b-m').value);
+      const by = parseInt(document.getElementById('b-y').value);
+      if (!bd || !bm || !by){
+        alert(lang==='ar' ? 'الرجاء إدخال تاريخ ميلاد الطفل' : "Please enter the child's birth date");
+        return;
+      }
+      const birth = new Date(by, bm-1, bd); birth.setHours(0,0,0,0);
+      const today = new Date(); today.setHours(0,0,0,0);
+
+      const rows = document.querySelectorAll('.vac-row');
+      computedList = [];
+      rows.forEach(row => {
+        const name = row.querySelector('.vname-input').value.trim() || (lang==='ar' ? 'تطعيم' : 'Vaccine');
+        const val = parseFloat(row.querySelector('.vval-input').value);
+        const unit = row.querySelector('.vunit-input').value;
+        if (isNaN(val)) return;
+        const date = ageToDate(birth, val, unit);
+        computedList.push({name, date, val, unit});
+      });
+
+      if (computedList.length === 0){
+        alert(lang==='ar' ? 'أضف تطعيماً واحداً على الأقل' : 'Add at least one vaccine');
+        return;
+      }
+      computedList.sort((a,b) => a.date - b.date);
+
+      let listHtml = '';
+      computedList.forEach((item, idx) => {
+        const remaining = dayDiff(today, item.date);
+        let statusClass = 'status-future', statusText;
+        if (remaining < 0){ statusClass='status-past'; statusText = lang==='ar' ? `مضى ${Math.abs(remaining)} يوم` : `${Math.abs(remaining)} days ago`; }
+        else if (remaining <= 7){ statusClass='status-soon'; statusText = lang==='ar' ? (remaining===0 ? 'اليوم!' : `بعد ${remaining} يوم`) : (remaining===0 ? 'Today!' : `in ${remaining} days`); }
+        else { statusText = lang==='ar' ? `بعد ${remaining} يوم` : `in ${remaining} days`; }
+
+        const dEnd = new Date(item.date); dEnd.setDate(dEnd.getDate()+1);
+        const gcalLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(item.name)}&dates=${icsDateStr(item.date)}/${icsDateStr(dEnd)}&details=${encodeURIComponent(item.name)}`;
+
+        listHtml += `
+          <div class="vac-item" data-idx="${idx}">
+            <div class="chk-box" onclick="toggleDone(this)"></div>
+            <div class="vbody">
+              <div class="vname">💉 ${item.name}</div>
+              <div class="vline"><span>${lang==='ar'?'التاريخ':'Date'}</span><b>${fmtG(item.date)} — ${weekdayName(item.date)}</b></div>
+              <div class="vline"><span>${lang==='ar'?'الحالة':'Status'}</span><span class="${statusClass}">${statusText}</span></div>
+              <div class="vactions">
+                <a href="${gcalLink}" target="_blank">📅 Google</a>
+              </div>
+            </div>
+          </div>`;
+      });
+
+      document.getElementById('res-list').innerHTML = listHtml;
+      document.getElementById('res-card').classList.add('show');
+      document.getElementById('res-card').scrollIntoView({behavior:'smooth'});
+    }
+
+    function toggleDone(el){
+      el.classList.toggle('checked');
+      el.textContent = el.classList.contains('checked') ? '✓' : '';
+      const item = el.closest('.vac-item');
+      item.classList.toggle('done', el.classList.contains('checked'));
+      const idx = parseInt(item.dataset.idx);
+      if (computedList[idx]) computedList[idx].done = el.classList.contains('checked');
+    }
+
+    function buildAllText(){
+      let text = lang==='ar' ? 'جدول مواعيد التطعيمات:\n' : "Vaccination Schedule:\n";
+      computedList.forEach(item => {
+        text += `- ${item.name}: ${fmtG(item.date)} (${weekdayName(item.date)})\n`;
+      });
+      return text;
+    }
+    function copyAll(){
+      navigator.clipboard.writeText(buildAllText()).then(()=> showToast(lang==='ar' ? 'تم النسخ' : 'Copied'));
+    }
+    function shareAllWhatsapp(){
+      window.open('https://wa.me/?text=' + encodeURIComponent(buildAllText()), '_blank');
+    }
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(()=> t.classList.remove('show'), 1800);
+    }
+
+    async function downloadPdf(){
+      if (computedList.length === 0){
+        alert(lang==='ar' ? 'احسب المواعيد أولاً' : 'Calculate the dates first');
+        return;
+      }
+      if (!window.jspdf || !window.html2canvas){ alert('PDF library failed to load'); return; }
+      showToast(lang==='ar' ? 'جاري تجهيز البطاقة...' : 'Preparing card...');
+
+      const childName = document.getElementById('child-name').value.trim();
+      const bd = parseInt(document.getElementById('b-d').value);
+      const bm = parseInt(document.getElementById('b-m').value);
+      const by = parseInt(document.getElementById('b-y').value);
+      const birthStr = (bd && bm && by) ? fmtG(new Date(by, bm-1, bd)) : '';
+
+      const titleAr = childName ? `بطاقة تطعيمات ${childName}` : 'بطاقة التطعيمات';
+      const titleEn = childName ? `${childName}'s Vaccination Card` : 'Vaccination Card';
+
+      let rowsHtml = '';
+      computedList.forEach(item => {
+        rowsHtml += `
+          <div class="pc-row">
+            <div class="pc-check"></div>
+            <div class="pc-info">
+              <div class="pc-vname">💉 ${item.name}</div>
+              <div class="pc-vdate">${fmtG(item.date)} — ${weekdayName(item.date)}</div>
+            </div>
+            <div class="pc-icon">🧸</div>
+          </div>`;
+      });
+
+      const container = document.createElement('div');
+      container.id = 'print-card';
+      container.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+      container.style.direction = lang === 'ar' ? 'rtl' : 'ltr';
+      container.style.textAlign = lang === 'ar' ? 'right' : 'left';
+      container.innerHTML = `
+        <div class="pc-header">
+          <div class="pc-emoji">🎈💉🧸</div>
+          <h1>${lang==='ar' ? titleAr : titleEn}</h1>
+          <p>${birthStr ? (lang==='ar' ? `تاريخ الميلاد: ${birthStr}` : `Birth date: ${birthStr}`) : ''}</p>
+        </div>
+        <div class="pc-body">${rowsHtml}</div>
+        <div class="pc-footer">${lang==='ar' ? 'علّم المربع بعد إتمام كل تطعيم ✓' : 'Check the box after each vaccine is done ✓'}</div>
+      `;
+      document.body.appendChild(container);
+
+      try{
+        const canvas = await html2canvas(container, {
+        scale: 2, backgroundColor: '#fffdf7',
+        width: container.scrollWidth, height: container.scrollHeight,
+        windowWidth: container.scrollWidth, windowHeight: container.scrollHeight
+      });
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({unit:'px', format:[canvas.width, canvas.height]});
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('vaccination-card.pdf');
+      } catch(err){
+        alert(lang==='ar' ? 'حدث خطأ أثناء إنشاء PDF' : 'Error generating PDF');
+        console.error(err);
+      } finally {
+        document.body.removeChild(container);
+      }
+    }
+
+    function downloadIcsAll(){
+      if (computedList.length === 0) return;
+      const rem3 = document.getElementById('rem3').checked;
+      const rem7 = document.getElementById('rem7').checked;
+      let ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Vaccine Schedule Calculator//AR//EN\n`;
+      let idx = 0;
+      computedList.forEach(item => {
+        const dEnd = new Date(item.date); dEnd.setDate(dEnd.getDate()+1);
+        idx++;
+        ics += `BEGIN:VEVENT\nUID:${Date.now()}-${idx}@vaccinecalc\nDTSTAMP:${icsDateStr(item.date)}T000000Z\nDTSTART;VALUE=DATE:${icsDateStr(item.date)}\nDTEND;VALUE=DATE:${icsDateStr(dEnd)}\nSUMMARY:${item.name}\nDESCRIPTION:${item.name}\nEND:VEVENT\n`;
+        [rem3?3:null, rem7?7:null].filter(Boolean).forEach(days => {
+          const rDate = new Date(item.date); rDate.setDate(rDate.getDate()-days);
+          const rEnd = new Date(rDate); rEnd.setDate(rEnd.getDate()+1);
+          const rTitle = lang==='ar' ? `تذكير: ${item.name} بعد ${days===7?'أسبوع':days+' أيام'}` : `Reminder: ${item.name} in ${days===7?'1 week':days+' days'}`;
+          idx++;
+          ics += `BEGIN:VEVENT\nUID:${Date.now()}-${idx}@vaccinecalc\nDTSTAMP:${icsDateStr(rDate)}T000000Z\nDTSTART;VALUE=DATE:${icsDateStr(rDate)}\nDTEND;VALUE=DATE:${icsDateStr(rEnd)}\nSUMMARY:${rTitle}\nDESCRIPTION:${rTitle}\nEND:VEVENT\n`;
+        });
+      });
+      ics += `END:VCALENDAR`;
+      const blob = new Blob([ics], {type:'text/calendar'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'vaccination-schedule.ics';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+  </ToolsShell>
+</Layout>

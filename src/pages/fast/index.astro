@@ -1,0 +1,235 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="مواعيد الأدوية أثناء الصيام" description="اختر نوع صيامك لتحصل على جدول أدوية مناسب">
+  <ToolsShell>
+    <div class="tool-hero">
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
+      <p class="kicker"><span data-ar>أدوات الصيام</span><span data-en>Fasting Tools</span></p>
+      <h1>
+        <span data-ar>مواعيد الأدوية أثناء الصيام</span>
+        <span data-en>Medication Timing During Fasting</span>
+      </h1>
+      <p class="lead"><span data-ar>اختر نوع صيامك لتحصل على جدول أدوية مناسب</span><span data-en>Choose your fasting type to get a suitable medication schedule</span></p>
+    </div>
+
+  <script is:inline type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "هل يجوز الإفطار في أي نوع صيام بسبب المرض؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "نعم، جميع الأديان والمذاهب المذكورة في هذه الصفحات ترخّص أو تُلزم بكسر الصيام عند وجود خطر حقيقي على الصحة."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "هل هذه الأدوات تعرف أسماء أدويتي أو تفاعلاتها؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "لا، لا توجد أي قاعدة بيانات لأسماء الأدوية أو التفاعلات الدوائية — أنت من يُدخل تصنيف الدواء وأي فصل مطلوب، والأداة فقط تحسب المواعيد بناءً على ما تُدخله."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "أي صفحة تناسب حالتي؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "استخدم البطاقات أعلاه: كل بطاقة توضح نوع الصيام الذي تخدمه ومثالاً عليه لمساعدتك على الاختيار الصحيح بسرعة."
+        }
+      }
+    ]
+  }
+  </script>
+
+
+  <style>
+  :root{
+    --warn:#c98a2c;
+    --radius:14px;
+    --shadow:0 4px 14px rgba(30,58,63,0.08);
+  }
+  .fast-nav{ display:flex; gap:8px; overflow-x:auto; padding:10px 14px; background:var(--paper-alt); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:40; -webkit-overflow-scrolling:touch; }
+    .fast-nav a{ flex:0 0 auto; padding:8px 14px; border-radius:20px; background:var(--paper); color:var(--ink-soft); text-decoration:none; font-size:.82rem; border:1px solid var(--line); white-space:nowrap; }
+    .fast-nav a.active{ background:var(--accent); color:#fff; border-color:var(--accent); font-weight:bold; }
+
+    .page-actions{ display:flex; gap:10px; margin-bottom:16px; }
+    .action-btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 16px; background:var(--paper); border:1px solid var(--line); border-radius:8px; color:var(--ink); text-decoration:none; font-size:.85rem; cursor:pointer; transition:background .15s; }
+    .action-btn:hover{ background:var(--paper-alt); }
+    .action-btn svg{ width:18px; height:18px; }
+    .back-link{ display:inline-block; margin-bottom:8px; color:var(--secondary-dark); text-decoration:none; font-size:.85rem; }
+    .back-link:hover{ text-decoration:underline; }
+    .kicker{ font-family:"IBM Plex Mono",monospace; font-size:.8rem; color:var(--secondary-dark); letter-spacing:.06em; margin-bottom:8px; }
+
+    .container{ max-width:760px; margin:0 auto; padding:20px 14px; }
+    .faith-banner{ background:#eef7f2; border:1px solid var(--ok); border-radius:10px; padding:12px 16px; font-size:.85rem; color:var(--ink); margin-bottom:20px; }
+
+    .grid{ display:grid; grid-template-columns:1fr; gap:14px; }
+    @media(min-width:640px){ .grid{ grid-template-columns:1fr 1fr; } }
+    .option-card{ display:block; background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; text-decoration:none; color:var(--ink); transition:transform .15s; }
+    .option-card:hover{ transform:translateY(-2px); border-color:var(--accent); }
+    .option-card .emoji{ font-size:1.8rem; margin-bottom:6px; }
+    .option-card h3{ margin:0 0 6px; font-size:1.05rem; color:var(--accent-dark); }
+    .option-card p{ margin:0; font-size:.85rem; color:var(--ink-soft); }
+
+    .disclaimer{ max-width:760px; margin:20px auto 0; padding:0 14px; font-size:.78rem; color:var(--ink-soft); text-align:center; }
+  </style>
+
+  <nav class="fast-nav">
+    <a href="/fast/" class="active"><span data-ar>🗺️ الرئيسية</span><span data-en>🗺️ Home</span></a>
+    <a href="/fast/intermittent-fasting-medication-adjuster"><span data-ar>⏳ المتقطع</span><span data-en>⏳ Intermittent</span></a>
+    <a href="/fast/full-day-fasting-medication-adjuster"><span data-ar>🌗 صيام كامل ٢٤ س</span><span data-en>🌗 Full 24h</span></a>
+    <a href="/fast/orthodox-fasting-medication-adjuster"><span data-ar>✝️ الأرثوذكسي</span><span data-en>✝️ Orthodox</span></a>
+    <a href="/fast/ramadan-medication-schedule"><span data-ar>🌙 رمضان</span><span data-en>🌙 Ramadan</span></a>
+    <a href="/fast/voluntary-extended-fasting-medication-adjuster"><span data-ar>📅 تطوع متصل</span><span data-en>📅 Extended</span></a>
+    <a href="/fast/single-day-fasting-medication-adjuster"><span data-ar>☀️ يوم واحد</span><span data-en>☀️ Single Day</span></a>
+    <a href="/fast/bahai-fasting-medication-schedule"><span data-ar>🕊️ البهائي</span><span data-en>🕊️ Baháʼí</span></a>
+    <a href="/fast/jewish-minor-fast-medication-schedule"><span data-ar>✡️ يهودي أصغر</span><span data-en>✡️ Jewish Minor</span></a>
+  </nav>
+
+  <div class="container">
+    <div class="faith-banner">
+      <span data-ar>🕊️ كل الأديان والمذاهب ترخّص بالإفطار عند تعارض الصيام مع الصحة أو الدواء. هذه الأدوات إرشادية فقط ولا تغني عن تعليمات طبيبك أو صيدليك، ولا تحتوي على قاعدة بيانات لأسماء الأدوية أو تفاعلاتها.</span>
+      <span data-en>🕊️ All faiths and denominations permit breaking a fast when it conflicts with health or medication. These tools are advisory only and do not replace your doctor's or pharmacist's instructions, and contain no database of drug names or interactions.</span>
+    </div>
+
+    <div class="grid">
+      <a class="option-card" href="/fast/intermittent-fasting-medication-adjuster">
+        <div class="emoji">⏳</div>
+        <h3><span data-ar>الصيام المتقطع</span><span data-en>Intermittent Fasting</span></h3>
+        <p><span data-ar>16:8، OMAD، وغيرها — عادي (يُسمح بالماء) أو جاف. مواعيد ثابتة يومياً تحددها أنت.</span><span data-en>16:8, OMAD, and similar — regular (water allowed) or dry. Fixed daily times you set yourself.</span></p>
+      </a>
+      <a class="option-card" href="/fast/full-day-fasting-medication-adjuster">
+        <div class="emoji">🌗</div>
+        <h3><span data-ar>صيام كامل ٢٤ ساعة</span><span data-en>Full 24-Hour Fast</span></h3>
+        <p><span data-ar>مثل يوم كيبور اليهودي أو بعض الصيامات الهندوسية — امتناع كامل أو شبه كامل عن الطعام والشراب ليوم كامل.</span><span data-en>Like Yom Kippur or some Hindu fasts — full or near-full abstention from food and drink for a full day.</span></p>
+      </a>
+      <a class="option-card" href="/fast/orthodox-fasting-medication-adjuster">
+        <div class="emoji">✝️</div>
+        <h3><span data-ar>الصيام الأرثوذكسي</span><span data-en>Orthodox Christian Fasting</span></h3>
+        <p><span data-ar>الصوم الكبير، صوم الميلاد، الأربعاء والجمعة — قواعده تختلف حسب المناسبة، فاختر النمط الأقرب لصيامك.</span><span data-en>Great Lent, Nativity Fast, Wednesday/Friday fasts — rules vary by occasion, so pick the pattern closest to yours.</span></p>
+      </a>
+      <a class="option-card" href="/fast/ramadan-medication-schedule">
+        <div class="emoji">🌙</div>
+        <h3><span data-ar>صيام رمضان</span><span data-en>Ramadan Fasting</span></h3>
+        <p><span data-ar>جدول شهر كامل (٢٩-٣٠ يوماً) محسوب من الفجر إلى المغرب حسب موقعك الجغرافي.</span><span data-en>A full-month schedule (29-30 days) computed from Fajr to Maghrib based on your location.</span></p>
+      </a>
+      <a class="option-card" href="/fast/voluntary-extended-fasting-medication-adjuster">
+        <div class="emoji">📅</div>
+        <h3><span data-ar>صيام تطوع متصل</span><span data-en>Extended Voluntary Fasting</span></h3>
+        <p><span data-ar>عدة أيام متتالية (مثل الست من شوال أو عشر ذي الحجة) بنطاق تاريخ تحدده أنت.</span><span data-en>Several consecutive days (like the six of Shawwal) over a date range you choose.</span></p>
+      </a>
+      <a class="option-card" href="/fast/single-day-fasting-medication-adjuster">
+        <div class="emoji">☀️</div>
+        <h3><span data-ar>صيام تطوع يوم واحد</span><span data-en>Single-Day Voluntary Fast</span></h3>
+        <p><span data-ar>مثل يوم عاشوراء أو الاثنين والخميس — يوم واحد فقط من الفجر إلى المغرب.</span><span data-en>Like Ashura, or Mondays/Thursdays — just one day, from Fajr to Maghrib.</span></p>
+      </a>
+      <a class="option-card" href="/fast/bahai-fasting-medication-schedule">
+        <div class="emoji">🕊️</div>
+        <h3><span data-ar>الصيام البهائي</span><span data-en>Baháʼí Fast</span></h3>
+        <p><span data-ar>١٩ يوماً من ٢-٢٠ مارس كل عام — من الشروق إلى الغروب.</span><span data-en>19 days, March 2-20 every year — from sunrise to sunset.</span></p>
+      </a>
+      <a class="option-card" href="/fast/jewish-minor-fast-medication-schedule">
+        <div class="emoji">✡️</div>
+        <h3><span data-ar>صيام يهودي أصغر</span><span data-en>Minor Jewish Fast</span></h3>
+        <p><span data-ar>مثل صوم جدليا أو ١٧ تموز — من الفجر إلى ظهور النجوم (وليس يوم كيبور، له صفحة الصيام الكامل).</span><span data-en>Like the Fast of Gedaliah or 17 Tammuz — dawn to nightfall (not Yom Kippur, which has its own Full 24h page).</span></p>
+      </a>
+    </div>
+  </div>
+
+  <div class="calc-card info-section">
+    <h2><span data-ar>📖 عن الصيام وهذه المجموعة من الأدوات</span><span data-en>📖 About Fasting and This Tool Set</span></h2>
+    <div data-ar>
+
+      <p>الصيام بمعناه العام هو الامتناع الطوعي عن الطعام أو الشراب أو كليهما لفترة محددة، لأسباب دينية أو روحية أو صحية. تشترك جميع الأديان تقريباً في مبدأ واحد: <strong>الصيام لا يجب أن يعرّض حياة الإنسان أو صحته للخطر</strong>، وجميعها ترخّص بالإفطار عند المرض.</p>
+      <p>تهدف هذه المجموعة من الأدوات لحل مشكلة عملية يواجهها كثير من المرضى: كيف تُؤخذ الأدوية بمواعيدها الصحيحة أثناء الصيام دون المخاطرة بفعاليتها أو بصحة المريض؟ كل أداة مصممة لنوع صيام مختلف لأن قواعد كل نوع ومدته وتوقيته تختلف جوهرياً.</p>
+      <h3>الصفحات المتاحة</h3>
+      <ul>
+        <li>⏳ <strong>المتقطع</strong> — أنماط مثل 16:8، عادي أو جاف.</li>
+        <li>🌗 <strong>صيام كامل ٢٤ ساعة</strong> — كيوم كيبور اليهودي وبعض الصيامات الهندوسية.</li>
+        <li>✝️ <strong>الأرثوذكسي</strong> — الصوم الكبير وصوم الميلاد وغيرها.</li>
+        <li>🌙 <strong>رمضان</strong> — الشهر الكامل، محسوب تلقائياً من موقعك.</li>
+        <li>📅 <strong>تطوع متصل</strong> — أيام متتالية اختيارية.</li>
+        <li>☀️ <strong>يوم واحد</strong> — كعاشوراء أو الاثنين والخميس.</li>
+        <li>🕊️ <strong>البهائي</strong> — ١٩ يوماً كل مارس.</li>
+        <li>✡️ <strong>يهودي أصغر</strong> — كصوم جدليا و١٧ تموز.</li>
+      </ul>
+      <p>عند استخدامها بأمان (بالتشاور مع طبيبك، واختيار الأشكال الدوائية المناسبة، والانتباه لعلامات الخطر)، يمكن للصيام أن يكون ممارسة مفيدة صحياً. لكن الأولوية دائماً لسلامتك — صحتك أهم من إتمام أي صيام.</p>
+  
+    </div>
+    <div data-en>
+
+      <p>Fasting, broadly, is the voluntary abstention from food, drink, or both for a set period, for religious, spiritual, or health reasons. Nearly every faith shares one principle: <strong>fasting must never endanger a person's life or health</strong>, and all of them permit breaking a fast in illness.</p>
+      <p>This set of tools addresses a practical problem many patients face: how do you take medications at the right times while fasting, without compromising their effectiveness or your health? Each tool is built for a different type of fast, because the rules, duration, and timing of each differ fundamentally.</p>
+      <h3>Available pages</h3>
+      <ul>
+        <li>⏳ <strong>Intermittent</strong> — patterns like 16:8, regular or dry.</li>
+        <li>🌗 <strong>Full 24-Hour Fast</strong> — like Yom Kippur and some Hindu fasts.</li>
+        <li>✝️ <strong>Orthodox</strong> — Great Lent, Nativity Fast, and others.</li>
+        <li>🌙 <strong>Ramadan</strong> — the full month, auto-computed from your location.</li>
+        <li>📅 <strong>Extended Voluntary</strong> — consecutive optional days.</li>
+        <li>☀️ <strong>Single Day</strong> — like Ashura or Mondays/Thursdays.</li>
+        <li>🕊️ <strong>Baháʼí</strong> — 19 days every March.</li>
+        <li>✡️ <strong>Jewish Minor</strong> — like the Fast of Gedaliah or 17 Tammuz.</li>
+      </ul>
+      <p>Used safely — in consultation with your doctor, choosing the right medication forms, and watching for warning signs — fasting can be a beneficial health practice. But your safety always comes first — your health matters more than completing any fast.</p>
+  
+    </div>
+
+    <div data-ar>
+      <h3 style="margin-top:20px;">❓ أسئلة شائعة</h3>
+      <h4>هل يجوز الإفطار في أي نوع صيام بسبب المرض؟</h4>
+      <p>نعم، جميع الأديان والمذاهب المذكورة في هذه الصفحات ترخّص أو تُلزم بكسر الصيام عند وجود خطر حقيقي على الصحة.</p>
+      <h4>هل هذه الأدوات تعرف أسماء أدويتي أو تفاعلاتها؟</h4>
+      <p>لا، لا توجد أي قاعدة بيانات لأسماء الأدوية أو التفاعلات الدوائية — أنت من يُدخل تصنيف الدواء وأي فصل مطلوب، والأداة فقط تحسب المواعيد بناءً على ما تُدخله.</p>
+      <h4>أي صفحة تناسب حالتي؟</h4>
+      <p>استخدم البطاقات أعلاه: كل بطاقة توضح نوع الصيام الذي تخدمه ومثالاً عليه لمساعدتك على الاختيار الصحيح بسرعة.</p>
+
+    </div>
+    <div data-en>
+      <h3 style="margin-top:20px;">❓ Frequently Asked Questions</h3>
+      <h4>Is breaking any type of fast permitted due to illness?</h4>
+      <p>Yes — all the faiths and denominations covered in these pages permit, and sometimes require, breaking a fast when there's real risk to health.</p>
+      <h4>Do these tools know my medication names or interactions?</h4>
+      <p>No — there is no database of drug names or interactions. You enter the medication's category and any required separation yourself; the tool only schedules times based on what you provide.</p>
+      <h4>Which page fits my situation?</h4>
+      <p>Use the cards above — each one describes the type of fast it serves with an example, to help you quickly find the right one.</p>
+
+    </div>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>⚠️ هذه الأدوات لا تحدد أسماء أدويتك ولا تتحقق من التفاعلات الدوائية تلقائياً — فقط توزّع مواعيد ما تُدخله أنت حسب البيانات التي تزودنا بها.</span>
+    <span data-en>⚠️ These tools do not identify your specific medications or automatically check drug interactions — they only schedule what you enter, based on the data you provide.</span>
+  </p>
+
+  <script is:inline>
+  function getScopeLang(){ const el = document.querySelector('.tools-scope'); return (el && el.dataset.lang) || 'ar'; }
+  let lang = getScopeLang();
+  </script>
+
+  </ToolsShell>
+</Layout>

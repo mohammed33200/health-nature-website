@@ -1,0 +1,649 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+
+const pageTitle = 'محول التاريخ الطبي | ميلادي - هجري (أم القرى)';
+const pageDescription = 'حول تواريخ ميلادي إلى هجري وحساب العمر والمواعيد الطبية بسهولة';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <ToolsShell>
+    <div class="tool-hero">
+      <a href="/dates/" class="back-link">
+        <span data-ar>‹ العودة إلى أدوات التواريخ</span>
+        <span data-en>‹ Back to Date Tools</span>
+      </a>
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
+      <p class="kicker"><span data-ar>أدوات التواريخ الطبية</span><span data-en>Medical Date Tools</span></p>
+      <h1>
+        <span data-ar>محول التاريخ الطبي | ميلادي - هجري (أم القرى)</span>
+        <span data-en>Medical Date Converter | Gregorian - Hijri (Umm al-Qura)</span>
+      </h1>
+      <p class="lead"><span data-ar>حول تواريخ ميلادي إلى هجري وحساب العمر والمواعيد الطبية بسهولة</span><span data-en>Convert Gregorian dates to Hijri and calculate age and medical appointments easily</span></p>
+    </div>
+
+  <style is:inline>
+    :root{
+      --ink:#1e3a3f;
+      --ink-soft:#4d6b70;
+      --paper:#f4f9fa;
+      --paper-alt:#ffffff;
+      --line:#d7e6e8;
+      --accent:#2a7f8c;
+      --accent-dark:#1d5c66;
+      --secondary:#7fb3ab;
+      --ok:#2f9e6e;
+      --warn:#c98a2c;
+      --danger:#c65b5b;
+      --radius:14px;
+      --shadow:0 4px 14px rgba(30,58,63,0.08);
+      font-size:16px;
+    }
+    *{box-sizing:border-box;}
+    .tool-body{
+      margin:0;
+      background:var(--paper);
+      color:var(--ink);
+      font-family:"Tahoma","Segoe UI",Arial,sans-serif;
+      line-height:1.6;
+      padding-bottom:60px;
+    }
+    html[dir="ltr"] .tool-body{ font-family:"Segoe UI",Tahoma,Arial,sans-serif; }
+
+    .tool-header{
+      background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+      color:#fff;
+      padding:22px 16px 30px;
+      text-align:center;
+      position:relative;
+    }
+    .tool-header h1{ margin:0 0 6px; font-size:1.4rem; }
+    .tool-header p{ margin:0; opacity:.9; font-size:.92rem; }
+    .tool-header-actions{ position:absolute; top:14px; inset-inline-start:14px; display:flex; gap:8px; }
+    .back-link{ background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.5); color:#fff; padding:6px 14px; border-radius:20px; cursor:pointer; font-size:.85rem; text-decoration:none; }
+    .back-link:hover{ background:rgba(255,255,255,.3); }
+
+    .wrap{ max-width:760px; margin:0 auto; padding:0 14px; }
+
+    .card{
+      background:var(--paper-alt);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 18px 20px;
+      margin-bottom:18px;
+    }
+    .card h2{
+      margin:0 0 4px;
+      font-size:1.05rem;
+      color:var(--accent-dark);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .card h2 .badge-num{
+      background:var(--accent);
+      color:#fff;
+      width:24px;height:24px;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.8rem;
+    }
+    .card .sub{ margin:0 0 14px; color:var(--ink-soft); font-size:.85rem; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .field{ flex:1 1 200px; display:flex; flex-direction:column; gap:5px; }
+    .field label{ font-size:.82rem; color:var(--ink-soft); }
+    .field select, .field input{
+      padding:9px 10px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      font-size:.95rem;
+      background:#fff;
+      color:var(--ink);
+      font-family:inherit;
+    }
+    .cal-inputs{ display:flex; gap:8px; }
+    .cal-inputs input{ width:100%; text-align:center; }
+    .cal-inputs .day{ flex:1; } .cal-inputs .month{ flex:1.3; } .cal-inputs .year{ flex:1.4; }
+
+    .system-tabs{ display:flex; gap:8px; margin-bottom:12px; }
+    .system-tabs button{
+      flex:1;
+      padding:8px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:var(--paper);
+      color:var(--ink-soft);
+      cursor:pointer;
+      font-size:.85rem;
+      font-family:inherit;
+    }
+    .system-tabs button.active{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+    }
+
+    .btn-main{
+      width:100%;
+      padding:11px;
+      border:none;
+      border-radius:9px;
+      background:var(--accent);
+      color:#fff;
+      font-size:.95rem;
+      cursor:pointer;
+      margin-top:4px;
+    }
+    .btn-main:hover{ background:var(--accent-dark); }
+
+    .result{
+      display:none;
+      margin-top:16px;
+      background:var(--paper);
+      border:1px dashed var(--secondary);
+      border-radius:10px;
+      padding:14px;
+    }
+    .result.show{ display:block; }
+    .result .line{
+      display:flex;
+      justify-content:space-between;
+      padding:6px 0;
+      border-bottom:1px solid var(--line);
+      font-size:.92rem;
+    }
+    .result .line:last-child{ border-bottom:none; }
+    .result .line b{ color:var(--accent-dark); font-family:"Courier New",monospace; }
+    .result .highlight{
+      background:#fff;
+      border-radius:8px;
+      padding:10px;
+      margin-bottom:8px;
+      text-align:center;
+      font-size:1rem;
+      color:var(--accent-dark);
+      font-weight:bold;
+    }
+
+    .actions{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .actions button, .actions a{
+      flex:1 1 auto;
+      text-align:center;
+      padding:9px 10px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--ink);
+      font-size:.82rem;
+      cursor:pointer;
+      text-decoration:none;
+      font-family:inherit;
+    }
+    .actions button:hover, .actions a:hover{ background:var(--paper); }
+
+    .disclaimer{
+      max-width:760px;
+      margin:20px auto 0;
+      padding:0 14px;
+      font-size:.78rem;
+      color:var(--ink-soft);
+      text-align:center;
+    }
+    .toast{
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      background:var(--ink);
+      color:#fff;
+      padding:9px 18px;
+      border-radius:20px;
+      font-size:.85rem;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s;
+      z-index:50;
+    }
+    .toast.show{ opacity:1; }
+
+    [data-en]{ display:none; }
+    [data-ar]{ display:inline; }
+    .tools-scope[data-lang="ar"] [data-ar]{ display:inline; }
+    .tools-scope[data-lang="ar"] [data-en]{ display:none; }
+    .tools-scope[data-lang="en"] [data-ar]{ display:none; }
+
+    .page-actions{ display:flex; gap:10px; margin-bottom:16px; }
+    .action-btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 16px; background:var(--paper); border:1px solid var(--line); border-radius:8px; color:var(--ink); text-decoration:none; font-size:.85rem; cursor:pointer; transition:background .15s; }
+    .action-btn:hover{ background:var(--paper-alt); }
+    .action-btn svg{ width:18px; height:18px; }
+    .back-link{ display:inline-block; margin-bottom:8px; color:var(--secondary); text-decoration:none; font-size:.85rem; }
+    .back-link:hover{ text-decoration:underline; }
+    .kicker{ font-family:"Courier New",monospace; font-size:.8rem; color:var(--accent-dark); letter-spacing:.06em; margin-bottom:8px; }
+    .tools-scope[data-lang="en"] [data-en]{ display:inline; }
+
+    /* Article styles */
+    .tool-article{ max-width:760px; margin:20px auto 0; padding:20px; background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .tool-article h2{ color:var(--accent-dark); margin:0 0 1rem; font-size:1.3rem; text-align:center; }
+    .article-content{ max-width:720px; margin:0 auto; }
+    .article-content h3{ color:var(--accent); margin:1.5rem 0 0.75rem; font-size:1.1rem; }
+    .article-content p{ color:var(--ink-soft); line-height:1.7; margin-bottom:1rem; }
+    .article-content ul{ color:var(--ink-soft); margin:1rem 0; padding-left:1.5rem; }
+    [dir="rtl"] .article-content ul{ padding-left:0; padding-right:1.5rem; }
+    .article-content li{ margin-bottom:0.75rem; line-height:1.6; }
+    .article-note{ background:#fff3cd; border:1px solid #ffecb5; border-radius:10px; padding:12px; margin-top:1.5rem; font-size:.85rem; color:#856404; }
+  </style>
+
+  <div class="tool-body">
+    <div class="tool-header">
+      <div class="tool-header-actions">
+        <a href="/dates" class="back-link">العودة / Back</a>
+      </div>
+
+      <h1><span data-ar>محول التاريخ الطبي</span><span data-en>Medical Date Converter</span></h1>
+      <p><span data-ar>ميلادي ⇄ هجري (تقويم أم القرى) لمواعيد المستشفى والعمر</span><span data-en>Gregorian ⇄ Hijri (Umm al-Qura) for hospital appointments & age</span></p>
+    </div>
+
+    <div class="wrap">
+
+      <!-- 1. Age Calculator -->
+      <div class="card">
+        <h2><span class="badge-num">1</span><span data-ar>حساب العمر</span><span data-en>Age Calculator</span></h2>
+        <p class="sub"><span data-ar>أدخل تاريخ الميلاد بأي تقويم، واحصل على العمر بالنظامين</span><span data-en>Enter the birth date in either calendar and get the age in both systems</span></p>
+        <div class="system-tabs" id="tabs-age">
+          <button class="active" data-cal="g" onclick="setCal('age','g')"><span data-ar>ميلادي</span><span data-en>Gregorian</span></button>
+          <button data-cal="h" onclick="setCal('age','h')"><span data-ar>هجري (أم القرى)</span><span data-en>Hijri (Umm al-Qura)</span></button>
+        </div>
+        <div class="row">
+          <div class="field cal-inputs">
+            <input type="number" class="day" id="age-d" placeholder="يوم / Day" min="1" max="31">
+            <input type="number" class="month" id="age-m" placeholder="شهر / Month" min="1" max="12">
+            <input type="number" class="year" id="age-y" placeholder="سنة / Year" min="1">
+          </div>
+        </div>
+        <button class="btn-main" onclick="calcAge()"><span data-ar>احسب العمر</span><span data-en>Calculate Age</span></button>
+        <div class="result" id="res-age"></div>
+      </div>
+
+      <!-- 2. Birth date conversion only -->
+      <div class="card">
+        <h2><span class="badge-num">2</span><span data-ar>تحويل تاريخ الميلاد</span><span data-en>Birth Date Conversion</span></h2>
+        <p class="sub"><span data-ar>تحويل مباشر لتاريخ الميلاد بين الميلادي والهجري دون حساب العمر</span><span data-en>Direct conversion of a birth date between Gregorian and Hijri</span></p>
+        <div class="system-tabs" id="tabs-bd">
+          <button class="active" data-cal="g" onclick="setCal('bd','g')"><span data-ar>ميلادي</span><span data-en>Gregorian</span></button>
+          <button data-cal="h" onclick="setCal('bd','h')"><span data-ar>هجري (أم القرى)</span><span data-en>Hijri (Umm al-Qura)</span></button>
+        </div>
+        <div class="row">
+          <div class="field cal-inputs">
+            <input type="number" class="day" id="bd-d" placeholder="يوم / Day" min="1" max="31">
+            <input type="number" class="month" id="bd-m" placeholder="شهر / Month" min="1" max="12">
+            <input type="number" class="year" id="bd-y" placeholder="سنة / Year" min="1">
+          </div>
+        </div>
+        <button class="btn-main" onclick="calcBd()"><span data-ar>حوّل التاريخ</span><span data-en>Convert Date</span></button>
+        <div class="result" id="res-bd"></div>
+      </div>
+
+      <!-- 3. Previous visit -->
+      <div class="card">
+        <h2><span class="badge-num">3</span><span data-ar>آخر زيارة للمستشفى</span><span data-en>Last Hospital Visit</span></h2>
+        <p class="sub"><span data-ar>حوّل تاريخ آخر مراجعة واعرف كم مضى عليها</span><span data-en>Convert your last visit date and see how long ago it was</span></p>
+        <div class="system-tabs" id="tabs-prev">
+          <button class="active" data-cal="g" onclick="setCal('prev','g')"><span data-ar>ميلادي</span><span data-en>Gregorian</span></button>
+          <button data-cal="h" onclick="setCal('prev','h')"><span data-ar>هجري (أم القرى)</span><span data-en>Hijri (Umm al-Qura)</span></button>
+        </div>
+        <div class="row">
+          <div class="field cal-inputs">
+            <input type="number" class="day" id="prev-d" placeholder="يوم / Day" min="1" max="31">
+            <input type="number" class="month" id="prev-m" placeholder="شهر / Month" min="1" max="12">
+            <input type="number" class="year" id="prev-y" placeholder="سنة / Year" min="1">
+          </div>
+        </div>
+        <button class="btn-main" onclick="calcPrev()"><span data-ar>احسب المدة</span><span data-en>Calculate Elapsed Time</span></button>
+        <div class="result" id="res-prev"></div>
+      </div>
+
+      <!-- 4. Next appointment -->
+      <div class="card">
+        <h2><span class="badge-num">4</span><span data-ar>موعد الزيارة القادمة</span><span data-en>Next Appointment</span></h2>
+        <p class="sub"><span data-ar>حوّل موعدك القادم واعرف كم تبقى وفي أي يوم سيكون</span><span data-en>Convert your upcoming appointment and see the countdown and weekday</span></p>
+        <div class="system-tabs" id="tabs-next">
+          <button class="active" data-cal="g" onclick="setCal('next','g')"><span data-ar>ميلادي</span><span data-en>Gregorian</span></button>
+          <button data-cal="h" onclick="setCal('next','h')"><span data-ar>هجري (أم القرى)</span><span data-en>Hijri (Umm al-Qura)</span></button>
+        </div>
+        <div class="row">
+          <div class="field cal-inputs">
+            <input type="number" class="day" id="next-d" placeholder="يوم / Day" min="1" max="31">
+            <input type="number" class="month" id="next-m" placeholder="شهر / Month" min="1" max="12">
+            <input type="number" class="year" id="next-y" placeholder="سنة / Year" min="1">
+          </div>
+        </div>
+        <button class="btn-main" onclick="calcNext()"><span data-ar>احسب الموعد</span><span data-en>Calculate Appointment</span></button>
+        <div class="result" id="res-next"></div>
+      </div>
+
+    </div>
+
+    <p class="disclaimer">
+      <span data-ar>⚠️ التحويل الهجري معتمد على تقويم أم القرى الرسمي (بيانات المتصفح)، وقد يختلف يوم واحد زيادة أو نقصاناً عن الإعلان الرسمي أو عن دول لا تعتمد أم القرى مثل سلطنة عمان. هذا التطبيق لأغراض تنظيمية ولا يغني عن تأكيد الموعد مع المستشفى.</span>
+      <span data-en>⚠️ Hijri conversion uses the official Umm al-Qura calendar (browser data) and may differ by ±1 day from official announcements or from countries not using Umm al-Qura (e.g. Oman). This tool is for organizational purposes only and does not replace confirming your appointment with the hospital.</span>
+    </p>
+
+    <article class="tool-article">
+      <h2><span data-ar>أهمية التحويل بين التقويم الهجري والميلادي في الطب</span><span data-en>The Importance of Hijri-Gregorian Conversion in Medicine</span></h2>
+      
+      <div class="article-content">
+        <p><span data-ar>في العديد من الدول الإسلامية، يستخدم التقويم الهجري في الحياة اليومية، بينما يستخدم التقويم الميلادي في السجلات الطبية الرسمية. هذا الاختلاف قد يسبب ارتباكاً في مواعيد المستشفى، تواريخ الميلاد، وخطط العلاج. التحويل الدقيق بين التقويمين يساعد المرضى على التنسيق بين حياتهم الشخصية وجداولهم الطبية.</span><span data-en>In many Islamic countries, the Hijri calendar is used in daily life, while the Gregorian calendar is used in official medical records. This difference can cause confusion in hospital appointments, birth dates, and treatment plans. Accurate conversion between the two calendars helps patients coordinate their personal lives with their medical schedules.</span></p>
+
+        <h3><span data-ar>كيف يساعد محول التاريخ الهجري الطبي؟</span><span data-en>How Does the Hijri Medical Converter Help?</span></h3>
+        
+        <p><span data-ar>يوفر هذا المحول وظائف متعددة مفيدة للمرضى: حساب العمر في التقويمين، تحويل تاريخ الميلاد، حساب المدة منذ آخر زيارة للمستشفى، وتحديد الموعد القادم. يستخدم تقويم أم القرى الرسمي وهو أكثر دقة للتحويلات الطبية في الدول الإسلامية.</span><span data-en>This converter provides multiple useful functions for patients: calculating age in both calendars, converting birth dates, calculating time since the last hospital visit, and determining the next appointment. It uses the official Umm al-Qura calendar, which is more accurate for medical conversions in Islamic countries.</span></p>
+
+        <h3><span data-ar>نصائح للتعامل مع التواريخ الطبية</span><span data-en>Tips for Handling Medical Dates</span></h3>
+        
+        <ul>
+          <li><span data-ar>احتفظ دائماً بتاريخ ميلادك بالتقويمين الهجري والميلادي لتجنب الارتباك.</span><span data-en>Always keep your birth date in both Hijri and Gregorian calendars to avoid confusion.</span></li>
+          <li><span data-ar>عند حجز موعد مستشفى، تأكد من توضيح التقويم المستخدم في السجلات الرسمية.</span><span data-en>When booking a hospital appointment, ensure you clarify which calendar is used in official records.</span></li>
+          <li><span data-ar>استخدم هذا المحول للتأكد من صحة الحسابات اليدوية بين التقويمين.</span><span data-en>Use this converter to verify manual calculations between the two calendars.</span></li>
+          <li><span data-ar>تذكر أن التحويل قد يختلف يوم واحد عن الإعلانات الرسمية، لذا دائما أكد الموعد مع المستشفى.</span><span data-en>Remember that conversion may differ by one day from official announcements, so always confirm your appointment with the hospital.</span></li>
+        </ul>
+
+        <p class="article-note"><span data-ar>⚠️ تذكير: هذا المحول يعتمد على تقويم أم القرى وقد يختلف عن التقويم المستخدم في بلدك. استشر المستشفى أو الطبيب لتأكيد المواعيد الدقيقة.</span><span data-en>⚠️ Reminder: This converter relies on the Umm al-Qura calendar and may differ from the calendar used in your country. Consult the hospital or doctor to confirm exact dates.</span></p>
+      </div>
+    </article>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script is:inline>
+    let lang = 'ar';
+    // Initialize language on page load - get from ToolsShell
+    document.addEventListener('DOMContentLoaded', () => {
+      const toolsScope = document.querySelector('.tools-scope');
+      if (toolsScope) {
+        lang = toolsScope.getAttribute('data-lang') || 'ar';
+      }
+    });
+    
+    // Listen for language changes from ToolsShell
+    window.addEventListener('languageChanged', (event) => {
+      const customEvent = event;
+      lang = customEvent.detail?.lang || 'ar';
+    });
+    
+    // Helper function to get current language
+    function getCurrentLang() {
+      const toolsScope = document.querySelector('.tools-scope');
+      return toolsScope?.getAttribute('data-lang') || 'ar';
+    }
+    
+    // ---------- Calendar system state per section ----------
+    const calState = { age:'g', bd:'g', prev:'g', next:'g' };
+    function setCal(section, cal){
+      calState[section] = cal;
+      const tabs = document.getElementById('tabs-'+section).querySelectorAll('button');
+      tabs.forEach(b => b.classList.toggle('active', b.dataset.cal === cal));
+    }
+
+    // ---------- Core conversion helpers ----------
+    function toMidnight(y,m,d){
+      const dt = new Date(y, m-1, d);
+      dt.setHours(0,0,0,0);
+      return dt;
+    }
+
+    function gregorianToHijri(date){
+      const fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {year:'numeric', month:'numeric', day:'numeric'});
+      const parts = fmt.formatToParts(date);
+      const o = {};
+      parts.forEach(p => o[p.type] = p.value);
+      return { year: parseInt(o.year), month: parseInt(o.month), day: parseInt(o.day) };
+    }
+
+    function hijriToGregorian(hY, hM, hD){
+      const estDays = Math.round((hY - 1) * 354.36667 + (hM - 1) * 29.53 + hD - 1);
+      let guess = new Date(622, 6, 16);
+      guess.setDate(guess.getDate() + estDays);
+      for (let i = 0; i < 60; i++){
+        const h = gregorianToHijri(guess);
+        if (h.year === hY && h.month === hM && h.day === hD) return guess;
+        let cmp = h.year - hY;
+        if (cmp === 0) cmp = h.month - hM;
+        if (cmp === 0) cmp = h.day - hD;
+        if (cmp < 0) guess.setDate(guess.getDate()+1);
+        else guess.setDate(guess.getDate()-1);
+      }
+      return guess;
+    }
+
+    const hijriMonthsAr = ['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+    const hijriMonthsEn = ['Muharram','Safar','Rabi al-Awwal','Rabi al-Thani','Jumada al-Awwal','Jumada al-Thani','Rajab','Shaaban','Ramadan','Shawwal','Dhu al-Qidah','Dhu al-Hijjah'];
+    const gMonthsAr = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    const gMonthsEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const weekdaysAr = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const weekdaysEn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+    function fmtGregorian(date, useLang){
+      const l = useLang || getCurrentLang();
+      const months = l === 'ar' ? gMonthsAr : gMonthsEn;
+      return l === 'ar'
+        ? `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}م`
+        : `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} CE`;
+    }
+    function fmtHijri(h, useLang){
+      const l = useLang || getCurrentLang();
+      const months = l === 'ar' ? hijriMonthsAr : hijriMonthsEn;
+      return l === 'ar'
+        ? `${h.day} ${months[h.month-1]} ${h.year}هـ`
+        : `${h.day} ${months[h.month-1]} ${h.year} AH`;
+    }
+    function weekdayName(date, useLang){
+      const l = useLang || getCurrentLang();
+      return (l === 'ar' ? weekdaysAr : weekdaysEn)[date.getDay()];
+    }
+
+    function getInput(section){
+      const d = parseInt(document.getElementById(section+'-d').value);
+      const m = parseInt(document.getElementById(section+'-m').value);
+      const y = parseInt(document.getElementById(section+'-y').value);
+      if (!d || !m || !y) return null;
+      const cal = calState[section];
+      let gDate, hDate;
+      if (cal === 'g'){
+        gDate = toMidnight(y,m,d);
+        hDate = gregorianToHijri(gDate);
+      } else {
+        gDate = hijriToGregorian(y,m,d);
+        hDate = { year:y, month:m, day:d };
+      }
+      return { gDate, hDate };
+    }
+
+    function diffYMD(fromDate, toDate){
+      let y = toDate.getFullYear() - fromDate.getFullYear();
+      let m = toDate.getMonth() - fromDate.getMonth();
+      let d = toDate.getDate() - fromDate.getDate();
+      if (d < 0){
+        m -= 1;
+        const prevMonth = new Date(toDate.getFullYear(), toDate.getMonth(), 0);
+        d += prevMonth.getDate();
+      }
+      if (m < 0){ y -= 1; m += 12; }
+      return {y,m,d};
+    }
+
+    function hijriDiffYMD(fromH, toH){
+      let y = toH.year - fromH.year;
+      let m = toH.month - fromH.month;
+      let d = toH.day - fromH.day;
+      if (d < 0){ m -= 1; d += 29; }
+      if (m < 0){ y -= 1; m += 12; }
+      return {y,m,d};
+    }
+
+    function dayDiff(d1, d2){
+      return Math.round((d2 - d1) / 86400000);
+    }
+
+    let lastAgeResult = '';
+    function calcAge(){
+      const input = getInput('age');
+      const box = document.getElementById('res-age');
+      if (!input){ alert(getCurrentLang()==='ar' ? 'الرجاء إدخال تاريخ صحيح' : 'Please enter a valid date'); return; }
+      const today = new Date(); today.setHours(0,0,0,0);
+      const todayH = gregorianToHijri(today);
+      const ageG = diffYMD(input.gDate, today);
+      const ageH = hijriDiffYMD(input.hDate, todayH);
+
+      const textAr = `تاريخ الميلاد: ${fmtGregorian(input.gDate,'ar')} / ${fmtHijri(input.hDate,'ar')}\nالعمر بالميلادي: ${ageG.y} سنة، ${ageG.m} شهر، ${ageG.d} يوم\nالعمر بالهجري: ${ageH.y} سنة، ${ageH.m} شهر، ${ageH.d} يوم`;
+      const textEn = `Birth date: ${fmtGregorian(input.gDate,'en')} / ${fmtHijri(input.hDate,'en')}\nAge (Gregorian): ${ageG.y}y ${ageG.m}m ${ageG.d}d\nAge (Hijri): ${ageH.y}y ${ageH.m}m ${ageH.d}d`;
+      lastAgeResult = lang === 'ar' ? textAr : textEn;
+
+      box.innerHTML = `
+        <div class="highlight">${getCurrentLang()==='ar' ? `العمر: ${ageG.y} سنة (ميلادي) / ${ageH.y} سنة (هجري)` : `Age: ${ageG.y} yrs (Gregorian) / ${ageH.y} yrs (Hijri)`}</div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'الميلاد ميلادي':'Birth (Gregorian)'}</span><b>${fmtGregorian(input.gDate)}</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'الميلاد هجري':'Birth (Hijri)'}</span><b>${fmtHijri(input.hDate)}</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'العمر بالميلادي':'Age (Gregorian)'}</span><b>${ageG.y}س ${ageG.m}ش ${ageG.d}ي</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'العمر بالهجري':'Age (Hijri)'}</span><b>${ageH.y}س ${ageH.m}ش ${ageH.d}ي</b></div>
+        <div class="actions">
+          <button onclick="copyText(lastAgeResult)">📋 ${getCurrentLang()==='ar'?'نسخ':'Copy'}</button>
+          <a href="#" onclick="shareWhatsapp(lastAgeResult); return false;">💬 WhatsApp</a>
+        </div>`;
+      box.classList.add('show');
+    }
+
+    function calcBd(){
+      const input = getInput('bd');
+      const box = document.getElementById('res-bd');
+      if (!input){ alert(getCurrentLang()==='ar' ? 'الرجاء إدخال تاريخ صحيح' : 'Please enter a valid date'); return; }
+      const textAr = `${fmtGregorian(input.gDate,'ar')}  =  ${fmtHijri(input.hDate,'ar')}`;
+      const textEn = `${fmtGregorian(input.gDate,'en')}  =  ${fmtHijri(input.hDate,'en')}`;
+      const resultText = lang === 'ar' ? textAr : textEn;
+
+      box.innerHTML = `
+        <div class="highlight">${resultText}</div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'اليوم':'Weekday'}</span><b>${weekdayName(input.gDate)}</b></div>
+        <div class="actions">
+          <button onclick="copyText('${resultText.replace(/'/g,"\\'")}')">📋 ${getCurrentLang()==='ar'?'نسخ':'Copy'}</button>
+          <a href="#" onclick="shareWhatsapp('${resultText.replace(/'/g,"\\'")}'); return false;">💬 WhatsApp</a>
+        </div>`;
+      box.classList.add('show');
+    }
+
+    function calcPrev(){
+      const input = getInput('prev');
+      const box = document.getElementById('res-prev');
+      if (!input){ alert(getCurrentLang()==='ar' ? 'الرجاء إدخال تاريخ صحيح' : 'Please enter a valid date'); return; }
+      const today = new Date(); today.setHours(0,0,0,0);
+      if (input.gDate > today){
+        box.innerHTML = `<div class="highlight" style="color:var(--warn)">${getCurrentLang()==='ar'?'هذا التاريخ في المستقبل — استخدم قسم الموعد القادم':'This date is in the future — use the Next Appointment section'}</div>`;
+        box.classList.add('show');
+        return;
+      }
+      const elapsed = diffYMD(input.gDate, today);
+      const totalDays = dayDiff(input.gDate, today);
+      const resultText = getCurrentLang()==='ar'
+        ? `آخر زيارة: ${fmtGregorian(input.gDate,'ar')} / ${fmtHijri(input.hDate,'ar')}\nمضى عليها: ${elapsed.y} سنة، ${elapsed.m} شهر، ${elapsed.d} يوم (${totalDays} يوم إجمالاً)`
+        : `Last visit: ${fmtGregorian(input.gDate,'en')} / ${fmtHijri(input.hDate,'en')}\nTime elapsed: ${elapsed.y}y ${elapsed.m}m ${elapsed.d}d (${totalDays} days total)`;
+
+      box.innerHTML = `
+        <div class="highlight">${getCurrentLang()==='ar'?`مضى ${totalDays} يوم على آخر زيارة`:`${totalDays} days since last visit`}</div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'التاريخ ميلادي':'Gregorian date'}</span><b>${fmtGregorian(input.gDate)}</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'التاريخ هجري':'Hijri date'}</span><b>${fmtHijri(input.hDate)}</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'المدة':'Elapsed'}</span><b>${elapsed.y}س ${elapsed.m}ش ${elapsed.d}ي</b></div>
+        <div class="actions">
+          <button onclick="copyText(\`${resultText}\`)">📋 ${getCurrentLang()==='ar'?'نسخ':'Copy'}</button>
+          <a href="#" onclick="shareWhatsapp(\`${resultText}\`); return false;">💬 WhatsApp</a>
+        </div>`;
+      box.classList.add('show');
+    }
+
+    function calcNext(){
+      const input = getInput('next');
+      const box = document.getElementById('res-next');
+      if (!input){ alert(getCurrentLang()==='ar' ? 'الرجاء إدخال تاريخ صحيح' : 'Please enter a valid date'); return; }
+      const today = new Date(); today.setHours(0,0,0,0);
+      const totalDays = dayDiff(today, input.gDate);
+      const weekday = weekdayName(input.gDate);
+
+      if (totalDays < 0){
+        box.innerHTML = `<div class="highlight" style="color:var(--warn)">${getCurrentLang()==='ar'?'هذا التاريخ في الماضي — استخدم قسم آخر زيارة':'This date is in the past — use the Last Visit section'}</div>`;
+        box.classList.add('show');
+        return;
+      }
+
+      const resultText = getCurrentLang()==='ar'
+        ? `الموعد القادم: ${fmtGregorian(input.gDate,'ar')} / ${fmtHijri(input.hDate,'ar')}\nيوم ${weekday} — بعد ${totalDays} يوم`
+        : `Next appointment: ${fmtGregorian(input.gDate,'en')} / ${fmtHijri(input.hDate,'en')}\n${weekday} — in ${totalDays} days`;
+
+      const gY = input.gDate.getFullYear(), gM = input.gDate.getMonth()+1, gD = input.gDate.getDate();
+      const pad = n => String(n).padStart(2,'0');
+      const dateStrStart = `${gY}${pad(gM)}${pad(gD)}`;
+      const nextDay = new Date(input.gDate); nextDay.setDate(nextDay.getDate()+1);
+      const dateStrEnd = `${nextDay.getFullYear()}${pad(nextDay.getMonth()+1)}${pad(nextDay.getDate())}`;
+      const gcalTitle = encodeURIComponent(getCurrentLang()==='ar' ? 'موعد المستشفى' : 'Hospital Appointment');
+      const gcalDetails = encodeURIComponent(resultText);
+      const gcalLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${gcalTitle}&dates=${dateStrStart}/${dateStrEnd}&details=${gcalDetails}`;
+
+      box.innerHTML = `
+        <div class="highlight">${getCurrentLang()==='ar'?`${weekday} — بعد ${totalDays} يوم`:`${weekday} — in ${totalDays} days`}</div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'التاريخ ميلادي':'Gregorian date'}</span><b>${fmtGregorian(input.gDate)}</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'التاريخ هجري':'Hijri date'}</span><b>${fmtHijri(input.hDate)}</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'اليوم':'Weekday'}</span><b>${weekday}</b></div>
+        <div class="actions">
+          <button onclick="copyText(\`${resultText}\`)">📋 ${getCurrentLang()==='ar'?'نسخ':'Copy'}</button>
+          <a href="#" onclick="shareWhatsapp(\`${resultText}\`); return false;">💬 WhatsApp</a>
+          <a href="${gcalLink}" target="_blank">📅 Google</a>
+          <button onclick="downloadIcs(${gY},${gM},${gD},'${(getCurrentLang()==='ar'?'موعد المستشفى':'Hospital Appointment').replace(/'/g,"")}')">🍎 Apple/ICS</button>
+        </div>`;
+      box.classList.add('show');
+    }
+
+    function copyText(text){
+      navigator.clipboard.writeText(text).then(()=> showToast(getCurrentLang()==='ar' ? 'تم النسخ' : 'Copied'));
+    }
+    function shareWhatsapp(text){
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(()=> t.classList.remove('show'), 1800);
+    }
+    function downloadIcs(y,m,d,title){
+      const pad = n => String(n).padStart(2,'0');
+      const dt = `${y}${pad(m)}${pad(d)}`;
+      const nd = new Date(y, m-1, d); nd.setDate(nd.getDate()+1);
+      const dtEnd = `${nd.getFullYear()}${pad(nd.getMonth()+1)}${pad(nd.getDate())}`;
+      const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Medical Date Converter//AR//EN\nBEGIN:VEVENT\nUID:${Date.now()}@medconv\nDTSTAMP:${dt}T000000Z\nDTSTART;VALUE=DATE:${dt}\nDTEND;VALUE=DATE:${dtEnd}\nSUMMARY:${title}\nDESCRIPTION:${title}\nEND:VEVENT\nEND:VCALENDAR`;
+      const blob = new Blob([ics], {type:'text/calendar'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'appointment.ics';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+  </ToolsShell>
+</Layout>

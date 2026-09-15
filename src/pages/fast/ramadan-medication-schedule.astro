@@ -1,0 +1,710 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="مواعيد الأدوية لصيام رمضان" description="جدول الشهر الكامل محسوب من الفجر إلى المغرب حسب موقعك">
+  <ToolsShell>
+    <div class="tool-hero">
+      <a href="/fast/" class="back-link">
+        <span data-ar>‹ العودة إلى أدوات الصيام</span>
+        <span data-en>‹ Back to Fasting Tools</span>
+      </a>
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
+      <p class="kicker"><span data-ar>أدوات الصيام</span><span data-en>Fasting Tools</span></p>
+      <h1>
+        <span data-ar>مواعيد الأدوية لصيام رمضان</span>
+        <span data-en>Ramadan Fasting Medication Schedule</span>
+      </h1>
+      <p class="lead"><span data-ar>جدول الشهر الكامل محسوب من الفجر إلى المغرب حسب موقعك</span><span data-en>Full month schedule computed from Fajr to Maghrib based on your location</span></p>
+    </div>
+
+  <script is:inline type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "هل يجوز لمريض السكري صيام رمضان؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "يعتمد على نوع السكري وشدته، ويجب دائماً استشارة الطبيب المعالج قبل رمضان لتحديد مدى الأمان وضبط جرعات الأنسولين إن استمر الصيام."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "هل يحتاج الجدول تحديثاً كل سنة؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "لا، الأداة تحسب تاريخ رمضان تلقائياً من التقويم الهجري (أم القرى) حسب تاريخ اليوم، فتعمل بشكل صحيح كل عام دون أي تدخل يدوي."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "كيف تُحسب أوقات الفجر والمغرب؟",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "تُحسب فلكياً من موقعك الجغرافي (عبر GPS الجوال أو تحديد يدوي)، بدقة تقارب دقيقة إلى دقيقتين مقارنة بالمصادر الرسمية."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+  :root{
+    --warn:#c98a2c;
+    --radius:14px;
+    --shadow:0 4px 14px rgba(30,58,63,0.08);
+  }
+  .fast-nav{ display:flex; gap:8px; overflow-x:auto; padding:10px 14px; background:var(--paper-alt); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:40; -webkit-overflow-scrolling:touch; }
+    .fast-nav a{ flex:0 0 auto; padding:8px 14px; border-radius:20px; background:var(--paper); color:var(--ink-soft); text-decoration:none; font-size:.82rem; border:1px solid var(--line); white-space:nowrap; }
+    .fast-nav a.active{ background:var(--accent); color:#fff; border-color:var(--accent); font-weight:bold; }
+    .page-actions{ display:flex; gap:10px; margin-bottom:16px; }
+    .action-btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 16px; background:var(--paper); border:1px solid var(--line); border-radius:8px; color:var(--ink); text-decoration:none; font-size:.85rem; cursor:pointer; transition:background .15s; }
+    .action-btn:hover{ background:var(--paper-alt); }
+    .action-btn svg{ width:18px; height:18px; }
+    .back-link{ display:inline-block; margin-bottom:8px; color:var(--secondary-dark); text-decoration:none; font-size:.85rem; }
+    .back-link:hover{ text-decoration:underline; }
+    .kicker{ font-family:"IBM Plex Mono",monospace; font-size:.8rem; color:var(--secondary-dark); letter-spacing:.06em; margin-bottom:8px; }
+    .container{ max-width:760px; margin:14px auto 0; padding:0 14px; }
+    .calc-card{ background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 18px 20px; margin-bottom:18px; }
+    .calc-card h2{ margin:0 0 4px; font-size:1.05rem; color:var(--accent-dark); display:flex; align-items:center; gap:8px; }
+    .calc-card .sub{ margin:0 0 14px; color:var(--ink-soft); font-size:.85rem; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .field{ flex:1 1 150px; display:flex; flex-direction:column; gap:5px; }
+    .field label{ font-size:.82rem; color:var(--ink-soft); }
+    .field select, .field input{ padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:.95rem; background:#fff; color:var(--ink); font-family:inherit; }
+    .loc-btn{ padding:9px 14px; border-radius:8px; border:1px solid var(--accent); background:#fff; color:var(--accent-dark); cursor:pointer; font-size:.85rem; }
+    .loc-status{ font-size:.8rem; color:var(--ink-soft); margin-top:6px; }
+    .fajr-maghrib-box{ display:flex; gap:16px; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin:10px 0; }
+    .fajr-maghrib-box div{ flex:1; text-align:center; }
+    .fajr-maghrib-box .fm-label{ font-size:.78rem; color:var(--ink-soft); }
+    .fajr-maghrib-box .fm-time{ font-family:"Courier New",monospace; font-weight:bold; font-size:1.2rem; color:var(--accent-dark); }
+
+    .med-card{ border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:12px; background:var(--paper); position:relative; }
+    .med-card .med-remove{ position:absolute; top:10px; inset-inline-end:10px; background:none; border:none; color:var(--danger); font-size:1.1rem; cursor:pointer; }
+    .med-card h3{ margin:0 0 10px; font-size:.95rem; color:var(--accent-dark); }
+    .sep-item{ display:flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line); border-radius:7px; padding:6px 8px; margin-bottom:6px; font-size:.8rem; }
+    .sep-item select, .sep-item input{ padding:5px 6px; border:1px solid var(--line); border-radius:5px; font-size:.8rem; font-family:inherit; }
+    .sep-item .remove-sep{ background:none; border:none; color:var(--danger); cursor:pointer; margin-inline-start:auto; }
+    .add-sep-btn{ font-size:.78rem; padding:6px 10px; border:1px dashed var(--secondary); background:#fff; border-radius:7px; color:var(--accent-dark); cursor:pointer; }
+    .add-row-btn{ width:100%; padding:10px; border:1px dashed var(--secondary); border-radius:9px; background:#fff; color:var(--accent-dark); cursor:pointer; font-size:.9rem; margin:6px 0 4px; }
+    .add-row-btn:hover{ background:var(--paper); }
+    .btn-calc{ width:100%; padding:11px; border:none; border-radius:9px; background:var(--accent); color:#fff; font-size:.95rem; cursor:pointer; margin-top:10px; }
+    .btn-calc:hover{ background:var(--accent-dark); }
+
+    .faith-banner{ background:#eef7f2; border:1px solid var(--ok); border-radius:10px; padding:12px 16px; font-size:.85rem; color:var(--ink); margin-bottom:18px; }
+    .tips-box{ background:#fff8ea; border:1px solid var(--warn); border-radius:10px; padding:12px 16px; font-size:.85rem; margin-bottom:14px; }
+
+    .result{ display:none; margin-top:6px; }
+    .result.show{ display:block; }
+    .dose-item{ display:flex; gap:12px; align-items:center; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+    .dose-time{ font-family:"Courier New",monospace; font-weight:bold; color:var(--accent-dark); font-size:1.1rem; min-width:60px; text-align:center; }
+    .dose-body{ flex:1; }
+    .dose-name{ font-weight:bold; font-size:.95rem; }
+    .dose-note{ font-size:.78rem; color:var(--ink-soft); }
+    .dose-moved{ font-size:.78rem; color:var(--accent-dark); margin-top:2px; }
+    .dose-warn{ font-size:.78rem; color:var(--warn); margin-top:2px; }
+    .dose-conflict{ font-size:.78rem; color:var(--danger); margin-top:2px; }
+    .advisory-box{ background:#fff8ea; border:1px solid var(--warn); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+    .advisory-box .dose-name{ color:var(--warn); }
+
+    .global-actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+    .global-actions button, .global-actions a{ flex:1 1 auto; text-align:center; padding:10px 10px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:.85rem; cursor:pointer; text-decoration:none; font-family:inherit; }
+    .global-actions button:hover, .global-actions a:hover{ background:var(--paper); }
+
+    .disclaimer{ max-width:760px; margin:10px auto 0; padding:0 14px; font-size:.78rem; color:var(--ink-soft); text-align:center; }
+    .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:9px 18px; border-radius:20px; font-size:.85rem; opacity:0; pointer-events:none; transition:opacity .25s; z-index:50; }
+    .toast.show{ opacity:1; }
+    #print-card{ position:fixed; top:0; left:0; z-index:-999; width:680px; background:#fff; font-family:"Tahoma","Segoe UI",Arial,sans-serif; }
+    #print-card .pc-header{ background:linear-gradient(120deg,var(--accent),var(--accent-dark)); color:#fff; padding:22px 26px; text-align:center; }
+    #print-card .pc-header h1{ margin:0 0 4px; font-size:1.3rem; }
+    #print-card .pc-body{ padding:20px 26px 26px; }
+    #print-card .pc-row{ display:flex; align-items:center; gap:14px; border-bottom:1px solid #e4eef0; padding:10px 0; }
+    #print-card .pc-time{ font-family:"Courier New",monospace; font-weight:bold; color:var(--accent-dark); font-size:1.1rem; min-width:60px; }
+    #print-card .pc-name{ font-weight:bold; }
+    #print-card .pc-footer{ text-align:center; color:#8a7f68; font-size:.78rem; padding:10px 26px 20px; }
+    #print-card .pc-section-title{ font-weight:bold; color:var(--accent-dark); margin:16px 0 8px; font-size:1rem; border-top:2px solid var(--line); padding-top:14px; }
+    #print-card .pc-cal-row{ display:flex; justify-content:space-between; font-size:.82rem; padding:5px 0; border-bottom:1px solid #eef2f2; }
+  </style>
+
+  <nav class="fast-nav">
+    <a href="/fast/"><span data-ar>🗺️ الرئيسية</span><span data-en>🗺️ Home</span></a>
+    <a href="/fast/intermittent-fasting-medication-adjuster"><span data-ar>⏳ المتقطع</span><span data-en>⏳ Intermittent</span></a>
+    <a href="/fast/full-day-fasting-medication-adjuster"><span data-ar>🌗 صيام كامل ٢٤ س</span><span data-en>🌗 Full 24h</span></a>
+    <a href="/fast/orthodox-fasting-medication-adjuster"><span data-ar>✝️ الأرثوذكسي</span><span data-en>✝️ Orthodox</span></a>
+    <a href="/fast/ramadan-medication-schedule" class="active"><span data-ar>🌙 رمضان</span><span data-en>🌙 Ramadan</span></a>
+    <a href="/fast/voluntary-extended-fasting-medication-adjuster"><span data-ar>📅 تطوع متصل</span><span data-en>📅 Extended</span></a>
+    <a href="/fast/single-day-fasting-medication-adjuster"><span data-ar>☀️ يوم واحد</span><span data-en>☀️ Single Day</span></a>
+    <a href="/fast/bahai-fasting-medication-schedule"><span data-ar>🕊️ البهائي</span><span data-en>🕊️ Baháʼí</span></a>
+    <a href="/fast/jewish-minor-fast-medication-schedule"><span data-ar>✡️ يهودي أصغر</span><span data-en>✡️ Jewish Minor</span></a>
+  </nav>
+
+  <div class="container">
+
+    <div class="faith-banner">
+      <span data-ar>🕊️ يمكنك دائماً الإفطار إذا تعارض ذلك مع صحتك أو دوائك — الدين يسر. هذا التطبيق إرشادي فقط ولا يغني عن تعليمات طبيبك أو صيدليك، ولا "يعرف" أدويتك تحديداً بل يعتمد على تصنيف عام تختاره أنت.</span>
+      <span data-en>🕊️ You can always break your fast if it conflicts with your health or medication — faith is meant to ease, not burden. This tool is advisory only and does not replace your doctor's or pharmacist's instructions; it does not identify your specific medications, only a general category you select.</span>
+    </div>
+
+    <div class="calc-card">
+      <h2>📍 <span data-ar>الموقع والتاريخ</span><span data-en>Location &amp; Date</span></h2>
+      <button class="loc-btn" onclick="useMyLocation()">📍 <span data-ar>استخدم موقعي الحالي (GPS)</span><span data-en>Use my current location (GPS)</span></button>
+      <div class="loc-status" id="loc-status"></div>
+
+      <div id="manual-fallback" style="display:none; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);">
+        <p class="sub"><span data-ar>أدخل موعد الفجر (الإمساك) وموعد المغرب (الإفطار) تقريباً بنفسك — سيُستخدم هذا الموعد التقريبي لكل أيام رمضان:</span><span data-en>Enter your approximate Fajr (dawn) and Maghrib (sunset) times yourself — this approximate time will be used for every day of Ramadan:</span></p>
+        <div class="row">
+          <div class="field">
+            <label><span data-ar>الفجر تقريباً</span><span data-en>Approximate Fajr</span></label>
+            <input type="time" id="fallback-fajr">
+          </div>
+          <div class="field">
+            <label><span data-ar>المغرب تقريباً</span><span data-en>Approximate Maghrib</span></label>
+            <input type="time" id="fallback-maghrib">
+          </div>
+        </div>
+        <p class="sub">⚠ <span data-ar>هذا تقدير يدوي وليس حساباً فلكياً — تذكر أن هناك فرق دقائق بسيطة بين أول وآخر يوم في رمضان لن يظهر في هذا التقدير، فالجدول تقريبي بالكامل طوال الشهر.</span><span data-en>This is a manual estimate, not an astronomical calculation — note there's a small difference of a few minutes between the first and last day of Ramadan that won't be reflected here, so the whole month's schedule is approximate.</span></p>
+      </div>
+      <p class="sub" style="margin-top:10px;"><a href="#" onclick="toggleManualFallback(); return false;">🕐 <span data-ar>لا يمكنني تحديد موقعي — أدخل الأوقات يدوياً</span><span data-en>I can't determine my location — enter times manually</span></a></p>
+
+      <details style="margin-top:10px;">
+        <summary style="cursor:pointer; font-size:.82rem; color:var(--ink-soft);"><span data-ar>متقدم: إحداثيات يدوية</span><span data-en>Advanced: manual coordinates</span></summary>
+        <div class="row" style="margin-top:8px;">
+          <div class="field">
+            <label><span data-ar>خط العرض</span><span data-en>Latitude</span></label>
+            <input type="number" id="p-lat" step="0.0001" placeholder="24.7136">
+          </div>
+          <div class="field">
+            <label><span data-ar>خط الطول</span><span data-en>Longitude</span></label>
+            <input type="number" id="p-lng" step="0.0001" placeholder="46.6753">
+          </div>
+        </div>
+      </details>
+
+      <div class="row" style="margin-top:10px;">
+        <div class="field">
+          <label><span data-ar>بداية رمضان القادم/الحالي (محسوبة تلقائياً)</span><span data-en>Upcoming/current Ramadan start (auto-computed)</span></label>
+          <input type="text" id="ramadan-start-display" readonly style="background:var(--paper);">
+        </div>
+        <div class="field">
+          <label><span data-ar>فارق التوقيت عن غرينتش (تلقائي)</span><span data-en>UTC offset (auto-detected)</span></label>
+          <input type="number" id="p-tz" step="0.5">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>عرض جدول الدواء ليوم</span><span data-en>Show medication schedule for</span></label>
+          <select id="p-preview-day"></select>
+        </div>
+      </div>
+      <input type="hidden" id="p-date-start">
+      <input type="hidden" id="p-date-end">
+      <div class="fajr-maghrib-box" id="fm-box" style="display:none;">
+        <div><div class="fm-label"><span data-ar>الفجر (بداية الصيام)</span><span data-en>Fajr (fast start)</span></div><div class="fm-time" id="fm-fajr">—</div></div>
+        <div><div class="fm-label"><span data-ar>المغرب (نهاية الصيام)</span><span data-en>Maghrib (fast end)</span></div><div class="fm-time" id="fm-maghrib">—</div></div>
+      </div>
+      <div class="dose-warn" id="manual-time-note" style="display:none; margin-top:8px;"></div>
+      <p class="sub" style="margin-top:6px;"><span data-ar>⚠ حساب تقريبي فلكياً (±1-2 دقيقة) — تحقق من تطبيق مواقيت الصلاة المعتمد محلياً إن أردت الدقة الكاملة. الفجر والمغرب يتغيران بدقائق قليلة فقط يومياً، فجدول الدواء يبقى تقريباً كما هو طوال المدة.</span><span data-en>⚠ Approximate astronomical calculation (±1-2 minutes) — check a locally trusted prayer-times app for full precision. Fajr and Maghrib shift by only a few minutes daily, so the medication schedule stays roughly the same throughout the period.</span></p>
+      <p class="sub">🔄 <span data-ar>هذا التاريخ يُحسب تلقائياً من تاريخ اليوم في كل مرة تُفتح فيها الصفحة، فلا تحتاج الصفحة لأي تحديث يدوي في السنوات القادمة — رمضان ١٤٤٩ وما بعده سيُحسب تلقائياً بنفس الطريقة.</span><span data-en>🔄 This date is recalculated automatically from today's date every time the page loads, so it never needs manual updating in future years — Ramadan 1449 and beyond will be computed the same way automatically.</span></p>
+      <div id="range-table-wrap" style="display:none; margin-top:10px;">
+        <p class="sub" style="margin-bottom:6px;"><span data-ar>جدول الفجر/المغرب لكل يوم (مفيد لضبط التنبيهات)</span><span data-en>Fajr/Maghrib for each day (useful for setting reminders)</span></p>
+        <div id="range-table" style="max-height:200px; overflow-y:auto; font-size:.82rem;"></div>
+      </div>
+    </div>
+
+
+    <div class="calc-card">
+      <h2>🕐 <span data-ar>بيانات عامة</span><span data-en>General Info</span></h2>
+      <div class="global-actions" style="margin-bottom:12px;">
+        <button onclick="saveMyData()">💾 <span data-ar>احفظ بياناتي على هذا الجهاز</span><span data-en>Save my data on this device</span></button>
+        <button onclick="clearMyData()">🗑 <span data-ar>امسح البيانات المحفوظة</span><span data-en>Clear saved data</span></button>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>موعد الاستيقاظ</span><span data-en>Wake time</span></label>
+          <input type="time" id="p-wake" value="05:00">
+        </div>
+        <div class="field">
+          <label><span data-ar>موعد النوم</span><span data-en>Sleep time</span></label>
+          <input type="time" id="p-sleep" value="22:30">
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-card">
+      <h2>💊 <span data-ar>الأدوية</span><span data-en>Medications</span></h2>
+      <p class="sub"><span data-ar>اختر تصنيفاً عاماً لكل دواء (لا نطلب اسم الدواء التجاري) ليتمكن التطبيق من تطبيق الإرشاد المناسب.</span><span data-en>Choose a general category for each medicine (no brand name needed) so the tool can apply the right guidance.</span></p>
+      <div id="med-list"></div>
+      <button class="add-row-btn" onclick="addMed()">+ <span data-ar>أضف دواءً</span><span data-en>Add medication</span></button>
+      <button class="btn-calc" onclick="calcSchedule()"><span data-ar>احسب الجدول</span><span data-en>Calculate Schedule</span></button>
+    </div>
+
+    <div class="calc-card result" id="res-card">
+      <h2>📋 <span data-ar>جدولك ليوم الصيام</span><span data-en>Your Fasting-Day Schedule</span></h2>
+      <div id="res-list"></div>
+      <div class="global-actions">
+        <button onclick="copyAll()">📋 <span data-ar>نسخ الجدول</span><span data-en>Copy Schedule</span></button>
+        <a href="#" onclick="shareWhatsapp(); return false;">💬 WhatsApp</a>
+        <button onclick="downloadPdf()">📄 PDF</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="calc-card info-section">
+    <h2><span data-ar>📖 عن صيام رمضان وهذه الأداة</span><span data-en>📖 About Ramadan Fasting and This Tool</span></h2>
+    <div data-ar>
+
+      <p>رمضان هو الشهر التاسع بالتقويم الهجري، يصوم فيه المسلمون من الفجر إلى المغرب لمدة ٢٩ أو ٣٠ يوماً، امتناعاً عن الطعام والشراب. مدة الصيام اليومية تختلف حسب الموقع الجغرافي وفصل السنة.</p>
+      <p>الأداة تكتشف تلقائياً تواريخ رمضان القادم أو الحالي، وتحسب أوقات الفجر والمغرب من موقعك، ثم تعيد جدولة أدويتك بحيث تقع الجرعات بين الإفطار والسحور، مع تفضيل نقل أدوية السكري ومدرات البول لموعد الإفطار تحديداً.</p>
+      <h3>نصائح عامة لرمضان</h3>
+      <ul>
+        <li>اسأل طبيبك عن الأشكال طويلة المفعول (جرعة واحدة يومياً) لتسهيل توزيعها بين الإفطار والسحور.</li>
+        <li>وازن بين السحور والإفطار غذائياً — تجنب الإفراط في الملح والسكريات دفعة واحدة عند الإفطار.</li>
+        <li>مرضى السكري بحاجة لمتابعة طبية خاصة لضبط جرعات الأنسولين خلال الشهر.</li>
+        <li>تذكر أن الفطر مباح شرعاً عند المرض — لا تخاطر بصحتك.</li>
+      </ul>
+  
+    </div>
+    <div data-en>
+
+      <p>Ramadan is the ninth month of the Hijri calendar, during which Muslims fast from dawn to sunset for 29 or 30 days, abstaining from food and drink. The daily fasting duration varies by location and season.</p>
+      <p>The tool automatically detects the upcoming or current Ramadan dates, calculates Fajr and Maghrib times from your location, then reschedules your medications to fall between iftar and suhoor, preferring to move diabetes medicines and diuretics specifically to iftar time.</p>
+      <h3>General tips for Ramadan</h3>
+      <ul>
+        <li>Ask your doctor about long-acting (once-daily) formulations to make them easier to fit between iftar and suhoor.</li>
+        <li>Balance suhoor and iftar nutritionally — avoid excess salt and sugar all at once at iftar.</li>
+        <li>Diabetic patients need special medical follow-up to adjust insulin doses throughout the month.</li>
+        <li>Remember that breaking the fast is religiously permitted in illness — don't risk your health.</li>
+      </ul>
+  
+    </div>
+
+    <div data-ar>
+      <h3 style="margin-top:20px;">❓ أسئلة شائعة</h3>
+      <h4>هل يجوز لمريض السكري صيام رمضان؟</h4>
+      <p>يعتمد على نوع السكري وشدته، ويجب دائماً استشارة الطبيب المعالج قبل رمضان لتحديد مدى الأمان وضبط جرعات الأنسولين إن استمر الصيام.</p>
+      <h4>هل يحتاج الجدول تحديثاً كل سنة؟</h4>
+      <p>لا، الأداة تحسب تاريخ رمضان تلقائياً من التقويم الهجري (أم القرى) حسب تاريخ اليوم، فتعمل بشكل صحيح كل عام دون أي تدخل يدوي.</p>
+      <h4>كيف تُحسب أوقات الفجر والمغرب؟</h4>
+      <p>تُحسب فلكياً من موقعك الجغرافي (عبر GPS الجوال أو تحديد يدوي)، بدقة تقارب دقيقة إلى دقيقتين مقارنة بالمصادر الرسمية.</p>
+
+    </div>
+    <div data-en>
+      <h3 style="margin-top:20px;">❓ Frequently Asked Questions</h3>
+      <h4>Can a diabetic patient fast during Ramadan?</h4>
+      <p>It depends on the type and severity of diabetes, and a doctor should always be consulted before Ramadan to determine safety and adjust insulin doses if fasting continues.</p>
+      <h4>Does the schedule need updating every year?</h4>
+      <p>No — the tool automatically computes the Ramadan dates from the Hijri (Umm al-Qura) calendar based on today's date, so it works correctly every year with no manual changes.</p>
+      <h4>How are Fajr and Maghrib times calculated?</h4>
+      <p>Astronomically, from your location (via phone GPS or manual entry), accurate to within about one to two minutes compared to official sources.</p>
+
+    </div>
+  </div>
+
+  <p class="disclaimer">
+    <span data-ar>⚠️ لا يحتوي هذا التطبيق على قاعدة بيانات لأسماء الأدوية أو تفاعلاتها. أي تعارض "فصل" هنا مبني فقط على ما أدخلته أنت بنفسك.</span>
+    <span data-en>⚠️ This tool has no database of drug names or interactions. Any "separation" conflict shown here is based only on what you entered yourself.</span>
+  </p>
+
+  <div class="toast" id="toast"></div>
+
+  <script is:inline src="/js/fasting-engine.js"></script>
+  <script is:inline>
+  function getScopeLang(){ const el = document.querySelector('.tools-scope'); return (el && el.dataset.lang) || 'ar'; }
+  let lang = getScopeLang();
+  window.addEventListener('languageChanged', (e) => {
+    lang = (e.detail && e.detail.lang) || getScopeLang();
+    relocalizeMedCards();
+    if (typeof lastResults !== 'undefined' && lastResults.length) renderResults();
+  });
+
+  // ---------- Save/load profile + medications on this device (localStorage) ----------
+  function collectProfileForSave(){
+    return {
+      wake: document.getElementById('p-wake').value,
+      sleep: document.getElementById('p-sleep').value,
+    };
+  }
+  function applyLoadedProfile(p){
+    if (!p) return;
+    if (p.wake) document.getElementById('p-wake').value = p.wake;
+    if (p.sleep) document.getElementById('p-sleep').value = p.sleep;
+  }
+  function saveMyData(){
+    const ok = saveFastingData(collectProfileForSave(), serializeMedCards());
+    showToast(ok ? (lang==='ar'?'تم الحفظ على هذا الجهاز':'Saved on this device') : (lang==='ar'?'تعذر الحفظ':'Could not save'));
+  }
+  function clearMyData(){
+    clearFastingData();
+    showToast(lang==='ar'?'تم مسح البيانات المحفوظة':'Saved data cleared');
+  }
+  let dataWasRestored = false;
+  function autoLoadSavedData(){
+    if (!hasFastingSavedData()) return;
+    applyLoadedProfile(loadFastingProfile());
+    const savedMeds = loadFastingMeds();
+    if (savedMeds && savedMeds.length){
+      document.getElementById('med-list').innerHTML = '';
+      medCounter = 0;
+      restoreMedCards(savedMeds);
+      dataWasRestored = true;
+    }
+  }
+
+  // ---------- Hijri (Umm al-Qura) conversion, to auto-detect the Ramadan date range ----------
+
+  let medCounter = 0;
+  function addMed(){
+    medCounter++;
+    const id = 'med-' + medCounter;
+    const div = document.createElement('div');
+    div.className = 'med-card';
+    div.id = id;
+    div.dataset.medId = id;
+    div.dataset.medNum = medCounter;
+    const catOptions = Object.keys(CATEGORY_LABELS.ar).map(k => `<option value="${k}">${CATEGORY_LABELS[lang][k]}</option>`).join('');
+    div.innerHTML = `
+      <button class="med-remove" onclick="document.getElementById('${id}').remove(); refreshDrugDropdowns();">✕</button>
+      <h3><span data-ar>دواء</span><span data-en>Medication</span> #${medCounter}</h3>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>اسم الدواء (اختياري)</span><span data-en>Medicine name (optional)</span></label>
+          <input type="text" class="m-name" placeholder="${lang==='ar'?'مثال: أوجمنتين':'Ex: Augmentin'}" oninput="refreshDrugDropdowns()">
+        </div>
+        <div class="field">
+          <label><span data-ar>التصنيف العام</span><span data-en>General category</span></label>
+          <select class="m-category">${catOptions}</select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>نمط الجرعات</span><span data-en>Dosing pattern</span></label>
+          <select class="m-freqtype" onchange="onFreqTypeChange('${id}')">
+            <option value="times">${lang==='ar'?'عدد مرات يومياً':'Times per day'}</option>
+            <option value="interval">${lang==='ar'?'كل عدد ساعات':'Every X hours'}</option>
+          </select>
+        </div>
+        <div class="field m-freqvalue-wrap">
+          <label class="m-freqvalue-label"><span data-ar>عدد المرات</span><span data-en>Times per day</span></label>
+          <select class="m-freqvalue">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label><span data-ar>علاقته بالطعام</span><span data-en>Relation to food</span></label>
+          <select class="m-food">
+            <option value="none">${lang==='ar'?'بدون علاقة':'No relation'}</option>
+            <option value="before">${lang==='ar'?'قبل الأكل':'Before food'}</option>
+            <option value="after">${lang==='ar'?'بعد الأكل':'After food'}</option>
+            <option value="with">${lang==='ar'?'مع الأكل':'With food'}</option>
+          </select>
+        </div>
+        <div class="field m-precision-wrap" style="display:none;">
+          <label><span data-ar>الدقة</span><span data-en>Precision</span></label>
+          <select class="m-precision">
+            <option value="strict">${lang==='ar'?'دقيق':'Strict'}</option>
+            <option value="flexible">${lang==='ar'?'مرن':'Flexible'}</option>
+          </select>
+        </div>
+      </div>
+      <p class="sub" style="margin:8px 0 4px;"><span data-ar>فصل عن دواء آخر (اختياري)</span><span data-en>Separate from another medicine (optional)</span></p>
+      <div class="sep-list"></div>
+      <button class="add-sep-btn" onclick="addSepRow('${id}')">+ <span data-ar>أضف فصلاً</span><span data-en>Add separation</span></button>
+    `;
+    document.getElementById('med-list').appendChild(div);
+    onFreqTypeChange(id);
+    refreshDrugDropdowns();
+  }
+  function onFreqTypeChange(medId){
+    const card = document.getElementById(medId);
+    const type = card.querySelector('.m-freqtype').value;
+    const label = card.querySelector('.m-freqvalue-label');
+    const select = card.querySelector('.m-freqvalue');
+    if (type === 'interval'){
+      label.innerHTML = `<span data-ar>كل كم ساعة</span><span data-en>Every how many hours</span>`;
+      select.innerHTML = ['4','6','8','12','24'].map(v=>`<option value="${v}">${v}</option>`).join('');
+      card.querySelector('.m-precision-wrap').style.display = 'flex';
+    } else {
+      label.innerHTML = `<span data-ar>عدد المرات</span><span data-en>Times per day</span>`;
+      select.innerHTML = ['1','2','3','4'].map(v=>`<option value="${v}">${v}</option>`).join('');
+      card.querySelector('.m-precision-wrap').style.display = 'none';
+    }
+  }
+  function refreshDrugDropdowns(){
+    const cards = document.querySelectorAll('.med-card');
+    const drugList = [...cards].map(c => ({ id:c.dataset.medId, num:c.dataset.medNum, name:c.querySelector('.m-name').value.trim() }));
+    document.querySelectorAll('.sep-target').forEach(sel => {
+      const curVal = sel.value;
+      const ownMedId = sel.closest('.med-card').dataset.medId;
+      sel.innerHTML = drugList.filter(d=>d.id!==ownMedId).map(d=>{
+        const label = (lang==='ar' ? `دواء رقم ${d.num}` : `Medicine #${d.num}`) + (d.name ? ` — ${d.name}` : '');
+        return `<option value="${d.id}">${label}</option>`;
+      }).join('');
+      if (curVal) sel.value = curVal;
+    });
+  }
+  let sepCounter = 0;
+  function addSepRow(medId){
+    sepCounter++;
+    const card = document.getElementById(medId);
+    const list = card.querySelector('.sep-list');
+    const rowId = 'sep-' + sepCounter;
+    const div = document.createElement('div');
+    div.className = 'sep-item';
+    div.id = rowId;
+    div.innerHTML = `
+      <span><span data-ar>يفصل عن</span><span data-en>Separate from</span></span>
+      <select class="sep-target"></select>
+      <span><span data-ar>بمدة</span><span data-en>by</span></span>
+      <input type="number" class="sep-hours" min="0.5" step="0.5" style="width:55px" value="2">
+      <span><span data-ar>ساعة</span><span data-en>h</span></span>
+      <button class="remove-sep" onclick="document.getElementById('${rowId}').remove()">✕</button>
+    `;
+    list.appendChild(div);
+    refreshDrugDropdowns();
+  }
+  function relocalizeMedCards(){
+    document.querySelectorAll('.med-card').forEach(card => {
+      relocalizeOptions(card.querySelector('.m-category'), Object.keys(CATEGORY_LABELS.ar).map(k => [k, CATEGORY_LABELS.ar[k], CATEGORY_LABELS.en[k]]), lang);
+      relocalizeOptions(card.querySelector('.m-freqtype'), [['times','عدد مرات يومياً','Times per day'],['interval','كل عدد ساعات','Every X hours']], lang);
+      relocalizeOptions(card.querySelector('.m-food'), [['none','بدون علاقة','No relation'],['before','قبل الأكل','Before food'],['after','بعد الأكل','After food'],['with','مع الأكل','With food']], lang);
+      relocalizeOptions(card.querySelector('.m-precision'), [['strict','دقيق','Strict'],['flexible','مرن','Flexible']], lang);
+      const nameInput = card.querySelector('.m-name');
+      if (nameInput) nameInput.placeholder = lang==='ar' ? 'مثال: أوجمنتين' : 'Ex: Augmentin';
+    });
+    if (typeof refreshDrugDropdowns === 'function') refreshDrugDropdowns();
+  }
+  autoLoadSavedData();
+  if (!dataWasRestored) addMed();
+
+  // ---------- Calculate & render ----------
+  let lastResults = [];
+  let lastTableRows = [];
+  let lastIsManual = false;
+  let lastPreviewDateStr = '';
+  function calcSchedule(){
+    const lat = parseFloat(document.getElementById('p-lat').value);
+    const lng = parseFloat(document.getElementById('p-lng').value);
+    const tz = parseFloat(document.getElementById('p-tz').value);
+    const startStr = document.getElementById('p-date-start').value;
+    const endStr = document.getElementById('p-date-end').value;
+    const previewStr = document.getElementById('p-preview-day').value || startStr;
+    const fallbackFajrStr = document.getElementById('fallback-fajr').value;
+    const fallbackMaghribStr = document.getElementById('fallback-maghrib').value;
+    const hasLocation = !isNaN(lat) && !isNaN(lng);
+    const hasManualTimes = fallbackFajrStr && fallbackMaghribStr;
+
+    if (!hasLocation && !hasManualTimes){
+      alert(lang==='ar' ? 'الرجاء تحديد موقعك أو إدخال موعدي الفجر والمغرب تقريباً' : 'Please set your location or enter approximate Fajr/Maghrib times');
+      return;
+    }
+    if (!startStr || !endStr){ alert(lang==='ar' ? 'تعذر تحديد نطاق رمضان' : 'Could not determine the Ramadan range'); return; }
+
+    const rangeDates = buildDateRange(startStr, endStr);
+    if (rangeDates.length === 0 || rangeDates.length > 60){
+      alert(lang==='ar' ? 'نطاق التاريخ غير صالح' : 'Invalid date range');
+      return;
+    }
+
+    let fajrMin, maghribMin, isManual = false;
+    document.getElementById('range-table-wrap').style.display = 'block';
+
+    if (hasLocation){
+      const tableRows = rangeDates.map(dt => {
+        const tt = sunTimes(dt.getFullYear(), dt.getMonth()+1, dt.getDate(), lat, lng, tz, 18.5);
+        if (tt.fajr===null || tt.maghrib===null) return null;
+        return { date: dt, fajr: round5(tt.fajr*60), maghrib: round5(tt.maghrib*60) };
+      }).filter(Boolean);
+      lastTableRows = tableRows;
+      document.getElementById('range-table').innerHTML = tableRows.map(r =>
+        `<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--line);">
+          <span>${r.date.toLocaleDateString(lang==='ar'?'ar':'en')}</span>
+          <span>🌄 ${minToTime(r.fajr)}</span><span>🌇 ${minToTime(r.maghrib)}</span>
+        </div>`).join('');
+
+      const [py,pm,pd] = previewStr.split('-').map(Number);
+      const t = sunTimes(py,pm,pd, lat, lng, tz, 18.5);
+      if (t.fajr===null || t.maghrib===null){
+        alert(lang==='ar' ? 'تعذر حساب الفجر/المغرب لهذا الموقع (قد يكون قريباً جداً من القطبين)' : 'Could not calculate Fajr/Maghrib for this location (may be too close to the poles)');
+        return;
+      }
+      fajrMin = round5(t.fajr*60); maghribMin = round5(t.maghrib*60);
+    } else {
+      fajrMin = timeToMin(fallbackFajrStr); maghribMin = timeToMin(fallbackMaghribStr);
+      isManual = true;
+      lastTableRows = [];
+      document.getElementById('range-table').innerHTML = rangeDates.map(dt =>
+        `<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--line);">
+          <span>${dt.toLocaleDateString(lang==='ar'?'ar':'en')}</span>
+          <span>🌄 ${minToTime(fajrMin)}</span><span>🌇 ${minToTime(maghribMin)}</span>
+        </div>`).join('');
+    }
+    lastIsManual = isManual;
+    lastPreviewDateStr = previewStr;
+    document.getElementById('fm-box').style.display = 'flex';
+    document.getElementById('fm-fajr').textContent = minToTime(fajrMin);
+    document.getElementById('fm-maghrib').textContent = minToTime(maghribMin);
+    const noteEl = document.getElementById('manual-time-note');
+    if (isManual){
+      noteEl.style.display = 'block';
+      noteEl.textContent = lang==='ar' ? '⚠ هذه أوقات مُدخلة يدوياً وليست محسوبة فلكياً — نفس الوقت مستخدم لكل أيام رمضان رغم وجود فرق دقائق بسيطة فعلياً بين أوله وآخره، فالجدول تقريبي بالكامل.' : '⚠ These are manually entered times, not astronomically calculated — the same time is used for every day of Ramadan even though there is a small real difference between the start and end of the month, so this schedule is fully approximate.';
+    } else {
+      noteEl.style.display = 'none';
+    }
+
+    const profile = { wake: document.getElementById('p-wake').value, sleep: document.getElementById('p-sleep').value };
+    if (!profile.wake || !profile.sleep){ alert(lang==='ar' ? 'الرجاء إدخال موعد الاستيقاظ والنوم' : 'Please enter wake and sleep times'); return; }
+
+    const cards = document.querySelectorAll('.med-card');
+    const meds = [];
+    cards.forEach(card => {
+      const name = card.querySelector('.m-name').value.trim();
+      const category = card.querySelector('.m-category').value;
+      const freqType = card.querySelector('.m-freqtype').value;
+      const freqValue = parseInt(card.querySelector('.m-freqvalue').value);
+      const precisionSel = card.querySelector('.m-precision');
+      const precision = precisionSel ? precisionSel.value : 'strict';
+      const foodRelation = card.querySelector('.m-food').value;
+      const separations = [];
+      card.querySelectorAll('.sep-item').forEach(row => {
+        const target = row.querySelector('.sep-target').value;
+        const hours = parseFloat(row.querySelector('.sep-hours').value);
+        if (target && !isNaN(hours)) separations.push({targetType:'drug', target, hours});
+      });
+      const label = (lang==='ar'?`دواء رقم ${card.dataset.medNum}`:`Medicine #${card.dataset.medNum}`) + (name?` — ${name}`:'');
+      meds.push({id: card.dataset.medId, label, name: name || label, freqType, freqValue, foodRelation, precision, category, separations});
+    });
+    if (meds.length === 0){ alert(lang==='ar' ? 'أضف دواءً واحداً على الأقل' : 'Add at least one medication'); return; }
+
+    const base = computeBaseSchedule(profile, meds);
+    const adjusted = applyFastingAdjustment(base, fajrMin, maghribMin);
+    checkConflicts(adjusted, meds);
+    lastResults = adjusted;
+    renderResults();
+  }
+
+  function renderResults(){
+    let html = '';
+    lastResults.forEach(r => {
+      if (DIABETES_CATS.includes(r.category)){
+        html += `<div class="advisory-box"><div class="dose-name">💊 ${r.medName}</div><div class="dose-note">${lang==='ar'?'دواء سكري/أنسولين — أعد ضبط الجرعة مع طبيبك المعالج حسب ساعات الصيام، لا يقترح هذا التطبيق موعداً أو جرعة محددة.':"Diabetes/insulin medicine — re-adjust the dose with your treating doctor based on fasting hours; this tool does not suggest a specific time or dose."}</div></div>`;
+        return;
+      }
+      let note = '';
+      if (r.foodRelation==='before') note = lang==='ar'?'قبل الأكل':'Before food';
+      else if (r.foodRelation==='after') note = lang==='ar'?'بعد الأكل':'After food';
+      else if (r.foodRelation==='with') note = lang==='ar'?'مع الأكل':'With food';
+      let extra = '';
+      if (r.wasMoved){
+        const reasonTxt = r.movedReason==='diabetes-diuretic'
+          ? (lang==='ar'?`نُقل لموعد الإفطار (كان ${minToTime(r.originalTime)}) — راجع طبيبك بخصوص الجرعة`:`Moved to iftar time (was ${minToTime(r.originalTime)}) — check with your doctor about the dose`)
+          : (lang==='ar'?`نُقل لأقرب وقت ممكن (كان ${minToTime(r.originalTime)}) لأنه يقع أثناء الصيام`:`Moved to the nearest possible time (was ${minToTime(r.originalTime)}) since it fell during the fast`);
+        extra += `<div class="dose-moved">↪ ${reasonTxt}</div>`;
+      }
+      if (r.conflicts && r.conflicts.length){
+        r.conflicts.forEach(c => extra += `<div class="dose-conflict">⛔ ${lang==='ar'?`تعارض مع ${c.withTarget}: يلزم ${c.required} ساعة، الفارق الحالي ${c.actual} ساعة`:`Conflict with ${c.withTarget}: needs ${c.required}h, current gap ${c.actual}h`}</div>`);
+      }
+      html += `<div class="dose-item"><div class="dose-time">${minToTime(r.time)}</div><div class="dose-body"><div class="dose-name">💊 ${r.medName}</div>${note?`<div class="dose-note">${note}</div>`:''}${extra}</div></div>`;
+    });
+    document.getElementById('res-list').innerHTML = html;
+    const card = document.getElementById('res-card');
+    card.classList.add('show');
+    card.scrollIntoView({behavior:'smooth'});
+  }
+
+  function buildText(){
+    let text = lang==='ar' ? 'جدول الأدوية ليوم الصيام:\n' : 'Fasting-Day Medication Schedule:\n';
+    lastResults.forEach(r => { text += DIABETES_CATS.includes(r.category) ? `- ${r.medName}: ${lang==='ar'?'استشر طبيبك':'consult your doctor'}\n` : `${minToTime(r.time)} — ${r.medName}\n`; });
+    return text;
+  }
+  function copyAll(){ navigator.clipboard.writeText(buildText()).then(()=>showToast(lang==='ar'?'تم النسخ':'Copied')); }
+  function shareWhatsapp(){ window.open('https://wa.me/?text='+encodeURIComponent(buildText()), '_blank'); }
+  function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+
+  async function downloadPdf(){
+    if (lastResults.length === 0){ alert(lang==='ar'?'احسب الجدول أولاً':'Calculate the schedule first'); return; }
+    if (!window.jspdf || !window.html2canvas){ alert('PDF library failed to load'); return; }
+    showToast(lang==='ar'?'جاري التجهيز...':'Preparing...');
+    let rowsHtml = '';
+    lastResults.forEach(r => {
+      if (DIABETES_CATS.includes(r.category)){ rowsHtml += `<div class="pc-row"><div class="pc-time">—</div><div><div class="pc-name">${r.medName}</div></div></div>`; return; }
+      rowsHtml += `<div class="pc-row"><div class="pc-time">${minToTime(r.time)}</div><div><div class="pc-name">${r.medName}</div></div></div>`;
+    });
+
+    // Only include the full multi-day calendar when times were astronomically computed;
+    // with manually entered approximate times we only have one day's data to show.
+    let calendarHtml = '';
+    if (!lastIsManual && lastTableRows.length){
+      calendarHtml = `
+        <div class="pc-section-title">${lang==='ar'?`جدول الفجر والمغرب (${lastTableRows.length} يوماً)`:`Fajr &amp; Maghrib Calendar (${lastTableRows.length} days)`}</div>
+        ${lastTableRows.map(r => `<div class="pc-cal-row"><span>${r.date.toLocaleDateString(lang==='ar'?'ar':'en')}</span><span>🌄 ${minToTime(r.fajr)}</span><span>🌇 ${minToTime(r.maghrib)}</span></div>`).join('')}
+      `;
+    }
+    const scheduleTitle = lastIsManual
+      ? (lang==='ar'?'جدول الأدوية (بناءً على الوقت المُدخل يدوياً)':'Medication Schedule (based on your manually entered time)')
+      : (lang==='ar'?`جدول الأدوية ليوم ${new Date(lastPreviewDateStr).toLocaleDateString(lang==='ar'?'ar':'en')}`:`Medication Schedule for ${new Date(lastPreviewDateStr).toLocaleDateString('en')}`);
+
+    const container = document.createElement('div');
+    container.id = 'print-card';
+    container.setAttribute('dir', lang==='ar'?'rtl':'ltr');
+    container.style.direction = lang==='ar'?'rtl':'ltr';
+    container.style.textAlign = lang==='ar'?'right':'left';
+    container.innerHTML = `
+      <div class="pc-header"><h1>${lang==='ar'?'جدول رمضان الطبي':'Ramadan Medical Schedule'}</h1></div>
+      <div class="pc-body">
+        <div class="pc-section-title">${scheduleTitle}</div>
+        ${rowsHtml}
+        ${calendarHtml}
+      </div>
+      <div class="pc-footer">${lang==='ar'
+        ? (lastIsManual ? 'أوقات تقريبية مُدخلة يدوياً — لا يغني عن استشارة الطبيب أو الصيدلي' : 'حساب فلكي تقريبي (±1-2 دقيقة) — لا يغني عن استشارة الطبيب أو الصيدلي')
+        : (lastIsManual ? "Manually entered approximate times — does not replace advice from your doctor or pharmacist" : "Approximate astronomical calculation (±1-2 min) — does not replace advice from your doctor or pharmacist")}</div>
+    `;
+    document.body.appendChild(container);
+    try{
+      const canvas = await html2canvas(container, {
+      scale: 2, backgroundColor: '#ffffff',
+      width: container.scrollWidth, height: container.scrollHeight,
+      windowWidth: container.scrollWidth, windowHeight: container.scrollHeight
+    });
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({unit:'px', format:[canvas.width, canvas.height]});
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save(lastIsManual ? 'ramadan-medication-schedule-single-day.pdf' : 'ramadan-medication-schedule-full-month.pdf');
+    } catch(err){
+      alert(lang==='ar'?'حدث خطأ أثناء إنشاء PDF':'Error generating PDF');
+      console.error(err);
+    } finally {
+      document.body.removeChild(container);
+    }
+  }
+  </script>
+
+  </ToolsShell>
+</Layout>

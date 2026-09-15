@@ -6,8 +6,8 @@
 
 		#site-search {
 			padding: 0.5rem 1rem;
-			border: 1px solid var(--line);
-			border-radius: var(--radius);
+			border: 1px solid #D3DBCD;
+			border-radius: 6px;
 			font-size: 0.9rem;
 			transition: all 0.2s ease;
 			width: 0;
@@ -25,12 +25,12 @@
 			border: none;
 			cursor: pointer;
 			padding: 0.5rem;
-			color: var(--ink);
+			color: #1E2D2A;
 			transition: color 0.2s ease;
 		}
 
 		#search-toggle:hover {
-			color: var(--accent);
+			color: #C1592C;
 		}
 
 		.search-results {
@@ -38,9 +38,9 @@
 			top: 100%;
 			left: 0;
 			right: 0;
-			background: var(--paper);
-			border: 1px solid var(--line);
-			border-radius: var(--radius);
+			background: #F3F6F1;
+			border: 1px solid #D3DBCD;
+			border-radius: 6px;
 			margin-top: 0.5rem;
 			max-height: 400px;
 			overflow-y: auto;
@@ -58,7 +58,7 @@
 			flex-direction: column;
 			padding: 1rem;
 			text-decoration: none;
-			border-bottom: 1px solid var(--line);
+			border-bottom: 1px solid #D3DBCD;
 			transition: background 0.2s ease;
 			gap: 0.25rem;
 		}
@@ -68,36 +68,42 @@
 		}
 
 		.search-result-item:hover {
-			background: var(--paper-alt);
+			background: #E9F0E4;
 		}
 
 		.result-title-ar {
-			color: var(--ink);
+			color: #1E2D2A;
 			font-weight: 600;
 			font-size: 1rem;
 		}
 
 		.result-title-en {
-			color: var(--ink-soft);
+			color: #3E524C;
 			font-size: 0.85rem;
 		}
 
 		.search-no-results {
 			padding: 1.5rem;
 			text-align: center;
-			color: var(--ink-soft);
+			color: #3E524C;
 		}
 
 		[dir="rtl"] .search-results {
 			left: auto;
 			right: 0;
 		}
+
+		.mark {
+			width: 48px;
+			height: 48px;
+			object-fit: contain;
+		}
 	</style>
 
 	<div class="brand">
-		<img src="/logo.svg" alt="SHYM365.ORG logo" class="mark" />
+		<img src="/icon/logo-icon.png" alt="SHYM365.ORG logo" class="mark" />
 		<div>
-			<p class="eyebrow" data-i18n data-en="SHYM365.ORG" data-ar="SHYM365.ORG">SHYM356.ORG</p>
+			<p class="eyebrow" data-i18n data-en="SHYM365.ORG" data-ar="SHYM365.ORG">SHYM365.ORG</p>
 			<h1 data-i18n data-en="Health & Nature" data-ar="الصحة والطبيعة">Health & Nature</h1>
 		</div>
 	</div>
@@ -229,6 +235,30 @@
 		{ titleAr: 'حاسبة عجز البوتاسيوم', titleEn: 'Potassium Deficit', url: '/doses/potassium-deficit' },
 		{ titleAr: 'حاسبة نوم-ماثيو (للتسمم)', titleEn: 'Rumack-Matthew Nomogram', url: '/doses/rumack-matthew-nomogram' },
 		{ titleAr: 'حاسبة عجز الماء', titleEn: 'Water Deficit', url: '/doses/water-deficit' },
+		{ titleAr: 'حاسبة تحويل السعرات إلى ماركوز', titleEn: 'Calorie to Macros', url: '/fittness/calorie-to-macros' },
+		{ titleAr: 'حاسبة تقسيم الماركوز', titleEn: 'Macro Ratio Splitter', url: '/fittness/macro-ratio-splitter' },
+		{ titleAr: 'حاسبة METs وحرق السعرات', titleEn: 'METS Calorie Calculator', url: '/fittness/mets-calorie-calculator' },
+		{ titleAr: 'حاسبة تكرار الضربة القصوى', titleEn: 'One Rep Max Calculator', url: '/fittness/one-rep-max' },
+		{ titleAr: 'حاسبة وحدات الأطفال الطبية', titleEn: 'Pediatric Unit Converter', url: '/fittness/pediatric-unit-converter' },
+		{ titleAr: 'حاسبة السعرات المستهدفة السريعة', titleEn: 'Quick Calorie Target', url: '/fittness/quick-calorie-target' },
+		{ titleAr: 'حاسبة مواعيد التطعيمات', titleEn: 'Vaccine Schedule Calculator', url: '/dates/vaccine-schedule-calculator' },
+		{ titleAr: 'حاسبة جدول الأدوية', titleEn: 'Medication Schedule Calculator', url: '/dates/medication-schedule-calculator' },
+		{ titleAr: 'حاسبة أيام إعادة التعبئة', titleEn: 'Refill Days Calculator', url: '/dates/refill-days-calculator' },
+		{ titleAr: 'محول التاريخ الهجري الطبي', titleEn: 'Hijri Medical Converter', url: '/dates/hijri-medical-converter' },
+		{ titleAr: 'أدوات التواريخ الطبية', titleEn: 'Medical Date Tools', url: '/dates' },
+		{ titleAr: 'فهرس أدوات التواريخ الطبية', titleEn: 'Medical Date Tools Index', url: '/dates/index' },
+		{ titleAr: 'حاسبة تحويل السعرات إلى ماركوز', titleEn: 'Calorie to Macros', url: '/fittness/calorie-to-macros' },
+		{ titleAr: 'حاسبة تقسيم الماركوز', titleEn: 'Macro Ratio Splitter', url: '/fittness/macro-ratio-splitter' },
+		{ titleAr: 'حاسبة METs وحرق السعرات', titleEn: 'METS Calorie Calculator', url: '/fittness/mets-calorie-calculator' },
+		{ titleAr: 'حاسبة تكرار الضربة القصوى', titleEn: 'One Rep Max Calculator', url: '/fittness/one-rep-max' },
+		{ titleAr: 'حاسبة وحدات الأطفال الطبية', titleEn: 'Pediatric Unit Converter', url: '/fittness/pediatric-unit-converter' },
+		{ titleAr: 'حاسبة السعرات المستهدفة السريعة', titleEn: 'Quick Calorie Target', url: '/fittness/quick-calorie-target' },
+		{ titleAr: 'حاسبة مواعيد التطعيمات', titleEn: 'Vaccine Schedule Calculator', url: '/dates/vaccine-schedule-calculator' },
+		{ titleAr: 'حاسبة جدول الأدوية', titleEn: 'Medication Schedule Calculator', url: '/dates/medication-schedule-calculator' },
+		{ titleAr: 'حاسبة أيام إعادة التعبئة', titleEn: 'Refill Days Calculator', url: '/dates/refill-days-calculator' },
+		{ titleAr: 'محول التاريخ الهجري الطبي', titleEn: 'Hijri Medical Converter', url: '/dates/hijri-medical-converter' },
+		{ titleAr: 'أدوات التواريخ الطبية', titleEn: 'Medical Date Tools', url: '/dates' },
+		{ titleAr: 'فهرس أدوات التواريخ الطبية', titleEn: 'Medical Date Tools Index', url: '/dates/index' },
 		{ titleAr: 'حاسبة العمر البيولوجي', titleEn: 'Biological Age Calculator', url: '/fittness/biological-age' },
 		{ titleAr: 'حاسبة تحويل السعرات إلى ماركوز', titleEn: 'Calorie to Macros', url: '/fittness/calorie-to-macros' },
 		{ titleAr: 'حاسبة تقسيم الماركوز', titleEn: 'Macro Ratio Splitter', url: '/fittness/macro-ratio-splitter' },
@@ -326,6 +356,15 @@
 		{ titleAr: 'مقياس رفاهية منظمة الصحة العالمية (WHO-5)', titleEn: 'WHO-5', url: '/tests/who5' },
 		{ titleAr: 'تنظيف الروابط', titleEn: 'URL Cleaner', url: '/url-cleaner' },
 		{ titleAr: 'حاسبة جرعة الأدوية للأطفال', titleEn: 'Pediatric Dosage Calculator', url: '/pediatric-dosage-calculator' },
+		{ titleAr: 'أدوات الصيام', titleEn: 'Fasting Tools', url: '/fast' },
+		{ titleAr: 'جدول الأدوية للصيام البهائي', titleEn: 'Medication Schedule for the Baháʼí Fast', url: '/fast/bahai-fasting-medication-schedule' },
+		{ titleAr: 'معدل الأدوية للصيام الكامل ٢٤ ساعة', titleEn: 'Full 24-Hour Fasting Medication Adjuster', url: '/fast/full-day-fasting-medication-adjuster' },
+		{ titleAr: 'معدل الأدوية للصيام المتقطع', titleEn: 'Intermittent Fasting Medication Adjuster', url: '/fast/intermittent-fasting-medication-adjuster' },
+		{ titleAr: 'جدول الأدوية للصيام اليهودي الأصغر', titleEn: 'Minor Jewish Fasting Medication Schedule', url: '/fast/jewish-minor-fast-medication-schedule' },
+		{ titleAr: 'معدل الأدوية للصيام الأرثوذكسي', titleEn: 'Orthodox Christian Fasting Medication Adjuster', url: '/fast/orthodox-fasting-medication-adjuster' },
+		{ titleAr: 'جدول الأدوية لصيام رمضان', titleEn: 'Ramadan Fasting Medication Schedule', url: '/fast/ramadan-medication-schedule' },
+		{ titleAr: 'معدل الأدوية للصيام التطوعي ليوم واحد', titleEn: 'Single-Day Voluntary Fasting Medication Adjuster', url: '/fast/single-day-fasting-medication-adjuster' },
+		{ titleAr: 'معدل الأدوية للصيام التطوعي المتصل', titleEn: 'Extended Voluntary Fasting Medication Adjuster', url: '/fast/voluntary-extended-fasting-medication-adjuster' },
 	];
 
 	// Sort pages alphabetically based on current language

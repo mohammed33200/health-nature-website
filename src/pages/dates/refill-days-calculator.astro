@@ -1,0 +1,352 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ToolsShell from '../../layouts/ToolsShell.astro';
+---
+
+<Layout title="حاسبة أيام صرف الدواء وإعادة الكشف" description="لصرف الدواء، إعادة الكشف، جرعات الأشعة والكيماوي وغيرها">
+  <ToolsShell>
+    <div class="tool-hero">
+      <a href="/dates/" class="back-link">
+        <span data-ar>‹ العودة إلى أدوات التواريخ</span>
+        <span data-en>‹ Back to Date Tools</span>
+      </a>
+      <div class="page-actions">
+        <button onclick="window.print()" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span data-ar>طباعة</span><span data-en>Print</span>
+        </button>
+        <a href="?embed=true" class="action-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          </svg>
+          <span data-ar>تضمين</span><span data-en>Embed</span>
+        </a>
+      </div>
+      <p class="kicker"><span data-ar>أدوات التواريخ الطبية</span><span data-en>Medical Date Tools</span></p>
+      <h1>
+        <span data-ar>حاسبة أيام صرف الدواء وإعادة الكشف</span>
+        <span data-en>Refill Days Calculator</span>
+      </h1>
+      <p class="lead"><span data-ar>لصرف الدواء، إعادة الكشف، جرعات الأشعة والكيماوي وغيرها</span><span data-en>For medication refills, follow-up appointments, radiation and chemotherapy doses, and more</span></p>
+    </div>
+
+  <style is:inline>
+    :root{
+      --ink:#1e3a3f; --ink-soft:#4d6b70; --paper:#f4f9fa; --paper-alt:#ffffff;
+      --line:#d7e6e8; --accent:#2a7f8c; --accent-dark:#1d5c66; --secondary:#7fb3ab;
+      --ok:#2f9e6e; --warn:#c98a2c; --danger:#c65b5b; --radius:14px;
+      --shadow:0 4px 14px rgba(30,58,63,0.08); font-size:16px;
+    }
+    *{box-sizing:border-box;}
+    .tool-body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Tahoma","Segoe UI",Arial,sans-serif; line-height:1.6; padding-bottom:60px; }
+    html[dir="ltr"] .tool-body{ font-family:"Segoe UI",Tahoma,Arial,sans-serif; }
+    .tool-header{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; padding:22px 16px 30px; text-align:center; position:relative; }
+    .tool-header h1{ margin:0 0 6px; font-size:1.4rem; }
+    .tool-header p{ margin:0; opacity:.9; font-size:.92rem; }
+    .tool-header-actions{ position:absolute; top:14px; inset-inline-start:14px; display:flex; gap:8px; }
+    .back-link{ background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.5); color:#fff; padding:6px 14px; border-radius:20px; cursor:pointer; font-size:.85rem; text-decoration:none; }
+    .back-link:hover{ background:rgba(255,255,255,.3); }
+
+    .wrap{ max-width:640px; margin:0 auto; padding:0 14px; }
+    .card{ background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 18px 20px; margin-bottom:18px; }
+    .card h2{ margin:0 0 4px; font-size:1.05rem; color:var(--accent-dark); display:flex; align-items:center; gap:8px; }
+    .card .sub{ margin:0 0 14px; color:var(--ink-soft); font-size:.85rem; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .field{ flex:1 1 200px; display:flex; flex-direction:column; gap:5px; }
+    .field label{ font-size:.82rem; color:var(--ink-soft); }
+    .field select, .field input{ padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:.95rem; background:#fff; color:var(--ink); font-family:inherit; }
+    .cal-inputs{ display:flex; gap:8px; }
+    .cal-inputs input{ width:100%; text-align:center; }
+    .cal-inputs .day{ flex:1; } .cal-inputs .month{ flex:1.3; } .cal-inputs .year{ flex:1.4; }
+    .presets{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+    .presets button{ flex:1 1 70px; padding:9px 6px; border-radius:8px; border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer; font-size:.85rem; font-family:inherit; }
+    .presets button.active{ background:var(--accent); color:#fff; border-color:var(--accent); }
+    .custom-days{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+    .custom-days input{ width:90px; padding:9px 10px; border:1px solid var(--line); border-radius:8px; text-align:center; font-family:inherit; }
+    .reminder-opts{ display:flex; gap:14px; margin:4px 0 14px; flex-wrap:wrap; }
+    .reminder-opts label{ display:flex; align-items:center; gap:6px; font-size:.88rem; color:var(--ink-soft); cursor:pointer; }
+    .btn-main{ width:100%; padding:11px; border:none; border-radius:9px; background:var(--accent); color:#fff; font-size:.95rem; cursor:pointer; margin-top:4px; }
+    .btn-main:hover{ background:var(--accent-dark); }
+    .result{ display:none; margin-top:16px; background:var(--paper); border:1px dashed var(--secondary); border-radius:10px; padding:14px; }
+    .result.show{ display:block; }
+    .result .line{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); font-size:.92rem; }
+    .result .line:last-child{ border-bottom:none; }
+    .result .line b{ color:var(--accent-dark); font-family:"Courier New",monospace; }
+    .highlight{ background:#fff; border-radius:8px; padding:10px; margin-bottom:8px; text-align:center; font-size:1.05rem; color:var(--accent-dark); font-weight:bold; }
+    .actions{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .actions button, .actions a{ flex:1 1 auto; text-align:center; padding:9px 10px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:.82rem; cursor:pointer; text-decoration:none; font-family:inherit; }
+    .actions button:hover, .actions a:hover{ background:var(--paper); }
+    .reminder-list{ margin-top:10px; }
+    .reminder-list .r-item{ display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-top:1px dashed var(--line); font-size:.85rem; }
+    .reminder-list .r-item a{ padding:5px 10px; border:1px solid var(--line); border-radius:6px; text-decoration:none; color:var(--ink); font-size:.78rem; }
+    .disclaimer{ max-width:640px; margin:10px auto 0; padding:0 14px; font-size:.78rem; color:var(--ink-soft); text-align:center; }
+    .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:9px 18px; border-radius:20px; font-size:.85rem; opacity:0; pointer-events:none; transition:opacity .25s; z-index:50; }
+    .toast.show{ opacity:1; }
+    [data-en]{ display:none; }
+    [data-ar]{ display:inline; }
+    .tools-scope[data-lang="ar"] [data-ar]{ display:inline; }
+    .tools-scope[data-lang="ar"] [data-en]{ display:none; }
+    .tools-scope[data-lang="en"] [data-ar]{ display:none; }
+    .tools-scope[data-lang="en"] [data-en]{ display:inline; }
+
+    .page-actions{ display:flex; gap:10px; margin-bottom:16px; }
+    .action-btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 16px; background:var(--paper); border:1px solid var(--line); border-radius:8px; color:var(--ink); text-decoration:none; font-size:.85rem; cursor:pointer; transition:background .15s; }
+    .action-btn:hover{ background:var(--paper-alt); }
+    .action-btn svg{ width:18px; height:18px; }
+    .back-link{ display:inline-block; margin-bottom:8px; color:var(--secondary); text-decoration:none; font-size:.85rem; }
+    .back-link:hover{ text-decoration:underline; }
+    .kicker{ font-family:"Courier New",monospace; font-size:.8rem; color:var(--accent-dark); letter-spacing:.06em; margin-bottom:8px; }
+
+    /* Article styles */
+    .tool-article{ max-width:640px; margin:20px auto 0; padding:20px; background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .tool-article h2{ color:var(--accent-dark); margin:0 0 1rem; font-size:1.3rem; text-align:center; }
+    .article-content{ max-width:600px; margin:0 auto; }
+    .article-content h3{ color:var(--accent); margin:1.5rem 0 0.75rem; font-size:1.1rem; }
+    .article-content p{ color:var(--ink-soft); line-height:1.7; margin-bottom:1rem; }
+    .article-content ul{ color:var(--ink-soft); margin:1rem 0; padding-left:1.5rem; }
+    [dir="rtl"] .article-content ul{ padding-left:0; padding-right:1.5rem; }
+    .article-content li{ margin-bottom:0.75rem; line-height:1.6; }
+    .article-note{ background:#fff3cd; border:1px solid #ffecb5; border-radius:10px; padding:12px; margin-top:1.5rem; font-size:.85rem; color:#856404; }
+  </style>
+
+  <div class="tool-body">
+    <div class="tool-header">
+      <div class="tool-header-actions">
+        <a href="/dates" class="back-link">العودة / Back</a>
+      </div>
+      <h1><span data-ar>حاسبة أيام الصرف وإعادة الكشف</span><span data-en>Refill &amp; Follow-up Days Calculator</span></h1>
+      <p><span data-ar>لصرف الدواء، إعادة الكشف، جرعات الأشعة والكيماوي وغيرها</span><span data-en>For medication refills, follow-up visits, radiation/chemo doses and more</span></p>
+    </div>
+
+    <div class="wrap">
+      <div class="card">
+        <h2><span data-ar>📅 موعدك الأخير والمدة</span><span data-en>📅 Last Visit &amp; Interval</span></h2>
+        <p class="sub"><span data-ar>أدخل تاريخ آخر صرف/كشف/جرعة، واختر عدد الأيام حتى الموعد التالي</span><span data-en>Enter the date of your last refill/visit/dose, and choose the number of days until the next one</span></p>
+
+        <div class="row">
+          <div class="field cal-inputs">
+            <input type="number" class="day" id="d-d" placeholder="يوم / Day" min="1" max="31">
+            <input type="number" class="month" id="d-m" placeholder="شهر / Month" min="1" max="12">
+            <input type="number" class="year" id="d-y" placeholder="سنة / Year" min="1900">
+          </div>
+        </div>
+
+        <div class="presets" id="presets">
+          <button data-v="28" onclick="setPreset(28)">28 <span data-ar>يوم</span><span data-en>d</span></button>
+          <button data-v="30" onclick="setPreset(30)">30 <span data-ar>يوم</span><span data-en>d</span></button>
+          <button data-v="60" onclick="setPreset(60)">60 <span data-ar>يوم</span><span data-en>d</span></button>
+          <button data-v="90" onclick="setPreset(90)">90 <span data-ar>يوم</span><span data-en>d</span></button>
+        </div>
+        <div class="custom-days">
+          <label style="font-size:.85rem;color:var(--ink-soft);white-space:nowrap;"><span data-ar>أو عدد مخصص:</span><span data-en>or custom:</span></label>
+          <input type="number" id="custom-days" min="1" placeholder="—" oninput="setCustom()">
+          <span style="font-size:.85rem;color:var(--ink-soft);"><span data-ar>يوم</span><span data-en>days</span></span>
+        </div>
+
+        <p class="sub" style="margin-bottom:6px;"><span data-ar>تذكير مبكر إضافي (اختياري):</span><span data-en>Extra early reminder (optional):</span></p>
+        <div class="reminder-opts">
+          <label><input type="checkbox" id="rem1"> <span data-ar>قبلها بيوم واحد</span><span data-en>1 day before</span></label>
+          <label><input type="checkbox" id="rem3"> <span data-ar>قبلها بثلاثة أيام</span><span data-en>3 days before</span></label>
+        </div>
+
+        <div class="field" style="margin-bottom:10px;">
+          <label><span data-ar>عنوان الموعد (اختياري)</span><span data-en>Appointment title (optional)</span></label>
+          <input type="text" id="apt-title" placeholder="مثال: موعد صرف الدواء / Ex: Medication refill">
+        </div>
+
+        <button class="btn-main" onclick="calcRefill()"><span data-ar>احسب الموعد القادم</span><span data-en>Calculate Next Date</span></button>
+        <div class="result" id="res"></div>
+      </div>
+    </div>
+
+    <p class="disclaimer">
+      <span data-ar>⚠️ هذه الأداة تنظيمية لمساعدتك على تذكر مواعيدك، ولا تغني عن تأكيد الموعد الفعلي مع الصيدلية أو المستشفى، فالموعد قد يتغير حسب توفر الدواء أو جدول العيادة.</span>
+      <span data-en>⚠️ This tool is for organizational reminders only and does not replace confirming the actual appointment with your pharmacy or hospital, as dates may shift based on medication availability or clinic scheduling.</span>
+    </p>
+
+    <article class="tool-article">
+      <h2><span data-ar>أهمية إعادة تعبئة الوصفات الطبية في الوقت المناسب</span><span data-en>The Importance of Refilling Medical Prescriptions on Time</span></h2>
+      
+      <div class="article-content">
+        <p><span data-ar>الالتزام بالعلاج الدوائي بدون انقطاع هو عنصر حاسم لنجاح خطة العلاج. تأخير إعادة تعبئة الوصفة الطبية قد يؤدي إلى فجوات في العلاج، تدهور الحالة الصحية، أو في بعض الحالات خطورة شديدة. إدارة مواعيد إعادة التعبئة بشكل منظم يضمن استمرار العلاج بسلاسة وفعالية.</span><span data-en>Adhering to medication treatment without interruption is a critical element for treatment plan success. Delaying prescription refills can lead to gaps in treatment, deterioration of health conditions, or in some cases severe complications. Managing refill appointments in an organized manner ensures treatment continues smoothly and effectively.</span></p>
+
+        <h3><span data-ar>كيف تساعد حاسبة أيام إعادة التعبئة؟</span><span data-en>How Does the Refill Days Calculator Help?</span></h3>
+        
+        <p><span data-ar>تساعد هذه الأداة المرضى على حساب الموعد الأمثل لإعادة تعبئة وصفاتهم الطبية بناءً على تاريخ آخر صرف أو تقرير سابق. يمكن استخدامها لمواعيد الأدوية المزمنة، إعادة الكشف الطبي، جرعات العلاج الكيميائي، وأي موعد طبي يتطلب فترة زمنية محددة بين الزيارات.</span><span data-en>This tool helps patients calculate the optimal date to refill their medical prescriptions based on the date of last refill or previous report. It can be used for chronic medications, follow-up medical visits, chemotherapy doses, and any medical appointment that requires a specific time interval between visits.</span></p>
+
+        <h3><span data-ar>نصائح لإدارة مواعيد الوصفات</span><span data-en>Tips for Managing Prescription Appointments</span></h3>
+        
+        <ul>
+          <li><span data-ar>احتفظ بسجل دقيق لجميع الأدوية التي تتناولها ومواعيد إعادة التعبئة لكل منها.</span><span data-en>Keep an accurate record of all medications you take and the refill schedule for each.</span></li>
+          <li><span data-ar>حدد تذكيرات قبل أسبوع على الأقل من الموعد لتأكيد توفر الدواء وحجز الموعد.</span><span data-en>Set reminders at least a week before the appointment to confirm medication availability and book the appointment.</span></li>
+          <li><span data-ar>تواصل مع طبيبك في حال وجود أي صعوبة في الحصول على الدواء قبل نفاذ الكمية.</span><span data-en>Contact your doctor if you have difficulty obtaining the medication before your supply runs out.</span></li>
+          <li><span data-ar>احتفظ بنسخة من الوصفة الأصلية في مكان آمن للرجوع إليها عند الحاجة.</span><span data-en>Keep a copy of the original prescription in a safe place for reference when needed.</span></li>
+        </ul>
+
+        <p class="article-note"><span data-ar>⚠️ تذكير: هذه الأداة تنظيمية فقط ولا تستبدل استشارة الطبيب. استشر دائماً طبيبك حول مواعيد إعادة التعبئة المناسبة لحالتك الصحية.</span><span data-en>⚠️ Reminder: This tool is for organizational purposes only and does not replace medical consultation. Always consult your doctor about the appropriate refill schedules for your health condition.</span></p>
+      </div>
+    </article>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script is:inline>
+    let lang = 'ar';
+    // Initialize language on page load - get from ToolsShell
+    document.addEventListener('DOMContentLoaded', () => {
+      const toolsScope = document.querySelector('.tools-scope');
+      if (toolsScope) {
+        lang = toolsScope.getAttribute('data-lang') || 'ar';
+      }
+    });
+    
+    // Listen for language changes from ToolsShell
+    window.addEventListener('languageChanged', (event) => {
+      const customEvent = event;
+      lang = customEvent.detail?.lang || 'ar';
+    });
+    
+    // Helper function to get current language
+    function getCurrentLang() {
+      const toolsScope = document.querySelector('.tools-scope');
+      return toolsScope?.getAttribute('data-lang') || 'ar';
+    }
+    
+    let selectedDays = null;
+    function setPreset(v){
+      selectedDays = v;
+      document.getElementById('custom-days').value = '';
+      document.querySelectorAll('#presets button').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) === v));
+    }
+    function setCustom(){
+      const v = parseInt(document.getElementById('custom-days').value);
+      selectedDays = v || null;
+      document.querySelectorAll('#presets button').forEach(b => b.classList.remove('active'));
+    }
+
+    const gMonthsAr = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    const gMonthsEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const weekdaysAr = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const weekdaysEn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+    function fmtG(date){
+      const months = lang === 'ar' ? gMonthsAr : gMonthsEn;
+      return lang === 'ar' ? `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}` : `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+    function weekdayName(date){ return (lang === 'ar' ? weekdaysAr : weekdaysEn)[date.getDay()]; }
+    function dayDiff(d1,d2){ return Math.round((d2-d1)/86400000); }
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function icsDateStr(d){ return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`; }
+
+    let lastResultText = '';
+    let lastNextDate = null;
+    let lastReminders = [];
+
+    function calcRefill(){
+      const d = parseInt(document.getElementById('d-d').value);
+      const m = parseInt(document.getElementById('d-m').value);
+      const y = parseInt(document.getElementById('d-y').value);
+      if (!d || !m || !y || !selectedDays){
+        alert(getCurrentLang()==='ar' ? 'الرجاء إدخال التاريخ وعدد الأيام' : 'Please enter the date and number of days');
+        return;
+      }
+      const lastDate = new Date(y, m-1, d); lastDate.setHours(0,0,0,0);
+      const nextDate = new Date(lastDate); nextDate.setDate(nextDate.getDate() + selectedDays);
+      const today = new Date(); today.setHours(0,0,0,0);
+      const remaining = dayDiff(today, nextDate);
+      const weekday = weekdayName(nextDate);
+      let title = document.getElementById('apt-title').value.trim();
+      if (!title) title = getCurrentLang()==='ar' ? 'موعد المتابعة الطبية' : 'Medical Follow-up';
+
+      lastNextDate = nextDate;
+      lastReminders = [];
+      if (document.getElementById('rem1').checked) lastReminders.push(1);
+      if (document.getElementById('rem3').checked) lastReminders.push(3);
+
+      const remStatus = remaining < 0
+        ? (getCurrentLang()==='ar' ? `مضى ${Math.abs(remaining)} يوم عليه` : `${Math.abs(remaining)} days ago`)
+        : (getCurrentLang()==='ar' ? `بعد ${remaining} يوم` : `in ${remaining} days`);
+
+      lastResultText = getCurrentLang()==='ar'
+        ? `${title}\nالموعد القادم: ${fmtG(nextDate)} (يوم ${weekday})\n${remStatus}\nآخر موعد كان: ${fmtG(lastDate)} — مدة ${selectedDays} يوم`
+        : `${title}\nNext date: ${fmtG(nextDate)} (${weekday})\n${remStatus}\nLast visit was: ${fmtG(lastDate)} — interval ${selectedDays} days`;
+
+      const gcalTitle = encodeURIComponent(title);
+      const gcalDetails = encodeURIComponent(lastResultText);
+      const dEnd = new Date(nextDate); dEnd.setDate(dEnd.getDate()+1);
+      const gcalLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${gcalTitle}&dates=${icsDateStr(nextDate)}/${icsDateStr(dEnd)}&details=${gcalDetails}`;
+
+      let remindersHtml = '';
+      lastReminders.forEach(days => {
+        const rDate = new Date(nextDate); rDate.setDate(rDate.getDate() - days);
+        const rTitle = getCurrentLang()==='ar' ? `تذكير: ${title} بعد ${days} ${days===1?'يوم':'أيام'}` : `Reminder: ${title} in ${days} day${days>1?'s':''}`;
+        const rEnd = new Date(rDate); rEnd.setDate(rEnd.getDate()+1);
+        const rLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(rTitle)}&dates=${icsDateStr(rDate)}/${icsDateStr(rEnd)}&details=${encodeURIComponent(rTitle)}`;
+        remindersHtml += `<div class="r-item"><span>📌 ${rTitle} — ${fmtG(rDate)}</span><a href="${rLink}" target="_blank">📅 Google</a></div>`;
+      });
+
+      const box = document.getElementById('res');
+      box.innerHTML = `
+        <div class="highlight">${getCurrentLang()==='ar'?`الموعد القادم: ${fmtG(nextDate)} — ${weekday}`:`Next date: ${fmtG(nextDate)} — ${weekday}`}</div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'الموعد السابق':'Previous date'}</span><b>${fmtG(lastDate)}</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'المدة':'Interval'}</span><b>${selectedDays} ${getCurrentLang()==='ar'?'يوم':'days'}</b></div>
+        <div class="line"><span>${getCurrentLang()==='ar'?'الحالة':'Status'}</span><b>${remStatus}</b></div>
+        <div class="actions">
+          <button onclick="copyText(\`${lastResultText}\`)">📋 ${getCurrentLang()==='ar'?'نسخ':'Copy'}</button>
+          <a href="#" onclick="shareWhatsapp(\`${lastResultText}\`); return false;">💬 WhatsApp</a>
+          <a href="${gcalLink}" target="_blank">📅 Google</a>
+          <button onclick="downloadIcsAll()">🍎 Apple/ICS</button>
+        </div>
+        ${remindersHtml ? `<div class="reminder-list">${remindersHtml}</div>` : ''}
+      `;
+      box.classList.add('show');
+    }
+
+    function downloadIcsAll(){
+      if (!lastNextDate) return;
+      let title = document.getElementById('apt-title').value.trim();
+      if (!title) title = getCurrentLang()==='ar' ? 'موعد المتابعة الطبية' : 'Medical Follow-up';
+      const events = [];
+      const mainEnd = new Date(lastNextDate); mainEnd.setDate(mainEnd.getDate()+1);
+      events.push({title, dt: icsDateStr(lastNextDate), dtEnd: icsDateStr(mainEnd), desc: title});
+      lastReminders.forEach(days => {
+        const rDate = new Date(lastNextDate); rDate.setDate(rDate.getDate()-days);
+        const rEnd = new Date(rDate); rEnd.setDate(rEnd.getDate()+1);
+        const rTitle = getCurrentLang()==='ar' ? `تذكير: ${title} بعد ${days} ${days===1?'يوم':'أيام'}` : `Reminder: ${title} in ${days} day${days>1?'s':''}`;
+        events.push({title: rTitle, dt: icsDateStr(rDate), dtEnd: icsDateStr(rEnd), desc: rTitle});
+      });
+
+      let ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Refill Days Calculator//AR//EN\n`;
+      events.forEach((e,i) => {
+        ics += `BEGIN:VEVENT\nUID:${Date.now()}-${i}@refillcalc\nDTSTAMP:${e.dt}T000000Z\nDTSTART;VALUE=DATE:${e.dt}\nDTEND;VALUE=DATE:${e.dtEnd}\nSUMMARY:${e.title}\nDESCRIPTION:${e.desc}\nEND:VEVENT\n`;
+      });
+      ics += `END:VCALENDAR`;
+
+      const blob = new Blob([ics], {type:'text/calendar'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'appointment-reminders.ics';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function copyText(text){
+      navigator.clipboard.writeText(text).then(()=> showToast(getCurrentLang()==='ar' ? 'تم النسخ' : 'Copied'));
+    }
+    function shareWhatsapp(text){
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(()=> t.classList.remove('show'), 1800);
+    }
+  </script>
+  </ToolsShell>
+</Layout>

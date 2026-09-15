@@ -514,3 +514,62 @@
   font-size: 14px;
 }
 .tools-scope .et-footer a:hover { text-decoration: underline; }
+
+/* ---------- Print Styles for Embedded Code ---------- */
+@media print {
+  .tools-scope .lang-toggle-row,
+  .tools-scope .lang-toggle,
+  .tools-scope .units-toggle,
+  .tools-scope .btn-calc,
+  .tools-scope button,
+  .tools-scope input[type="button"],
+  .tools-scope .back-link,
+  .tools-scope .et-hero,
+  .tools-scope .et-footer,
+  .tools-scope .info-section,
+  .tools-scope .disclaimer {
+    display: none !important;
+  }
+
+  .tools-scope {
+    background: white !important;
+    color: black !important;
+  }
+
+  .tools-scope .container {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .tools-scope .calc-card,
+  .tools-scope .result,
+  .tools-scope .et-result {
+    page-break-inside: avoid;
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+    background: white !important;
+    margin: 10px 0 !important;
+  }
+
+  .tools-scope .result.show {
+    display: block !important;
+  }
+
+  .tools-scope .et-result {
+    display: block !important;
+    background: white !important;
+    border: 2px solid #000 !important;
+    padding: 20px !important;
+  }
+
+  .tools-scope .et-amsler-grid {
+    border: 2px solid #000 !important;
+  }
+
+  .tools-scope input,
+  .tools-scope select {
+    border: 1px solid #000 !important;
+    background: white !important;
+  }
+}
